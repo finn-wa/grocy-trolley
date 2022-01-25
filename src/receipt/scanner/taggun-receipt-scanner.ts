@@ -39,9 +39,9 @@ export class TaggunReceiptScanner implements ReceiptScanner {
   async fetchReceiptData(filePath: string): Promise<ReceiptResponseOk | ReceiptResponseError> {
     const url = "https://api.taggun.io" + endpoint;
     const headers = {
-      accept: "application/json",
+      Accept: "application/json",
       apikey: this.env.taggunApiKey,
-      contentType: this.getContentType(filePath),
+      "Content-Type": this.getContentType(filePath),
     };
     const body = this.createFormData(filePath, { refresh: false, language: "en" });
     const response = await fetch(url, { headers, method, body });

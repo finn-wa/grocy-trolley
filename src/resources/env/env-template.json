@@ -2,5 +2,6 @@
   "splitwiseUser": "string",
   "splitwisePassword": "string",
   "taggunApiKey": "string",
-  "grocyApiKey": "string"
+  "grocyApiKey": "string",
+  "grocyUrl": "http://localhost:9283/api"
 }

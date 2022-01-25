@@ -5,6 +5,7 @@ export interface Env {
   readonly splitwisePassword: string;
   readonly taggunApiKey: string;
   readonly grocyApiKey: string;
+  readonly grocyUrl: string;
 }
 
 export class EnvParser {
