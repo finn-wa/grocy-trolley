@@ -1,0 +1,5 @@
+{
+  "splitwiseUser": "string",
+  "splitwisePassword": "string",
+  "taggunApiKey": "string"
+}
