@@ -1,9 +1,10 @@
 {
-  "license": "AGPLv3",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "compile": "tsc --watch",
     "start": "node ./dist/main.js",
-    "loadTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/types/taggun.d.ts"
+    "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
+    "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
   "dependencies": {
     "form-data": "4.0.0",
@@ -15,6 +16,6 @@
   "devDependencies": {
     "@types/node": "14.18.5",
     "@types/node-fetch": "2",
-    "openapi-typescript": "5.0.0"
+    "openapi-typescript": "5.1.1"
   }
 }

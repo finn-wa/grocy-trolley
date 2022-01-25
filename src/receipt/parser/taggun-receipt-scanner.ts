@@ -1,5 +1,5 @@
 import { ReceiptScanner } from "..";
-import { paths } from "./types/taggun";
+import { paths } from "../../openapi/taggun";
 import FormData from "form-data";
 import fs from "fs";
 import fetch from "node-fetch";
