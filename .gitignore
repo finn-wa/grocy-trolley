@@ -1,3 +1,4 @@
 env.json
-dist
+out
 node_modules
+temp

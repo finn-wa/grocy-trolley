@@ -2,20 +2,37 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "compile": "tsc --watch",
-    "start": "node ./dist/main.js",
+    "start": "node ./out/main.js",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
   "dependencies": {
+    "commander": "^9.0.0",
     "form-data": "4.0.0",
     "node-fetch": "2.6.6",
     "playwright": "1.17.1",
-    "ts-node": "10.4.0",
+    "ts-node": "^10.4.0",
     "typescript": "4.5.4"
   },
   "devDependencies": {
+    "@types/jasmine": "^3.10.3",
     "@types/node": "14.18.5",
     "@types/node-fetch": "2",
+    "jasmine": "^4.0.2",
+    "jasmine-ts": "^0.4.0",
     "openapi-typescript": "5.1.1"
+  },
+  "jasmine": {
+    "spec_dir": "out",
+    "spec_files": [
+      "**/*[sS]pec.js"
+    ],
+    "helpers": [
+      "helpers/**/*.js"
+    ],
+    "env": {
+      "stopSpecOnExpectationFailure": false,
+      "random": true
+    }
   }
 }

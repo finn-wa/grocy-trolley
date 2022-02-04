@@ -1,10 +1,10 @@
-import { ReceiptScanner } from "..";
-import { paths } from "../../openapi/taggun";
+import { paths } from "./api";
 import FormData from "form-data";
 import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
-import { Env } from "../../resources/env";
+import { Env } from "env";
+import { ReceiptScanner } from "../receipts.model";
 
 const endpoint = "/api/receipt/v1/verbose/file";
 const method = "post";

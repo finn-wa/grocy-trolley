@@ -1,4 +1,4 @@
-import { ReceiptItem, ReceiptItemiser } from "..";
+import { ReceiptItem, ReceiptItemiser } from "../../receipt-ocr/receipts.model";
 
 /**
  * Itemises a PAK'n'SAVE receipt.
