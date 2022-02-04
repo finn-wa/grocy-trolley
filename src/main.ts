@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
 import { exit } from "process";
-import { GrocyStore } from "./grocy/grocy";
+import { PakNSaveAuthService } from "store/paknsave/paknsave-auth";
 import { EnvParser } from "./env";
+import { GrocyStore } from "./grocy/grocy";
 
 interface CreateGrocyProduct {
   /** Product name */
@@ -39,33 +39,8 @@ interface CreateGrocyProduct {
 
 async function main() {
   const env = new EnvParser("src/resources/env/env.json").env;
-  const grocy = new GrocyStore(env);
-
-  const product = {
-    name: "Test2",
-    description: "<p>bing<br /></p>",
-    location_id: 2,
-    shopping_location_id: 1,
-    tare_weight: 0,
-    qu_id_purchase: 4,
-    qu_id_stock: 1,
-    qu_factor_purchase_to_stock: 1,
-  };
-  const units = await grocy.getQuantityUnitIds();
-
-  const search = await fetch(
-    "https://www.paknsave.co.nz/CommonApi/SearchAutoComplete/AutoComplete",
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: '{"SearchTerm":"Chocolate"}',
-      method: "POST",
-    }
-  );
-  const res = await search.json();
-  console.log(JSON.stringify(res));
+  const grocy = new GrocyStore(env.GROCY_URL, env.GROCY_API_KEY);
+  const pakNSaveAuthService = new PakNSaveAuthService(env.PAKNSAVE_EMAIL, env.PAKNSAVE_PASSWORD);
 }
 
 main().then(

@@ -1,11 +1,13 @@
 import { readFileSync } from "fs";
 
 export interface Env {
-  readonly splitwiseUser: string;
-  readonly splitwisePassword: string;
-  readonly taggunApiKey: string;
-  readonly grocyApiKey: string;
-  readonly grocyUrl: string;
+  readonly GROCY_API_KEY: string;
+  readonly GROCY_URL: string;
+  readonly PAKNSAVE_EMAIL: string;
+  readonly PAKNSAVE_PASSWORD: string;
+  readonly SPLITWISE_PASSWORD: string;
+  readonly SPLITWISE_USER: string;
+  readonly TAGGUN_API_KEY: string;
 }
 
 export class EnvParser {

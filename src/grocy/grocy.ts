@@ -15,12 +15,12 @@ export class GrocyStore {
   private readonly url: string;
   private readonly headers: Record<string, string>;
 
-  constructor(private readonly env: Env) {
+  constructor(private readonly baseUrl: string, private readonly apiKey: string) {
     this.headers = {
-      "GROCY-API-KEY": this.env.grocyApiKey,
+      "GROCY-API-KEY": this.apiKey,
       Accept: "application/json",
     };
-    this.url = this.env.grocyUrl + "/objects/products";
+    this.url = this.baseUrl + "/objects/products";
   }
 
   async getQuantityUnitIds(): Promise<Record<QuantityUnitName, number>> {
@@ -64,7 +64,7 @@ export class GrocyStore {
   private async getEntities<K extends keyof Schemas>(
     entity: Schemas["ExposedEntity"]
   ): Promise<Schemas[K][]> {
-    const url = `${this.env.grocyUrl}/objects/${entity}`;
+    const url = `${this.baseUrl}/objects/${entity}`;
     const response = await fetch(url, { headers: this.headers, method: "get" });
     return response.json();
   }

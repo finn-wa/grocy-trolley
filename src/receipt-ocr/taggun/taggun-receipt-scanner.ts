@@ -40,7 +40,7 @@ export class TaggunReceiptScanner implements ReceiptScanner {
     const url = "https://api.taggun.io" + endpoint;
     const headers = {
       Accept: "application/json",
-      apikey: this.env.taggunApiKey,
+      apikey: this.env.TAGGUN_API_KEY,
       "Content-Type": this.getContentType(filePath),
     };
     const body = this.createFormData(filePath, { refresh: false, language: "en" });

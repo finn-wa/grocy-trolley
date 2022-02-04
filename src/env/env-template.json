@@ -1,7 +1,9 @@
 {
-  "splitwiseUser": "string",
-  "splitwisePassword": "string",
-  "taggunApiKey": "string",
-  "grocyApiKey": "string",
-  "grocyUrl": "http://localhost:9283/api"
+  "GROCY_API_KEY": "string",
+  "GROCY_URL": "http://localhost:9283/api",
+  "PAKNSAVE_EMAIL": "string",
+  "PAKNSAVE_PASSWORD": "string",
+  "SPLITWISE_PASSWORD": "string",
+  "SPLITWISE_USER": "string",
+  "TAGGUN_API_KEY": "string"
 }
