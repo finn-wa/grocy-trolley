@@ -2,15 +2,16 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
-    "lib": ["es2020"],
+    "lib": ["ESNext"],
     "module": "CommonJS",
+    "moduleResolution": "node",
     "outDir": "./out",
     "resolveJsonModule": true,
     "rootDir": "src",
     "sourceMap": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "paths": { "@grocy-trolley/*": ["./src/*"] }
   }
 }

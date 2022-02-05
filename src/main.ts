@@ -1,5 +1,5 @@
 import { exit } from "process";
-import { PakNSaveAuthService } from "store/paknsave/paknsave-auth";
+import { PakNSaveAuthService } from "@grocy-trolley/store/paknsave";
 import { EnvParser } from "./env";
 import { GrocyStore } from "./grocy/grocy";
 
@@ -35,12 +35,24 @@ interface CreateGrocyProduct {
   picture_file_name?: string;
   /** Key/value pairs of userfields */
   userfields?: Record<string, string | number>;
+  active: "1";
+  calories: "0";
+  cumulate_min_stock_amount_of_sub_products: "0";
+  default_best_before_days_after_freezing: "0";
+  default_best_before_days_after_thawing: "0";
+  due_type: "1";
+  hide_on_stock_overview: "0";
+  parent_product_id: "2";
+  quick_consume_amount: "1";
+  should_not_be_frozen: "0";
 }
 
 async function main() {
-  const env = new EnvParser("src/resources/env/env.json").env;
+  const env = new EnvParser("env.json").env;
   const grocy = new GrocyStore(env.GROCY_URL, env.GROCY_API_KEY);
   const pakNSaveAuthService = new PakNSaveAuthService(env.PAKNSAVE_EMAIL, env.PAKNSAVE_PASSWORD);
+  await pakNSaveAuthService.login();
+  console.log(pakNSaveAuthService.cookie?.replace(/;/g, ";\n"));
 }
 
 main().then(

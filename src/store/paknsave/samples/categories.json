@@ -1,0 +1,558 @@
+[
+  {
+    "Name": "Fresh Foods & Bakery",
+    "Children": [
+      { "Name": "Fruit & Vegetables" },
+      { "Name": "Butchery" },
+      { "Name": "Seafood" },
+      { "Name": "Deli, Salads & Cooked Meats" },
+      { "Name": "Bakery" },
+      { "Name": "Dairy & Eggs" },
+      { "Name": "Bulk & Loose Foods" },
+      { "Name": "Meal Kits" }
+    ]
+  },
+  {
+    "Name": "Chilled, Frozen & Desserts",
+    "Children": [
+      {
+        "Name": "Dairy & Eggs",
+        "Children": [
+          { "Name": "Butter & Spreads" },
+          { "Name": "Dairy & Lactose Free" },
+          { "Name": "Eggs" },
+          { "Name": "Flavoured Milk" },
+          { "Name": "Fresh Cream" },
+          { "Name": "Fresh Milk" },
+          { "Name": "Fresh Organic Milk" },
+          { "Name": "Long Life Milk & Milk Powder" },
+          { "Name": "Sour Cream & Crème Fraiche" },
+          { "Name": "Yoghurt & Dairy Food" },
+          { "Name": "Yoghurt Bases" }
+        ]
+      },
+      {
+        "Name": "Cheese",
+        "Children": [
+          { "Name": "Cheese Blocks" },
+          { "Name": "Cheese Slices" },
+          { "Name": "Cottage Cheese" },
+          { "Name": "Cream Cheese" },
+          { "Name": "Deli Cabinet Cheeses" },
+          { "Name": "Deli Cheeseboards" },
+          { "Name": "Deli Specialty Cheeses" },
+          { "Name": "Grated Cheese" },
+          { "Name": "Specialty Cheeses" }
+        ]
+      },
+      {
+        "Name": "Desserts",
+        "Children": [
+          { "Name": "Bavarians & Cheesecakes" },
+          { "Name": "Canned Desserts" },
+          { "Name": "Chilled Custards" },
+          { "Name": "Dessert Pastries" },
+          { "Name": "Frozen Bavarians & Cheesecake" },
+          { "Name": "Frozen Dessert Pastries" },
+          { "Name": "Frozen Puddings" },
+          { "Name": "Ice Cream & Frozen Yoghurt" },
+          { "Name": "Ice Cream Cones & Wafers" },
+          { "Name": "Jelly & Powdered Desserts" },
+          { "Name": "Meringues & Pavlovas" },
+          { "Name": "Ready To Serve Puddings" }
+        ]
+      },
+      {
+        "Name": "Frozen Foods",
+        "Children": [
+          { "Name": "Frozen Beef, Lamb & Pork" },
+          { "Name": "Frozen Bread & Dough" },
+          { "Name": "Frozen Chicken & Poultry" },
+          { "Name": "Frozen Fish" },
+          { "Name": "Frozen Fries & Potatoes" },
+          { "Name": "Frozen Fruit" },
+          { "Name": "Frozen Pastry" },
+          { "Name": "Frozen Pies" },
+          { "Name": "Frozen Pizza & Bases" },
+          { "Name": "Frozen Ready Meals" },
+          { "Name": "Frozen Savouries" },
+          { "Name": "Frozen Seafood" },
+          { "Name": "Frozen Vegetables" },
+          { "Name": "Frozen Vegetarian" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Pantry",
+    "Children": [
+      {
+        "Name": "Baking Supplies & Sugar",
+        "Children": [
+          { "Name": "Baking Additives" },
+          { "Name": "Baking Mixes" },
+          { "Name": "Baking Nuts & Seeds" },
+          { "Name": "Baking Syrups" },
+          { "Name": "Breadcrumbs & Coatings" },
+          { "Name": "Cooking Chocolate" },
+          { "Name": "Dried Fruit" },
+          { "Name": "Essences & Colourings" },
+          { "Name": "Flour" },
+          { "Name": "Icing & Decorating" },
+          { "Name": "Sugar" },
+          { "Name": "Sugar Substitutes" }
+        ]
+      },
+      {
+        "Name": "Biscuits & Crackers",
+        "Children": [
+          { "Name": "Assorted Biscuits & Crackers" },
+          { "Name": "Biscuits & Cookies" },
+          { "Name": "Chocolate Biscuits" },
+          { "Name": "Crackers" },
+          { "Name": "Crème & Jam Biscuits" },
+          { "Name": "Gourmet Biscuits & Crackers" },
+          { "Name": "Plain Sweet Biscuits" },
+          { "Name": "Rice Cakes" },
+          { "Name": "Rice Crackers" }
+        ]
+      },
+      {
+        "Name": "Breakfast Cereals",
+        "Children": [
+          { "Name": "Breakfast On The Go" },
+          { "Name": "Cold Cereals" },
+          { "Name": "Flake/Fibre Cereals" },
+          { "Name": "Hot Cereals" },
+          { "Name": "Muesli" }
+        ]
+      },
+      {
+        "Name": "Canned & Prepared Foods",
+        "Children": [
+          { "Name": "Baked Beans & Spaghetti" },
+          { "Name": "Canned & Dried Vegetables" },
+          { "Name": "Canned Fish" },
+          { "Name": "Canned Fruit" },
+          { "Name": "Canned Meat" },
+          { "Name": "Canned Milk & Cream" },
+          { "Name": "Canned Soup" },
+          { "Name": "Chilled Soups" },
+          { "Name": "Coconut Cream & Milk" },
+          { "Name": "Packet Soup" },
+          { "Name": "Pizza & Pizza Bases" },
+          { "Name": "Ready Meals" },
+          { "Name": "Soup Mixes" },
+          { "Name": "Syrups & Sauces" },
+          { "Name": "Vegetarian" }
+        ]
+      },
+      {
+        "Name": "Condiments & Dressings",
+        "Children": [
+          { "Name": "Aioli" },
+          { "Name": "Barbeque Sauces" },
+          { "Name": "Chilli & Pepper Sauces" },
+          { "Name": "Chutneys" },
+          { "Name": "Fruit Sauces" },
+          { "Name": "Mayonnaise" },
+          { "Name": "Mint Sauces" },
+          { "Name": "Mustards" },
+          { "Name": "Olives" },
+          { "Name": "Pickles" },
+          { "Name": "Relish" },
+          { "Name": "Salad Dressings" },
+          { "Name": "Vinegars" },
+          { "Name": "Worcestershire Sauces" }
+        ]
+      },
+      {
+        "Name": "Confectionery",
+        "Children": [
+          { "Name": "Boxed Chocolates" },
+          { "Name": "Boxed Confectionery" },
+          { "Name": "Chewing Gum & Mints" },
+          { "Name": "Chocolate Blocks" },
+          { "Name": "Chocolate Family Bags" },
+          { "Name": "Christmas" },
+          { "Name": "Easter" },
+          { "Name": "Liquorice" },
+          { "Name": "Lollies Family Bags" },
+          { "Name": "Novelty Bars & Singles" }
+        ]
+      },
+      {
+        "Name": "Hot Drinks",
+        "Children": [
+          { "Name": "Black Teas" },
+          { "Name": "Chai Teas" },
+          { "Name": "Chocolate Milk Drink Mixes" },
+          { "Name": "Coffee Additives & Filters" },
+          { "Name": "Coffee Capsules" },
+          { "Name": "Coffee Flavoured Sachets" },
+          { "Name": "Coffee Substitutes" },
+          { "Name": "Fresh Coffees" },
+          { "Name": "Fruit & Herbal Teas" },
+          { "Name": "Green Teas" },
+          { "Name": "Instant Coffees" },
+          { "Name": "Malt Milk Drink Mixes" }
+        ]
+      },
+      {
+        "Name": "Jams, Honey & Spreads",
+        "Children": [
+          { "Name": "Honey" },
+          { "Name": "Jam & Marmalade" },
+          { "Name": "Marmite & Vegemite" },
+          { "Name": "Nut Spreads" },
+          { "Name": "Savoury Spreads" },
+          { "Name": "Sweet Spreads" }
+        ]
+      },
+      {
+        "Name": "Pasta, Rice & Noodles",
+        "Children": [
+          { "Name": "Basmati Rices" },
+          { "Name": "Dried Pastas" },
+          { "Name": "Fresh Pastas" },
+          { "Name": "Instant Rices" },
+          { "Name": "Jasmine Rices" },
+          { "Name": "Long Grain Rices" },
+          { "Name": "Noodle Meals" },
+          { "Name": "Noodles" },
+          { "Name": "Pasta Meals" },
+          { "Name": "Rice Meals" },
+          { "Name": "Short & Medium Grain Rices" },
+          { "Name": "Specialty Grains & Seeds" },
+          { "Name": "Wild & Coloured Rices" }
+        ]
+      },
+      {
+        "Name": "Salad & Cooking Oils",
+        "Children": [
+          { "Name": "Avocado Oils" },
+          { "Name": "Coconut Oils" },
+          { "Name": "Cooking Fat" },
+          { "Name": "Nut & Seed Oils" },
+          { "Name": "Oil Sprays" },
+          { "Name": "Olive Oils" },
+          { "Name": "Other Oils" },
+          { "Name": "Rice Bran Oils" },
+          { "Name": "Vegetable Oils" }
+        ]
+      },
+      {
+        "Name": "Sauces, Stock & Marinades",
+        "Children": [
+          { "Name": "Chilled Pasta Sauces" },
+          { "Name": "Curry Pastes & Sauces" },
+          { "Name": "Gravies" },
+          { "Name": "Marinades" },
+          { "Name": "Packet Sauces" },
+          { "Name": "Pasta Sauces" },
+          { "Name": "Simmer & Stir-Through Sauces" },
+          { "Name": "Soy Sauce" },
+          { "Name": "Specialty Sauces" },
+          { "Name": "Stir Fry Sauces" },
+          { "Name": "Stock" },
+          { "Name": "Tartare & Seafood Sauces" },
+          { "Name": "Tomato Pastes & Purees" },
+          { "Name": "Tomato Sauces" }
+        ]
+      },
+      {
+        "Name": "Snack Foods",
+        "Children": [
+          { "Name": "Bread Snacks" },
+          { "Name": "Cereal & Snack Bars" },
+          { "Name": "Chips" },
+          { "Name": "Corn Chips" },
+          { "Name": "Dips & Salsas" },
+          { "Name": "Fruit Snacks" },
+          { "Name": "Meat Snacks" },
+          { "Name": "Muesli Bars" },
+          { "Name": "Nut Bars & Snacks" },
+          { "Name": "Nutritional Bars" },
+          { "Name": "Popcorn" },
+          { "Name": "Potato Chips" },
+          { "Name": "Snack Mixes" },
+          { "Name": "Vege Snacks" }
+        ]
+      },
+      {
+        "Name": "Spices & Seasonings",
+        "Children": [
+          { "Name": "Chilli & Paprika" },
+          { "Name": "Dried Herbs" },
+          { "Name": "Dried Spices" },
+          { "Name": "Freshly Ground Herbs" },
+          { "Name": "Garlic & Ginger" },
+          { "Name": "Salt & Pepper" }
+        ]
+      },
+      {
+        "Name": "World Foods",
+        "Children": [
+          { "Name": "Chinese" },
+          { "Name": "Indian" },
+          { "Name": "Japanese" },
+          { "Name": "Korean" },
+          { "Name": "Mexican" },
+          { "Name": "Other Countries" },
+          { "Name": "South African" },
+          { "Name": "South East Asian" },
+          { "Name": "Thai" },
+          { "Name": "USA" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Drinks",
+    "Children": [
+      {
+        "Name": "Cold Drinks",
+        "Children": [
+          { "Name": "Chilled Fruit Juices" },
+          { "Name": "Coconut Water" },
+          { "Name": "Drinking Yoghurt & Smoothies" },
+          { "Name": "Flavoured Water" },
+          { "Name": "Fruit Drinks & Juices" },
+          { "Name": "Iced Teas" },
+          { "Name": "Milk Drink Mixes" },
+          { "Name": "Powdered Drinks" },
+          { "Name": "Soft Drinks" },
+          { "Name": "Sparkling Juices" },
+          { "Name": "Sparkling Water" },
+          { "Name": "Sports & Energy Drinks" },
+          { "Name": "Squash, Syrups & Cordials" },
+          { "Name": "Still Water" },
+          { "Name": "Vegetable Juices" }
+        ]
+      },
+      {
+        "Name": "Hot Drinks",
+        "Children": [
+          { "Name": "Black Teas" },
+          { "Name": "Chai Teas" },
+          { "Name": "Chocolate Milk Drink Mixes" },
+          { "Name": "Coffee Additives & Filters" },
+          { "Name": "Coffee Capsules" },
+          { "Name": "Coffee Flavoured Sachets" },
+          { "Name": "Coffee Substitutes" },
+          { "Name": "Fresh Coffees" },
+          { "Name": "Fruit & Herbal Teas" },
+          { "Name": "Green Teas" },
+          { "Name": "Instant Coffees" },
+          { "Name": "Malt Milk Drink Mixes" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Beer, Cider & Wine",
+    "Children": [
+      {
+        "Name": "Beer & Cider",
+        "Children": [
+          { "Name": "American-style Ale" },
+          { "Name": "Apple & Pear Cider" },
+          { "Name": "Brewing Supplies" },
+          { "Name": "British-style Ale" },
+          { "Name": "Craft Beer" },
+          { "Name": "European-style Ale" },
+          { "Name": "Fruit & Flavoured Cider" },
+          { "Name": "IPA" },
+          { "Name": "Lager" },
+          { "Name": "Low & No Alcohol Beers" },
+          { "Name": "Pale Ale" },
+          { "Name": "Pilsner" },
+          { "Name": "Seltzer" },
+          { "Name": "Specialty & Flavoured Beer" },
+          { "Name": "Stout, Porter & Black Beer" },
+          { "Name": "Wheat & Other Grain Beer" }
+        ]
+      },
+      {
+        "Name": "Wine",
+        "Children": [
+          { "Name": "Cabernet" },
+          { "Name": "Cask Wine" },
+          { "Name": "Champagne & Sparkling Wine" },
+          { "Name": "Chardonnay" },
+          { "Name": "Low & No Alcohol Wines" },
+          { "Name": "Merlot" },
+          { "Name": "Other Red Wine" },
+          { "Name": "Other White Wine" },
+          { "Name": "Pinot Gris" },
+          { "Name": "Pinot Noir" },
+          { "Name": "Rose" },
+          { "Name": "Sake" },
+          { "Name": "Sauvignon Blanc" },
+          { "Name": "Shiraz" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Personal Care",
+    "Children": [
+      {
+        "Name": "Beauty & Grooming",
+        "Children": [
+          { "Name": "Apparel & Hosiery" },
+          { "Name": "Deodorants" },
+          { "Name": "Face & Lip Skin Care" },
+          { "Name": "Hair Care & Treatments" },
+          { "Name": "Hair Colouring" },
+          { "Name": "Hair Styling & Accessories" },
+          { "Name": "Hand & Body Care" },
+          { "Name": "Makeup & Cosmetics" },
+          { "Name": "Oral Health" },
+          { "Name": "Shaving & Hair Removal" },
+          { "Name": "Suncare & Self Tan" }
+        ]
+      },
+      {
+        "Name": "Health & Wellness",
+        "Children": [
+          { "Name": "Adult Care" },
+          { "Name": "Allergy & Sinus" },
+          { "Name": "Contact Lens & Eye Care" },
+          { "Name": "Cough, Cold & Flu" },
+          { "Name": "Digestion, Nausea & Laxatives" },
+          { "Name": "Family Planning" },
+          { "Name": "First Aid" },
+          { "Name": "Foot Care" },
+          { "Name": "Insect Repellent" },
+          { "Name": "Pain Relief" },
+          { "Name": "Sanitary Protection" },
+          { "Name": "Stop Smoking" },
+          { "Name": "Vitamins & Supplements" },
+          { "Name": "Wellness & Sports Nutrition" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Baby, Toddler & Kids",
+    "Children": [
+      {
+        "Name": "Baby Care",
+        "Children": [
+          { "Name": "Baby Bathing & Skin Care" },
+          { "Name": "Baby Dental Care" },
+          { "Name": "Baby Formula & Toddler Food" },
+          { "Name": "Baby Hair Care" },
+          { "Name": "Baby Health" },
+          { "Name": "Baby Wipes" },
+          { "Name": "Nappies & Changing" },
+          { "Name": "Nursing & Feeding" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Pets",
+    "Children": [
+      {
+        "Name": "Pet Supplies",
+        "Children": [
+          { "Name": "Bird Supplies" },
+          { "Name": "Cat Accessories" },
+          { "Name": "Cat Food" },
+          { "Name": "Cat Treats" },
+          { "Name": "Dog Accessories" },
+          { "Name": "Dog Food" },
+          { "Name": "Dog Treats" },
+          { "Name": "Fish & Aquatic Pet Supplies" },
+          { "Name": "Pet Accessories" },
+          { "Name": "Pet Treatments" },
+          { "Name": "Small Animal Supplies" }
+        ]
+      }
+    ]
+  },
+  {
+    "Name": "Kitchen, Dining & Household",
+    "Children": [
+      {
+        "Name": "Cleaning Products",
+        "Children": [
+          { "Name": "All Purpose Cleaners" },
+          { "Name": "Bathroom & Shower Cleaners" },
+          { "Name": "Bleaches" },
+          { "Name": "Carpet & Floor Cleaners" },
+          { "Name": "Cleaning Accessories" },
+          { "Name": "Dishwasher Detergents" },
+          { "Name": "Dishwasher Rinse & Clean" },
+          { "Name": "Dishwashing Liquid" },
+          { "Name": "Furniture & Metal Polishes" },
+          { "Name": "Glass Cleaners" },
+          { "Name": "Kitchen Cleaners" },
+          { "Name": "Paper Towels" }
+        ]
+      },
+      {
+        "Name": "Garage & Outdoor",
+        "Children": [
+          { "Name": "BBQ" },
+          { "Name": "Brushes" },
+          { "Name": "Car Care" },
+          { "Name": "Gardening Supplies" },
+          { "Name": "Glue & Adhesives" },
+          { "Name": "Hardware & Tools" },
+          { "Name": "Hooks" },
+          { "Name": "Tape" }
+        ]
+      },
+      {
+        "Name": "Household",
+        "Children": [
+          { "Name": "Air Fresheners & Deodorisers" },
+          { "Name": "Batteries" },
+          { "Name": "Cooking & Bakeware" },
+          { "Name": "Disposable Tableware" },
+          { "Name": "Electrical" },
+          { "Name": "Fire Needs" },
+          { "Name": "Food Storage" },
+          { "Name": "Food Wraps & Bags" },
+          { "Name": "Homeware" },
+          { "Name": "Kitchenware" },
+          { "Name": "Light Bulbs" },
+          { "Name": "Manchester" },
+          { "Name": "Party Supplies" },
+          { "Name": "Pest & Insect Control" },
+          { "Name": "Rubbish & Vacuum Bags" },
+          { "Name": "Shoe Care" },
+          { "Name": "Tissues & Toilet Paper" }
+        ]
+      },
+      {
+        "Name": "Laundry",
+        "Children": [
+          { "Name": "Clothes Pegs" },
+          { "Name": "Fabric Softeners" },
+          { "Name": "Fine Fabric Washers" },
+          { "Name": "Laundry Liquid & Capsules" },
+          { "Name": "Laundry Powders" },
+          { "Name": "Laundry Soap" },
+          { "Name": "Laundry Supplies" },
+          { "Name": "Pre Wash Stain Removers" },
+          { "Name": "Washing Machine Cleaners" }
+        ]
+      },
+      {
+        "Name": "Stationery & Entertainment",
+        "Children": [
+          { "Name": "Books" },
+          { "Name": "Magazines" },
+          { "Name": "Newspapers" },
+          { "Name": "Stationery & Craft" },
+          { "Name": "Tobacco Papers & Filters" },
+          { "Name": "Toys & Recreation" }
+        ]
+      }
+    ]
+  }
+]

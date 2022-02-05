@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { extractJson } from "utils/fetch-utils";
+import { extractJson } from "@grocy-trolley/utils/fetch-utils";
 import { PAKNSAVE_URL } from "./paknsave.model";
 
 export class PakNSaveAuthService {

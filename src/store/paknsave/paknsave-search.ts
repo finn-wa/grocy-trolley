@@ -1,17 +1,25 @@
-/*
-const search = await fetch(
-  "https://www.paknsave.co.nz/CommonApi/SearchAutoComplete/AutoComplete",
-  {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: '{"SearchTerm":"Chocolate"}',
-    method: "POST",
+import fetch from "node-fetch";
+import { extractJson } from "@grocy-trolley/utils/fetch-utils";
+import { PAKNSAVE_URL } from "./paknsave.model";
+
+export class PakNSaveSearchService {
+  readonly url = `${PAKNSAVE_URL}/SearchAutoComplete/AutoComplete`;
+  readonly headers = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  async search(query: string): Promise<ProductSearchResponse> {
+    const response = await fetch(this.url, {
+      headers: this.headers,
+      method: "POST",
+      body: JSON.stringify({ SearchTerm: query }),
+    });
+    return extractJson(response);
   }
-);
-*/
-interface ProductResult {
+}
+
+export interface ProductResult {
   ProductName: string;
   ProductThumbnailUrl: string;
   ProductUrl: string;
@@ -25,8 +33,11 @@ interface ProductResult {
   RangedOnline: boolean;
   RangedInStore: boolean;
 }
-interface ProductCategoryResults {}
-interface ProductSearchResponse {
+
+/** TODO: get model */
+export interface ProductCategoryResults {}
+
+export interface ProductSearchResponse {
   productCategoryResults: ProductResult[];
   productResults: ProductResult[];
   UserDataSearchMessage: string;

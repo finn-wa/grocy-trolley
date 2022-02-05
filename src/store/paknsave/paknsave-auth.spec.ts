@@ -1,10 +1,17 @@
+import { EnvParser } from "@grocy-trolley/env";
 import { PakNSaveAuthService } from "./paknsave-auth";
 
 describe("PakNSaveAuthService", () => {
   let service: PakNSaveAuthService;
+  let envParser: EnvParser;
+
+  beforeAll(() => {
+    envParser = new EnvParser("env.json");
+  });
 
   beforeEach(() => {
-    service = new PakNSaveAuthService("finnwa24@gmail.com", "");
+    let env = envParser.env;
+    service = new PakNSaveAuthService(env.PAKNSAVE_EMAIL, env.PAKNSAVE_PASSWORD);
   });
 
   it("should log in", async () => {

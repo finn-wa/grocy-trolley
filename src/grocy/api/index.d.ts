@@ -2344,7 +2344,10 @@ export interface components {
       /** Format: date-time */
       row_created_timestamp?: string;
       /** @description Key/value pairs of userfields */
-      userfields?: { [key: string]: unknown };
+      userfields?: {
+        brand: "PAK'n'SAVE" | "New World" | "Countdown" | "Other";
+        id: string;
+      };
     };
     /** @example [object Object] */
     StockLocation: {

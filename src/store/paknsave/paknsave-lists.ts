@@ -1,8 +1,8 @@
+import { Product } from "@grocy-trolley/grocy/grocy";
+import { buildUrl, extractJson } from "@grocy-trolley/utils/fetch-utils";
 import fetch from "node-fetch";
-import { PAKNSAVE_URL } from "./paknsave.model";
-import { buildUrl, extractJson } from "utils/fetch-utils";
 import { ProductRef } from "./paknsave-products";
-import { Product } from "grocy/grocy";
+import { PAKNSAVE_URL } from "./paknsave.model";
 
 export class PakNSaveListsService {
   readonly baseUrl = `${PAKNSAVE_URL}/ShoppingLists/`;
@@ -30,7 +30,7 @@ export class PakNSaveListsService {
     const url = buildUrl(this.baseUrl, "UpdateList");
     const response = await fetch(url, {
       headers: this.headers,
-      method: "GET",
+      method: "POST",
       body: JSON.stringify(listUpdate),
     });
     return extractJson(response);

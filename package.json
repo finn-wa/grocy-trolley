@@ -1,8 +1,14 @@
 {
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "compile": "tsc --watch",
     "start": "node ./out/main.js",
+    "build": "node scripts/build.js",
+    "build:dev": "node scripts/build.js -t dev",
+    "build:prod": "node scripts/build.js -t prod",
+    "build:watch": "node scripts/build.js -t dev --watch",
+    "test": "node scripts/build.js -t test",
+    "test:watch": "node scripts/build.js -t test --watch",
+    "test:debug": "node scripts/build.js -t test --sourcemap",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
@@ -18,7 +24,10 @@
     "@types/jasmine": "^3.10.3",
     "@types/node": "14.18.5",
     "@types/node-fetch": "2",
+    "esbuild": "^0.14.18",
+    "fast-glob": "^3.2.11",
     "jasmine": "^4.0.2",
+    "jasmine-spec-reporter": "^7.0.0",
     "jasmine-ts": "^0.4.0",
     "openapi-typescript": "5.1.1"
   },
