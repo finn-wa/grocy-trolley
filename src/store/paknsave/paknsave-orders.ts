@@ -2,7 +2,7 @@ import { getForJson } from "@grocy-trolley/utils/fetch-utils";
 import { PakNSaveAuthService } from ".";
 import { PakNSaveRestService } from "./paknsave-rest-service";
 
-export class PakNSaveOrderService extends PakNSaveRestService {
+export class PakNSaveOrdersService extends PakNSaveRestService {
   constructor(pnsAuthService: PakNSaveAuthService) {
     super(pnsAuthService);
   }

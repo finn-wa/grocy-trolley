@@ -32,6 +32,11 @@ export class HeadersBuilder {
     return this;
   }
 
+  append(name: string, value: string) {
+    this.headers.append(name, value);
+    return this;
+  }
+
   build(): Headers {
     return this.headers;
   }

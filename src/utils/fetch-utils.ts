@@ -1,5 +1,6 @@
 import fetch, { Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
+import { prettyPrint } from "./logging-utils";
 
 export function buildUrl(
   baseUrl: string,
@@ -23,7 +24,7 @@ export async function extractJson(response: Response) {
   }
   const body = response.json();
   console.log("Response:");
-  console.log(JSON.stringify(body, undefined, 2));
+  console.log(prettyPrint(body));
   return body;
 }
 

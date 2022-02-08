@@ -2345,8 +2345,8 @@ export interface components {
       row_created_timestamp?: string;
       /** @description Key/value pairs of userfields */
       userfields?: {
-        brand: "PAK'n'SAVE" | "New World" | "Countdown" | "Other";
-        id: string;
+        brand: "PAK'n'SAVE" | "New World" | "Countdown";
+        storeId: string;
       };
     };
     /** @example [object Object] */
@@ -2541,7 +2541,12 @@ export interface components {
       name?: string;
       description?: string;
       /** @enum {string} */
-      period_type?: "manually" | "dynamic-regular" | "daily" | "weekly" | "monthly";
+      period_type?:
+        | "manually"
+        | "dynamic-regular"
+        | "daily"
+        | "weekly"
+        | "monthly";
       period_config?: string;
       period_days?: number;
       track_date_only?: boolean;
@@ -2870,7 +2875,11 @@ export interface components {
       | "meal_plan"
       | "meal_plan_sections";
     /** @enum {string} */
-    StockTransactionType: "purchase" | "consume" | "inventory-correction" | "product-opened";
+    StockTransactionType:
+      | "purchase"
+      | "consume"
+      | "inventory-correction"
+      | "product-opened";
     /** @enum {string} */
     FileGroups:
       | "equipmentmanuals"

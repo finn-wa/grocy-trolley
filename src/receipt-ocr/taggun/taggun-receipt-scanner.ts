@@ -4,6 +4,7 @@ import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
 import { ReceiptScanner } from "@grocy-trolley/receipt-ocr/receipts.model";
+import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
 
 const endpoint = "/api/receipt/v1/verbose/file";
 const method = "post";
@@ -25,17 +26,19 @@ export class TaggunReceiptScanner implements ReceiptScanner {
   async scan(filePath: string): Promise<string> {
     const taggunRes = await this.fetchReceiptData(filePath);
     if ("statusCode" in taggunRes) {
-      throw new Error(`Taggun returned an error: ${JSON.stringify(taggunRes, undefined, 2)}`);
+      throw new Error(`Taggun returned an error: ${prettyPrint(taggunRes)}`);
     }
     if (!("text" in taggunRes) || !taggunRes.text?.text) {
       throw new Error(
-        `Taggun didn't return text in response: ${JSON.stringify(taggunRes, undefined, 2)}`
+        `Taggun didn't return text in response: ${prettyPrint(taggunRes)}`
       );
     }
     return taggunRes.text.text;
   }
 
-  async fetchReceiptData(filePath: string): Promise<ReceiptResponseOk | ReceiptResponseError> {
+  async fetchReceiptData(
+    filePath: string
+  ): Promise<ReceiptResponseOk | ReceiptResponseError> {
     const url = "https://api.taggun.io" + endpoint;
     const headers = {
       Accept: "application/json",

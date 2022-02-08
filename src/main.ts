@@ -1,22 +1,17 @@
-import { Env, EnvParser } from "@grocy-trolley/env";
-import { GrocyStore } from "@grocy-trolley/grocy/grocy";
+import { EnvParser } from "@grocy-trolley/env";
 import { TaggunReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import {
   PakNSaveAuthService,
-  PakNSaveListsService,
   PakNSaveReceiptItemiser,
   searchPakNSave,
 } from "@grocy-trolley/store/paknsave";
 import { exit } from "process";
-import { PakNSaveOrderService } from "./store/paknsave/paknsave-orders";
+import { PakNSaveOrdersService } from "./store/paknsave/paknsave-orders";
+import { prettyPrint } from "./utils/logging-utils";
 
 class Main {
   constructor(
-    private readonly env: Env,
-    private readonly grocy: GrocyStore,
-    private readonly pnsAuthService: PakNSaveAuthService,
-    private readonly pnsListService: PakNSaveListsService,
-    private readonly pnsOrderService: PakNSaveOrderService,
+    private readonly pnsOrderService: PakNSaveOrdersService,
     private readonly pnsReceiptItemiser: PakNSaveReceiptItemiser,
     private readonly taggunReceiptScanner: TaggunReceiptScanner
   ) {}
@@ -63,17 +58,13 @@ async function main() {
   await pnsAuthService.login();
 
   const main = new Main(
-    env,
-    new GrocyStore(env.GROCY_URL, env.GROCY_API_KEY),
-    pnsAuthService,
-    new PakNSaveListsService(pnsAuthService),
-    new PakNSaveOrderService(pnsAuthService),
+    new PakNSaveOrdersService(pnsAuthService),
     new PakNSaveReceiptItemiser(),
     new TaggunReceiptScanner(env.TAGGUN_API_KEY)
   );
 
   const res = await main.importOnlineOrders();
-  console.log(JSON.stringify(res, undefined, 2));
+  console.log(prettyPrint(res));
   return;
 }
 
