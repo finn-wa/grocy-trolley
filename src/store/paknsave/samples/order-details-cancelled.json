@@ -1,0 +1,62 @@
+{
+  "summary": {
+    "orderNumber": "54680490",
+    "fullfilmentMethod": "COLLECT",
+    "clickAndCollectAddress": "286 Mt Wellington Highway, Mt Wellington, Auckland, 1060",
+    "timeslot": {
+      "slot": "11:00AM - 12:00PM",
+      "cutOffDate": "2021-08-24T11:00:00.000+12:00",
+      "date": "2021-08-25"
+    },
+    "status": "Cancelled",
+    "totalNumberOfItems": 4,
+    "totalCostInCents": 3692,
+    "storeName": "PAK'nSAVE Sylvia Park",
+    "gst": 559,
+    "serviceFee": 500,
+    "bagFee": 100,
+    "promoCodeDiscount": 0,
+    "statusCode": "CANC"
+  },
+  "products": [
+    {
+      "productId": "5201490-EA-000",
+      "quantity": 2,
+      "sale_type": "UNITS",
+      "price": 1094,
+      "name": "Standard Milk",
+      "categories": ["Dairy & Eggs"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5038087-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 1299,
+      "name": "Renewing Argan Oil Shampoo",
+      "categories": ["Beauty & Grooming"],
+      "restricted": false,
+      "allowSubstitutions": false,
+      "tobacco": false
+    },
+    {
+      "productId": "5037832-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 1299,
+      "name": "Argan Oil Of Morocco Conditioner",
+      "categories": ["Beauty & Grooming"],
+      "restricted": false,
+      "allowSubstitutions": false,
+      "tobacco": false
+    }
+  ],
+  "unavailableProducts": [],
+  "entitlements": {
+    "promoCode": [],
+    "voucher": [],
+    "continuity": []
+  }
+}

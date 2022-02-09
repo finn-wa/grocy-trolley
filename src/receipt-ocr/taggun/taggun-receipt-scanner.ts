@@ -3,8 +3,7 @@ import FormData from "form-data";
 import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
-import { Env } from "env";
-import { ReceiptScanner } from "../receipts.model";
+import { ReceiptScanner } from "@grocy-trolley/receipt-ocr/receipts.model";
 
 const endpoint = "/api/receipt/v1/verbose/file";
 const method = "post";
@@ -21,7 +20,7 @@ type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
  * @see https://www.taggun.io/
  */
 export class TaggunReceiptScanner implements ReceiptScanner {
-  constructor(private readonly env: Env) {}
+  constructor(private readonly apiKey: string) {}
 
   async scan(filePath: string): Promise<string> {
     const taggunRes = await this.fetchReceiptData(filePath);
@@ -40,10 +39,13 @@ export class TaggunReceiptScanner implements ReceiptScanner {
     const url = "https://api.taggun.io" + endpoint;
     const headers = {
       Accept: "application/json",
-      apikey: this.env.TAGGUN_API_KEY,
+      apikey: this.apiKey,
       "Content-Type": this.getContentType(filePath),
     };
-    const body = this.createFormData(filePath, { refresh: false, language: "en" });
+    const body = this.createFormData(filePath, {
+      refresh: false,
+      language: "en",
+    });
     const response = await fetch(url, { headers, method, body });
     return response.json();
   }

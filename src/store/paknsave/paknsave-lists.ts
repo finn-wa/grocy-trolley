@@ -1,40 +1,47 @@
 import { Product } from "@grocy-trolley/grocy/grocy";
-import { buildUrl, extractJson } from "@grocy-trolley/utils/fetch-utils";
-import fetch from "node-fetch";
-import { ProductRef } from "./paknsave-products";
-import { PAKNSAVE_URL } from "./paknsave.model";
+import { getForJson, putForJson } from "@grocy-trolley/utils/fetch-utils";
+import { PakNSaveAuthService, SaleTypeString } from ".";
+import { PakNSaveRestService } from "./paknsave-rest-service";
 
-export class PakNSaveListsService {
-  readonly baseUrl = `${PAKNSAVE_URL}/ShoppingLists/`;
-  readonly headers: Record<string, string> = { Accept: "application/json" };
+export class PakNSaveListsService extends PakNSaveRestService {
+  constructor(pnsAuthService: PakNSaveAuthService) {
+    super(pnsAuthService);
+  }
 
   async createList(name: string): Promise<List> {
-    const url = buildUrl(this.baseUrl, "CreateList", { name });
-    const response = await fetch(url, { headers: this.headers, method: "PUT" });
-    return extractJson(response);
+    return putForJson(
+      this.buildUrl("ShoppingLists/CreateList", { name }),
+      this.authHeaders().acceptJson().build()
+    );
   }
 
   async getLists(): Promise<List[]> {
-    const url = buildUrl(this.baseUrl, "GetLists");
-    const response = await fetch(url, { headers: this.headers, method: "GET" });
-    return extractJson(response);
+    return getForJson(
+      this.buildUrl("ShoppingLists/GetLists"),
+      this.authHeaders().acceptJson().build()
+    );
   }
 
   async getList(id: string): Promise<List> {
-    const url = buildUrl(this.baseUrl, "GetList", { id });
-    const response = await fetch(url, { headers: this.headers, method: "GET" });
-    return extractJson(response);
+    return getForJson(
+      this.buildUrl("ShoppingLists/GetList", { id }),
+      this.authHeaders().acceptJson().build()
+    );
   }
 
   async updateList(listUpdate: ListUpdate): Promise<List> {
-    const url = buildUrl(this.baseUrl, "UpdateList");
-    const response = await fetch(url, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify(listUpdate),
-    });
-    return extractJson(response);
+    return putForJson(
+      this.buildUrl("ShoppingLists/UpdateList"),
+      this.authHeaders().contentTypeJson().acceptJson().build(),
+      listUpdate
+    );
   }
+}
+
+export interface ProductRef {
+  productId: string;
+  quantity: number;
+  saleType: SaleTypeString;
 }
 
 export interface ListUpdate {

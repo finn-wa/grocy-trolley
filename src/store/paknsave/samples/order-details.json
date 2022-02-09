@@ -1,0 +1,273 @@
+{
+  "summary": {
+    "orderNumber": "55449569",
+    "fullfilmentMethod": "COLLECT",
+    "clickAndCollectAddress": "691 Manukau Road, Royal Oak, Auckland, 1023",
+    "timeslot": {
+      "slot": "03:00PM - 04:00PM",
+      "cutOffDate": "2022-02-03T15:00:00.000+13:00",
+      "date": "2022-02-04"
+    },
+    "status": "Complete",
+    "totalNumberOfItems": 27,
+    "totalCostInCents": 9752,
+    "storeName": "PAK'nSAVE Royal Oak",
+    "gst": 1351,
+    "serviceFee": 500,
+    "bagFee": 100,
+    "promoCodeDiscount": 0,
+    "statusCode": "PKUP",
+    "invoiceAmountInCents": 9443,
+    "invoiceNumber": "4107903253"
+  },
+  "products": [
+    {
+      "productId": "5046542-KGM-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 38,
+      "name": "Bananas",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5219762-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 89,
+      "name": "Black Beans In Brine",
+      "categories": ["Canned & Prepared Foods"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5039956-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 429,
+      "name": "Broccoli",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5032122-EA-000",
+      "quantity": 3,
+      "sale_type": "UNITS",
+      "price": 477,
+      "name": "Olive Oil Tuna",
+      "categories": ["Canned & Prepared Foods"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5086473-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 1699,
+      "name": "Front & Top Loader Ultimate Laundry Powder",
+      "categories": ["Laundry"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5046503-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 149,
+      "name": "Red Capsicum",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5007054-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 499,
+      "name": "Really Good Crunchy Peanut Butter",
+      "categories": ["Jams, Honey & Spreads"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5040543-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 499,
+      "name": "Angel Tomatoes",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5046564-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 179,
+      "name": "Short Cucumber",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5009681-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 139,
+      "name": "Toothpaste Protect Freshmint",
+      "categories": ["Beauty & Grooming"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5259690-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 699,
+      "name": "Marinated Chilli & Lime Jackfruit",
+      "categories": ["Canned & Prepared Foods"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5028110-EA-000",
+      "quantity": 3,
+      "sale_type": "UNITS",
+      "price": 250,
+      "name": "Green Avocado",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5006369-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 1169,
+      "name": "Fresh Basil Pesto",
+      "categories": ["Deli, Salads & Cooked Meats"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5040461-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 429,
+      "name": "Baby Cos Lettuce Salad",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5094712-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 399,
+      "name": "Free Range Size 7 Eggs",
+      "categories": ["Dairy & Eggs"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5046507-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 399,
+      "name": "Cauliflower Half",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5046912-KGM-000",
+      "quantity": 5,
+      "sale_type": "UNITS",
+      "price": 579,
+      "name": "Hunny Nectarines",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5004590-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 450,
+      "name": "Real Mayonnaise",
+      "categories": ["Condiments & Dressings"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5026645-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 449,
+      "name": "Parmesan Bagels",
+      "categories": ["Bakery"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5039965-KGM-000",
+      "quantity": 3,
+      "sale_type": "UNITS",
+      "price": 135,
+      "name": "Carrots",
+      "categories": ["Fruit & Vegetables"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5002318-EA-000",
+      "quantity": 2,
+      "sale_type": "UNITS",
+      "price": 398,
+      "name": "Fruit Salad In Clear Fruit Juice",
+      "categories": ["Canned & Prepared Foods"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    },
+    {
+      "productId": "5002314-EA-000",
+      "quantity": 1,
+      "sale_type": "UNITS",
+      "price": 199,
+      "name": "Sliced Peaches In Clear Fruit Juice",
+      "categories": ["Canned & Prepared Foods"],
+      "restricted": false,
+      "allowSubstitutions": true,
+      "tobacco": false
+    }
+  ],
+  "unavailableProducts": [],
+  "entitlements": {
+    "promoCode": [],
+    "voucher": [],
+    "continuity": []
+  }
+}

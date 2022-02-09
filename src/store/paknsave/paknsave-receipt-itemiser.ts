@@ -1,11 +1,11 @@
-import { ReceiptItem, ReceiptItemiser } from "receipt-ocr/receipts.model";
+import { ReceiptItem, ReceiptItemiser } from "@grocy-trolley/receipt-ocr/receipts.model";
 
 /**
  * Itemises a PAK'n'SAVE receipt.
  */
 export class PakNSaveReceiptItemiser implements ReceiptItemiser {
   itemise(text: string): Promise<ReceiptItem[]> {
-    const lines = text.split("\n")[Symbol.iterator]();
+    const lines = text.trim().split("\n")[Symbol.iterator]();
     const items: ReceiptItem[] = [];
     let line: IteratorResult<string, void>;
     do {

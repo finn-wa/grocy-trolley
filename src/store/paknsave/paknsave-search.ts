@@ -1,22 +1,15 @@
-import fetch from "node-fetch";
-import { extractJson } from "@grocy-trolley/utils/fetch-utils";
-import { PAKNSAVE_URL } from "./paknsave.model";
+import { buildUrl, postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { headers } from "@grocy-trolley/utils/headers-builder";
+import { PAKNSAVE_URL } from ".";
 
-export class PakNSaveSearchService {
-  readonly url = `${PAKNSAVE_URL}/SearchAutoComplete/AutoComplete`;
-  readonly headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  };
-
-  async search(query: string): Promise<ProductSearchResponse> {
-    const response = await fetch(this.url, {
-      headers: this.headers,
-      method: "POST",
-      body: JSON.stringify({ SearchTerm: query }),
-    });
-    return extractJson(response);
-  }
+export async function searchPakNSave(
+  query: string
+): Promise<ProductSearchResponse> {
+  return postForJson(
+    buildUrl(PAKNSAVE_URL, "SearchAutoComplete/AutoComplete"),
+    headers().acceptJson().contentTypeJson().build(),
+    { SearchTerm: query }
+  );
 }
 
 export interface ProductResult {
