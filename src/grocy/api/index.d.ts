@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { UserObjectReference } from "..";
+
 export interface paths {
   "/system/info": {
     get: {
@@ -2289,6 +2291,7 @@ export interface paths {
 
 export interface components {
   schemas: {
+    UserObjectReference: UserObjectReference;
     /** @example [object Object] */
     Product: {
       id?: number;

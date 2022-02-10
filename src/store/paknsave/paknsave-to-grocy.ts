@@ -1,13 +1,13 @@
 import { components } from "@grocy-trolley/grocy/api";
 import { GrocyRestService } from "@grocy-trolley/grocy/grocy-rest-service";
 import { postForJson } from "@grocy-trolley/utils/fetch-utils";
-import { OrderedProduct, PakNSaveOrdersService } from "./paknsave-orders";
+import { OrderedProduct, PakNSaveOrderService } from "./paknsave-orders";
 
 export class PakNSaveToGrocyService extends GrocyRestService {
   constructor(
     apiKey: string,
     readonly baseUrl: string,
-    private readonly pnsOrderService: PakNSaveOrdersService
+    private readonly pnsOrderService: PakNSaveOrderService
   ) {
     super(apiKey);
   }

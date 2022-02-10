@@ -6,12 +6,12 @@ import {
   searchPakNSave,
 } from "@grocy-trolley/store/paknsave";
 import { exit } from "process";
-import { PakNSaveOrdersService } from "./store/paknsave/paknsave-orders";
+import { PakNSaveOrderService } from "./store/paknsave/paknsave-orders";
 import { prettyPrint } from "./utils/logging-utils";
 
 class Main {
   constructor(
-    private readonly pnsOrderService: PakNSaveOrdersService,
+    private readonly pnsOrderService: PakNSaveOrderService,
     private readonly pnsReceiptItemiser: PakNSaveReceiptItemiser,
     private readonly taggunReceiptScanner: TaggunReceiptScanner
   ) {}
@@ -58,7 +58,7 @@ async function main() {
   await pnsAuthService.login();
 
   const main = new Main(
-    new PakNSaveOrdersService(pnsAuthService),
+    new PakNSaveOrderService(pnsAuthService),
     new PakNSaveReceiptItemiser(),
     new TaggunReceiptScanner(env.TAGGUN_API_KEY)
   );

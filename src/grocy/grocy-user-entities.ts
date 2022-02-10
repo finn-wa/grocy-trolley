@@ -1,6 +1,13 @@
-import { getForJson, postForJson, put } from "@grocy-trolley/utils/fetch-utils";
+import { Order } from "@grocy-trolley/store/paknsave/paknsave-orders";
+import {
+  getForJson,
+  postForJson,
+  put,
+  putForJson,
+} from "@grocy-trolley/utils/fetch-utils";
 import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
 import { Response } from "node-fetch";
+import { GrocyBoolean, StoreBrand } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyUserEntityService extends GrocyRestService {
@@ -35,7 +42,7 @@ export class GrocyUserEntityService extends GrocyRestService {
    * @param name The user entity name (not the display name)
    * @returns The ID
    */
-  async getUserEntityId(name: string): Promise<string> {
+  async getUserEntityId(name: UserEntityName): Promise<string> {
     const entities = await this.getUserEntities();
     const entity = entities.find((e) => e.name === name);
     if (!entity) {
@@ -46,18 +53,60 @@ export class GrocyUserEntityService extends GrocyRestService {
     return entity.id;
   }
 
-  async createUserObject(entityName: string, obj: any): Promise<Response> {
+  async getUserObjectReferences(): Promise<UserObjectReference[]> {
+    return this.getEntities<"UserObjectReference">("userobjects");
+  }
+
+  async getUserObject<Name extends UserEntityName>(
+    userEntityName: Name,
+    objectId: number | string
+  ): Promise<UserObjects[Name]> {
+    return getForJson(
+      this.buildUrl(`userfields/userentity-${userEntityName}/${objectId}`),
+      this.authHeaders().acceptJson().build()
+    );
+  }
+
+  async getObjectsForUserEntity<Name extends UserEntityName>(
+    userEntityName: Name
+  ): Promise<UserObjects[Name][]> {
+    const entityId = await this.getUserEntityId(userEntityName);
+    const userObjectRefs = await this.getUserObjectReferences();
+    return Promise.all(
+      userObjectRefs
+        .filter((ref) => ref.userentity_id === entityId)
+        .map((ref) => this.getUserObject(userEntityName, ref.id))
+    );
+  }
+
+  async createUserObject(
+    entityName: UserEntityName,
+    obj: any
+  ): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const response: CreatedUserObject = await postForJson(
+    const postResponse: CreatedUserObject = await postForJson(
       this.buildUrl("objects/userobjects"),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       { userentity_id: entityId }
     );
-    const objectId = response.created_object_id;
-    return put(
+    const objectId = postResponse.created_object_id;
+    const response = await put(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       this.authHeaders().contentTypeJson().build(),
       obj
+    );
+    return { response, objectId };
+  }
+
+  async patchUserObject<Name extends UserEntityName>(
+    entityName: Name,
+    objectId: string | number,
+    body: Partial<UserObjects[Name]>
+  ): Promise<Response> {
+    return putForJson(
+      this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
+      this.authHeaders().contentTypeJson().build(),
+      body
     );
   }
 }
@@ -75,3 +124,32 @@ export interface UserEntity {
 export interface CreatedUserObject {
   created_object_id: string;
 }
+
+export interface CreatedObjectResponse {
+  response: Response;
+  objectId: string;
+}
+
+/**
+ * Returned from /api/objects/userobjects. Useful as a crossreference because
+ * GET /objects/userentity-xxx is not exposed and user objects have to be
+ * retrieved one at a time from /userfields/:entity/:objectId, which is fun.
+ */
+export interface UserObjectReference {
+  id: string;
+  userentity_id: string;
+  row_created_timestamp: string;
+}
+
+export interface UserObjects extends Record<string, Record<string, string>> {
+  order: {
+    /** YYYY-MM-DD */
+    date: string;
+    brand: StoreBrand;
+    imported: GrocyBoolean;
+    orderId: string;
+  };
+}
+
+export type UserEntityName = keyof UserObjects;
+export type OrderRecord = UserObjects["order"];
