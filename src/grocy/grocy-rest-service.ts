@@ -21,7 +21,7 @@ export abstract class GrocyRestService {
     entity: Schemas["ExposedEntity"]
   ): Promise<Schemas[K][]> {
     return getForJson(
-      `${this.baseUrl}/objects/${entity}`,
+      buildUrl(this.baseUrl, "objects/" + entity),
       this.authHeaders().acceptJson().build()
     );
   }

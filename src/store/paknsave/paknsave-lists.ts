@@ -1,6 +1,7 @@
 import { Product } from "@grocy-trolley/grocy/grocy";
 import { getForJson, putForJson } from "@grocy-trolley/utils/fetch-utils";
 import { PakNSaveAuthService, SaleTypeString } from ".";
+import { OrderDetails, OrderedProduct } from "./paknsave-orders";
 import { PakNSaveRestService } from "./paknsave-rest-service";
 
 export class PakNSaveListsService extends PakNSaveRestService {
@@ -35,6 +36,29 @@ export class PakNSaveListsService extends PakNSaveRestService {
       this.authHeaders().contentTypeJson().acceptJson().build(),
       listUpdate
     );
+  }
+
+  async createListFromOrder(order: OrderDetails): Promise<List> {
+    const { orderNumber, timeslot, storeName } = order.summary;
+    const name = `Order #${orderNumber} | ${timeslot.date} | ${storeName}`;
+    const products: ProductRef[] = [
+      ...order.unavailableProducts.map((p) => this.orderedProductToRef(p)),
+      ...order.products.map((p) => this.orderedProductToRef(p)),
+    ];
+    const createdList = await this.createList(name);
+    return this.updateList({
+      listId: createdList.listId,
+      Name: name,
+      products,
+    });
+  }
+
+  private orderedProductToRef(product: OrderedProduct): ProductRef {
+    return {
+      productId: product.productId,
+      quantity: product.quantity,
+      saleType: product.sale_type,
+    };
   }
 }
 

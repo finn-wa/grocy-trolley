@@ -1,3 +1,5 @@
+import { GrocyLocation } from "@grocy-trolley/grocy/grocy-model";
+
 export const PAKNSAVE_CATEGORIES = [
   // Fresh Foods & Bakery
   "Fruit & Vegetables",
@@ -49,6 +51,46 @@ export const PAKNSAVE_CATEGORIES = [
 ] as const;
 
 export type PakNSaveCategory = typeof PAKNSAVE_CATEGORIES[number];
+
+export const CategoryLocations: Record<PakNSaveCategory, GrocyLocation> = {
+  "Fruit & Vegetables": "Kitchen Fridge",
+  Butchery: "Kitchen Fridge",
+  Seafood: "Kitchen Fridge",
+  "Deli, Salads & Cooked Meats": "Kitchen Fridge",
+  Bakery: "Pantry",
+  "Dairy & Eggs": "Kitchen Fridge",
+  "Bulk & Loose Foods": "Pantry",
+  "Meal Kits": "Kitchen Fridge",
+  Cheese: "Kitchen Fridge",
+  Desserts: "Kitchen Fridge",
+  "Frozen Foods": "Kitchen Freezer",
+  "Baking Supplies & Sugar": "Pantry",
+  "Biscuits & Crackers": "Pantry",
+  "Breakfast Cereals": "Pantry",
+  "Canned & Prepared Foods": "Pantry",
+  "Condiments & Dressings": "Pantry",
+  Confectionery: "Pantry",
+  "Hot Drinks": "Pantry",
+  "Jams, Honey & Spreads": "Pantry",
+  "Pasta, Rice & Noodles": "Pantry",
+  "Salad & Cooking Oils": "Kitchen Shared Drawer",
+  "Sauces, Stock & Marinades": "Pantry",
+  "Snack Foods": "Pantry",
+  "Spices & Seasonings": "Kitchen Bench",
+  "World Foods": "Pantry",
+  "Cold Drinks": "Garage Fridge",
+  "Beer & Cider": "Garage Fridge",
+  Wine: "Garage Fridge",
+  "Beauty & Grooming": "Bathroom",
+  "Health & Wellness": "Bathroom",
+  "Baby Care": "Bathroom",
+  "Pet Supplies": "Garage Storage",
+  "Cleaning Products": "Bathroom",
+  "Garage & Outdoor": "Garage Storage",
+  Household: "Bathroom",
+  Laundry: "Garage Storage",
+  "Stationery & Entertainment": "Bedroom",
+};
 
 // await fetch("https://www.paknsave.co.nz/CommonApi/Navigation/MegaMenu?v=20267&storeId=e1925ea7-01bc-4358-ae7c-c6502da5ab12", {
 //     "credentials": "include",

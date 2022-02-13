@@ -1,5 +1,5 @@
 import { getForJson } from "@grocy-trolley/utils/fetch-utils";
-import { PakNSaveAuthService } from ".";
+import { PakNSaveAuthService, SaleTypeString } from ".";
 import { PakNSaveRestService } from "./paknsave-rest-service";
 
 export class PakNSaveOrderService extends PakNSaveRestService {
@@ -68,7 +68,7 @@ export interface OrderSummary {
 export interface OrderedProduct {
   productId: string;
   quantity: number;
-  sale_type: string;
+  sale_type: SaleTypeString;
   price: number;
   name: string;
   categories: string[];

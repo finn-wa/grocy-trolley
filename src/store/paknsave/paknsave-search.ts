@@ -1,6 +1,6 @@
 import { buildUrl, postForJson } from "@grocy-trolley/utils/fetch-utils";
 import { headers } from "@grocy-trolley/utils/headers-builder";
-import { PAKNSAVE_URL } from ".";
+import { PAKNSAVE_URL, SaleTypeString } from ".";
 
 export async function searchPakNSave(
   query: string
@@ -19,7 +19,7 @@ export interface ProductResult {
   ProductWeightDisplayName: string;
   ProductBrand: string;
   ProductId: string;
-  SaleType: string;
+  SaleType: SaleTypeString;
   ProductVariants: string;
   Restricted: boolean;
   Tobacco: boolean;

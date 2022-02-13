@@ -1,5 +1,6 @@
 import { postForJson } from "@grocy-trolley/utils/fetch-utils";
 import { components } from "./api";
+import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyProductService extends GrocyRestService {
@@ -54,14 +55,14 @@ export interface NewProduct {
   picture_file_name?: string;
   /** Key/value pairs of userfields */
   userfields?: Record<string, string | number>;
-  active?: "1";
-  calories?: "0";
-  cumulate_min_stock_amount_of_sub_products?: "0";
-  default_best_before_days_after_freezing?: "0";
-  default_best_before_days_after_thawing?: "0";
-  due_type?: "1";
-  hide_on_stock_overview?: "0";
-  parent_product_id?: "2";
-  quick_consume_amount?: "1";
-  should_not_be_frozen?: "0";
+  active?: GrocyBoolean;
+  calories?: GrocyBoolean;
+  cumulate_min_stock_amount_of_sub_products?: GrocyBoolean;
+  default_best_before_days_after_freezing?: GrocyBoolean;
+  default_best_before_days_after_thawing?: GrocyBoolean;
+  due_type?: GrocyBoolean;
+  hide_on_stock_overview?: GrocyBoolean;
+  parent_product_id?: GrocyBoolean;
+  quick_consume_amount?: GrocyBoolean;
+  should_not_be_frozen?: GrocyBoolean;
 }
