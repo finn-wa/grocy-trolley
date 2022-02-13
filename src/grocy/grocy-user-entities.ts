@@ -1,4 +1,3 @@
-import { Order } from "@grocy-trolley/store/paknsave/paknsave-orders";
 import {
   getForJson,
   postForJson,
@@ -7,7 +6,8 @@ import {
 } from "@grocy-trolley/utils/fetch-utils";
 import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
 import { Response } from "node-fetch";
-import { GrocyBoolean, StoreBrand } from "./grocy-model";
+import { StoreBrand } from "./grocy-config";
+import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyUserEntityService extends GrocyRestService {

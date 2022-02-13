@@ -1,12 +1,15 @@
-import { Product } from "@grocy-trolley/grocy/grocy";
+import { Product } from "@grocy-trolley/grocy";
 import { getForJson, putForJson } from "@grocy-trolley/utils/fetch-utils";
-import { PakNSaveAuthService, SaleTypeString } from ".";
-import { OrderDetails, OrderedProduct } from "./paknsave-orders";
-import { PakNSaveRestService } from "./paknsave-rest-service";
+import { FoodstuffsAuthService, SaleTypeString } from ".";
+import {
+  FoodstuffsOrderDetails,
+  FoodstuffsOrderedProduct,
+} from "./foodstuffs-orders";
+import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
-export class PakNSaveListsService extends PakNSaveRestService {
-  constructor(pnsAuthService: PakNSaveAuthService) {
-    super(pnsAuthService);
+export class FoodstuffsListService extends FoodstuffsRestService {
+  constructor(authService: FoodstuffsAuthService) {
+    super(authService);
   }
 
   async createList(name: string): Promise<List> {
@@ -38,7 +41,7 @@ export class PakNSaveListsService extends PakNSaveRestService {
     );
   }
 
-  async createListFromOrder(order: OrderDetails): Promise<List> {
+  async createListFromOrder(order: FoodstuffsOrderDetails): Promise<List> {
     const { orderNumber, timeslot, storeName } = order.summary;
     const name = `Order #${orderNumber} | ${timeslot.date} | ${storeName}`;
     const products: ProductRef[] = [
@@ -53,7 +56,7 @@ export class PakNSaveListsService extends PakNSaveRestService {
     });
   }
 
-  private orderedProductToRef(product: OrderedProduct): ProductRef {
+  private orderedProductToRef(product: FoodstuffsOrderedProduct): ProductRef {
     return {
       productId: product.productId,
       quantity: product.quantity,

@@ -1,21 +1,21 @@
 import { getForJson } from "@grocy-trolley/utils/fetch-utils";
-import { PakNSaveAuthService, SaleTypeString } from ".";
-import { PakNSaveRestService } from "./paknsave-rest-service";
+import { FoodstuffsAuthService, SaleTypeString } from ".";
+import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
-export class PakNSaveOrderService extends PakNSaveRestService {
-  constructor(pnsAuthService: PakNSaveAuthService) {
-    super(pnsAuthService);
+export class FoodstuffsOrderService extends FoodstuffsRestService {
+  constructor(authService: FoodstuffsAuthService) {
+    super(authService);
   }
 
-  async getOrders(): Promise<Order[]> {
-    const response: OrdersResponse = await getForJson(
+  async getOrders(): Promise<FoodstuffsOrder[]> {
+    const response: FoodstuffsOrdersResponse = await getForJson(
       this.buildUrl("Checkout/Orders"),
       this.authHeaders().acceptJson().build()
     );
     return response.orders;
   }
 
-  async getOrderDetails(id: string): Promise<OrderDetails> {
+  async getOrderDetails(id: string): Promise<FoodstuffsOrderDetails> {
     return getForJson(
       this.buildUrl("Checkout/OrderDetails", { id }),
       this.authHeaders().acceptJson().build()
@@ -29,7 +29,7 @@ export interface Timeslot {
   date: string;
 }
 
-export interface Order {
+export interface FoodstuffsOrder {
   orderNumber: string;
   fullfilmentMethod: string;
   status: string;
@@ -43,11 +43,11 @@ export interface Order {
   date: string;
 }
 
-export interface OrdersResponse {
-  orders: Order[];
+export interface FoodstuffsOrdersResponse {
+  orders: FoodstuffsOrder[];
 }
 
-export interface OrderSummary {
+export interface FoodstuffsOrderSummary {
   orderNumber: string;
   fullfilmentMethod: string;
   clickAndCollectAddress: string;
@@ -65,7 +65,7 @@ export interface OrderSummary {
   invoiceNumber: string;
 }
 
-export interface OrderedProduct {
+export interface FoodstuffsOrderedProduct {
   productId: string;
   quantity: number;
   sale_type: SaleTypeString;
@@ -77,10 +77,10 @@ export interface OrderedProduct {
   tobacco: boolean;
 }
 
-export interface OrderDetails {
-  summary: OrderSummary;
-  products: OrderedProduct[];
-  unavailableProducts: OrderedProduct[];
+export interface FoodstuffsOrderDetails {
+  summary: FoodstuffsOrderSummary;
+  products: FoodstuffsOrderedProduct[];
+  unavailableProducts: FoodstuffsOrderedProduct[];
   entitlements: {
     promoCode: unknown[];
     voucher: unknown[];

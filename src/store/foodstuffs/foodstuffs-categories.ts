@@ -1,6 +1,6 @@
-import { GrocyLocation } from "@grocy-trolley/grocy/grocy-model";
+import { GrocyLocation } from "@grocy-trolley/grocy/grocy-config";
 
-export const PAKNSAVE_CATEGORIES = [
+export const FOODSTUFFS_CATEGORIES = [
   // Fresh Foods & Bakery
   "Fruit & Vegetables",
   "Butchery",
@@ -50,9 +50,9 @@ export const PAKNSAVE_CATEGORIES = [
   "Stationery & Entertainment",
 ] as const;
 
-export type PakNSaveCategory = typeof PAKNSAVE_CATEGORIES[number];
+export type FoodstuffsCategory = typeof FOODSTUFFS_CATEGORIES[number];
 
-export const CategoryLocations: Record<PakNSaveCategory, GrocyLocation> = {
+export const CategoryLocations: Record<FoodstuffsCategory, GrocyLocation> = {
   "Fruit & Vegetables": "Kitchen Fridge",
   Butchery: "Kitchen Fridge",
   Seafood: "Kitchen Fridge",

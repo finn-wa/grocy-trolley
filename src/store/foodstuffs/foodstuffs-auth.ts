@@ -1,17 +1,20 @@
 import { buildUrl, extractJson, post } from "@grocy-trolley/utils/fetch-utils";
 import { headers } from "@grocy-trolley/utils/headers-builder";
-import { PAKNSAVE_URL } from "./paknsave.model";
 
-export class PakNSaveAuthService {
+export class FoodstuffsAuthService {
   loggedIn: boolean = false;
   private _cookie: string | null = null;
-  private _userProfile: UserProfile | null = null;
+  private _userProfile: FoodstuffsUserProfile | null = null;
 
-  constructor(readonly email: string, private readonly password: string) {}
+  constructor(
+    readonly baseUrl: string,
+    readonly email: string,
+    private readonly password: string
+  ) {}
 
   async login(): Promise<LoginResponse> {
     const response = await post(
-      buildUrl(PAKNSAVE_URL, "Account/Login"),
+      buildUrl(this.baseUrl, "Account/Login"),
       headers().contentTypeJson().acceptJson().build(),
       { email: this.email, password: this.password }
     );
@@ -19,7 +22,7 @@ export class PakNSaveAuthService {
     const cookieHeaders = response.headers.raw()["set-cookie"];
     if (!cookieHeaders) {
       throw new Error(
-        `No cookies found in PakNSave login response headers: '${response.headers.raw()}'`
+        `No cookies found in Foodstuffs login response headers: '${response.headers.raw()}'`
       );
     }
     // Remove duplicate cookies (Foodstuffs currently duplicates SessionCookieIdV2)
@@ -32,7 +35,7 @@ export class PakNSaveAuthService {
     return body;
   }
 
-  get userProfile(): UserProfile | null {
+  get userProfile(): FoodstuffsUserProfile | null {
     return !!this._userProfile ? { ...this._userProfile } : null;
   }
 
@@ -49,7 +52,7 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface UserProfile {
+export interface FoodstuffsUserProfile {
   id: string;
   firstName: string;
   lastName: string;
@@ -62,5 +65,5 @@ export interface UserProfile {
 
 export interface LoginResponse {
   success: boolean;
-  userProfile: UserProfile;
+  userProfile: FoodstuffsUserProfile;
 }

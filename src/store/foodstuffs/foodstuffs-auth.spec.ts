@@ -1,8 +1,9 @@
 import { EnvParser } from "@grocy-trolley/env";
-import { PakNSaveAuthService } from "./paknsave-auth";
+import { PAKNSAVE_URL } from ".";
+import { FoodstuffsAuthService } from "./foodstuffs-auth";
 
-xdescribe("PakNSaveAuthService", () => {
-  let service: PakNSaveAuthService;
+xdescribe("FoodstuffsAuthService", () => {
+  let service: FoodstuffsAuthService;
   let envParser: EnvParser;
 
   beforeAll(() => {
@@ -11,7 +12,8 @@ xdescribe("PakNSaveAuthService", () => {
 
   beforeEach(() => {
     let env = envParser.env;
-    service = new PakNSaveAuthService(
+    service = new FoodstuffsAuthService(
+      PAKNSAVE_URL,
       env.PAKNSAVE_EMAIL,
       env.PAKNSAVE_PASSWORD
     );

@@ -9,7 +9,7 @@ export interface SaleTypeDetail {
   unit: string;
 }
 
-export interface Product {
+export interface FoodstuffsProduct {
   badgeImageUrl: string;
   brand: string;
   catalogPrice: number;
@@ -31,22 +31,22 @@ export interface Product {
   weightDisplayName: string;
 }
 
-export interface Store {
+export interface FoodstuffsStore {
   storeId: string;
   storeName: string;
   storeAddress: string;
   storeRegion: string;
 }
 
-export interface Cart {
-  products: Product[];
-  unavailableProducts: Product[];
+export interface FoodstuffsCart {
+  products: FoodstuffsProduct[];
+  unavailableProducts: FoodstuffsProduct[];
   subtotal: number;
   promoCodeDiscount: number;
   saving: number;
   serviceFee: number;
   bagFee: number;
-  store: Store;
+  store: FoodstuffsStore;
   orderNumber: number;
   allowSubstitutions: boolean;
   wasRepriced: boolean;

@@ -2,14 +2,21 @@ import { buildUrl, postForJson } from "@grocy-trolley/utils/fetch-utils";
 import { headers } from "@grocy-trolley/utils/headers-builder";
 import { PAKNSAVE_URL, SaleTypeString } from ".";
 
-export async function searchPakNSave(
+export async function searchFoodstuffs(
+  baseUrl: string,
   query: string
 ): Promise<ProductSearchResponse> {
   return postForJson(
-    buildUrl(PAKNSAVE_URL, "SearchAutoComplete/AutoComplete"),
+    buildUrl(baseUrl, "SearchAutoComplete/AutoComplete"),
     headers().acceptJson().contentTypeJson().build(),
     { SearchTerm: query }
   );
+}
+
+export async function searchPakNSave(
+  query: string
+): Promise<ProductSearchResponse> {
+  return searchFoodstuffs(PAKNSAVE_URL, query);
 }
 
 export interface ProductResult {

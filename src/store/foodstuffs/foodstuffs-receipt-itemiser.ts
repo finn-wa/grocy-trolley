@@ -1,9 +1,12 @@
-import { ReceiptItem, ReceiptItemiser } from "@grocy-trolley/receipt-ocr/receipts.model";
+import {
+  ReceiptItem,
+  ReceiptItemiser,
+} from "@grocy-trolley/receipt-ocr/receipts.model";
 
 /**
- * Itemises a PAK'n'SAVE receipt.
+ * Itemises a PAK'n'SAVE/New World receipt.
  */
-export class PakNSaveReceiptItemiser implements ReceiptItemiser {
+export class FoodstuffsReceiptItemiser implements ReceiptItemiser {
   itemise(text: string): Promise<ReceiptItem[]> {
     const lines = text.trim().split("\n")[Symbol.iterator]();
     const items: ReceiptItem[] = [];
@@ -33,9 +36,14 @@ export class PakNSaveReceiptItemiser implements ReceiptItemiser {
     return Promise.resolve(items);
   }
 
-  private parseQuantity(item: string, quantityLine: IteratorResult<string, void>): ReceiptItem {
+  private parseQuantity(
+    item: string,
+    quantityLine: IteratorResult<string, void>
+  ): ReceiptItem {
     if (quantityLine.done || !quantityLine.value) {
-      throw new Error(`Expected a quantity line after ${item}, but reached EOF`);
+      throw new Error(
+        `Expected a quantity line after ${item}, but reached EOF`
+      );
     }
     const quantityLineValue = quantityLine.value.trim();
     const quantitySplit = quantityLineValue.split("$");
@@ -49,6 +57,8 @@ export class PakNSaveReceiptItemiser implements ReceiptItemiser {
         amount: Number(quantitySplit[2]),
       };
     }
-    throw new Error(`Expected a quantity line after ${item}, but found ${quantityLineValue}`);
+    throw new Error(
+      `Expected a quantity line after ${item}, but found ${quantityLineValue}`
+    );
   }
 }

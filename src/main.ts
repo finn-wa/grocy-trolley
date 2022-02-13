@@ -1,18 +1,19 @@
 import { EnvParser } from "@grocy-trolley/env";
 import { TaggunReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import {
-  PakNSaveAuthService,
-  PakNSaveReceiptItemiser,
+  FoodstuffsAuthService,
+  FoodstuffsReceiptItemiser,
+  PAKNSAVE_URL,
   searchPakNSave,
-} from "@grocy-trolley/store/paknsave";
+} from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
-import { PakNSaveOrderService } from "./store/paknsave/paknsave-orders";
+import { FoodstuffsOrderService } from "./store/foodstuffs/foodstuffs-orders";
 import { prettyPrint } from "./utils/logging-utils";
 
 class Main {
   constructor(
-    private readonly pnsOrderService: PakNSaveOrderService,
-    private readonly pnsReceiptItemiser: PakNSaveReceiptItemiser,
+    private readonly pnsOrderService: FoodstuffsOrderService,
+    private readonly pnsReceiptItemiser: FoodstuffsReceiptItemiser,
     private readonly taggunReceiptScanner: TaggunReceiptScanner
   ) {}
 
@@ -51,15 +52,16 @@ class Main {
 
 async function main() {
   const env = new EnvParser("env.json").env;
-  const pnsAuthService = new PakNSaveAuthService(
+  const pnsAuthService = new FoodstuffsAuthService(
+    PAKNSAVE_URL,
     env.PAKNSAVE_EMAIL,
     env.PAKNSAVE_PASSWORD
   );
   await pnsAuthService.login();
 
   const main = new Main(
-    new PakNSaveOrderService(pnsAuthService),
-    new PakNSaveReceiptItemiser(),
+    new FoodstuffsOrderService(pnsAuthService),
+    new FoodstuffsReceiptItemiser(),
     new TaggunReceiptScanner(env.TAGGUN_API_KEY)
   );
 
