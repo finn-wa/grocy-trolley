@@ -1,12 +1,11 @@
-import { GrocyOrderRecordService, GrocyProductService, NewProduct } from "@grocy-trolley/grocy";
 import {
-  GrocyIdMaps,
-  GrocyLocation,
-  GrocyProductGroup,
-  QuantityUnitName,
-  QUANTITY_UNITS,
-  StoreBrand,
-} from "@grocy-trolley/grocy/grocy-config";
+  GrocyOrderRecordService,
+  GrocyProductService,
+  matchQuantityUnit,
+  NewProduct,
+} from "@grocy-trolley/grocy";
+import { GrocyIdMaps, QuantityUnitName, StoreBrand } from "@grocy-trolley/grocy/grocy-config";
+import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
 import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
 import {
   CategoryLocations,
@@ -35,22 +34,30 @@ export class FoodstuffsToGrocyService {
   async importProductsFromOrders(): Promise<void> {
     const orders = await this.orderService.getOrders();
     const orderRecords = await this.orderRecordService.getOrderRecords();
-    const importedOrderIds = orderRecords
-      .filter((record) => record.imported)
-      .map((record) => record.orderId);
+    const importedOrderIds = orderRecords.map((record) => record.orderId);
     for (const order of orders) {
-      if (!importedOrderIds.includes(order.orderNumber)) {
-        await this.importProductsFromOrder(order.orderNumber);
+      const orderNumber = order.orderNumber;
+      if (!importedOrderIds.includes(orderNumber)) {
+        await this.importProductsFromOrder(orderNumber);
       }
     }
   }
 
   async importProductsFromOrder(orderNumber: string): Promise<void> {
     const order = await this.orderService.getOrderDetails(orderNumber);
+    const record = await this.orderRecordService.createOrderRecord({
+      brand: "PAK'n'SAVE",
+      date: order.summary.timeslot.date,
+      orderId: orderNumber,
+      imported: GrocyFalse,
+    });
+
     const products = snapshotToCartProductRefs(order);
     await this.cartService.clearCart();
     const cart = await this.cartService.addProductsToCart(products);
-    return this.importProductsFromCart(cart);
+    await this.importProductsFromCart(cart);
+
+    await this.orderRecordService.markOrderAsImported(record.objectId);
   }
 
   async importProductsFromCart(cart?: FoodstuffsCart): Promise<void> {
@@ -74,57 +81,82 @@ export class FoodstuffsToGrocyService {
     }
   }
 
-  convertProduct(source: FoodstuffsCartProduct, shoppingLocationId?: number): NewProduct {
-    const locationId = this.categoryToLocationId(source.categoryName);
-    const stockUnitId = this.getUnitIdFromString(source.weightDisplayName);
-    const stockWeight = this.getWeightFromString(source.weightDisplayName);
-    const purchaseUnit = source.saleTypes.find((x) => x.type === source.sale_type)?.unit;
-    if (!purchaseUnit) {
-      throw new Error(`Unit mismatch in ${prettyPrint(source)}`);
+  convertProduct(product: FoodstuffsCartProduct, shoppingLocationId?: number): NewProduct {
+    const locationId = this.categoryToLocationId(product.categoryName);
+    const productGroupId = this.categoryToProductGroupId(product.categoryName);
+    const purchaseSaleType = product.saleTypes.find((x) => x.type === product.sale_type);
+    if (!purchaseSaleType?.unit) {
+      throw new Error(`Unit mismatch in ${prettyPrint(product)}`);
     }
-    const purchaseUnitId = this.getUnitId(purchaseUnit);
-    const productGroupId = this.categoryToProductGroupId(source.categoryName);
+    const purchaseUnit = matchQuantityUnit(purchaseSaleType.unit);
+    let purchaseUnitId: number;
+    let stockUnitId: number;
+    let stockQuantityFactor: number;
+    let quantitySuffix: string;
+
+    if (purchaseSaleType.type === "UNITS") {
+      quantitySuffix = `(${product.weightDisplayName})`;
+      const displayUnit = this.getUnitFromString(product.weightDisplayName);
+      if (displayUnit === "pk") {
+        // For packs, we want to buy 1 pack and stock x items
+        purchaseUnitId = this.getUnitId("pk");
+        stockUnitId = this.getUnitId("ea");
+        stockQuantityFactor = this.getDisplayQuantityRequired(product.weightDisplayName);
+      } else {
+        // For all other cases, we want to buy 1 ea and stock x units
+        purchaseUnitId = this.getUnitId(purchaseUnit);
+        stockUnitId = this.getUnitId(displayUnit);
+        stockQuantityFactor = this.getDisplayQuantity(product.weightDisplayName) ?? 1;
+      }
+    } else if (purchaseSaleType.type === "WEIGHT") {
+      // weightDisplayName is often wrong for WEIGHT saleType
+      quantitySuffix = `(${purchaseUnit})`;
+      purchaseUnitId = this.getUnitId(purchaseUnit);
+      stockUnitId = purchaseUnitId;
+      stockQuantityFactor = 1;
+    } else {
+      throw new Error("Unexpected saleType: " + purchaseSaleType.type);
+    }
     return {
-      name: `${source.brand} ${source.name}`,
+      name: [product.brand, product.name, quantitySuffix].filter((x) => !!x).join(" "),
       description: "",
       location_id: locationId,
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
-      qu_factor_purchase_to_stock: stockWeight,
+      qu_factor_purchase_to_stock: stockQuantityFactor,
       product_group_id: productGroupId,
       shopping_location_id: shoppingLocationId,
-      userfields: { storeMetadata: JSON.stringify({ "PAK'n'SAVE": source }) },
+      userfields: { storeMetadata: JSON.stringify({ "PAK'n'SAVE": product }) },
     };
   }
 
-  private buildUserfields(storeMetadata: Partial<Record<StoreBrand, any>>): {
-    storeMetadata: string;
-  } {
-    return { storeMetadata: JSON.stringify(storeMetadata) };
-  }
-
-  private getWeightFromString(weightDisplayName: string): number {
-    const weight = weightDisplayName.match(/[\d\.]+/);
-    if (weight === null) {
-      console.error(`Failed to get weight from "${weightDisplayName}"`);
-      return 1;
+  private getDisplayQuantity(weightDisplayName: string): number | null {
+    const displayQuantity = weightDisplayName.match(/[\d\.]+/);
+    if (displayQuantity === null) {
+      return null;
     }
-    return Number.parseFloat(weight[0]);
+    return Number.parseFloat(displayQuantity[0]);
   }
 
-  private getUnitIdFromString(weightDisplayName: string): number {
+  private getDisplayQuantityRequired(weightDisplayName: string): number {
+    const weight = this.getDisplayQuantity(weightDisplayName);
+    if (weight === null) {
+      throw new Error(`Failed to get weight from "${weightDisplayName}"`);
+    }
+    return weight;
+  }
+
+  private getUnitFromString(weightDisplayName: string): QuantityUnitName {
     const unit = weightDisplayName.match(/[a-zA-Z]+/);
     if (!unit) {
       throw new Error(`Failed to find unit in "${weightDisplayName}"`);
     }
-    return this.getUnitId(unit[0]);
+    return matchQuantityUnit(unit[0]);
   }
 
   private getUnitId(unit: string): number {
-    if (!QUANTITY_UNITS.includes(unit as QuantityUnitName)) {
-      throw new Error("Unmapped unit: " + unit);
-    }
-    return this.grocyIdMaps.quantityUnitIds[unit as QuantityUnitName];
+    const resolvedUnit = matchQuantityUnit(unit);
+    return this.grocyIdMaps.quantityUnitIds[resolvedUnit];
   }
 
   private categoryToLocationId(fsCategory: FoodstuffsCategory): number {

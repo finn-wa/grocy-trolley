@@ -4,8 +4,8 @@ import {
   FoodstuffsBaseProduct,
   FoodstuffsCartProduct,
   FoodstuffsStore,
-  ListProductRef,
   ProductsSnapshot,
+  SaleTypeString,
 } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
@@ -59,7 +59,10 @@ export function getCartTitle(cart: FoodstuffsCart): string {
   return `Cart | ${date} | ${numItems} item${numItems === 1 ? "" : "s"}`;
 }
 
-export interface CartProductRef extends ListProductRef {
+export interface CartProductRef {
+  productId: string;
+  quantity: number;
+  sale_type: SaleTypeString;
   restricted: boolean;
 }
 
@@ -68,7 +71,7 @@ export function toCartProductRef(product: FoodstuffsBaseProduct): CartProductRef
     productId: product.productId,
     quantity: product.quantity,
     restricted: product.restricted,
-    saleType: product.sale_type,
+    sale_type: product.sale_type,
   };
 }
 

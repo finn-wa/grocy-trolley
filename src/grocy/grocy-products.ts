@@ -1,8 +1,10 @@
-import { postForJson, put } from "@grocy-trolley/utils/fetch-utils";
+import { deletus, postForJson, put } from "@grocy-trolley/utils/fetch-utils";
+import { Response } from "node-fetch";
 import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
+import { setTimeout } from "timers/promises";
 
 export class GrocyProductService extends GrocyRestService {
   constructor(apiKey: string, readonly baseUrl: string) {
@@ -27,6 +29,19 @@ export class GrocyProductService extends GrocyRestService {
       userfields
     );
     return { response, objectId };
+  }
+
+  async deleteAllProducts() {
+    console.log("DELETING ALL PRODUCTS IN FIVE SECONDS");
+    await setTimeout(5000);
+    const products = await this.getProducts();
+    for (const product of products) {
+      await this.deleteProduct(product.id as number);
+    }
+  }
+
+  async deleteProduct(id: number): Promise<Response> {
+    return deletus(this.buildUrl("objects/products/" + id), this.authHeaders().build());
   }
 }
 

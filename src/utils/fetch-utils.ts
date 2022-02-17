@@ -18,7 +18,7 @@ export async function extractJson(response: Response) {
   if (!response.ok) {
     throw new Error(await response.text());
   }
-  const body = response.json();
+  const body = await response.json();
   console.log(prettyPrint(body));
   return body;
 }
@@ -88,5 +88,5 @@ export async function deletus(url: string, headers?: Headers): Promise<Response>
 }
 
 export async function deleteForJson<T>(url: string, headers?: Headers): Promise<T> {
-  return fetchJsonWithMethod("PUT", url, headers);
+  return fetchJsonWithMethod("DELETE", url, headers);
 }
