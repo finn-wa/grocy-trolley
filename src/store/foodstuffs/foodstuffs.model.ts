@@ -1,3 +1,5 @@
+import { FoodstuffsCategory } from ".";
+
 export const PAKNSAVE_URL = "https://www.paknsave.co.nz/CommonApi/";
 
 export type SaleTypeString = "UNITS" | "WEIGHT" | "BOTH";
@@ -9,28 +11,6 @@ export interface SaleTypeDetail {
   unit: string;
 }
 
-export interface FoodstuffsProduct {
-  badgeImageUrl: string;
-  brand: string;
-  catalogPrice: number;
-  categoryName: string;
-  hasBadge: boolean;
-  imageUrl: string;
-  liquor: boolean;
-  name: string;
-  originStatement: string;
-  price: number;
-  promoBadgeImageTitle: string;
-  promotionCode: string;
-  quantity: number;
-  restricted: boolean;
-  sale_type: SaleTypeString;
-  saleTypes: SaleTypeDetail[];
-  tobacco: boolean;
-  uom: string;
-  weightDisplayName: string;
-}
-
 export interface FoodstuffsStore {
   storeId: string;
   storeName: string;
@@ -38,16 +18,51 @@ export interface FoodstuffsStore {
   storeRegion: string;
 }
 
-export interface FoodstuffsCart {
-  products: FoodstuffsProduct[];
-  unavailableProducts: FoodstuffsProduct[];
-  subtotal: number;
-  promoCodeDiscount: number;
-  saving: number;
-  serviceFee: number;
-  bagFee: number;
-  store: FoodstuffsStore;
-  orderNumber: number;
+export interface FoodstuffsBaseProduct {
+  name: string;
+  /** Price in cents */
+  price: number;
+  productId: string;
+  quantity: number;
+  restricted: boolean;
+  tobacco: boolean;
+  sale_type: SaleTypeString;
+}
+
+/**
+ * Product fields common to Cart and Order
+ */
+export interface ProductsSnapshot {
+  products: FoodstuffsBaseProduct[];
+  unavailableProducts: FoodstuffsBaseProduct[];
+}
+
+export interface FoodstuffsOrderProduct extends FoodstuffsBaseProduct {
   allowSubstitutions: boolean;
-  wasRepriced: boolean;
+  categories: FoodstuffsCategory[];
+}
+
+export interface FoodstuffsLiveProduct extends FoodstuffsBaseProduct {
+  liquor: boolean;
+  imageUrl: string;
+  saleTypes: SaleTypeDetail[];
+}
+
+export interface FoodstuffsListProduct extends FoodstuffsLiveProduct {
+  category: FoodstuffsCategory;
+  rangedInStore: boolean;
+  rangedOnline: boolean;
+  weight: string;
+  weightUnitOfMeasure: string;
+}
+
+export interface FoodstuffsCartProduct extends FoodstuffsLiveProduct {
+  badgeImageUrl: string;
+  brand: string;
+  catalogPrice: number;
+  categoryName: FoodstuffsCategory;
+  hasBadge: boolean;
+  promoBadgeImageTitle: string;
+  promotionCode: string;
+  weightDisplayName: string;
 }

@@ -1,10 +1,11 @@
-import { Product } from "@grocy-trolley/grocy";
 import { getForJson, putForJson } from "@grocy-trolley/utils/fetch-utils";
-import { FoodstuffsAuthService, SaleTypeString } from ".";
 import {
-  FoodstuffsOrderDetails,
-  FoodstuffsOrderedProduct,
-} from "./foodstuffs-orders";
+  FoodstuffsAuthService,
+  FoodstuffsBaseProduct,
+  FoodstuffsListProduct,
+  ProductsSnapshot,
+  SaleTypeString,
+} from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsListService extends FoodstuffsRestService {
@@ -41,13 +42,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     );
   }
 
-  async createListFromOrder(order: FoodstuffsOrderDetails): Promise<List> {
-    const { orderNumber, timeslot, storeName } = order.summary;
-    const name = `Order #${orderNumber} | ${timeslot.date} | ${storeName}`;
-    const products: ProductRef[] = [
-      ...order.unavailableProducts.map((p) => this.orderedProductToRef(p)),
-      ...order.products.map((p) => this.orderedProductToRef(p)),
-    ];
+  async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {
     const createdList = await this.createList(name);
     return this.updateList({
       listId: createdList.listId,
@@ -55,17 +50,9 @@ export class FoodstuffsListService extends FoodstuffsRestService {
       products,
     });
   }
-
-  private orderedProductToRef(product: FoodstuffsOrderedProduct): ProductRef {
-    return {
-      productId: product.productId,
-      quantity: product.quantity,
-      saleType: product.sale_type,
-    };
-  }
 }
 
-export interface ProductRef {
+export interface ListProductRef {
   productId: string;
   quantity: number;
   saleType: SaleTypeString;
@@ -73,12 +60,26 @@ export interface ProductRef {
 
 export interface ListUpdate {
   listId: string;
-  products: ProductRef[];
+  products: ListProductRef[];
   Name: string;
 }
 
 export interface List {
   listId: string;
-  products: Product[];
+  products: FoodstuffsListProduct[];
   name: string;
+}
+
+export function toListProductRef(product: FoodstuffsBaseProduct): ListProductRef {
+  return {
+    productId: product.productId,
+    quantity: product.quantity,
+    saleType: product.sale_type,
+  };
+}
+
+export function snapshotToListProductRefs(products: ProductsSnapshot) {
+  return [...products.unavailableProducts, ...products.products].map((product) =>
+    toListProductRef(product)
+  );
 }

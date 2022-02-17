@@ -5,9 +5,18 @@ import {
   FoodstuffsReceiptItemiser,
   PAKNSAVE_URL,
   searchPakNSave,
+  FoodstuffsOrderService,
+  FoodstuffsCartService,
+  FoodstuffsListService,
+  FoodstuffsToGrocyService,
 } from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
-import { FoodstuffsOrderService } from "./store/foodstuffs/foodstuffs-orders";
+import {
+  GrocyIdMapService,
+  GrocyOrderRecordService,
+  GrocyProductService,
+  GrocyUserEntityService,
+} from "./grocy";
 import { prettyPrint } from "./utils/logging-utils";
 
 class Main {
@@ -32,10 +41,7 @@ class Main {
         console.log("Search failed\n");
         continue;
       }
-      const products = searchRes.productResults.slice(
-        0,
-        Math.min(3, numResults)
-      );
+      const products = searchRes.productResults.slice(0, Math.min(3, numResults));
       products.forEach((product) => {
         console.log(
           `${product.ProductName} (${product.ProductWeightDisplayName}) - ${product.ProductBrand}`
@@ -52,22 +58,29 @@ class Main {
 
 async function main() {
   const env = new EnvParser("env.json").env;
-  const pnsAuthService = new FoodstuffsAuthService(
+  const grocyIdMapService = new GrocyIdMapService(env.GROCY_API_KEY, env.GROCY_URL);
+  const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
+
+  const authService = new FoodstuffsAuthService(
     PAKNSAVE_URL,
     env.PAKNSAVE_EMAIL,
     env.PAKNSAVE_PASSWORD
   );
-  await pnsAuthService.login();
+  await authService.login();
 
-  const main = new Main(
-    new FoodstuffsOrderService(pnsAuthService),
-    new FoodstuffsReceiptItemiser(),
-    new TaggunReceiptScanner(env.TAGGUN_API_KEY)
+  const importer = new FoodstuffsToGrocyService(
+    new FoodstuffsCartService(authService),
+    new FoodstuffsListService(authService),
+    new FoodstuffsOrderService(authService),
+    new GrocyProductService(env.GROCY_API_KEY, env.GROCY_URL),
+    new GrocyOrderRecordService(
+      env.GROCY_API_KEY,
+      env.GROCY_URL,
+      new GrocyUserEntityService(env.GROCY_API_KEY, env.GROCY_URL)
+    ),
+    grocyIdMaps
   );
-
-  const res = await main.importOnlineOrders();
-  console.log(prettyPrint(res));
-  return;
+  await importer.importProductsFromCart();
 }
 
 main().then(
