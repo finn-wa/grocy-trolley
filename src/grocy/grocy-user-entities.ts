@@ -1,9 +1,4 @@
-import {
-  getForJson,
-  postForJson,
-  put,
-  putForJson,
-} from "@grocy-trolley/utils/fetch-utils";
+import { getForJson, postForJson, put, putForJson } from "@grocy-trolley/utils/fetch-utils";
 import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
 import { Response } from "node-fetch";
 import { StoreBrand } from "./grocy-config";
@@ -46,9 +41,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     const entities = await this.getUserEntities();
     const entity = entities.find((e) => e.name === name);
     if (!entity) {
-      throw new Error(
-        `No entity with name '${name}': ${prettyPrint(entities)}`
-      );
+      throw new Error(`No entity with name '${name}': ${prettyPrint(entities)}`);
     }
     return entity.id;
   }
@@ -79,10 +72,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     );
   }
 
-  async createUserObject(
-    entityName: UserEntityName,
-    obj: any
-  ): Promise<CreatedObjectResponse> {
+  async createUserObject(entityName: UserEntityName, obj: any): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
     const postResponse: CreatedUserObject = await postForJson(
       this.buildUrl("objects/userobjects"),
@@ -98,12 +88,12 @@ export class GrocyUserEntityService extends GrocyRestService {
     return { response, objectId };
   }
 
-  async patchUserObject<Name extends UserEntityName>(
+  async updateUserObject<Name extends UserEntityName>(
     entityName: Name,
     objectId: string | number,
-    body: Partial<UserObjects[Name]>
+    body: UserObjects[Name]
   ): Promise<Response> {
-    return putForJson(
+    return put(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       this.authHeaders().contentTypeJson().build(),
       body
@@ -148,6 +138,7 @@ export interface UserObjects extends Record<string, Record<string, string>> {
     brand: StoreBrand;
     imported: GrocyBoolean;
     orderId: string;
+    notes?: string;
   };
 }
 

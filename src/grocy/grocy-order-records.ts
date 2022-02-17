@@ -19,12 +19,16 @@ export class GrocyOrderRecordService extends GrocyRestService {
     return this.userEntityService.getObjectsForUserEntity(this.entityName);
   }
 
+  async getOrderRecord(id: string | number): Promise<OrderRecord> {
+    return this.userEntityService.getUserObject(this.entityName, id);
+  }
+
   /**
    * Gets an order
    * @param orderId Order ID from store
    * @returns Order record
    */
-  async getOrderRecord(orderId: string): Promise<OrderRecord> {
+  async getOrderRecordByStoreOrderId(orderId: string): Promise<OrderRecord> {
     const orders = await this.getOrderRecords();
     const order = orders.find((order) => order.orderId === orderId);
     if (!order) {
@@ -37,8 +41,10 @@ export class GrocyOrderRecordService extends GrocyRestService {
     return this.userEntityService.createUserObject(this.entityName, order);
   }
 
-  async markOrderAsImported(objectId: string): Promise<Response> {
-    return this.userEntityService.patchUserObject(this.entityName, objectId, {
+  async markOrderAsImported(objectId: string | number): Promise<Response> {
+    const record = await this.getOrderRecord(objectId);
+    return this.userEntityService.updateUserObject(this.entityName, objectId, {
+      ...record,
       imported: GrocyTrue,
     });
   }

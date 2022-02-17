@@ -1,288 +1,837 @@
 {
-  "products": [
-    {
-      "productId": "5001116-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Multi-Grain+ Breakfast Cereal",
-      "price": 669,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5001116.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "575g",
-      "brand": "Sanitarium Weet-Bix",
-      "categoryName": "Breakfast Cereals",
-      "promoBadgeImageTitle": "Everyday Low",
-      "promotionCode": ""
-    },
-    {
-      "productId": "5003336-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Butternut Snap Biscuits",
-      "price": 249,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5003336.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "200g",
-      "brand": "Arnott's",
-      "categoryName": "Biscuits & Crackers",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5011078-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Soy & Canterbury Linseed Bread",
-      "price": 320,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5011078.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "750g",
-      "brand": "Ploughmans Bakery",
-      "categoryName": "Bakery",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5016680-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Multigrain Wraps",
-      "price": 500,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5016680.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "6pk",
-      "brand": "Farrah's",
-      "categoryName": "Bakery",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5018365-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Cheese Corn Chips",
-      "price": 289,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5018365.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "300g",
-      "brand": "Mexicano",
-      "categoryName": "Snack Foods",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5037832-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "comment": "",
-      "name": "Argan Oil Of Morocco Conditioner",
-      "price": 1299,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5037832.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "385ml",
-      "brand": "OGX",
-      "categoryName": "Beauty & Grooming",
-      "promoBadgeImageTitle": "Extra Low",
-      "allowSubstitutions": false,
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5038087-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "comment": "",
-      "name": "Renewing Argan Oil Shampoo",
-      "price": 1299,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5038087.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "1ea",
-      "brand": "OGX",
-      "categoryName": "Beauty & Grooming",
-      "promoBadgeImageTitle": "Extra Low",
-      "allowSubstitutions": false,
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5039945-KGM-000",
-      "quantity": 1000.0,
-      "uom": "g",
-      "sale_type": "WEIGHT",
-      "name": "Smith Granny",
-      "price": 599,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5039945.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 200, "type": "WEIGHT", "stepSize": 100, "unit": "g" }
-      ],
-      "weightDisplayName": "kg",
-      "categoryName": "Fruit & Vegetables",
-      "promoBadgeImageTitle": "Everyday Low",
-      "promotionCode": "",
-      "originStatement": "Product of New Zealand or USA"
-    },
-    {
-      "productId": "5046503-EA-000",
-      "quantity": 2.0,
-      "sale_type": "UNITS",
-      "name": "Red Capsicum",
-      "price": 458,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046503.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "ea",
-      "categoryName": "Fruit & Vegetables",
-      "promoBadgeImageTitle": "Everyday Low",
-      "promotionCode": "",
-      "originStatement": "Product of New Zealand"
-    },
-    {
-      "productId": "5085483-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Original Falafel Bites",
-      "price": 649,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5085483.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "340g",
-      "brand": "Alamir Bakery",
-      "categoryName": "Canned & Prepared Foods",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    },
-    {
-      "productId": "5201490-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Standard Milk",
-      "price": 562,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5201490.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "3L",
-      "brand": "Value",
-      "categoryName": "Dairy & Eggs",
-      "promoBadgeImageTitle": "Everyday Low",
-      "promotionCode": ""
-    },
-    {
-      "productId": "5259874-EA-000",
-      "quantity": 1.0,
-      "sale_type": "UNITS",
-      "name": "Korean BBQ Marinated Tofu",
-      "price": 577,
-      "catalogPrice": 0,
-      "hasBadge": true,
-      "badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
-      "imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5259874.png",
-      "restricted": false,
-      "tobacco": false,
-      "liquor": false,
-      "saleTypes": [
-        { "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }
-      ],
-      "weightDisplayName": "375g",
-      "brand": "Bean Supreme",
-      "categoryName": "Canned & Prepared Foods",
-      "promoBadgeImageTitle": "Extra Low",
-      "promotionCode": "6000"
-    }
-  ],
-  "unavailableProducts": [],
-  "subtotal": 7470.0,
-  "promoCodeDiscount": 0.0,
-  "saving": 0.0,
-  "serviceFee": 0.0,
-  "bagFee": 100.0,
-  "store": {
-    "storeId": "e1925ea7-01bc-4358-ae7c-c6502da5ab12",
-    "storeName": "PAK'nSAVE Royal Oak",
-    "storeAddress": "691 Manukau Road, Royal Oak, Auckland, 1023",
-    "storeRegion": "NI"
-  },
-  "orderNumber": 0,
-  "allowSubstitutions": false,
-  "wasRepriced": false
+	"products": [
+		{
+			"productId": "5000526-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Pure Cream",
+			"price": 222,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5000526.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "300ml",
+			"brand": "Anchor",
+			"categoryName": "Dairy & Eggs",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5005955-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Chopped Tomatoes In Juice",
+			"price": 80,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5005955.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "400g",
+			"brand": "Pams",
+			"categoryName": "Canned & Prepared Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000",
+			"originStatement": "Product of Italy"
+		},
+		{
+			"productId": "5007137-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Baking Soda",
+			"price": 229,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5007137.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "500g",
+			"brand": "Pams",
+			"categoryName": "Baking Supplies & Sugar",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": ""
+		},
+		{
+			"productId": "5008400-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Thin Crispy Pizza Bases",
+			"price": 449,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5008400.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "3pk",
+			"brand": "Turkish Bread",
+			"categoryName": "Canned & Prepared Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5011078-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Soy & Canterbury Linseed Bread",
+			"price": 320,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5011078.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "750g",
+			"brand": "Ploughmans Bakery",
+			"categoryName": "Bakery",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5023596-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Toppings Creamy Hummus With Almond Dukkah",
+			"price": 399,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5023596.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "200g",
+			"brand": "Lisa's",
+			"categoryName": "Deli, Salads & Cooked Meats",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5026645-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Parmesan Bagels",
+			"price": 449,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5026645.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "4pk",
+			"brand": "New York Bagels",
+			"categoryName": "Bakery",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": ""
+		},
+		{
+			"productId": "5032122-EA-000",
+			"quantity": 4,
+			"sale_type": "UNITS",
+			"name": "Olive Oil Tuna",
+			"price": 796,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5032122.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "95g",
+			"brand": "Sealord",
+			"categoryName": "Canned & Prepared Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5039187-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Cookie Bear Hundreds & Thousands Biscuits",
+			"price": 220,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5039187.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "200g",
+			"brand": "Griffin's",
+			"categoryName": "Biscuits & Crackers",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5040093-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "NZ Strawberries",
+			"price": 499,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5040093.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "250g",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5040910-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Cherries",
+			"price": 1179,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5040910.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "400g",
+			"brand": "Pams Fresh",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5045856-KGM-000",
+			"quantity": 2,
+			"uom": "g",
+			"sale_type": "UNITS",
+			"name": "Brown Onions",
+			"price": 102,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5045856.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5046503-EA-000",
+			"quantity": 2,
+			"sale_type": "UNITS",
+			"name": "Red Capsicum",
+			"price": 458,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046503.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5046533-KGM-000",
+			"quantity": 150,
+			"uom": "g",
+			"sale_type": "WEIGHT",
+			"name": "White Button Mushrooms",
+			"price": 202,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046533.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 100,
+					"type": "WEIGHT",
+					"stepSize": 50,
+					"unit": "g"
+				}
+			],
+			"weightDisplayName": "kg",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5046540-KGM-000",
+			"quantity": 3,
+			"uom": "g",
+			"sale_type": "UNITS",
+			"name": "Apricots",
+			"price": 189,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046540.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5046542-KGM-000",
+			"quantity": 4,
+			"uom": "g",
+			"sale_type": "UNITS",
+			"name": "Bananas",
+			"price": 220,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046542.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of Ecuador"
+		},
+		{
+			"productId": "5046564-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Short Cucumber",
+			"price": 179,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046564.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5046912-KGM-000",
+			"quantity": 4,
+			"uom": "g",
+			"sale_type": "UNITS",
+			"name": "Hunny Nectarines",
+			"price": 599,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5046912.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "ea",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5092718-EA-000",
+			"quantity": 3,
+			"sale_type": "UNITS",
+			"name": "Chopped Tomatoes in Juice",
+			"price": 195,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5092718.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "400g",
+			"brand": "Value",
+			"categoryName": "Canned & Prepared Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5094712-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Free Range Size 7 Eggs",
+			"price": 399,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5094712.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "6pk",
+			"brand": "Otaika Valley",
+			"categoryName": "Dairy & Eggs",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5108608-KGM-000",
+			"quantity": 100,
+			"sale_type": "WEIGHT",
+			"name": "Kalamata Olives",
+			"price": 299,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5108608.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 100,
+					"type": "WEIGHT",
+					"stepSize": 50,
+					"unit": "g"
+				}
+			],
+			"weightDisplayName": "kg",
+			"brand": "The Olive Lady",
+			"categoryName": "Deli, Salads & Cooked Meats",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": ""
+		},
+		{
+			"productId": "5112454-KGM-000",
+			"quantity": 100,
+			"sale_type": "WEIGHT",
+			"name": "Pepperoni Salami",
+			"price": 249,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5112454.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 100,
+					"type": "WEIGHT",
+					"stepSize": 50,
+					"unit": "g"
+				}
+			],
+			"weightDisplayName": "kg",
+			"brand": "Verkerks",
+			"categoryName": "Deli, Salads & Cooked Meats",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5201490-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Standard Milk",
+			"price": 562,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5201490.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "3L",
+			"brand": "Value",
+			"categoryName": "Dairy & Eggs",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": ""
+		},
+		{
+			"productId": "5206406-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Apple & Nectarine Juice",
+			"price": 99,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5206406.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "1l",
+			"brand": "Fresh Up",
+			"categoryName": "Cold Drinks",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5208172-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Apple & Sum..Ahh Fruits Juice",
+			"price": 99,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5208172.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "1l",
+			"brand": "Fresh Up",
+			"categoryName": "Cold Drinks",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5220975-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Sliced Smoked Salmon",
+			"price": 679,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5220975.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "100g",
+			"brand": "Pams",
+			"categoryName": "Seafood",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": ""
+		},
+		{
+			"productId": "5228543-EA-000",
+			"quantity": 2,
+			"sale_type": "UNITS",
+			"name": "Blueberries",
+			"price": 738,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/Everyday_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5228543.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "125g",
+			"brand": "Pams",
+			"categoryName": "Fruit & Vegetables",
+			"promoBadgeImageTitle": "Everyday Low",
+			"promotionCode": "",
+			"originStatement": "Product of New Zealand"
+		},
+		{
+			"productId": "5269375-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Vinegar & Salt Kettle Fried Potato Chips",
+			"price": 335,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5269375.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "150g",
+			"brand": "Snacka Changi Chips",
+			"categoryName": "Snack Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5283857-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Kettle Fried Chickan Potato Chips",
+			"price": 335,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5283857.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "150g",
+			"brand": "Snacka Changi Chips",
+			"categoryName": "Snack Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		},
+		{
+			"productId": "5286871-EA-000",
+			"quantity": 1,
+			"sale_type": "UNITS",
+			"name": "Creamed Corn",
+			"price": 199,
+			"catalogPrice": 0,
+			"hasBadge": true,
+			"badgeImageUrl": "/assets/images/PNS/6000-Extra_Low.svg",
+			"imageUrl": "https://a.fsimg.co.nz/product/retail/fan/image/100x100/5286871.png",
+			"restricted": false,
+			"tobacco": false,
+			"liquor": false,
+			"saleTypes": [
+				{
+					"minUnit": 1,
+					"type": "UNITS",
+					"stepSize": 1,
+					"unit": "ea"
+				}
+			],
+			"weightDisplayName": "420g",
+			"brand": "Edgell",
+			"categoryName": "Canned & Prepared Foods",
+			"promoBadgeImageTitle": "Extra Low",
+			"promotionCode": "6000"
+		}
+	],
+	"unavailableProducts": [],
+	"subtotal": 10979,
+	"promoCodeDiscount": 0,
+	"saving": 0,
+	"serviceFee": 0,
+	"bagFee": 100,
+	"store": {
+		"storeId": "e1925ea7-01bc-4358-ae7c-c6502da5ab12",
+		"storeName": "PAK'nSAVE Royal Oak",
+		"storeAddress": "691 Manukau Road, Royal Oak, Auckland, 1023",
+		"storeRegion": "NI"
+	},
+	"orderNumber": 0,
+	"allowSubstitutions": false,
+	"wasRepriced": false
 }

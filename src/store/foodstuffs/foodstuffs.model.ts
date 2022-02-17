@@ -6,7 +6,7 @@ export type SaleTypeString = "UNITS" | "WEIGHT" | "BOTH";
 
 export interface SaleTypeDetail {
   minUnit: number;
-  type: string;
+  type: SaleTypeString;
   stepSize: number;
   unit: string;
 }

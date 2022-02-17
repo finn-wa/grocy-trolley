@@ -21,7 +21,7 @@ export const GROCY_LOCATIONS = [
 export type GrocyLocation = typeof GROCY_LOCATIONS[number];
 
 export type QuantityUnit = GrocySchemas["QuantityUnit"];
-export const QUANTITY_UNITS = ["ea", "pk", "g", "kg", "ml", "L"] as const;
+export const QUANTITY_UNITS = ["ea", "pk", "g", "kg", "mL", "L"] as const;
 export type QuantityUnitName = typeof QUANTITY_UNITS[number];
 
 export const GROCY_PRODUCT_GROUPS = FOODSTUFFS_CATEGORIES;
@@ -105,4 +105,13 @@ export interface GrocyIdMaps {
   productGroupIds: Record<GrocyProductGroup, number>;
   /** Third-party store location ID to Grocy ID */
   shoppingLocationIds: Record<string, number>;
+}
+
+export function matchQuantityUnit(unit: string): QuantityUnitName {
+  const lowercasedUnit = unit.toLowerCase();
+  const resolvedUnit = QUANTITY_UNITS.find((u) => u.toLowerCase() === lowercasedUnit);
+  if (!resolvedUnit) {
+    throw new Error("Unrecognised unit: " + unit);
+  }
+  return resolvedUnit;
 }
