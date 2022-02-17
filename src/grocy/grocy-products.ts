@@ -1,4 +1,5 @@
-import { postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { postForJson, put } from "@grocy-trolley/utils/fetch-utils";
+import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
@@ -12,12 +13,20 @@ export class GrocyProductService extends GrocyRestService {
     return this.getEntities<"Product">("products");
   }
 
-  async createProduct(product: NewProduct): Promise<Product> {
-    return postForJson(
+  async createProduct(product: NewProduct): Promise<CreatedObjectResponse> {
+    const { userfields, ...coreProduct } = product;
+    const postResponse: CreatedUserObject = await postForJson(
       this.buildUrl("objects/products"),
       this.authHeaders().acceptJson().contentTypeJson().build(),
-      product
+      coreProduct
     );
+    const objectId = postResponse.created_object_id;
+    const response = await put(
+      this.buildUrl(`userfields/products/${objectId}`),
+      this.authHeaders().contentTypeJson().build(),
+      userfields
+    );
+    return { response, objectId };
   }
 }
 
@@ -54,7 +63,9 @@ export interface NewProduct {
   default_best_before_days_after_open?: number;
   picture_file_name?: string;
   /** Key/value pairs of userfields */
-  userfields?: Record<string, string | number>;
+  userfields?: {
+    storeMetadata: string;
+  };
   active?: GrocyBoolean;
   calories?: GrocyBoolean;
   cumulate_min_stock_amount_of_sub_products?: GrocyBoolean;

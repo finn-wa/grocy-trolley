@@ -1,5 +1,5 @@
 import { getForJson } from "@grocy-trolley/utils/fetch-utils";
-import { FoodstuffsAuthService, SaleTypeString } from ".";
+import { FoodstuffsAuthService, FoodstuffsOrderProduct } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsOrderService extends FoodstuffsRestService {
@@ -65,25 +65,18 @@ export interface FoodstuffsOrderSummary {
   invoiceNumber: string;
 }
 
-export interface FoodstuffsOrderedProduct {
-  productId: string;
-  quantity: number;
-  sale_type: SaleTypeString;
-  price: number;
-  name: string;
-  categories: string[];
-  restricted: boolean;
-  allowSubstitutions: boolean;
-  tobacco: boolean;
-}
-
 export interface FoodstuffsOrderDetails {
   summary: FoodstuffsOrderSummary;
-  products: FoodstuffsOrderedProduct[];
-  unavailableProducts: FoodstuffsOrderedProduct[];
+  products: FoodstuffsOrderProduct[];
+  unavailableProducts: FoodstuffsOrderProduct[];
   entitlements: {
     promoCode: unknown[];
     voucher: unknown[];
     continuity: unknown[];
   };
+}
+
+export function getOrderTitle(order: FoodstuffsOrderDetails) {
+  const { orderNumber, timeslot, storeName } = order.summary;
+  return `Order #${orderNumber} | ${timeslot.date} | ${storeName}`;
 }

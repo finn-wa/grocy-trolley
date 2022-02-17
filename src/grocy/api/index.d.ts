@@ -2296,7 +2296,7 @@ export interface components {
     Product: {
       id?: number;
       name?: string;
-      description?: string;
+      description: string;
       location_id?: number;
       qu_id_purchase?: number;
       qu_id_stock?: number;
@@ -2341,13 +2341,13 @@ export interface components {
     };
     /** @example [object Object] */
     ShoppingLocation: {
-      id?: number;
-      name?: string;
-      description?: string;
+      id: number;
+      name: string;
+      description: string;
       /** Format: date-time */
       row_created_timestamp?: string;
       /** @description Key/value pairs of userfields */
-      userfields?: {
+      userfields: {
         brand: "PAK'n'SAVE" | "New World" | "Countdown";
         storeId: string;
       };
@@ -2388,6 +2388,14 @@ export interface components {
       need_fulfilled_with_shopping_list?: boolean;
       missing_products_count?: number;
       costs?: number;
+    };
+    ProductGroup: {
+      /** ID is a number in a string */
+      id: string;
+      name: string;
+      description: string;
+      /** Format: "2022-01-15 14:11:19" */
+      row_created_timestamp: string;
     };
     /** @example [object Object] */
     ProductDetailsResponse: {

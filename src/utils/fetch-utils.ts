@@ -2,11 +2,7 @@ import fetch, { Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
 import { prettyPrint } from "./logging-utils";
 
-export function buildUrl(
-  baseUrl: string,
-  path: string,
-  params?: Record<string, string>
-): string {
+export function buildUrl(baseUrl: string, path: string, params?: Record<string, string>): string {
   if (!baseUrl.endsWith("/")) {
     throw new Error(`Base URL must end with a slash, found '${baseUrl}'`);
   }
@@ -23,7 +19,6 @@ export async function extractJson(response: Response) {
     throw new Error(await response.text());
   }
   const body = response.json();
-  console.log("Response:");
   console.log(prettyPrint(body));
   return body;
 }
@@ -46,7 +41,12 @@ async function fetchWithMethod(
     console.log(body);
   }
   const bodyString = body ? JSON.stringify(body) : undefined;
-  return fetch(url, { method, headers, body: bodyString });
+  const response = await fetch(url, { method, headers, body: bodyString });
+  console.log(`Response: ${response.status}`);
+  if (!response.ok) {
+    throw new Error(`Response not OK: ${await response.text()}`);
+  }
+  return response;
 }
 
 async function fetchJsonWithMethod<T>(
@@ -59,50 +59,34 @@ async function fetchJsonWithMethod<T>(
   return extractJson(response);
 }
 
-export async function get(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<Response> {
+export async function get(url: string, headers?: Headers, body?: any): Promise<Response> {
   return fetchWithMethod("GET", url, headers, body);
 }
 
-export async function getForJson<T>(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<T> {
+export async function getForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
   return fetchJsonWithMethod("GET", url, headers, body);
 }
 
-export async function post(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<Response> {
+export async function post(url: string, headers?: Headers, body?: any): Promise<Response> {
   return fetchWithMethod("POST", url, headers, body);
 }
 
-export async function postForJson<T>(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<T> {
+export async function postForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
   return fetchJsonWithMethod("POST", url, headers, body);
 }
 
-export async function put(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<Response> {
+export async function put(url: string, headers?: Headers, body?: any): Promise<Response> {
   return fetchWithMethod("PUT", url, headers, body);
 }
 
-export async function putForJson<T>(
-  url: string,
-  headers?: Headers,
-  body?: any
-): Promise<T> {
+export async function putForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
   return fetchJsonWithMethod("PUT", url, headers, body);
+}
+
+export async function deletus(url: string, headers?: Headers): Promise<Response> {
+  return fetchWithMethod("DELETE", url, headers);
+}
+
+export async function deleteForJson<T>(url: string, headers?: Headers): Promise<T> {
+  return fetchJsonWithMethod("PUT", url, headers);
 }
