@@ -12,11 +12,7 @@ xdescribe("FoodstuffsAuthService", () => {
 
   beforeEach(() => {
     let env = envParser.env;
-    service = new FoodstuffsAuthService(
-      PAKNSAVE_URL,
-      env.PAKNSAVE_EMAIL,
-      env.PAKNSAVE_PASSWORD
-    );
+    service = new FoodstuffsAuthService(PAKNSAVE_URL, env.PAKNSAVE_EMAIL, env.PAKNSAVE_PASSWORD);
   });
 
   it("should log in", async () => {

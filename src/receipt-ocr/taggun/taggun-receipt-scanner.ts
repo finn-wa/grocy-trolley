@@ -29,16 +29,12 @@ export class TaggunReceiptScanner implements ReceiptScanner {
       throw new Error(`Taggun returned an error: ${prettyPrint(taggunRes)}`);
     }
     if (!("text" in taggunRes) || !taggunRes.text?.text) {
-      throw new Error(
-        `Taggun didn't return text in response: ${prettyPrint(taggunRes)}`
-      );
+      throw new Error(`Taggun didn't return text in response: ${prettyPrint(taggunRes)}`);
     }
     return taggunRes.text.text;
   }
 
-  async fetchReceiptData(
-    filePath: string
-  ): Promise<ReceiptResponseOk | ReceiptResponseError> {
+  async fetchReceiptData(filePath: string): Promise<ReceiptResponseOk | ReceiptResponseError> {
     const url = "https://api.taggun.io" + endpoint;
     const headers = {
       Accept: "application/json",
