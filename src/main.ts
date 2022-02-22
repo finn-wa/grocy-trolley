@@ -17,7 +17,8 @@ import {
 
 async function main() {
   const env = new EnvParser("env.json").env;
-  const grocyIdMapService = new GrocyIdMapService(env.GROCY_API_KEY, env.GROCY_URL);
+  const grocyCfg = { apiKey: env.GROCY_API_KEY, baseUrl: env.GROCY_URL };
+  const grocyIdMapService = new GrocyIdMapService(grocyCfg);
   const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
 
   const authService = new FoodstuffsAuthService(
@@ -26,17 +27,13 @@ async function main() {
     env.PAKNSAVE_PASSWORD
   );
 
-  const productService = new GrocyProductService(env.GROCY_API_KEY, env.GROCY_URL);
+  const productService = new GrocyProductService(grocyCfg);
   const importer = new FoodstuffsToGrocyService(
     new FoodstuffsCartService(authService),
     new FoodstuffsListService(authService),
     new FoodstuffsOrderService(authService),
     productService,
-    new GrocyOrderRecordService(
-      env.GROCY_API_KEY,
-      env.GROCY_URL,
-      new GrocyUserEntityService(env.GROCY_API_KEY, env.GROCY_URL)
-    ),
+    new GrocyOrderRecordService(grocyCfg, new GrocyUserEntityService(grocyCfg)),
     grocyIdMaps
   );
 
