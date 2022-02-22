@@ -10,7 +10,7 @@ export interface paths {
     get: {
       responses: {
         /** An DbChangedTimeResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": {
               grocy_version?: {
@@ -30,7 +30,7 @@ export interface paths {
     get: {
       responses: {
         /** An DbChangedTimeResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["DbChangedTimeResponse"];
           };
@@ -42,13 +42,13 @@ export interface paths {
     get: {
       responses: {
         /** Key/value pairs of config settings */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -66,13 +66,13 @@ export interface paths {
       };
       responses: {
         /** A TimeResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["TimeResponse"];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -84,7 +84,7 @@ export interface paths {
     get: {
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
@@ -97,9 +97,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -133,7 +133,7 @@ export interface paths {
       };
       responses: {
         /** An entity object */
-        200: {
+        "200": {
           content: {
             "application/json": (
               | components["schemas"]["Product"]
@@ -148,13 +148,13 @@ export interface paths {
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -170,7 +170,7 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": {
               /** @description The id of the created object */
@@ -179,7 +179,7 @@ export interface paths {
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -213,7 +213,7 @@ export interface paths {
       };
       responses: {
         /** An entity object */
-        200: {
+        "200": {
           content: {
             "application/json":
               | components["schemas"]["Product"]
@@ -227,13 +227,13 @@ export interface paths {
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** Object not found */
-        404: {
+        "404": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -251,9 +251,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -285,9 +285,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -307,13 +307,13 @@ export interface paths {
       };
       responses: {
         /** Key/value pairs of userfields */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -331,9 +331,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -368,13 +368,13 @@ export interface paths {
       };
       responses: {
         /** The binary file contents (Content-Type header is automatically set based on the file type) */
-        200: {
+        "200": {
           content: {
             "application/octet-stream": string;
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -393,9 +393,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -418,9 +418,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -444,19 +444,19 @@ export interface paths {
       };
       responses: {
         /** A list of user objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["UserDto"][];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -466,9 +466,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -492,9 +492,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -516,9 +516,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -536,7 +536,7 @@ export interface paths {
       };
       responses: {
         /** A list of user permission objects */
-        200: {
+        "200": {
           content: {
             "application/json": {
               permission_id?: number;
@@ -545,7 +545,7 @@ export interface paths {
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -561,9 +561,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -587,9 +587,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -609,13 +609,13 @@ export interface paths {
     get: {
       responses: {
         /** A user object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["UserDto"][];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -627,13 +627,13 @@ export interface paths {
     get: {
       responses: {
         /** Key/value pairs of user settings */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -651,13 +651,13 @@ export interface paths {
       };
       responses: {
         /** A UserSetting object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["UserSetting"];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -673,9 +673,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -697,9 +697,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -711,7 +711,7 @@ export interface paths {
     get: {
       responses: {
         /** An array of CurrentStockResponse objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["CurrentStockResponse"][];
           };
@@ -729,13 +729,13 @@ export interface paths {
       };
       responses: {
         /** A StockEntry Response object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockEntry"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -751,13 +751,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, invalid transaction type) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -801,13 +801,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful (possible errors are: Not existing stock entry, error on WebHook execution) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -825,7 +825,7 @@ export interface paths {
       };
       responses: {
         /** A CurrentVolatilStockResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["CurrentVolatilStockResponse"][];
           };
@@ -843,13 +843,13 @@ export interface paths {
       };
       responses: {
         /** A ProductDetailsResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ProductDetailsResponse"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -879,19 +879,19 @@ export interface paths {
       };
       responses: {
         /** An array of StockLocation objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLocation"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -921,19 +921,19 @@ export interface paths {
       };
       responses: {
         /** An array of StockEntry objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -951,13 +951,13 @@ export interface paths {
       };
       responses: {
         /** An array of ProductPriceHistory objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ProductPriceHistory"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -975,13 +975,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, invalid transaction type) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1021,13 +1021,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, invalid transaction type, given amount > current stock amount) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1066,13 +1066,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, no existing from or to location, given amount > current stock amount at the source location) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1104,13 +1104,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1149,13 +1149,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, given amount > current unopened stock amount) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1185,13 +1185,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, error on WebHook execution) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1211,9 +1211,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Invalid product id) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1231,13 +1231,13 @@ export interface paths {
       };
       responses: {
         /** A ProductDetailsResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ProductDetailsResponse"];
           };
         };
         /** The operation was not successful (possible errors are: Unknown barcode) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1255,13 +1255,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, invalid transaction type) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1297,13 +1297,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, invalid transaction type, given amount > current stock amount) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1342,13 +1342,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, no existing from or to location, given amount > current stock amount at the source location) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1380,13 +1380,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1421,13 +1421,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing product, given amount > current unopened stock amount) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1451,9 +1451,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1473,9 +1473,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1495,9 +1495,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1517,9 +1517,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1542,9 +1542,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list, Invalid product id supplied) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1573,9 +1573,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing shopping list, Invalid product id supplied) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1605,13 +1605,13 @@ export interface paths {
       };
       responses: {
         /** A StockLogEntry object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"];
           };
         };
         /** The operation was not successful (possible errors are: Invalid stock booking id) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1629,9 +1629,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing booking) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1649,13 +1649,13 @@ export interface paths {
       };
       responses: {
         /** An array of StockLogEntry objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["StockLogEntry"][];
           };
         };
         /** The operation was not successful (possible errors are: Not existing transaction) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1673,9 +1673,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing transaction) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1697,13 +1697,13 @@ export interface paths {
       };
       responses: {
         /** An ExternalBarcodeLookupResponse object or null, when nothing was found for the given barcode */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ExternalBarcodeLookupResponse"];
           };
         };
         /** The operation was not successful (possible errors are: Plugin error) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1721,7 +1721,7 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
       };
       requestBody: {
         content: {
@@ -1743,13 +1743,13 @@ export interface paths {
       };
       responses: {
         /** A RecipeFulfillmentResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["RecipeFulfillmentResponse"];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1767,7 +1767,7 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
       };
     };
   };
@@ -1787,19 +1787,19 @@ export interface paths {
       };
       responses: {
         /** An array of RecipeFulfillmentResponse objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["RecipeFulfillmentResponse"][];
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -1817,7 +1817,7 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": {
               /** @description The id of the created recipe */
@@ -1826,7 +1826,7 @@ export interface paths {
           };
         };
         /** The operation was not successful (possible errors are: Invalid recipe id) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1850,13 +1850,13 @@ export interface paths {
       };
       responses: {
         /** An array of CurrentChoreResponse objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["CurrentChoreResponse"][];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -1874,13 +1874,13 @@ export interface paths {
       };
       responses: {
         /** A ChoreDetailsResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ChoreDetailsResponse"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing chore) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1898,13 +1898,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["ChoreLogEntry"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing chore) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1935,9 +1935,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing booking) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1949,9 +1949,9 @@ export interface paths {
     post: {
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -1977,13 +1977,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful (possible errors are: Not existing chore, error on WebHook execution) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2003,9 +2003,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Invalid chore id) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2029,13 +2029,13 @@ export interface paths {
       };
       responses: {
         /** An array of CurrentBatteryResponse objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["CurrentBatteryResponse"][];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -2053,13 +2053,13 @@ export interface paths {
       };
       responses: {
         /** A BatteryDetailsResponse object */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["BatteryDetailsResponse"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing battery) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2077,13 +2077,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["BatteryChargeCycleEntry"];
           };
         };
         /** The operation was not successful (possible errors are: Not existing battery) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2112,9 +2112,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing booking) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2132,13 +2132,13 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        200: {
+        "200": {
           content: {
             "application/json": { [key: string]: unknown };
           };
         };
         /** The operation was not successful (possible errors are: Not existing battery, error on WebHook execution) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2162,13 +2162,13 @@ export interface paths {
       };
       responses: {
         /** An array of CurrentTaskResponse objects */
-        200: {
+        "200": {
           content: {
             "application/json": components["schemas"]["CurrentTaskResponse"][];
           };
         };
         /** The operation was not successful (possible errors are invalid field names or conditions in filter parameters provided) */
-        500: {
+        "500": {
           content: {
             "application/json": components["schemas"]["Error500"];
           };
@@ -2186,9 +2186,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing task) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2217,9 +2217,9 @@ export interface paths {
       };
       responses: {
         /** The operation was successful */
-        204: never;
+        "204": never;
         /** The operation was not successful (possible errors are: Not existing task) */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2231,13 +2231,13 @@ export interface paths {
     get: {
       responses: {
         /** The iCal file contents */
-        200: {
+        "200": {
           content: {
             "text/calendar": string;
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };
@@ -2249,7 +2249,7 @@ export interface paths {
     get: {
       responses: {
         /** The (public) sharing link for the calendar in iCal format */
-        200: {
+        "200": {
           content: {
             "application/json": {
               url?: string;
@@ -2271,7 +2271,7 @@ export interface paths {
       };
       responses: {
         /** Returns OK if the printing was successful */
-        200: {
+        "200": {
           content: {
             "application/json": {
               result?: string;
@@ -2279,7 +2279,7 @@ export interface paths {
           };
         };
         /** The operation was not successful */
-        400: {
+        "400": {
           content: {
             "application/json": components["schemas"]["Error400"];
           };

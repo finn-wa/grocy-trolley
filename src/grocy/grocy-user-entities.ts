@@ -9,10 +9,6 @@ export class GrocyUserEntityService extends GrocyRestService {
   /** Cached entities - not expected to change in the lifetime of the service. */
   private entities?: UserEntity[];
 
-  constructor(apiKey: string, readonly baseUrl: string) {
-    super(apiKey);
-  }
-
   /**
    * Gets user entities. Returns a cached copy if available, unless refresh is
    * set to true.

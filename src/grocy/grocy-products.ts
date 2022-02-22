@@ -7,10 +7,6 @@ import { GrocyRestService } from "./grocy-rest-service";
 import { setTimeout } from "timers/promises";
 
 export class GrocyProductService extends GrocyRestService {
-  constructor(apiKey: string, readonly baseUrl: string) {
-    super(apiKey);
-  }
-
   async getProducts(): Promise<Product[]> {
     return this.getEntities<"Product">("products");
   }

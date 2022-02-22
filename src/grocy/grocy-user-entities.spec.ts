@@ -6,8 +6,8 @@ xdescribe("GrocyUserEntityService", () => {
   let service: GrocyUserEntityService;
 
   beforeEach(() => {
-    const { GROCY_API_KEY, GROCY_URL } = envParser.env;
-    service = new GrocyUserEntityService(GROCY_API_KEY, GROCY_URL);
+    const env = envParser.env;
+    service = new GrocyUserEntityService({ apiKey: env.GROCY_API_KEY, baseUrl: env.GROCY_URL });
   });
 
   it("should get user entities", async () => {

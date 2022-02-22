@@ -28,10 +28,6 @@ export const GROCY_PRODUCT_GROUPS = FOODSTUFFS_CATEGORIES;
 export type GrocyProductGroup = FoodstuffsCategory;
 
 export class GrocyIdMapService extends GrocyRestService {
-  constructor(apiKey: string, readonly baseUrl: string) {
-    super(apiKey);
-  }
-
   async getAllIdMaps(): Promise<GrocyIdMaps> {
     return Promise.all([
       this.getShoppingLocationIdMap(),
