@@ -21,10 +21,10 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   }
 
   async getLists(): Promise<List[]> {
-    return getForJson(
+    return getForJson<{ lists: List[] }>(
       this.buildUrl("ShoppingLists/GetLists"),
       this.authHeaders().acceptJson().build()
-    );
+    ).then((res) => res.lists);
   }
 
   async getList(id: string): Promise<List> {

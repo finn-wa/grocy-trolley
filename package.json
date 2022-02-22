@@ -17,6 +17,7 @@
     "form-data": "4.0.0",
     "node-fetch": "2.6.6",
     "playwright": "1.17.1",
+    "prompts": "^2.4.2",
     "ts-node": "^10.4.0",
     "typescript": "4.5.4"
   },
@@ -24,6 +25,7 @@
     "@types/jasmine": "^3.10.3",
     "@types/node": "^16.11.25",
     "@types/node-fetch": "2",
+    "@types/prompts": "^2.0.14",
     "esbuild": "^0.14.18",
     "fast-glob": "^3.2.11",
     "jasmine": "^4.0.2",

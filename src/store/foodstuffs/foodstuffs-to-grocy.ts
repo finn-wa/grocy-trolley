@@ -4,60 +4,34 @@ import {
   matchQuantityUnit,
   NewProduct,
 } from "@grocy-trolley/grocy";
-import { GrocyIdMaps, QuantityUnitName, StoreBrand } from "@grocy-trolley/grocy/grocy-config";
+import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
 import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
 import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
+import prompts from "prompts";
 import {
   CategoryLocations,
+  FoodstuffsBaseProduct,
   FoodstuffsCartProduct,
   FoodstuffsCategory,
   FoodstuffsListService,
   FOODSTUFFS_CATEGORIES,
+  toCartProductRef,
 } from ".";
-import {
-  FoodstuffsCart,
-  FoodstuffsCartService,
-  snapshotToCartProductRefs,
-} from "./foodstuffs-cart";
+import { FoodstuffsCart, FoodstuffsCartService } from "./foodstuffs-cart";
 import { FoodstuffsOrderService as FoodstuffsOrderService } from "./foodstuffs-orders";
 
-export class FoodstuffsToGrocyService {
+export class FoodstuffsCartImporter {
   constructor(
     private readonly cartService: FoodstuffsCartService,
-    private readonly listService: FoodstuffsListService,
-    private readonly orderService: FoodstuffsOrderService,
     private readonly grocyProductService: GrocyProductService,
-    private readonly orderRecordService: GrocyOrderRecordService,
     private readonly grocyIdMaps: GrocyIdMaps
   ) {}
 
-  async importProductsFromOrders(): Promise<void> {
-    const orders = await this.orderService.getOrders();
-    const orderRecords = await this.orderRecordService.getOrderRecords();
-    const importedOrderIds = orderRecords.map((record) => record.orderId);
-    for (const order of orders) {
-      const orderNumber = order.orderNumber;
-      if (!importedOrderIds.includes(orderNumber)) {
-        await this.importProductsFromOrder(orderNumber);
-      }
-    }
-  }
-
-  async importProductsFromOrder(orderNumber: string): Promise<void> {
-    const order = await this.orderService.getOrderDetails(orderNumber);
-    const record = await this.orderRecordService.createOrderRecord({
-      brand: "PAK'n'SAVE",
-      date: order.summary.timeslot.date,
-      orderId: orderNumber,
-      imported: GrocyFalse,
-    });
-
-    const products = snapshotToCartProductRefs(order);
+  async importProducts(products: FoodstuffsBaseProduct[]) {
+    const productRefs = products.map((product) => toCartProductRef(product));
     await this.cartService.clearCart();
-    const cart = await this.cartService.addProductsToCart(products);
+    const cart = await this.cartService.addProductsToCart(productRefs);
     await this.importProductsFromCart(cart);
-
-    await this.orderRecordService.markOrderAsImported(record.objectId);
   }
 
   async importProductsFromCart(cart?: FoodstuffsCart): Promise<void> {
@@ -68,7 +42,7 @@ export class FoodstuffsToGrocyService {
     const existingProducts = await this.grocyProductService.getProducts();
     const importedProducts = existingProducts
       .map((product) => JSON.parse(product.userfields?.storeMetadata as string))
-      .filter((data) => "PAK'n'SAVE" in data)
+      .filter((data) => data && data["PAK'n'SAVE"])
       .map((data) => (data["PAK'n'SAVE"] as FoodstuffsCartProduct).productId);
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
       (p) => !importedProducts.includes(p.productId)
@@ -179,5 +153,67 @@ export class FoodstuffsToGrocyService {
       throw new Error("Unmapped store ID: " + storeId);
     }
     return shoppingLocationId;
+  }
+}
+
+export class FoodstuffsListImporter {
+  constructor(
+    private readonly cartImporter: FoodstuffsCartImporter,
+    private readonly listService: FoodstuffsListService
+  ) {}
+
+  async selectAndImportList() {
+    const listId = await this.selectList();
+    return this.importList(listId);
+  }
+
+  async importList(id: string): Promise<void> {
+    const list = await this.listService.getList(id);
+    await this.cartImporter.importProducts(list.products);
+  }
+
+  private async selectList(): Promise<string> {
+    const lists = await this.listService.getLists();
+    const response = await prompts([
+      {
+        name: "list",
+        message: "Select list",
+        type: "select",
+        choices: lists.map((list) => ({ title: list.name, value: list.listId })),
+      },
+    ]);
+    return response.list;
+  }
+}
+
+export class FoodstuffsOrderImporter {
+  constructor(
+    private readonly cartImporter: FoodstuffsCartImporter,
+    private readonly orderService: FoodstuffsOrderService,
+    private readonly orderRecordService: GrocyOrderRecordService
+  ) {}
+
+  async importLatestOrders(): Promise<void> {
+    const orders = await this.orderService.getOrders();
+    const orderRecords = await this.orderRecordService.getOrderRecords();
+    const importedOrderIds = orderRecords.map((record) => record.orderId);
+    for (const order of orders) {
+      const orderNumber = order.orderNumber;
+      if (!importedOrderIds.includes(orderNumber)) {
+        await this.importOrder(orderNumber);
+      }
+    }
+  }
+
+  async importOrder(orderNumber: string): Promise<void> {
+    const order = await this.orderService.getOrderDetails(orderNumber);
+    const record = await this.orderRecordService.createOrderRecord({
+      brand: "PAK'n'SAVE",
+      date: order.summary.timeslot.date,
+      orderId: orderNumber,
+      imported: GrocyFalse,
+    });
+    await this.cartImporter.importProducts([...order.unavailableProducts, ...order.products]);
+    await this.orderRecordService.markOrderAsImported(record.objectId);
   }
 }

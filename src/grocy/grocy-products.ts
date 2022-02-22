@@ -39,6 +39,8 @@ export class GrocyProductService extends GrocyRestService {
   async deleteProduct(id: number): Promise<Response> {
     return deletus(this.buildUrl("objects/products/" + id), this.authHeaders().build());
   }
+
+  async addParentProduct() {}
 }
 
 export type Product = components["schemas"]["Product"];
