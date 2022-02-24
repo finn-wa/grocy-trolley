@@ -1,4 +1,4 @@
-import { buildUrl } from "@grocy-trolley/utils/fetch-utils";
+import { buildUrl } from "@grocy-trolley/utils/rest";
 import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
 import { FoodstuffsAuthService } from ".";
 

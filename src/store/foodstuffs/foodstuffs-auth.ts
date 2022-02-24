@@ -1,4 +1,4 @@
-import { buildUrl, extractJson, post } from "@grocy-trolley/utils/fetch-utils";
+import { buildUrl, extractJson, post } from "@grocy-trolley/utils/rest";
 import { headers } from "@grocy-trolley/utils/headers-builder";
 
 export class FoodstuffsAuthService {

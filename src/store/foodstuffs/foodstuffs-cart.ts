@@ -1,4 +1,4 @@
-import { deleteForJson, getForJson, postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { deleteForJson, getForJson, postForJson } from "@grocy-trolley/utils/rest";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,

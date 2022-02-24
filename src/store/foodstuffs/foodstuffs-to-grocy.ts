@@ -6,7 +6,7 @@ import {
 } from "@grocy-trolley/grocy";
 import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
 import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
-import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
+import { prettyPrint } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
 import {
   CategoryLocations,

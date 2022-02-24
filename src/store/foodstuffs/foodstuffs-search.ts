@@ -1,5 +1,5 @@
 import { ReceiptItemiser, ReceiptScanner } from "@grocy-trolley/receipt-ocr";
-import { buildUrl, postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { buildUrl, postForJson } from "@grocy-trolley/utils/rest";
 import { headers } from "@grocy-trolley/utils/headers-builder";
 import { FoodstuffsReceiptItemiser, PAKNSAVE_URL, SaleTypeString } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";

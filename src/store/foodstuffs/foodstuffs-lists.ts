@@ -1,4 +1,4 @@
-import { getForJson, putForJson } from "@grocy-trolley/utils/fetch-utils";
+import { getForJson, putForJson } from "@grocy-trolley/utils/rest";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,
