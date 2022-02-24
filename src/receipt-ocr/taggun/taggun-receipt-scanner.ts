@@ -4,7 +4,7 @@ import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
 import { ReceiptScanner } from "@grocy-trolley/receipt-ocr/receipts.model";
-import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
+import { prettyPrint } from "@grocy-trolley/utils/logger";
 
 const endpoint = "/api/receipt/v1/verbose/file";
 const method = "post";

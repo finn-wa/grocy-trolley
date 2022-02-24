@@ -1,4 +1,4 @@
-import { postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { postForJson } from "@grocy-trolley/utils/rest";
 import { paths } from "./api";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";

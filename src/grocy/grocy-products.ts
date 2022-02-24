@@ -1,4 +1,4 @@
-import { deletus, postForJson, put } from "@grocy-trolley/utils/fetch-utils";
+import { deletus, postForJson, put } from "@grocy-trolley/utils/rest";
 import { Response } from "node-fetch";
 import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";

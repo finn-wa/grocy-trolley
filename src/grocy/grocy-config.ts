@@ -1,5 +1,5 @@
 import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@grocy-trolley/store/foodstuffs";
-import { postForJson } from "@grocy-trolley/utils/fetch-utils";
+import { postForJson } from "@grocy-trolley/utils/rest";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 

@@ -1,5 +1,5 @@
-import { getForJson, postForJson, put, putForJson } from "@grocy-trolley/utils/fetch-utils";
-import { prettyPrint } from "@grocy-trolley/utils/logging-utils";
+import { getForJson, postForJson, put, putForJson } from "@grocy-trolley/utils/rest";
+import { prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
 import { StoreBrand } from "./grocy-config";
 import { GrocyBoolean } from "./grocy-model";

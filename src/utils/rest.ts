@@ -1,6 +1,6 @@
 import fetch, { Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
-import { prettyPrint } from "./logging-utils";
+import { prettyPrint } from "./logger";
 
 export function buildUrl(baseUrl: string, path: string, params?: Record<string, string>): string {
   if (!baseUrl.endsWith("/")) {
