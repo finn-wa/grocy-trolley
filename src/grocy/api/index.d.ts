@@ -2315,7 +2315,9 @@ export interface components {
       row_created_timestamp?: string;
       shopping_location_id?: number;
       /** @description Key/value pairs of userfields */
-      userfields?: { [key: string]: unknown };
+      userfields: {
+        storeMetadata: string;
+      };
     };
     /** @example [object Object] */
     QuantityUnit: {
@@ -2905,7 +2907,3 @@ export interface components {
     query: string[];
   };
 }
-
-export interface operations {}
-
-export interface external {}

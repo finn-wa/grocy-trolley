@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "commander": "^9.0.0",
+    "dotenv": "^16.0.0",
     "form-data": "4.0.0",
     "node-fetch": "2.6.6",
     "playwright": "1.17.1",
@@ -27,7 +28,11 @@
     "@types/node": "^16.11.25",
     "@types/node-fetch": "2",
     "@types/prompts": "^2.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
     "esbuild": "^0.14.18",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.4.0",
     "fast-glob": "^3.2.11",
     "jasmine": "^4.0.2",
     "jasmine-spec-reporter": "^7.0.0",
@@ -55,5 +60,5 @@
       "stopSpecOnExpectationFailure": false,
       "random": true
     }
-  },
+  }
 }

@@ -1,6 +1,6 @@
 import fetch, { Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
-import { prettyPrint } from "./logger";
+import { logger, prettyPrint } from "./logger";
 
 export function buildUrl(baseUrl: string, path: string, params?: Record<string, string>): string {
   if (!baseUrl.endsWith("/")) {
@@ -14,12 +14,12 @@ export function buildUrl(baseUrl: string, path: string, params?: Record<string, 
   return url.toString();
 }
 
-export async function extractJson(response: Response) {
+export async function extractJson(response: Response): Promise<unknown> {
   if (!response.ok) {
     throw new Error(await response.text());
   }
-  const body = await response.json();
-  console.log(prettyPrint(body));
+  const body: unknown = await response.json();
+  logger.debug(prettyPrint(body));
   return body;
 }
 
@@ -27,22 +27,22 @@ async function fetchWithMethod(
   method: string,
   url: string,
   headers?: Headers,
-  body?: any
+  body?: unknown
 ): Promise<Response> {
-  console.log(`${method} ${url}`);
+  logger.info(`${method} ${url}`);
   if (headers) {
-    console.log(
+    logger.debug(
       Array.from(headers.entries())
         .map(([k, v]) => `${k}=${v}`)
         .join("\n")
     );
   }
   if (body) {
-    console.log(body);
+    logger.debug(body);
   }
   const bodyString = body ? JSON.stringify(body) : undefined;
   const response = await fetch(url, { method, headers, body: bodyString });
-  console.log(`Response: ${response.status}`);
+  logger.debug(`Response: ${response.status}`);
   if (!response.ok) {
     throw new Error(`Response not OK: ${await response.text()}`);
   }
@@ -53,33 +53,33 @@ async function fetchJsonWithMethod<T>(
   method: string,
   url: string,
   headers?: Headers,
-  body?: any
+  body?: unknown
 ): Promise<T> {
   const response = await fetchWithMethod(method, url, headers, body);
-  return extractJson(response);
+  return extractJson(response) as Promise<T>;
 }
 
-export async function get(url: string, headers?: Headers, body?: any): Promise<Response> {
+export async function get(url: string, headers?: Headers, body?: unknown): Promise<Response> {
   return fetchWithMethod("GET", url, headers, body);
 }
 
-export async function getForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
+export async function getForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
   return fetchJsonWithMethod("GET", url, headers, body);
 }
 
-export async function post(url: string, headers?: Headers, body?: any): Promise<Response> {
+export async function post(url: string, headers?: Headers, body?: unknown): Promise<Response> {
   return fetchWithMethod("POST", url, headers, body);
 }
 
-export async function postForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
+export async function postForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
   return fetchJsonWithMethod("POST", url, headers, body);
 }
 
-export async function put(url: string, headers?: Headers, body?: any): Promise<Response> {
+export async function put(url: string, headers?: Headers, body?: unknown): Promise<Response> {
   return fetchWithMethod("PUT", url, headers, body);
 }
 
-export async function putForJson<T>(url: string, headers?: Headers, body?: any): Promise<T> {
+export async function putForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
   return fetchJsonWithMethod("PUT", url, headers, body);
 }
 

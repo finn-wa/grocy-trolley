@@ -1,11 +1,15 @@
 import { buildUrl, getForJson } from "@grocy-trolley/utils/rest";
 import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
 import { components } from "./api";
+import { env } from "@grocy-trolley/env";
 
 type Schemas = components["schemas"];
 
 export abstract class GrocyRestService {
-  constructor(protected readonly config: GrocyConnectionConfig) {}
+  protected readonly config = {
+    apiKey: env().GROCY_API_KEY,
+    baseUrl: env().GROCY_URL,
+  };
 
   protected authHeaders(): HeadersBuilder {
     return headers().append("GROCY-API-KEY", this.config.apiKey);
@@ -23,9 +27,4 @@ export abstract class GrocyRestService {
       this.authHeaders().acceptJson().build()
     );
   }
-}
-
-export interface GrocyConnectionConfig {
-  readonly apiKey: string;
-  readonly baseUrl: string;
 }

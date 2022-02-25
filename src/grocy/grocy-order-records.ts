@@ -1,17 +1,14 @@
 import { Response } from "node-fetch";
 import { CreatedObjectResponse, OrderRecord } from ".";
 import { GrocyTrue } from "./grocy-model";
-import { GrocyConnectionConfig, GrocyRestService } from "./grocy-rest-service";
+import { GrocyRestService } from "./grocy-rest-service";
 import { GrocyUserEntityService } from "./grocy-user-entities";
 
 export class GrocyOrderRecordService extends GrocyRestService {
   readonly entityName = "order";
 
-  constructor(
-    protected readonly config: GrocyConnectionConfig,
-    private readonly userEntityService: GrocyUserEntityService
-  ) {
-    super(config);
+  constructor(private readonly userEntityService: GrocyUserEntityService) {
+    super();
   }
 
   async getOrderRecords(): Promise<OrderRecord[]> {

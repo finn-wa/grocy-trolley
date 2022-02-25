@@ -11,6 +11,7 @@ export const FOODSTUFFS_CATEGORIES = [
   "Dairy & Eggs",
   "Bulk & Loose Foods",
   "Meal Kits",
+  "Ready to Heat",
   "Dairy & Eggs",
   "Cheese",
   "Desserts",
@@ -48,6 +49,7 @@ export const FOODSTUFFS_CATEGORIES = [
   "Household",
   "Laundry",
   "Stationery & Entertainment",
+  "Other",
 ] as const;
 
 export type FoodstuffsCategory = typeof FOODSTUFFS_CATEGORIES[number];
@@ -61,6 +63,7 @@ export const CategoryLocations: Record<FoodstuffsCategory, GrocyLocation> = {
   "Dairy & Eggs": "Kitchen Fridge",
   "Bulk & Loose Foods": "Pantry",
   "Meal Kits": "Kitchen Fridge",
+  "Ready to Heat": "Kitchen Fridge",
   Cheese: "Kitchen Fridge",
   Desserts: "Kitchen Fridge",
   "Frozen Foods": "Kitchen Freezer",
@@ -90,6 +93,7 @@ export const CategoryLocations: Record<FoodstuffsCategory, GrocyLocation> = {
   Household: "Bathroom",
   Laundry: "Garage Storage",
   "Stationery & Entertainment": "Bedroom",
+  Other: "Pantry",
 };
 
 // await fetch("https://www.paknsave.co.nz/CommonApi/Navigation/MegaMenu?v=20267&storeId=e1925ea7-01bc-4358-ae7c-c6502da5ab12", {

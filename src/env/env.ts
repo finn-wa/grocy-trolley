@@ -1,21 +1,30 @@
-import { readFileSync } from "fs";
+import "dotenv/config";
 
-export interface Env {
-  readonly GROCY_API_KEY: string;
-  readonly GROCY_URL: string;
-  readonly PAKNSAVE_EMAIL: string;
-  readonly PAKNSAVE_PASSWORD: string;
-  readonly SPLITWISE_PASSWORD: string;
-  readonly SPLITWISE_USER: string;
-  readonly TAGGUN_API_KEY: string;
+const EnvVars = [
+  "GROCY_API_KEY",
+  "GROCY_URL",
+  "PAKNSAVE_EMAIL",
+  "PAKNSAVE_PASSWORD",
+  "SPLITWISE_PASSWORD",
+  "SPLITWISE_USER",
+  "TAGGUN_API_KEY",
+  "LOG_LEVEL",
+] as const;
+type EnvVar = typeof EnvVars[number];
+
+export type Env = Record<EnvVar, string>;
+
+const _env = process.env as Env;
+
+export function env(): Env {
+  return { ..._env };
 }
 
-export class EnvParser {
-  private readonly _env: Env;
-  constructor(readonly path: string) {
-    this._env = JSON.parse(readFileSync(path, { encoding: "utf-8" }));
+export function initEnv(overrides: Partial<Env>) {
+  Object.assign(overrides, _env);
+  const undefinedVars = EnvVars.filter((envVar) => _env[envVar] === undefined);
+  if (undefinedVars.length > 0) {
+    throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
-  get env(): Env {
-    return { ...this._env };
-  }
+  return env();
 }
