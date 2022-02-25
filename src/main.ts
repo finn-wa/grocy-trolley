@@ -1,13 +1,11 @@
-import { EnvParser } from "@grocy-trolley/env";
 import {
   FoodstuffsAuthService,
-  FoodstuffsCartService,
-  FoodstuffsListService,
-  FoodstuffsOrderService,
   FoodstuffsCartImporter,
-  PAKNSAVE_URL,
+  FoodstuffsCartService,
   FoodstuffsListImporter,
+  FoodstuffsListService,
   FoodstuffsOrderImporter,
+  FoodstuffsOrderService,
 } from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
 import prompts from "prompts";
@@ -21,18 +19,12 @@ import {
 type ImportMethod = "IMPORT_CART" | "IMPORT_ORDER" | "IMPORT_LIST" | "IMPORT_RECEIPT";
 
 async function main() {
-  const env = new EnvParser("env.json").env;
-  const grocyCfg = { apiKey: env.GROCY_API_KEY, baseUrl: env.GROCY_URL };
-  const grocyIdMapService = new GrocyIdMapService(grocyCfg);
+  const grocyIdMapService = new GrocyIdMapService();
   const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
-  const authService = new FoodstuffsAuthService(
-    PAKNSAVE_URL,
-    env.PAKNSAVE_EMAIL,
-    env.PAKNSAVE_PASSWORD
-  );
+  const authService = new FoodstuffsAuthService();
   const cartImporter = new FoodstuffsCartImporter(
     new FoodstuffsCartService(authService),
-    new GrocyProductService(grocyCfg),
+    new GrocyProductService(),
     grocyIdMaps
   );
 
@@ -43,18 +35,20 @@ async function main() {
       type: "select",
       choices: [
         { title: "Import from cart", value: "IMPORT_CART" },
-        { title: "Import from order", value: "IMPORT_ORDER" },
+        { title: "Import latest orders", value: "IMPORT_ORDER" },
         { title: "Import from list", value: "IMPORT_LIST" },
         { title: "Import from receipt", value: "IMPORT_RECEIPT" },
       ],
     },
   ]);
-  await authService.login();
-  const importMethod: ImportMethod = response["importMethod"];
 
+  const importMethod = response["importMethod"] as ImportMethod;
   if (importMethod === "IMPORT_RECEIPT") {
     return;
   }
+
+  await authService.login();
+
   if (importMethod === "IMPORT_CART") {
     return cartImporter.importProductsFromCart();
   }
@@ -69,12 +63,10 @@ async function main() {
     const orderImporter = new FoodstuffsOrderImporter(
       cartImporter,
       new FoodstuffsOrderService(authService),
-      new GrocyOrderRecordService(grocyCfg, new GrocyUserEntityService(grocyCfg))
+      new GrocyOrderRecordService(new GrocyUserEntityService())
     );
     return orderImporter.importLatestOrders();
   }
-
-  // return importer.
 }
 
 main().then(

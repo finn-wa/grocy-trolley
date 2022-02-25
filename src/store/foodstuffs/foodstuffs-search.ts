@@ -1,8 +1,8 @@
-import { ReceiptItemiser, ReceiptScanner } from "@grocy-trolley/receipt-ocr";
-import { buildUrl, postForJson } from "@grocy-trolley/utils/rest";
+import { ReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import { headers } from "@grocy-trolley/utils/headers-builder";
+import { logger } from "@grocy-trolley/utils/logger";
+import { buildUrl, postForJson } from "@grocy-trolley/utils/rest";
 import { FoodstuffsReceiptItemiser, PAKNSAVE_URL, SaleTypeString } from ".";
-import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsSearchService {
   private readonly itemiser = new FoodstuffsReceiptItemiser();
@@ -12,24 +12,24 @@ export class FoodstuffsSearchService {
   async importInStoreOrder(receiptScanner: ReceiptScanner, filepath: string) {
     const text = await receiptScanner.scan(filepath);
     const scannedItems = await this.itemiser.itemise(text);
-    console.log(scannedItems);
+    logger.info(scannedItems.join("\n"));
     for await (const search of scannedItems.map(async (item) => {
-      console.log(item.name);
+      logger.debug(item.name);
       return [item.name, await searchPakNSave(item.name)] as const;
     })) {
       const [item, searchRes] = search;
-      console.log(item);
+      logger.debug(item);
       const numResults = searchRes.productResults.length;
       if (!searchRes.Success || numResults === 0) {
-        console.log("Search failed\n");
+        logger.error("Search failed\n");
         continue;
       }
       const products = searchRes.productResults.slice(0, Math.min(3, numResults));
       products.forEach((product) => {
-        console.log(
+        logger.info(
           `${product.ProductName} (${product.ProductWeightDisplayName}) - ${product.ProductBrand}`
         );
-        console.log(product.ProductUrl, "\n");
+        logger.info(product.ProductUrl, "\n");
       });
     }
   }
@@ -66,7 +66,7 @@ export interface ProductResult {
 }
 
 /** TODO: get model */
-export interface ProductCategoryResults {}
+// export interface ProductCategoryResults {}
 
 export interface ProductSearchResponse {
   productCategoryResults: ProductResult[];

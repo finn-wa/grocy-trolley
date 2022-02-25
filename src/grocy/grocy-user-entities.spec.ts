@@ -1,13 +1,10 @@
-import { EnvParser } from "@grocy-trolley/env";
 import { GrocyUserEntityService } from ".";
 
 xdescribe("GrocyUserEntityService", () => {
-  const envParser = new EnvParser("env.json");
   let service: GrocyUserEntityService;
 
   beforeEach(() => {
-    const env = envParser.env;
-    service = new GrocyUserEntityService({ apiKey: env.GROCY_API_KEY, baseUrl: env.GROCY_URL });
+    service = new GrocyUserEntityService();
   });
 
   it("should get user entities", async () => {

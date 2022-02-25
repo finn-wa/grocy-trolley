@@ -3,10 +3,11 @@ import {
   GrocyProductService,
   matchQuantityUnit,
   NewProduct,
+  StoreMetadata,
 } from "@grocy-trolley/grocy";
 import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
 import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
-import { prettyPrint } from "@grocy-trolley/utils/logger";
+import { logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
 import {
   CategoryLocations,
@@ -40,8 +41,9 @@ export class FoodstuffsCartImporter {
     }
     const shoppingLocationId = this.getShoppingLocationId(cart.store.storeId);
     const existingProducts = await this.grocyProductService.getProducts();
+
     const importedProducts = existingProducts
-      .map((product) => JSON.parse(product.userfields?.storeMetadata as string))
+      .map((product) => JSON.parse(product.userfields?.storeMetadata) as StoreMetadata)
       .filter((data) => data && data["PAK'n'SAVE"])
       .map((data) => (data["PAK'n'SAVE"] as FoodstuffsCartProduct).productId);
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
@@ -50,7 +52,7 @@ export class FoodstuffsCartImporter {
 
     for (const product of productsToImport) {
       const grocyProduct = this.convertProduct(product, shoppingLocationId);
-      console.log(`Importing product ${grocyProduct.name}...`);
+      logger.info(`Importing product ${grocyProduct.name}...`);
       await this.grocyProductService.createProduct(grocyProduct);
     }
   }
@@ -105,7 +107,7 @@ export class FoodstuffsCartImporter {
   }
 
   private getDisplayQuantity(weightDisplayName: string): number | null {
-    const displayQuantity = weightDisplayName.match(/[\d\.]+/);
+    const displayQuantity = weightDisplayName.match(/[\d.]+/);
     if (displayQuantity === null) {
       return null;
     }
@@ -182,7 +184,7 @@ export class FoodstuffsListImporter {
         choices: lists.map((list) => ({ title: list.name, value: list.listId })),
       },
     ]);
-    return response.list;
+    return response.list as string;
   }
 }
 

@@ -1,16 +1,17 @@
 import { buildUrl, extractJson, post } from "@grocy-trolley/utils/rest";
 import { headers } from "@grocy-trolley/utils/headers-builder";
+import { env } from "@grocy-trolley/env";
+import { PAKNSAVE_URL } from ".";
+import { prettyPrint } from "@grocy-trolley/utils/logger";
 
 export class FoodstuffsAuthService {
-  loggedIn: boolean = false;
+  loggedIn = false;
   private _cookie: string | null = null;
   private _userProfile: FoodstuffsUserProfile | null = null;
+  readonly email: string = env().PAKNSAVE_EMAIL;
+  private readonly password = env().PAKNSAVE_PASSWORD;
 
-  constructor(
-    readonly baseUrl: string,
-    readonly email: string,
-    private readonly password: string
-  ) {}
+  constructor(readonly baseUrl: string = PAKNSAVE_URL) {}
 
   async login(): Promise<LoginResponse> {
     const response = await post(
@@ -18,11 +19,13 @@ export class FoodstuffsAuthService {
       headers().contentTypeJson().acceptJson().build(),
       { email: this.email, password: this.password }
     );
-    const body: LoginResponse = await extractJson(response);
+    const body = (await extractJson(response)) as LoginResponse;
     const cookieHeaders = response.headers.raw()["set-cookie"];
     if (!cookieHeaders) {
       throw new Error(
-        `No cookies found in Foodstuffs login response headers: '${response.headers.raw()}'`
+        `No cookies found in Foodstuffs login response headers: '${prettyPrint(
+          response.headers.raw()
+        )}'`
       );
     }
     // Remove duplicate cookies (Foodstuffs currently duplicates SessionCookieIdV2)
@@ -36,7 +39,7 @@ export class FoodstuffsAuthService {
   }
 
   get userProfile(): FoodstuffsUserProfile | null {
-    return !!this._userProfile ? { ...this._userProfile } : null;
+    return this._userProfile ? { ...this._userProfile } : null;
   }
 
   get cookie(): string {

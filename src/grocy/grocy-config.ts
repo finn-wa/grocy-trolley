@@ -1,4 +1,5 @@
 import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@grocy-trolley/store/foodstuffs";
+import { logger } from "@grocy-trolley/utils/logger";
 import { postForJson } from "@grocy-trolley/utils/rest";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
@@ -58,7 +59,9 @@ export class GrocyIdMapService extends GrocyRestService {
         `The following locations are missing from grocy: '${missingLocations.join(", ")}'`
       );
     }
-    return Object.fromEntries(locations.map((loc: GrocySchemas["Location"]) => [loc.name, loc.id]));
+    return Object.fromEntries(
+      locations.map((loc: GrocySchemas["Location"]) => [loc.name, loc.id])
+    ) as Record<string, number>;
   }
 
   async getQuantityUnitIdMap(): Promise<Record<QuantityUnitName, number>> {
@@ -68,7 +71,10 @@ export class GrocyIdMapService extends GrocyRestService {
     if (missingUnits.length > 0) {
       throw new Error(`The following units are missing from grocy: '${missingUnits.join(", ")}'`);
     }
-    return Object.fromEntries(quantityUnits.map((unit) => [unit.name, unit.id]));
+    return Object.fromEntries(quantityUnits.map((unit) => [unit.name, unit.id])) as Record<
+      QuantityUnitName,
+      number
+    >;
   }
 
   async getProductGroupIdMap(): Promise<Record<GrocyProductGroup, number>> {
@@ -79,7 +85,7 @@ export class GrocyIdMapService extends GrocyRestService {
     );
     if (missingProductGroups.length > 0) {
       const missing = missingProductGroups.join(", ");
-      console.log(`Categories are missing from grocy: '${missing}'`);
+      logger.warn(`Categories are missing from grocy: '${missing}'`);
       for (const pg of missingProductGroups) {
         await postForJson(
           this.buildUrl("objects/product_groups"),

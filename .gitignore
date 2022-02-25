@@ -1,4 +1,13 @@
-env.json
+.env
 out
 node_modules
 temp
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

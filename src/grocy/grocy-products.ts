@@ -5,6 +5,8 @@ import { components } from "./api";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 import { setTimeout } from "timers/promises";
+import { FoodstuffsCartProduct } from "@grocy-trolley/store/foodstuffs";
+import { logger } from "@grocy-trolley/utils/logger";
 
 export class GrocyProductService extends GrocyRestService {
   async getProducts(): Promise<Product[]> {
@@ -28,7 +30,7 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   async deleteAllProducts() {
-    console.log("DELETING ALL PRODUCTS IN FIVE SECONDS");
+    logger.warn("DELETING ALL PRODUCTS IN FIVE SECONDS");
     await setTimeout(5000);
     const products = await this.getProducts();
     for (const product of products) {
@@ -37,10 +39,10 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   async deleteProduct(id: number): Promise<Response> {
-    return deletus(this.buildUrl("objects/products/" + id), this.authHeaders().build());
+    return deletus(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
   }
 
-  async addParentProduct() {}
+  // async addParentProduct() {}
 }
 
 export type Product = components["schemas"]["Product"];
@@ -89,4 +91,11 @@ export interface NewProduct {
   parent_product_id?: GrocyBoolean;
   quick_consume_amount?: GrocyBoolean;
   should_not_be_frozen?: GrocyBoolean;
+}
+
+/**
+ * storeMetadata userfield once parsed.
+ */
+export interface StoreMetadata {
+  "PAK'n'SAVE"?: FoodstuffsCartProduct;
 }
