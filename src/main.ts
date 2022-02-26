@@ -1,10 +1,7 @@
 import {
   FoodstuffsAuthService,
-  FoodstuffsCartImporter,
   FoodstuffsCartService,
-  FoodstuffsListImporter,
   FoodstuffsListService,
-  FoodstuffsOrderImporter,
   FoodstuffsOrderService,
 } from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
@@ -16,6 +13,12 @@ import {
   GrocyProductService,
   GrocyUserEntityService,
 } from "./grocy";
+import { FoodstuffsToGrocyConverter } from "./store/foodstuffs/grocy/foodstuffs-converter";
+import {
+  FoodstuffsCartImporter,
+  FoodstuffsListImporter,
+  FoodstuffsOrderImporter,
+} from "./store/foodstuffs/grocy/foodstuffs-importers";
 import { Logger } from "./utils/logger";
 
 type ImportMethod = "IMPORT_CART" | "IMPORT_ORDER" | "IMPORT_LIST" | "IMPORT_RECEIPT";
@@ -28,9 +31,9 @@ async function main() {
   const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
   const authService = new FoodstuffsAuthService();
   const cartImporter = new FoodstuffsCartImporter(
+    new FoodstuffsToGrocyConverter(grocyIdMaps),
     new FoodstuffsCartService(authService),
-    new GrocyProductService(),
-    grocyIdMaps
+    new GrocyProductService()
   );
 
   const response = await prompts([
