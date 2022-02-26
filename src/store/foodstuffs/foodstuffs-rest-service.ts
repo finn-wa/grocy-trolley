@@ -1,15 +1,17 @@
-import { buildUrl } from "@grocy-trolley/utils/rest";
 import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
+import { RestService } from "@grocy-trolley/utils/rest";
 import { FoodstuffsAuthService } from ".";
 
-export abstract class FoodstuffsRestService {
-  constructor(protected readonly authService: FoodstuffsAuthService) {}
+export abstract class FoodstuffsRestService extends RestService {
+  constructor(protected readonly authService: FoodstuffsAuthService) {
+    super();
+  }
 
   protected authHeaders(): HeadersBuilder {
     return headers().cookie(this.authService.cookie);
   }
 
-  protected buildUrl(path: string, params?: Record<string, string>): string {
-    return buildUrl(this.authService.baseUrl, path, params);
+  get baseUrl(): string {
+    return this.authService.baseUrl;
   }
 }

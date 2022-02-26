@@ -9,14 +9,19 @@ import {
 } from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
 import prompts from "prompts";
+import { getEnv } from "./env";
 import {
   GrocyIdMapService,
   GrocyOrderRecordService,
   GrocyProductService,
   GrocyUserEntityService,
 } from "./grocy";
+import { Logger } from "./utils/logger";
 
 type ImportMethod = "IMPORT_CART" | "IMPORT_ORDER" | "IMPORT_LIST" | "IMPORT_RECEIPT";
+
+const env = getEnv();
+const logger = new Logger("main");
 
 async function main() {
   const grocyIdMapService = new GrocyIdMapService();

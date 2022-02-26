@@ -1,29 +1,24 @@
-import { buildUrl, getForJson } from "@grocy-trolley/utils/rest";
+import { getEnv } from "@grocy-trolley/env";
 import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
+import { RestService } from "@grocy-trolley/utils/rest";
 import { components } from "./api";
-import { env } from "@grocy-trolley/env";
 
 type Schemas = components["schemas"];
 
-export abstract class GrocyRestService {
-  protected readonly config = {
-    apiKey: env().GROCY_API_KEY,
-    baseUrl: env().GROCY_URL,
-  };
+export abstract class GrocyRestService extends RestService {
+  private readonly env = getEnv();
+  private readonly apiKey = this.env.GROCY_API_KEY;
+  readonly baseUrl = this.env.GROCY_URL;
 
   protected authHeaders(): HeadersBuilder {
-    return headers().append("GROCY-API-KEY", this.config.apiKey);
-  }
-
-  protected buildUrl(path: string, params?: Record<string, string>): string {
-    return buildUrl(this.config.baseUrl, path, params);
+    return headers().append("GROCY-API-KEY", this.apiKey);
   }
 
   protected async getEntities<K extends keyof Schemas>(
     entity: Schemas["ExposedEntity"]
   ): Promise<Schemas[K][]> {
-    return getForJson(
-      buildUrl(this.config.baseUrl, "objects/" + entity),
+    return this.getForJson(
+      this.buildUrl("objects/" + entity),
       this.authHeaders().acceptJson().build()
     );
   }

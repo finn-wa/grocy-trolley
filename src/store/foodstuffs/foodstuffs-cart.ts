@@ -1,4 +1,4 @@
-import { deleteForJson, getForJson, postForJson } from "@grocy-trolley/utils/rest";
+import { Logger } from "@grocy-trolley/utils/logger";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,
@@ -10,16 +10,18 @@ import {
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsCartService extends FoodstuffsRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   constructor(authService: FoodstuffsAuthService) {
     super(authService);
   }
 
   getCart(): Promise<FoodstuffsCart> {
-    return getForJson(this.buildUrl("Cart/Index"), this.authHeaders().acceptJson().build());
+    return this.getForJson(this.buildUrl("Cart/Index"), this.authHeaders().acceptJson().build());
   }
 
   async clearCart(): Promise<{ success: true }> {
-    const response: { success: boolean } = await deleteForJson(
+    const response: { success: boolean } = await this.deleteForJson(
       this.buildUrl("Cart/Clear"),
       this.authHeaders().acceptJson().build()
     );
@@ -30,7 +32,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
   }
 
   addProductsToCart(products: CartProductRef[]): Promise<FoodstuffsCart> {
-    return postForJson(
+    return this.postForJson(
       this.buildUrl("Cart/Index"),
       this.authHeaders().contentTypeJson().acceptJson().build(),
       { products }

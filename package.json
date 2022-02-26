@@ -9,6 +9,7 @@
     "test": "node scripts/build.js -t test",
     "test:watch": "node scripts/build.js -t test --watch",
     "test:debug": "node scripts/build.js -t test --sourcemap",
+    "typecheck": "tsc -w",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
@@ -52,5 +53,8 @@
     }
   },
   "version": "0.0.0",
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.0",
+  "engines": {
+    "node": "^16"
+  }
 }

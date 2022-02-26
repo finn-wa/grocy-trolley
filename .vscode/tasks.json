@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build:watch",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "label": "npm: build:watch",
+      "detail": "node scripts/build.js -t dev --watch"
+    },
+    {
+      "label": "Typecheck",
+      "script": "typecheck",
+      "type": "npm",
+      "group": "none",
+      "problemMatcher": "$tsc"
+    }
+  ]
+}

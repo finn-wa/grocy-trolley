@@ -1,6 +1,5 @@
 import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@grocy-trolley/store/foodstuffs";
-import { logger } from "@grocy-trolley/utils/logger";
-import { postForJson } from "@grocy-trolley/utils/rest";
+import { Logger } from "@grocy-trolley/utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
@@ -29,6 +28,8 @@ export const GROCY_PRODUCT_GROUPS = FOODSTUFFS_CATEGORIES;
 export type GrocyProductGroup = FoodstuffsCategory;
 
 export class GrocyIdMapService extends GrocyRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   async getAllIdMaps(): Promise<GrocyIdMaps> {
     return Promise.all([
       this.getShoppingLocationIdMap(),
@@ -85,9 +86,9 @@ export class GrocyIdMapService extends GrocyRestService {
     );
     if (missingProductGroups.length > 0) {
       const missing = missingProductGroups.join(", ");
-      logger.warn(`Categories are missing from grocy: '${missing}'`);
+      this.logger.warn(`Categories are missing from grocy: '${missing}'`);
       for (const pg of missingProductGroups) {
-        await postForJson(
+        await this.postForJson(
           this.buildUrl("objects/product_groups"),
           this.authHeaders().acceptJson().contentTypeJson().build(),
           { name: pg, description: "" }
