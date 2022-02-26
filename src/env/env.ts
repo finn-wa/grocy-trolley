@@ -1,14 +1,13 @@
 import "dotenv/config";
 
 const EnvVars = [
+  "BARCODEBUDDY_URL",
   "GROCY_API_KEY",
   "GROCY_URL",
+  "GT_LOG_LEVEL",
   "PAKNSAVE_EMAIL",
   "PAKNSAVE_PASSWORD",
-  "SPLITWISE_PASSWORD",
-  "SPLITWISE_USER",
   "TAGGUN_API_KEY",
-  "GT_LOG_LEVEL",
 ] as const;
 type EnvVar = typeof EnvVars[number];
 

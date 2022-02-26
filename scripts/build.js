@@ -50,6 +50,8 @@ function getBuildOptions(args) {
     sourcemap: args.sourcemap ? "inline" : false,
     tsconfig: "./tsconfig.json",
     watch: args.watch,
+    // Things require()d by Playwright
+    external: ["electron/index.js", "ws", "./appIcon.png"],
   };
 
   if (args.target === "test") {
