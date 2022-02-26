@@ -1,5 +1,6 @@
 import { matchQuantityUnit, NewProduct } from "@grocy-trolley/grocy";
 import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
+import { StockActionRequestBody } from "@grocy-trolley/grocy/grocy-stock";
 import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import {
   CategoryLocations,
@@ -13,7 +14,7 @@ export class FoodstuffsToGrocyConverter {
 
   constructor(private readonly grocyIdMaps: GrocyIdMaps) {}
 
-  convertProduct(product: FoodstuffsCartProduct, storeId: string): NewProduct {
+  forImport(product: FoodstuffsCartProduct, storeId: string): NewProduct {
     const shoppingLocationId = this.getShoppingLocationId(storeId);
     const locationId = this.categoryToLocationId(product.categoryName);
     const productGroupId = this.categoryToProductGroupId(product.categoryName);
@@ -60,6 +61,16 @@ export class FoodstuffsToGrocyConverter {
       product_group_id: productGroupId,
       shopping_location_id: shoppingLocationId,
       userfields: { storeMetadata: JSON.stringify({ "PAK'n'SAVE": product }) },
+    };
+  }
+
+  forAddStock(product: FoodstuffsCartProduct, storeId: string): StockActionRequestBody<"add"> {
+    return {
+      amount: product.quantity,
+      price: product.price / 100,
+      best_before_date: "2999-12-31",
+      shopping_location_id: this.getShoppingLocationId(storeId),
+      location_id: this.categoryToLocationId(product.categoryName),
     };
   }
 

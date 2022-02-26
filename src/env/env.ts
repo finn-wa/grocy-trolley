@@ -15,10 +15,10 @@ type EnvVar = typeof EnvVars[number];
 export type Env = Record<EnvVar, string>;
 
 let envValidated = false;
-const env = Object.fromEntries(EnvVars.map(key => [key, process.env[key]])) as Env;
+const env = Object.fromEntries(EnvVars.map((key) => [key, process.env[key]])) as Env;
 
 export function initEnv(overrides: Partial<Env>) {
-  if(envValidated) {
+  if (envValidated) {
     throw new Error("initEnv has already been called");
   }
   Object.assign(overrides, env);
@@ -30,9 +30,8 @@ export function initEnv(overrides: Partial<Env>) {
   return getEnv();
 }
 
-
 export function getEnv(): Env {
-  if(!envValidated) {
+  if (!envValidated) {
     initEnv({});
   }
   return { ...env };

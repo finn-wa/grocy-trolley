@@ -5,5 +5,6 @@ export * from "./foodstuffs-lists";
 export * from "./foodstuffs-orders";
 export * from "./foodstuffs-receipt-itemiser";
 export * from "./foodstuffs-search";
-export * from "./foodstuffs-to-grocy";
 export * from "./foodstuffs.model";
+export * from "./grocy/foodstuffs-converter";
+export * from "./grocy/foodstuffs-importers";

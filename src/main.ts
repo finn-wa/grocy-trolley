@@ -1,9 +1,3 @@
-import {
-  FoodstuffsAuthService,
-  FoodstuffsCartService,
-  FoodstuffsListService,
-  FoodstuffsOrderService,
-} from "@grocy-trolley/store/foodstuffs";
 import { exit } from "process";
 import prompts from "prompts";
 import { getEnv } from "./env";
@@ -13,10 +7,15 @@ import {
   GrocyProductService,
   GrocyUserEntityService,
 } from "./grocy";
+import { GrocyStockService } from "./grocy/grocy-stock";
+import { FoodstuffsAuthService } from "./store/foodstuffs/foodstuffs-auth";
+import { FoodstuffsCartService } from "./store/foodstuffs/foodstuffs-cart";
+import { FoodstuffsListService } from "./store/foodstuffs/foodstuffs-lists";
+import { FoodstuffsOrderService } from "./store/foodstuffs/foodstuffs-orders";
 import { FoodstuffsToGrocyConverter } from "./store/foodstuffs/grocy/foodstuffs-converter";
 import {
   FoodstuffsCartImporter,
-  FoodstuffsListImporter,
+  FoodstuffsListToCartService,
   FoodstuffsOrderImporter,
 } from "./store/foodstuffs/grocy/foodstuffs-importers";
 import { Logger } from "./utils/logger";
@@ -33,7 +32,8 @@ async function main() {
   const cartImporter = new FoodstuffsCartImporter(
     new FoodstuffsToGrocyConverter(grocyIdMaps),
     new FoodstuffsCartService(authService),
-    new GrocyProductService()
+    new GrocyProductService(),
+    new GrocyStockService()
   );
 
   const response = await prompts([
@@ -61,7 +61,7 @@ async function main() {
     return cartImporter.importProductsFromCart();
   }
   if (importMethod === "IMPORT_LIST") {
-    const listImporter = new FoodstuffsListImporter(
+    const listImporter = new FoodstuffsListToCartService(
       cartImporter,
       new FoodstuffsListService(authService)
     );
@@ -73,8 +73,22 @@ async function main() {
       new FoodstuffsOrderService(authService),
       new GrocyOrderRecordService(new GrocyUserEntityService())
     );
-    return orderImporter.importLatestOrders();
+    return orderImporter.getUnimportedOrderNumbers();
   }
+}
+
+async function test() {
+  const grocyIdMapService = new GrocyIdMapService();
+  const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
+  const authService = new FoodstuffsAuthService();
+  const cartImporter = new FoodstuffsCartImporter(
+    new FoodstuffsToGrocyConverter(grocyIdMaps),
+    new FoodstuffsCartService(authService),
+    new GrocyProductService(),
+    new GrocyStockService()
+  );
+  await authService.login();
+  await cartImporter.stockProductsFromCart();
 }
 
 main().then(

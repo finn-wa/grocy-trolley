@@ -21,7 +21,7 @@ export class GrocyStockService extends GrocyRestService {
     requestBody: StockActionRequestBody<T>
   ): Promise<StockLogEntry> {
     return this.postForJson(
-      this.buildUrl(`/stock/products/${id}/${action}`),
+      this.buildUrl(`stock/products/${id}/${action}`),
       this.authHeaders().contentTypeJson().acceptJson().build(),
       requestBody
     );
