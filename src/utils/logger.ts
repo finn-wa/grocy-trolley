@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { getEnv } from "@grocy-trolley/env";
+
 export function prettyPrint(obj: any) {
   return JSON.stringify(obj, undefined, 2);
 }
@@ -11,21 +13,39 @@ export enum LogLevel {
   ERROR,
 }
 const LOG_LEVELS = ["DEBUG", "INFO", "WARN", "ERROR"] as const;
-// type LogLevelString = typeof LOG_LEVELS[number];
+type LogLevelString = typeof LOG_LEVELS[number];
 
-class Logger {
-  constructor(public level: LogLevel) {}
+export function isLogLevel(level: string): level is LogLevelString {
+  return (LOG_LEVELS as readonly string[]).includes(level);
+}
+
+export class Logger {
+  readonly level: LogLevel;
+
+  constructor(readonly name: string) {
+    const level = getEnv().GT_LOG_LEVEL;
+    if (!isLogLevel(level)) {
+      throw new Error(`Invalid log level "${level}". Valid values: ${LOG_LEVELS.join()}`);
+    }
+    this.level = LogLevel[level];
+  }
 
   private out(level: LogLevel, message: any, ...params: any[]) {
     if (this.level <= level) {
+      process.stdout.write(this.prefix(level));
       console.log(message, params);
     }
   }
 
   private err(level: LogLevel, message: any, ...params: any[]) {
     if (this.level <= level) {
+      process.stderr.write(this.prefix(level));
       console.error(message, params);
     }
+  }
+
+  private prefix(level: LogLevel) {
+    return `${LogLevel[level]} | ${this.name} | ${new Date().toLocaleTimeString()} | `;
   }
 
   debug(message: any, ...params: any[]) {
@@ -44,10 +64,3 @@ class Logger {
     this.err(LogLevel.ERROR, message, params);
   }
 }
-
-// const logLevel = env().LOG_LEVEL;
-// if (!LOG_LEVELS.includes(logLevel as LogLevelString)) {
-//   throw new Error(`Invalid log level "${logLevel}". Valid values: ${LOG_LEVELS.join()}`);
-// }
-// export const logger = new Logger(LogLevel[logLevel as LogLevelString]);
-export const logger = new Logger(LogLevel.INFO);

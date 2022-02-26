@@ -1,11 +1,12 @@
-import { getForJson, postForJson, put, putForJson } from "@grocy-trolley/utils/rest";
-import { prettyPrint } from "@grocy-trolley/utils/logger";
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
 import { StoreBrand } from "./grocy-config";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyUserEntityService extends GrocyRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   /** Cached entities - not expected to change in the lifetime of the service. */
   private entities?: UserEntity[];
 
@@ -20,7 +21,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     if (!refresh && !!this.entities) {
       return this.entities;
     }
-    const entities: UserEntity[] = await getForJson(
+    const entities: UserEntity[] = await this.getForJson(
       this.buildUrl("objects/userentities"),
       this.authHeaders().acceptJson().build()
     );
@@ -50,7 +51,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     userEntityName: Name,
     objectId: number | string
   ): Promise<UserObjects[Name]> {
-    return getForJson(
+    return this.getForJson(
       this.buildUrl(`userfields/userentity-${userEntityName}/${objectId}`),
       this.authHeaders().acceptJson().build()
     );
@@ -70,13 +71,13 @@ export class GrocyUserEntityService extends GrocyRestService {
 
   async createUserObject(entityName: UserEntityName, obj: any): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const postResponse: CreatedUserObject = await postForJson(
+    const postResponse: CreatedUserObject = await this.postForJson(
       this.buildUrl("objects/userobjects"),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       { userentity_id: entityId }
     );
     const objectId = postResponse.created_object_id;
-    const response = await put(
+    const response = await this.put(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       this.authHeaders().contentTypeJson().build(),
       obj
@@ -89,7 +90,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     objectId: string | number,
     body: UserObjects[Name]
   ): Promise<Response> {
-    return put(
+    return this.put(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       this.authHeaders().contentTypeJson().build(),
       body

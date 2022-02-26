@@ -1,27 +1,28 @@
-import { deletus, postForJson, put } from "@grocy-trolley/utils/rest";
+import { FoodstuffsCartProduct } from "@grocy-trolley/store/foodstuffs";
+import { Logger } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
+import { setTimeout } from "timers/promises";
 import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
-import { setTimeout } from "timers/promises";
-import { FoodstuffsCartProduct } from "@grocy-trolley/store/foodstuffs";
-import { logger } from "@grocy-trolley/utils/logger";
 
 export class GrocyProductService extends GrocyRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   async getProducts(): Promise<Product[]> {
     return this.getEntities<"Product">("products");
   }
 
   async createProduct(product: NewProduct): Promise<CreatedObjectResponse> {
     const { userfields, ...coreProduct } = product;
-    const postResponse: CreatedUserObject = await postForJson(
+    const postResponse: CreatedUserObject = await this.postForJson(
       this.buildUrl("objects/products"),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       coreProduct
     );
     const objectId = postResponse.created_object_id;
-    const response = await put(
+    const response = await this.put(
       this.buildUrl(`userfields/products/${objectId}`),
       this.authHeaders().contentTypeJson().build(),
       userfields
@@ -30,7 +31,7 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   async deleteAllProducts() {
-    logger.warn("DELETING ALL PRODUCTS IN FIVE SECONDS");
+    this.logger.warn("DELETING ALL PRODUCTS IN FIVE SECONDS");
     await setTimeout(5000);
     const products = await this.getProducts();
     for (const product of products) {
@@ -39,7 +40,7 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   async deleteProduct(id: number): Promise<Response> {
-    return deletus(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
+    return this.delete(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
   }
 
   // async addParentProduct() {}

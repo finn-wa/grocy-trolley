@@ -1,14 +1,16 @@
-import { getForJson } from "@grocy-trolley/utils/rest";
+import { Logger } from "@grocy-trolley/utils/logger";
 import { FoodstuffsAuthService, FoodstuffsOrderProduct } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsOrderService extends FoodstuffsRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   constructor(authService: FoodstuffsAuthService) {
     super(authService);
   }
 
   async getOrders(): Promise<FoodstuffsOrder[]> {
-    const response: FoodstuffsOrdersResponse = await getForJson(
+    const response: FoodstuffsOrdersResponse = await this.getForJson(
       this.buildUrl("Checkout/Orders"),
       this.authHeaders().acceptJson().build()
     );
@@ -16,7 +18,7 @@ export class FoodstuffsOrderService extends FoodstuffsRestService {
   }
 
   async getOrderDetails(id: string): Promise<FoodstuffsOrderDetails> {
-    return getForJson(
+    return this.getForJson(
       this.buildUrl("Checkout/OrderDetails", { id }),
       this.authHeaders().acceptJson().build()
     );

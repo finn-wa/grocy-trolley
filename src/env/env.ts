@@ -8,23 +8,32 @@ const EnvVars = [
   "SPLITWISE_PASSWORD",
   "SPLITWISE_USER",
   "TAGGUN_API_KEY",
-  "LOG_LEVEL",
+  "GT_LOG_LEVEL",
 ] as const;
 type EnvVar = typeof EnvVars[number];
 
 export type Env = Record<EnvVar, string>;
 
-const _env = process.env as Env;
-
-export function env(): Env {
-  return { ..._env };
-}
+let envValidated = false;
+const env = Object.fromEntries(EnvVars.map(key => [key, process.env[key]])) as Env;
 
 export function initEnv(overrides: Partial<Env>) {
-  Object.assign(overrides, _env);
-  const undefinedVars = EnvVars.filter((envVar) => _env[envVar] === undefined);
+  if(envValidated) {
+    throw new Error("initEnv has already been called");
+  }
+  Object.assign(overrides, env);
+  const undefinedVars = EnvVars.filter((envVar) => env[envVar] === undefined);
   if (undefinedVars.length > 0) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
-  return env();
+  envValidated = true;
+  return getEnv();
+}
+
+
+export function getEnv(): Env {
+  if(!envValidated) {
+    initEnv({});
+  }
+  return { ...env };
 }

@@ -1,4 +1,4 @@
-import { postForJson } from "@grocy-trolley/utils/rest";
+import { Logger } from "@grocy-trolley/utils/logger";
 import { paths } from "./api";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
@@ -13,12 +13,14 @@ export type StockActionRequestBody<A extends StockAction> =
 export type StockLogEntry = GrocySchemas["StockLogEntry"];
 
 export class GrocyStockService extends GrocyRestService {
+  protected readonly logger = new Logger(this.constructor.name);
+
   async stock<T extends StockAction>(
     action: T,
     id: string | number,
     requestBody: StockActionRequestBody<T>
   ): Promise<StockLogEntry> {
-    return postForJson(
+    return this.postForJson(
       this.buildUrl(`/stock/products/${id}/${action}`),
       this.authHeaders().contentTypeJson().acceptJson().build(),
       requestBody

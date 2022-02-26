@@ -1,4 +1,4 @@
-import { getForJson, putForJson } from "@grocy-trolley/utils/rest";
+import { Logger } from "@grocy-trolley/utils/logger";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,
@@ -9,33 +9,34 @@ import {
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsListService extends FoodstuffsRestService {
+  protected readonly logger = new Logger(this.constructor.name);
   constructor(authService: FoodstuffsAuthService) {
     super(authService);
   }
 
   async createList(name: string): Promise<List> {
-    return putForJson(
+    return this.putForJson(
       this.buildUrl("ShoppingLists/CreateList", { name }),
       this.authHeaders().acceptJson().build()
     );
   }
 
   async getLists(): Promise<List[]> {
-    return getForJson<{ lists: List[] }>(
+    return this.getForJson<{ lists: List[] }>(
       this.buildUrl("ShoppingLists/GetLists"),
       this.authHeaders().acceptJson().build()
     ).then((res) => res.lists);
   }
 
   async getList(id: string): Promise<List> {
-    return getForJson(
+    return this.getForJson(
       this.buildUrl("ShoppingLists/GetList", { id }),
       this.authHeaders().acceptJson().build()
     );
   }
 
   async updateList(listUpdate: ListUpdate): Promise<List> {
-    return putForJson(
+    return this.putForJson(
       this.buildUrl("ShoppingLists/UpdateList"),
       this.authHeaders().contentTypeJson().acceptJson().build(),
       listUpdate

@@ -7,7 +7,7 @@ import {
 } from "@grocy-trolley/grocy";
 import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
 import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
-import { logger, prettyPrint } from "@grocy-trolley/utils/logger";
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
 import {
   CategoryLocations,
@@ -22,6 +22,8 @@ import { FoodstuffsCart, FoodstuffsCartService } from "./foodstuffs-cart";
 import { FoodstuffsOrderService as FoodstuffsOrderService } from "./foodstuffs-orders";
 
 export class FoodstuffsCartImporter {
+  private readonly logger = new Logger("FoodstuffsCartImporter");
+
   constructor(
     private readonly cartService: FoodstuffsCartService,
     private readonly grocyProductService: GrocyProductService,
@@ -52,7 +54,7 @@ export class FoodstuffsCartImporter {
 
     for (const product of productsToImport) {
       const grocyProduct = this.convertProduct(product, shoppingLocationId);
-      logger.info(`Importing product ${grocyProduct.name}...`);
+      this.logger.info(`Importing product ${grocyProduct.name}...`);
       await this.grocyProductService.createProduct(grocyProduct);
     }
   }
