@@ -1,5 +1,6 @@
 import { exit } from "process";
 import prompts from "prompts";
+import { BarcodeBuddyCrawler } from "./barcodebuddy/crawler";
 import { getEnv } from "./env";
 import {
   GrocyIdMapService,
@@ -78,20 +79,12 @@ async function main() {
 }
 
 async function test() {
-  const grocyIdMapService = new GrocyIdMapService();
-  const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
-  const authService = new FoodstuffsAuthService();
-  const cartImporter = new FoodstuffsCartImporter(
-    new FoodstuffsToGrocyConverter(grocyIdMaps),
-    new FoodstuffsCartService(authService),
-    new GrocyProductService(),
-    new GrocyStockService()
-  );
-  await authService.login();
-  await cartImporter.stockProductsFromCart();
+  const bb = new BarcodeBuddyCrawler();
+  const barcodes = await bb.getBarcodes();
+  console.log(barcodes);
 }
 
-main().then(
+test().then(
   () => exit(0),
   (err) => {
     console.error(err);
