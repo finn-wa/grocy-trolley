@@ -14,6 +14,21 @@ export class GrocyProductService extends GrocyRestService {
     return this.getEntities<"Product">("products");
   }
 
+  async getProductsWithParsedUserfields(): Promise<SerializedProduct[]> {
+    const products = await this.getProducts();
+    return products.map((product) => this.parseUserFields(product));
+  }
+
+  parseUserFields(product: Product): SerializedProduct {
+    const storeMetadata = JSON.parse(product.userfields.storeMetadata);
+    return {
+      ...product,
+      userfields: {
+        storeMetadata,
+      },
+    } as SerializedProduct;
+  }
+
   async createProduct(product: NewProduct): Promise<CreatedObjectResponse> {
     const { userfields, ...coreProduct } = product;
     const postResponse: CreatedUserObject = await this.postForJson(
@@ -99,4 +114,29 @@ export interface NewProduct {
  */
 export interface StoreMetadata {
   "PAK'n'SAVE"?: FoodstuffsCartProduct;
+}
+
+export interface SerializedProduct {
+  id: number;
+  name: string;
+  description: string;
+  location_id: number;
+  qu_id_purchase: number;
+  qu_id_stock: number;
+  enable_tare_weight_handling: number;
+  not_check_stock_fulfillment_for_recipes: number;
+  product_group_id: number;
+  qu_factor_purchase_to_stock: number;
+  tare_weight?: number;
+  /** @description Can contain multiple barcodes separated by comma */
+  barcode?: string;
+  min_stock_amount?: number;
+  default_best_before_days?: number;
+  default_best_before_days_after_open?: number;
+  picture_file_name?: string;
+  row_created_timestamp: string;
+  shopping_location_id: number;
+  userfields: {
+    storeMetadata: StoreMetadata;
+  };
 }

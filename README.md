@@ -2,7 +2,4 @@
 
 TODO
 
-- log level
-- add order to stock
-- add list to stock
-- add cart to stock?
+- stock is often adding 1 gram instead of 1 unit
