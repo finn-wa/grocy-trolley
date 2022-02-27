@@ -3,7 +3,7 @@ import {
   GrocyProductService,
   SerializedProduct,
 } from "@grocy-trolley/grocy";
-import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
+import { GrocyFalse, GrocyTrue } from "@grocy-trolley/grocy/grocy-model";
 import { GrocyStockService } from "@grocy-trolley/grocy/grocy-stock";
 import { Logger } from "@grocy-trolley/utils/logger";
 import prompts, { prompt } from "prompts";
@@ -40,16 +40,21 @@ export class FoodstuffsCartImporter {
     }
     const existingProducts = await this.grocyProductService.getProductsWithParsedUserfields();
     const existingProductIds = existingProducts
-      .filter((p) => p.userfields?.storeMetadata && p.userfields?.storeMetadata["PAK'n'SAVE"])
-      .map((product) => product.userfields.storeMetadata["PAK'n'SAVE"]?.productId);
+      .filter((p) => p.userfields?.storeMetadata?.PNS)
+      .map((product) => product.userfields.storeMetadata.PNS?.productId);
 
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
       (p) => !existingProductIds.includes(p.productId)
     );
-
+    const parentProducts = await this.grocyProductService.getParentProducts();
     let newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
+
     for (const product of productsToImport) {
-      const grocyProduct = this.converter.forImport(product, cart.store.storeId);
+      const grocyProduct = await this.converter.forImport(
+        product,
+        cart.store.storeId,
+        parentProducts
+      );
       this.logger.info(`Importing product ${grocyProduct.name}...`);
       const createdProduct = await this.grocyProductService.createProduct(grocyProduct);
       newProducts.push({ id: createdProduct.objectId, product });
@@ -71,13 +76,13 @@ export class FoodstuffsCartImporter {
     const existingProducts = await this.grocyProductService.getProductsWithParsedUserfields();
     const productsByPnsId: Record<string, SerializedProduct> = Object.fromEntries(
       existingProducts
-        .filter((p) => p.userfields?.storeMetadata && p.userfields?.storeMetadata["PAK'n'SAVE"])
-        .map((product) => [product.userfields.storeMetadata["PAK'n'SAVE"]?.productId, product])
+        .filter((p) => p.userfields?.storeMetadata?.PNS)
+        .map((product) => [product.userfields.storeMetadata.PNS?.productId, product])
     );
     // Not including unavailable products for stock
     for (const product of cart.products) {
-      const grocyProductId = productsByPnsId[product.productId].id;
-      if (!grocyProductId) {
+      const grocyProduct = productsByPnsId[product.productId];
+      if (!grocyProduct) {
         this.logger.error(
           `Product ${product.productId} (${product.name}) does not exist in Grocy, skipping`
         );
@@ -85,8 +90,8 @@ export class FoodstuffsCartImporter {
       }
       await this.grocyStockService.stock(
         "add",
-        grocyProductId,
-        this.converter.forAddStock(product, cart.store.storeId)
+        grocyProduct.id,
+        this.converter.forAddStock(grocyProduct, cart.store.storeId)
       );
     }
   }
@@ -123,6 +128,8 @@ export class FoodstuffsListToCartService {
 }
 
 export class FoodstuffsOrderImporter {
+  private readonly logger = new Logger(this.constructor.name);
+
   constructor(
     private readonly cartImporter: FoodstuffsCartImporter,
     private readonly orderService: FoodstuffsOrderService,
@@ -135,15 +142,16 @@ export class FoodstuffsOrderImporter {
     );
     const grocyOrderRecords = await this.orderRecordService.getOrderRecords();
     const importedOrderIds = grocyOrderRecords
-      .filter((record) => record.imported)
+      .filter((record) => record.imported === GrocyTrue)
       .map((record) => record.orderId);
     return foodstuffsOrderIds.filter((id) => !importedOrderIds.includes(id));
   }
 
   async importOrder(orderNumber: string): Promise<void> {
+    this.logger.info("Importing order " + orderNumber);
     const order = await this.orderService.getOrderDetails(orderNumber);
     const record = await this.orderRecordService.createOrderRecord({
-      brand: "PAK'n'SAVE",
+      brand: "PNS",
       date: order.summary.timeslot.date,
       orderId: orderNumber,
       imported: GrocyFalse,
@@ -154,6 +162,7 @@ export class FoodstuffsOrderImporter {
 
   async importLatestOrders(): Promise<void> {
     const unimportedOrderNumbers = await this.getUnimportedOrderNumbers();
+    this.logger.info("Found unimported orders: " + unimportedOrderNumbers);
     for (const id of unimportedOrderNumbers) {
       await this.importOrder(id);
     }

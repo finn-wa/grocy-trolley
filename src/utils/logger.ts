@@ -45,7 +45,8 @@ export class Logger {
   }
 
   private prefix(level: LogLevel) {
-    return `${LogLevel[level]} | ${this.name} | ${new Date().toLocaleTimeString()} | `;
+    const date = new Date().toISOString().match(/\d{2}:\d{2}:\d{2}.\d{3}/) as RegExpMatchArray;
+    return `${date[0]} | ${LogLevel[level]} | ${this.name} | `;
   }
 
   debug(message: any, ...params: any[]) {

@@ -3,7 +3,8 @@
  * Do not make direct changes to the file.
  */
 
-import { UserObjectReference } from "..";
+import { StoreBrand, UserObjectReference } from "..";
+import { GrocyBoolean } from "../grocy-model";
 
 export interface paths {
   "/system/info": {
@@ -2316,6 +2317,7 @@ export interface components {
       shopping_location_id?: number;
       /** @description Key/value pairs of userfields */
       userfields: {
+        isParent?: GrocyBoolean;
         storeMetadata: string;
       };
     };
@@ -2350,7 +2352,7 @@ export interface components {
       row_created_timestamp?: string;
       /** @description Key/value pairs of userfields */
       userfields: {
-        brand: "PAK'n'SAVE" | "New World" | "Countdown";
+        brand: StoreBrand;
         storeId: string;
       };
     };
