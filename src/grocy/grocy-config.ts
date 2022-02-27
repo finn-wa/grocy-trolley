@@ -3,7 +3,7 @@ import { Logger } from "@grocy-trolley/utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
-export type StoreBrand = "PAK'n'SAVE" | "New World" | "Countdown";
+export type StoreBrand = "PNS" | "NW" | "CD";
 
 export const GROCY_LOCATIONS = [
   "Bathroom",
@@ -31,17 +31,13 @@ export class GrocyIdMapService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   async getAllIdMaps(): Promise<GrocyIdMaps> {
-    return Promise.all([
-      this.getShoppingLocationIdMap(),
+    const idMaps = await Promise.all([
       this.getLocationIdMap(),
       this.getQuantityUnitIdMap(),
       this.getProductGroupIdMap(),
-    ]).then(([shoppingLocationIds, locationIds, quantityUnitIds, productGroupIds]) => ({
-      shoppingLocationIds,
-      locationIds,
-      quantityUnitIds,
-      productGroupIds,
-    }));
+      this.getShoppingLocationIdMap(),
+    ]);
+    return new GrocyIdMaps(...idMaps);
   }
 
   async getShoppingLocationIdMap(): Promise<Record<string, number>> {
@@ -102,12 +98,28 @@ export class GrocyIdMapService extends GrocyRestService {
   }
 }
 
-export interface GrocyIdMaps {
-  locationIds: Record<GrocyLocation, number>;
-  quantityUnitIds: Record<QuantityUnitName, number>;
-  productGroupIds: Record<GrocyProductGroup, number>;
-  /** Third-party store location ID to Grocy ID */
-  shoppingLocationIds: Record<string, number>;
+export class GrocyIdMaps {
+  readonly locationNames: Record<number, GrocyLocation>;
+  readonly quantityUnitNames: Record<number, QuantityUnitName>;
+  readonly productGroupNames: Record<number, GrocyProductGroup>;
+  readonly shoppingLocationNames: Record<number, string>;
+
+  constructor(
+    readonly locationIds: Record<GrocyLocation, number>,
+    readonly quantityUnitIds: Record<QuantityUnitName, number>,
+    readonly productGroupIds: Record<GrocyProductGroup, number>,
+    /** Third-party store location ID to Grocy ID */
+    readonly shoppingLocationIds: Record<string, number>
+  ) {
+    this.locationNames = this.toNameMap(locationIds);
+    this.quantityUnitNames = this.toNameMap(quantityUnitIds);
+    this.productGroupNames = this.toNameMap(productGroupIds);
+    this.shoppingLocationNames = this.toNameMap(shoppingLocationIds);
+  }
+
+  private toNameMap<T extends string>(namesToIds: Record<T, number>): Record<number, T> {
+    return Object.fromEntries(Object.entries(namesToIds).map(([name, id]) => [id, name]));
+  }
 }
 
 export function matchQuantityUnit(unit: string): QuantityUnitName {

@@ -16,7 +16,7 @@ xdescribe("GrocyOrderRecordService", () => {
   it("should add an order", async () => {
     const order: OrderRecord = {
       date: "2022-02-02",
-      brand: "PAK'n'SAVE",
+      brand: "PNS",
       imported: "0",
       orderId: "bongus",
     };

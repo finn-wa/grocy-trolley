@@ -1,10 +1,10 @@
 import { FoodstuffsCartProduct } from "@grocy-trolley/store/foodstuffs";
-import { Logger } from "@grocy-trolley/utils/logger";
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
 import { setTimeout } from "timers/promises";
 import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
-import { GrocyBoolean } from "./grocy-model";
+import { GrocyBoolean, toBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyProductService extends GrocyRestService {
@@ -19,11 +19,24 @@ export class GrocyProductService extends GrocyRestService {
     return products.map((product) => this.parseUserFields(product));
   }
 
+  async getParentProducts(products?: SerializedProduct[]): Promise<ParentProduct[]> {
+    if (!products) {
+      products = await this.getProductsWithParsedUserfields();
+    }
+    return products
+      .filter((product) => toBoolean(product.userfields.isParent))
+      .map((product) => ({
+        product,
+        tags: product.name.replace("(Generic)", "").trim().split(" "),
+      }));
+  }
+
   parseUserFields(product: Product): SerializedProduct {
     const storeMetadata = JSON.parse(product.userfields.storeMetadata);
     return {
       ...product,
       userfields: {
+        ...product.userfields,
         storeMetadata,
       },
     } as SerializedProduct;
@@ -45,23 +58,30 @@ export class GrocyProductService extends GrocyRestService {
     return { response, objectId };
   }
 
-  async deleteAllProducts() {
-    this.logger.warn("DELETING ALL PRODUCTS IN FIVE SECONDS");
+  async deleteAllChildProducts() {
+    this.logger.warn("DELETING ALL CHILD PRODUCTS IN FIVE SECONDS");
     await setTimeout(5000);
     const products = await this.getProducts();
     for (const product of products) {
-      await this.deleteProduct(product.id as number);
+      if (!toBoolean(product.userfields.isParent)) {
+        await this.deleteProduct(product.id as number);
+      }
     }
   }
 
   async deleteProduct(id: number): Promise<Response> {
     return this.delete(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
   }
-
-  // async addParentProduct() {}
 }
 
 export type Product = components["schemas"]["Product"];
+
+export interface ProductUserfields {
+  storeMetadata: {
+    PNS?: FoodstuffsCartProduct;
+  };
+  isParent: GrocyBoolean;
+}
 
 export interface NewProduct {
   /** Product name */
@@ -94,8 +114,9 @@ export interface NewProduct {
   default_best_before_days_after_open?: number;
   picture_file_name?: string;
   /** Key/value pairs of userfields */
-  userfields?: {
+  userfields: {
     storeMetadata: string;
+    isParent: GrocyBoolean;
   };
   active?: GrocyBoolean;
   calories?: GrocyBoolean;
@@ -104,16 +125,9 @@ export interface NewProduct {
   default_best_before_days_after_thawing?: GrocyBoolean;
   due_type?: GrocyBoolean;
   hide_on_stock_overview?: GrocyBoolean;
-  parent_product_id?: GrocyBoolean;
+  parent_product_id?: number;
   quick_consume_amount?: GrocyBoolean;
   should_not_be_frozen?: GrocyBoolean;
-}
-
-/**
- * storeMetadata userfield once parsed.
- */
-export interface StoreMetadata {
-  "PAK'n'SAVE"?: FoodstuffsCartProduct;
 }
 
 export interface SerializedProduct {
@@ -136,7 +150,10 @@ export interface SerializedProduct {
   picture_file_name?: string;
   row_created_timestamp: string;
   shopping_location_id: number;
-  userfields: {
-    storeMetadata: StoreMetadata;
-  };
+  userfields: ProductUserfields;
+}
+
+export interface ParentProduct {
+  tags: string[];
+  product: SerializedProduct;
 }

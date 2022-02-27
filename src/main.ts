@@ -74,17 +74,16 @@ async function main() {
       new FoodstuffsOrderService(authService),
       new GrocyOrderRecordService(new GrocyUserEntityService())
     );
-    return orderImporter.getUnimportedOrderNumbers();
+    return orderImporter.importLatestOrders();
   }
 }
 
 async function test() {
-  const bb = new BarcodeBuddyCrawler();
-  const barcodes = await bb.getBarcodes();
-  console.log(barcodes);
+  const svc = new GrocyProductService();
+  await svc.deleteAllChildProducts();
 }
 
-test().then(
+main().then(
   () => exit(0),
   (err) => {
     console.error(err);
