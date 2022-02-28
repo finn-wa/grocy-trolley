@@ -2,13 +2,13 @@ import { ReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import { headers } from "@grocy-trolley/utils/headers-builder";
 import { Logger } from "@grocy-trolley/utils/logger";
 import { RestService } from "@grocy-trolley/utils/rest";
-import { FoodstuffsReceiptItemiser, SaleTypeString } from ".";
+import { FoodstuffsReceiptItemiser, PAKNSAVE_URL, SaleTypeString } from ".";
 
 export class FoodstuffsSearchService extends RestService {
   protected readonly logger = new Logger(this.constructor.name);
   private readonly itemiser = new FoodstuffsReceiptItemiser();
 
-  constructor(readonly baseUrl: string) {
+  constructor(protected readonly baseUrl: string = PAKNSAVE_URL) {
     super();
   }
 
@@ -43,6 +43,11 @@ export class FoodstuffsSearchService extends RestService {
       headers().acceptJson().contentTypeJson().build(),
       { SearchTerm: query }
     );
+  }
+
+  async searchProducts(query: string): Promise<ProductResult[]> {
+    const response = await this.search(query);
+    return response.productResults;
   }
 }
 
