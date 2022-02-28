@@ -1,3 +1,4 @@
+import { BarcodeBuddyCrawler } from "@grocy-trolley/barcodebuddy/crawler";
 import {
   GrocyOrderRecordService,
   GrocyProductService,
@@ -8,9 +9,12 @@ import { GrocyStockService } from "@grocy-trolley/grocy/grocy-stock";
 import { Logger } from "@grocy-trolley/utils/logger";
 import prompts, { prompt } from "prompts";
 import {
+  CartProductRef,
   FoodstuffsBaseProduct,
   FoodstuffsCartProduct,
   FoodstuffsListService,
+  FoodstuffsSearchService,
+  ProductResult,
   toCartProductRef,
 } from "..";
 import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
@@ -29,6 +33,10 @@ export class FoodstuffsCartImporter {
 
   async importProducts(products: FoodstuffsBaseProduct[]) {
     const productRefs = products.map((product) => toCartProductRef(product));
+    return this.importProductRefs(productRefs);
+  }
+
+  async importProductRefs(productRefs: CartProductRef[]) {
     await this.cartService.clearCart();
     const cart = await this.cartService.addProductsToCart(productRefs);
     await this.importProductsFromCart(cart);
@@ -97,7 +105,7 @@ export class FoodstuffsCartImporter {
   }
 }
 
-export class FoodstuffsListToCartService {
+export class FoodstuffsListImporter {
   constructor(
     private readonly cartImporter: FoodstuffsCartImporter,
     private readonly listService: FoodstuffsListService
@@ -166,5 +174,79 @@ export class FoodstuffsOrderImporter {
     for (const id of unimportedOrderNumbers) {
       await this.importOrder(id);
     }
+  }
+}
+
+export class FoodstuffsBarcodesImporter {
+  constructor(
+    private readonly bbCrawler: BarcodeBuddyCrawler,
+    private readonly productService: GrocyProductService,
+    private readonly searchService: FoodstuffsSearchService,
+    private readonly cartImporter: FoodstuffsCartImporter
+  ) {}
+
+  async importFromBarcodeBuddy() {
+    const barcodes = await this.bbCrawler.getBarcodes();
+    const cartRefs: Record<string, CartProductRef> = {};
+    for (const barcode of barcodes) {
+      const results = await this.searchService.searchProducts(barcode);
+      let product: ProductResult;
+      if (results.length === 0) {
+        continue;
+      }
+      if (results.length === 1) {
+        product = results[0];
+        console.log(this.getTitle(product));
+      } else {
+        const choice = await prompts([
+          {
+            message: "Results",
+            name: "value",
+            type: "select",
+            choices: [
+              { title: "Skip" },
+              ...results.map((r) => ({
+                title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
+                value: r,
+              })),
+            ],
+          },
+        ]);
+        if (!choice.value) {
+          continue;
+        }
+        product = choice.value as ProductResult;
+      }
+      cartRefs[barcode] = this.toCartRef(product);
+    }
+    const importProducts = await prompts([
+      {
+        message: "Import products?",
+        name: "value",
+        type: "confirm",
+      },
+    ]);
+    if (!importProducts.value) {
+      return;
+    }
+    await this.cartImporter.importProductRefs(Object.values(cartRefs));
+    for (const [barcode, ref] of Object.entries(cartRefs)) {
+      const existing = await this.productService.getProduct(ref.productId);
+      existing.barcode = barcode;
+      await this.productService.updateProduct(existing);
+    }
+  }
+
+  getTitle(res: ProductResult): string {
+    return `${res.ProductBrand} ${res.ProductName} ${res.ProductWeightDisplayName}`;
+  }
+
+  toCartRef(product: ProductResult): CartProductRef {
+    return {
+      productId: product.ProductId,
+      restricted: product.Restricted,
+      sale_type: product.SaleType,
+      quantity: 1,
+    };
   }
 }

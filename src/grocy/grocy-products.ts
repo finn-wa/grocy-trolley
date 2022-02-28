@@ -19,6 +19,10 @@ export class GrocyProductService extends GrocyRestService {
     return products.map((product) => this.parseUserFields(product));
   }
 
+  async getProduct(id: string | number): Promise<Product> {
+    return this.getEntity<"Product">("products", id);
+  }
+
   async getParentProducts(products?: SerializedProduct[]): Promise<ParentProduct[]> {
     if (!products) {
       products = await this.getProductsWithParsedUserfields();
@@ -58,6 +62,10 @@ export class GrocyProductService extends GrocyRestService {
     return { response, objectId };
   }
 
+  async updateProduct(product: Product): Promise<Response> {
+    return this.updateEntity("products", product.id as number, product);
+  }
+
   async deleteAllChildProducts() {
     this.logger.warn("DELETING ALL CHILD PRODUCTS IN FIVE SECONDS");
     await setTimeout(5000);
@@ -72,6 +80,8 @@ export class GrocyProductService extends GrocyRestService {
   async deleteProduct(id: number): Promise<Response> {
     return this.delete(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
   }
+
+  // async get
 }
 
 export type Product = components["schemas"]["Product"];
@@ -126,7 +136,7 @@ export interface NewProduct {
   due_type?: GrocyBoolean;
   hide_on_stock_overview?: GrocyBoolean;
   parent_product_id?: number;
-  quick_consume_amount?: GrocyBoolean;
+  quick_consume_amount?: number;
   should_not_be_frozen?: GrocyBoolean;
 }
 

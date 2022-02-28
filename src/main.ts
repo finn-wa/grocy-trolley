@@ -9,19 +9,27 @@ import {
   GrocyUserEntityService,
 } from "./grocy";
 import { GrocyStockService } from "./grocy/grocy-stock";
+import { FoodstuffsSearchService } from "./store/foodstuffs";
 import { FoodstuffsAuthService } from "./store/foodstuffs/foodstuffs-auth";
 import { FoodstuffsCartService } from "./store/foodstuffs/foodstuffs-cart";
 import { FoodstuffsListService } from "./store/foodstuffs/foodstuffs-lists";
 import { FoodstuffsOrderService } from "./store/foodstuffs/foodstuffs-orders";
 import { FoodstuffsToGrocyConverter } from "./store/foodstuffs/grocy/foodstuffs-converter";
 import {
+  FoodstuffsBarcodesImporter,
   FoodstuffsCartImporter,
-  FoodstuffsListToCartService,
+  FoodstuffsListImporter,
   FoodstuffsOrderImporter,
 } from "./store/foodstuffs/grocy/foodstuffs-importers";
 import { Logger } from "./utils/logger";
 
-type ImportMethod = "IMPORT_CART" | "IMPORT_ORDER" | "IMPORT_LIST" | "IMPORT_RECEIPT";
+type Action =
+  | "IMPORT_CART"
+  | "IMPORT_ORDER"
+  | "IMPORT_LIST"
+  | "IMPORT_RECEIPT"
+  | "GET_BARCODES"
+  | "EXIT";
 
 const env = getEnv();
 const logger = new Logger("main");
@@ -39,42 +47,56 @@ async function main() {
 
   const response = await prompts([
     {
-      name: "importMethod",
-      message: "Select an import method",
+      name: "action",
+      message: "Select an action",
       type: "select",
       choices: [
         { title: "Import from cart", value: "IMPORT_CART" },
         { title: "Import latest orders", value: "IMPORT_ORDER" },
         { title: "Import from list", value: "IMPORT_LIST" },
         { title: "Import from receipt", value: "IMPORT_RECEIPT" },
+        { title: "Get barcodes from BB", value: "GET_BARCODES" },
+        { title: "Exit", value: "EXIT" },
       ],
     },
   ]);
 
-  const importMethod = response["importMethod"] as ImportMethod;
-  if (importMethod === "IMPORT_RECEIPT") {
+  const choice = response["action"] as Action;
+  if (choice === "EXIT") {
+    return;
+  }
+  if (choice === "IMPORT_RECEIPT") {
+    console.log("Not yet");
     return;
   }
 
   await authService.login();
-
-  if (importMethod === "IMPORT_CART") {
+  if (choice === "IMPORT_CART") {
     return cartImporter.importProductsFromCart();
   }
-  if (importMethod === "IMPORT_LIST") {
-    const listImporter = new FoodstuffsListToCartService(
+  if (choice === "IMPORT_LIST") {
+    const listImporter = new FoodstuffsListImporter(
       cartImporter,
       new FoodstuffsListService(authService)
     );
     return listImporter.selectAndImportList();
   }
-  if (importMethod === "IMPORT_ORDER") {
+  if (choice === "IMPORT_ORDER") {
     const orderImporter = new FoodstuffsOrderImporter(
       cartImporter,
       new FoodstuffsOrderService(authService),
       new GrocyOrderRecordService(new GrocyUserEntityService())
     );
     return orderImporter.importLatestOrders();
+  }
+  if (choice === "GET_BARCODES") {
+    const bcImporter = new FoodstuffsBarcodesImporter(
+      new BarcodeBuddyCrawler(),
+      new GrocyProductService(),
+      new FoodstuffsSearchService(),
+      cartImporter
+    );
+    return bcImporter.importFromBarcodeBuddy();
   }
 }
 

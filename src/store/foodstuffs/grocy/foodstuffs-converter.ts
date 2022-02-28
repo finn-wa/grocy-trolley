@@ -52,7 +52,7 @@ export class FoodstuffsToGrocyConverter {
         // Unfortunately, grocy tries to store everything as price per stock unit
         // So using grams as a stock unit rarely works (often price is listed as 0.01)
         // We will only do it if there is a configured parent product
-        if (parent?.product?.qu_id_stock !== purchaseUnitId) {
+        if (parent && parent.product.qu_id_stock !== purchaseUnitId) {
           stockUnitId = this.getUnitId(displayUnit);
           stockQuantityFactor = this.getDisplayQuantity(product.weightDisplayName) ?? 1;
         } else {
@@ -84,6 +84,7 @@ export class FoodstuffsToGrocyConverter {
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
       qu_factor_purchase_to_stock: stockQuantityFactor,
+      quick_consume_amount: stockQuantityFactor,
       product_group_id: productGroupId,
       shopping_location_id: shoppingLocationId,
       userfields: { storeMetadata: JSON.stringify({ PNS: product }), isParent: GrocyFalse },

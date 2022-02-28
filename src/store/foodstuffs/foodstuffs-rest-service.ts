@@ -11,7 +11,7 @@ export abstract class FoodstuffsRestService extends RestService {
     return headers().cookie(this.authService.cookie);
   }
 
-  get baseUrl(): string {
+  protected get baseUrl(): string {
     return this.authService.baseUrl;
   }
 }

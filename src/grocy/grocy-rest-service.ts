@@ -1,6 +1,7 @@
 import { getEnv } from "@grocy-trolley/env";
 import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
 import { RestService } from "@grocy-trolley/utils/rest";
+import { Response } from "node-fetch";
 import { components } from "./api";
 
 type Schemas = components["schemas"];
@@ -8,18 +9,40 @@ type Schemas = components["schemas"];
 export abstract class GrocyRestService extends RestService {
   private readonly env = getEnv();
   private readonly apiKey = this.env.GROCY_API_KEY;
-  readonly baseUrl = this.env.GROCY_URL;
+  protected readonly baseUrl = this.env.GROCY_URL;
 
   protected authHeaders(): HeadersBuilder {
     return headers().append("GROCY-API-KEY", this.apiKey);
   }
 
   protected async getEntities<K extends keyof Schemas>(
-    entity: Schemas["ExposedEntity"]
+    entityName: Schemas["ExposedEntity"]
   ): Promise<Schemas[K][]> {
     return this.getForJson(
-      this.buildUrl("objects/" + entity),
+      this.buildUrl("objects/" + entityName),
       this.authHeaders().acceptJson().build()
+    );
+  }
+
+  protected async getEntity<K extends keyof Schemas>(
+    entityName: Schemas["ExposedEntity"],
+    id: string | number
+  ): Promise<Schemas[K]> {
+    return this.getForJson(
+      this.buildUrl(`objects/${entityName}/${id}`),
+      this.authHeaders().acceptJson().build()
+    );
+  }
+
+  protected async updateEntity<K extends keyof Schemas>(
+    entityName: Schemas["ExposedEntity"],
+    id: string | number,
+    entity: Schemas[K]
+  ): Promise<Response> {
+    return this.postForJson(
+      this.buildUrl(`objects/${entityName}/${id}`),
+      this.authHeaders().acceptJson().contentTypeJson().build(),
+      entity
     );
   }
 }

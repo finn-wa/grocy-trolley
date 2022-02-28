@@ -3,7 +3,7 @@ import { URL, URLSearchParams } from "url";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
-  abstract readonly baseUrl: string;
+  protected abstract readonly baseUrl: string;
   protected abstract readonly logger: Logger;
 
   protected buildUrl(path: string, params?: Record<string, string>): string {
