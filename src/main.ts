@@ -1,6 +1,6 @@
 import { exit } from "process";
 import prompts from "prompts";
-import { BarcodeBuddyCrawler } from "./barcodebuddy/crawler";
+import { BarcodeBuddyScraper } from "./barcodebuddy/scraper";
 import { getEnv } from "./env";
 import {
   GrocyIdMapService,
@@ -91,7 +91,7 @@ async function main() {
   }
   if (choice === "GET_BARCODES") {
     const bcImporter = new FoodstuffsBarcodesImporter(
-      new BarcodeBuddyCrawler(),
+      new BarcodeBuddyScraper(),
       new GrocyProductService(),
       new FoodstuffsSearchService(),
       cartImporter
