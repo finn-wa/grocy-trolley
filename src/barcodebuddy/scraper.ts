@@ -1,7 +1,7 @@
 import { getEnv } from "@grocy-trolley/env";
 import { ElementHandle, firefox } from "playwright";
 
-export class BarcodeBuddyCrawler {
+export class BarcodeBuddyScraper {
   private readonly url: string = getEnv().BARCODEBUDDY_URL;
 
   async getBarcodes(): Promise<string[]> {

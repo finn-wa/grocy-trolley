@@ -1,4 +1,4 @@
-import { BarcodeBuddyCrawler } from "@grocy-trolley/barcodebuddy/crawler";
+import { BarcodeBuddyScraper } from "@grocy-trolley/barcodebuddy/scraper";
 import {
   GrocyOrderRecordService,
   GrocyProductService,
@@ -179,14 +179,14 @@ export class FoodstuffsOrderImporter {
 
 export class FoodstuffsBarcodesImporter {
   constructor(
-    private readonly bbCrawler: BarcodeBuddyCrawler,
+    private readonly bbScraper: BarcodeBuddyScraper,
     private readonly productService: GrocyProductService,
     private readonly searchService: FoodstuffsSearchService,
     private readonly cartImporter: FoodstuffsCartImporter
   ) {}
 
   async importFromBarcodeBuddy() {
-    const barcodes = await this.bbCrawler.getBarcodes();
+    const barcodes = await this.bbScraper.getBarcodes();
     const cartRefs: Record<string, CartProductRef> = {};
     for (const barcode of barcodes) {
       const results = await this.searchService.searchProducts(barcode);
