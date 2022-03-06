@@ -1,19 +1,17 @@
 import { exit } from "process";
 import prompts from "prompts";
-import { BarcodeBuddyScraper } from "./barcodebuddy/scraper";
+import { BarcodeBuddyService } from "./barcodebuddy/scraper";
 import { getEnv } from "./env";
 import {
   GrocyIdMapService,
   GrocyOrderRecordService,
   GrocyProductService,
+  grocyServices,
   GrocyUserEntityService,
 } from "./grocy";
 import { GrocyStockService } from "./grocy/grocy-stock";
-import { FoodstuffsSearchService } from "./store/foodstuffs";
-import { FoodstuffsAuthService } from "./store/foodstuffs/foodstuffs-auth";
-import { FoodstuffsCartService } from "./store/foodstuffs/foodstuffs-cart";
-import { FoodstuffsListService } from "./store/foodstuffs/foodstuffs-lists";
-import { FoodstuffsOrderService } from "./store/foodstuffs/foodstuffs-orders";
+import { foodstuffsServices } from "./store/foodstuffs";
+import { foodstuffsImporters } from "./store/foodstuffs/grocy";
 import { FoodstuffsToGrocyConverter } from "./store/foodstuffs/grocy/foodstuffs-converter";
 import {
   FoodstuffsBarcodesImporter,
@@ -35,15 +33,9 @@ const env = getEnv();
 const logger = new Logger("main");
 
 async function main() {
-  const grocyIdMapService = new GrocyIdMapService();
-  const grocyIdMaps = await grocyIdMapService.getAllIdMaps();
-  const authService = new FoodstuffsAuthService();
-  const cartImporter = new FoodstuffsCartImporter(
-    new FoodstuffsToGrocyConverter(grocyIdMaps),
-    new FoodstuffsCartService(authService),
-    new GrocyProductService(),
-    new GrocyStockService()
-  );
+  const foodstuffs = foodstuffsServices();
+  const grocy = await grocyServices();
+  const importers = foodstuffsImporters(foodstuffs, grocy);
 
   const response = await prompts([
     {
@@ -70,39 +62,26 @@ async function main() {
     return;
   }
 
-  await authService.login();
+  await foodstuffs.authService.login();
+
   if (choice === "IMPORT_CART") {
-    return cartImporter.importProductsFromCart();
+    return importers.cartImporter.importProductsFromCart();
   }
   if (choice === "IMPORT_LIST") {
-    const listImporter = new FoodstuffsListImporter(
-      cartImporter,
-      new FoodstuffsListService(authService)
-    );
-    return listImporter.selectAndImportList();
+    return importers.listImporter.selectAndImportList();
   }
   if (choice === "IMPORT_ORDER") {
-    const orderImporter = new FoodstuffsOrderImporter(
-      cartImporter,
-      new FoodstuffsOrderService(authService),
-      new GrocyOrderRecordService(new GrocyUserEntityService())
-    );
-    return orderImporter.importLatestOrders();
+    return importers.orderImporter.importLatestOrders();
   }
   if (choice === "GET_BARCODES") {
-    const bcImporter = new FoodstuffsBarcodesImporter(
-      new BarcodeBuddyScraper(),
-      new GrocyProductService(),
-      new FoodstuffsSearchService(),
-      cartImporter
-    );
-    return bcImporter.importFromBarcodeBuddy();
+    return importers.barcodeImporter.importFromBarcodeBuddy();
   }
 }
 
 async function test() {
-  const svc = new GrocyProductService();
-  await svc.deleteAllChildProducts();
+  const svc = new BarcodeBuddyService();
+  const barcodes = await svc.getBarcodes();
+  console.log(barcodes);
 }
 
 main().then(

@@ -1,4 +1,5 @@
-import { Logger } from "@grocy-trolley/utils/logger";
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
+import prompts from "prompts";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,
@@ -21,7 +22,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
   }
 
   async clearCart(): Promise<{ success: true }> {
-    const response: { success: boolean } = await this.deleteForJson(
+    const response = await this.deleteForJson<{ success: boolean }>(
       this.buildUrl("Cart/Clear"),
       this.authHeaders().acceptJson().build()
     );
@@ -31,7 +32,47 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
     return response as { success: true };
   }
 
-  addProductsToCart(products: CartProductRef[]): Promise<FoodstuffsCart> {
+  async addProductsToCart(products: CartProductRef[]): Promise<FoodstuffsCart> {
+    try {
+      const cart = await this.postProducts(products);
+      return cart;
+    } catch (error) {
+      this.logger.error(error);
+      this.logger.error("Failed to add products to cart. Falling back to chunks.");
+    }
+    const iter = products[Symbol.iterator]();
+    let chunk: CartProductRef[];
+    do {
+      chunk = Array.from({ length: 5 }, () => iter.next().value).filter((p) => !!p);
+      try {
+        await this.postProducts(chunk);
+      } catch (error) {
+        await this.addProductsToCartIndividually(products);
+      }
+    } while (chunk.length === 5);
+    return this.getCart();
+  }
+
+  private async addProductsToCartIndividually(products: CartProductRef[]): Promise<FoodstuffsCart> {
+    for (const product of products) {
+      this.logger.debug("Adding product " + product.productId);
+      try {
+        await this.postProducts([product]);
+      } catch (error) {
+        this.logger.error("Failed to add product to cart!\n" + prettyPrint(product));
+        this.logger.error(error);
+        const response = await prompts([
+          { name: "resume", type: "confirm", message: "Resume adding products?" },
+        ]);
+        if (!response.resume) {
+          throw error;
+        }
+      }
+    }
+    return this.getCart();
+  }
+
+  private async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
     return this.postForJson(
       this.buildUrl("Cart/Index"),
       this.authHeaders().contentTypeJson().acceptJson().build(),
