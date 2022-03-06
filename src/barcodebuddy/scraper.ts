@@ -1,25 +1,40 @@
 import { getEnv } from "@grocy-trolley/env";
-import { ElementHandle, firefox } from "playwright";
+import { headers } from "@grocy-trolley/utils/headers-builder";
+import { Logger } from "@grocy-trolley/utils/logger";
+import { RestService } from "@grocy-trolley/utils/rest";
+import { HTMLElement, parse } from "node-html-parser";
 
-export class BarcodeBuddyScraper {
-  private readonly url: string = getEnv().BARCODEBUDDY_URL;
+export class BarcodeBuddyService extends RestService {
+  protected readonly baseUrl: `${string}/`;
+  protected readonly logger = new Logger(this.constructor.name);
 
-  async getBarcodes(): Promise<string[]> {
-    const browser = await firefox.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(this.url);
-    const tables = await page.$$("table");
-    const tableBarcodes = await Promise.all(
-      tables.map((table) => this.getBarcodesFromTable(table))
-    );
-    return tableBarcodes.flat();
+  constructor() {
+    super();
+    this.baseUrl = this.validateBaseUrl(getEnv().BARCODEBUDDY_URL);
   }
 
-  private async getBarcodesFromTable(table: ElementHandle): Promise<string[]> {
-    const headers = await table.$$("th");
-    const headerNames = await Promise.all(headers.map((header) => header.innerText()));
-    const barcodeChildNum = headerNames.indexOf("Barcode") + 1;
-    const barcodeCells = await table.$$(`tr > td:nth-child(${barcodeChildNum})`);
-    return Promise.all(barcodeCells.map((cell) => cell.innerText()));
+  async getBarcodes(): Promise<BarcodeBuddyBarcode[]> {
+    const pageText = await this.get(
+      this.buildUrl("index.php"),
+      headers().accept("text/html").build()
+    ).then((body) => this.extractText(body));
+    const page = parse(pageText);
+    return page.querySelectorAll("table").flatMap((t) => this.parseBarcodes(t));
   }
+
+  private parseBarcodes(table: HTMLElement): BarcodeBuddyBarcode[] {
+    const headers = table.querySelectorAll("th").map((header) => header.innerText);
+    const getCells = (headerName: string) => {
+      const selector = `tr > td:nth-child(${headers.indexOf(headerName) + 1})`;
+      return table.querySelectorAll(selector).map((cell) => cell.innerText);
+    };
+    const names = getCells("Name");
+    console.log(names);
+    return getCells("Barcode").map((barcode, i) => ({ barcode, name: names[i] }));
+  }
+}
+
+export interface BarcodeBuddyBarcode {
+  name: string;
+  barcode: string;
 }
