@@ -3,6 +3,7 @@ out
 out-ts
 node_modules
 temp
+src/resources/cache
 
 # Yarn
 .pnp.*
