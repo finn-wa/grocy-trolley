@@ -1,46 +1,23 @@
-import { ReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import { headers } from "@grocy-trolley/utils/headers-builder";
 import { Logger } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
-import { FoodstuffsReceiptItemiser, PAKNSAVE_URL, SaleTypeString } from ".";
+import { setTimeout } from "timers/promises";
+import { SaleTypeString } from ".";
+import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
-export class FoodstuffsSearchService extends RestService {
+export class FoodstuffsSearchService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly itemiser = new FoodstuffsReceiptItemiser();
 
-  constructor(protected readonly baseUrl: string = PAKNSAVE_URL) {
-    super();
-  }
-
-  async importInStoreOrder(receiptScanner: ReceiptScanner, filepath: string) {
-    const text = await receiptScanner.scan(filepath);
-    const scannedItems = await this.itemiser.itemise(text);
-    this.logger.info(scannedItems.join("\n"));
-    for await (const search of scannedItems.map(async (item) => {
-      this.logger.debug(item.name);
-      return [item.name, await this.search(item.name)] as const;
-    })) {
-      const [item, searchRes] = search;
-      this.logger.debug(item);
-      const numResults = searchRes.productResults.length;
-      if (!searchRes.Success || numResults === 0) {
-        this.logger.error("Search failed\n");
-        continue;
-      }
-      const products = searchRes.productResults.slice(0, Math.min(3, numResults));
-      products.forEach((product) => {
-        this.logger.info(
-          `${product.ProductName} (${product.ProductWeightDisplayName}) - ${product.ProductBrand}`
-        );
-        this.logger.info(product.ProductUrl, "\n");
-      });
-    }
-  }
+  private readonly timeout = 1000;
+  private readonly searchCookieKeys = ["STORE_ID_V2", "Region", "AllowRestrictedItems"];
+  private lastSearchTime = 0;
+  private _searchCookie: string | null = null;
 
   async search(query: string): Promise<ProductSearchResponse> {
+    await this.cooldown();
+    const searchCookie = await this.getSearchCookie();
     return this.postForJson(
       this.buildUrl("SearchAutoComplete/AutoComplete"),
-      headers().acceptJson().contentTypeJson().build(),
+      headers().acceptJson().contentTypeJson().cookie(searchCookie).build(),
       { SearchTerm: query }
     );
   }
@@ -48,6 +25,25 @@ export class FoodstuffsSearchService extends RestService {
   async searchProducts(query: string): Promise<ProductResult[]> {
     const response = await this.search(query);
     return response.productResults;
+  }
+
+  private async getSearchCookie(): Promise<string> {
+    if (!this._searchCookie) {
+      const cookieHeaders = await this.authService.getCookieHeaders();
+      const searchCookieHeaders = cookieHeaders.filter((cookie) =>
+        this.searchCookieKeys.some((key) => cookie.startsWith(key))
+      );
+      this._searchCookie = this.authService.toCookieRequestHeader(searchCookieHeaders);
+    }
+    return this._searchCookie;
+  }
+
+  private async cooldown(): Promise<void> {
+    const elapsed = Date.now() - this.lastSearchTime;
+    if (elapsed < this.timeout) {
+      await setTimeout(this.timeout - elapsed);
+    }
+    this.lastSearchTime = Date.now();
   }
 }
 
