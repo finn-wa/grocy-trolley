@@ -1,15 +1,19 @@
-import fetch, { Headers, Response } from "node-fetch";
+import fetch, { Body, Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
-  protected abstract readonly baseUrl: string;
+  protected abstract readonly baseUrl: `${string}/`;
   protected abstract readonly logger: Logger;
 
-  protected buildUrl(path: string, params?: Record<string, string>): string {
-    if (!this.baseUrl.endsWith("/")) {
-      throw new Error(`Base URL must end with a slash, found '${this.baseUrl}'`);
+  protected validateBaseUrl(baseUrl: string): `${string}/` {
+    if (!baseUrl.endsWith("/")) {
+      throw new Error(`Base URL must end with a slash, found: ${this.baseUrl}`);
     }
+    return baseUrl as `${string}/`;
+  }
+
+  protected buildUrl(path: string, params?: Record<string, string>): string {
     if (!params) {
       return this.baseUrl + path;
     }
@@ -18,13 +22,57 @@ export abstract class RestService {
     return url.toString();
   }
 
-  protected async extractJson(response: Response): Promise<unknown> {
+  private async extract<T>(response: Response, extractor: (b: Response) => Promise<T>) {
     if (!response.ok) {
-      throw new Error(await response.text());
+      throw new Error(`[${response.status}] ${prettyPrint(await extractor(response))}`);
     }
-    const body: unknown = await response.json();
-    this.logger.debug(prettyPrint(body));
+    const body = await extractor(response);
+    this.logger.trace(prettyPrint(body));
     return body;
+  }
+
+  protected async extractJson<T>(response: Response): Promise<T> {
+    return this.extract(response, (r) => r.json());
+  }
+
+  protected async extractText(response: Response): Promise<string> {
+    return this.extract(response, (r) => r.text());
+  }
+
+  private async fetchWithMethod(
+    method: string,
+    url: string,
+    headers?: Headers,
+    body?: unknown
+  ): Promise<Response> {
+    this.logger.debug(`${method} ${url}`);
+    if (headers) {
+      this.logger.trace(
+        Array.from(headers.entries())
+          .map(([k, v]) => `${k}=${v}`)
+          .join("\n")
+      );
+    }
+    if (body) {
+      this.logger.trace(body);
+    }
+    const bodyString = body ? JSON.stringify(body) : undefined;
+    const response = await fetch(url, { method, headers, body: bodyString });
+    this.logger.trace(`Response: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Response not OK: ${await response.text()}`);
+    }
+    return response;
+  }
+
+  private async fetchJsonWithMethod<T>(
+    method: string,
+    url: string,
+    headers?: Headers,
+    body?: unknown
+  ): Promise<T> {
+    const response = await this.fetchWithMethod(method, url, headers, body);
+    return this.extractJson(response) as Promise<T>;
   }
 
   protected async get(url: string, headers?: Headers, body?: unknown): Promise<Response> {
@@ -57,41 +105,5 @@ export abstract class RestService {
 
   protected async deleteForJson<T>(url: string, headers?: Headers): Promise<T> {
     return this.fetchJsonWithMethod("DELETE", url, headers);
-  }
-
-  private async fetchWithMethod(
-    method: string,
-    url: string,
-    headers?: Headers,
-    body?: unknown
-  ): Promise<Response> {
-    this.logger.info(`${method} ${url}`);
-    if (headers) {
-      this.logger.debug(
-        Array.from(headers.entries())
-          .map(([k, v]) => `${k}=${v}`)
-          .join("\n")
-      );
-    }
-    if (body) {
-      this.logger.debug(body);
-    }
-    const bodyString = body ? JSON.stringify(body) : undefined;
-    const response = await fetch(url, { method, headers, body: bodyString });
-    this.logger.debug(`Response: ${response.status}`);
-    if (!response.ok) {
-      throw new Error(`Response not OK: ${await response.text()}`);
-    }
-    return response;
-  }
-
-  private async fetchJsonWithMethod<T>(
-    method: string,
-    url: string,
-    headers?: Headers,
-    body?: unknown
-  ): Promise<T> {
-    const response = await this.fetchWithMethod(method, url, headers, body);
-    return this.extractJson(response) as Promise<T>;
   }
 }

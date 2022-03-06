@@ -7,12 +7,13 @@ export function prettyPrint(obj: any) {
 }
 
 export enum LogLevel {
+  TRACE,
   DEBUG,
   INFO,
   WARN,
   ERROR,
 }
-const LOG_LEVELS = ["DEBUG", "INFO", "WARN", "ERROR"] as const;
+const LOG_LEVELS = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR"] as const;
 type LogLevelString = typeof LOG_LEVELS[number];
 
 export function isLogLevel(level: string): level is LogLevelString {
@@ -33,20 +34,24 @@ export class Logger {
   private out(level: LogLevel, message: any, ...params: any[]) {
     if (this.level <= level) {
       process.stdout.write(this.prefix(level));
-      console.log(message, params);
+      params.length ? console.log(message, params) : console.log(message);
     }
   }
 
   private err(level: LogLevel, message: any, ...params: any[]) {
     if (this.level <= level) {
       process.stderr.write(this.prefix(level));
-      console.error(message, params);
+      params.length ? console.error(message, params) : console.error(message);
     }
   }
 
   private prefix(level: LogLevel) {
     const date = new Date().toISOString().match(/\d{2}:\d{2}:\d{2}.\d{3}/) as RegExpMatchArray;
     return `${date[0]} | ${LogLevel[level]} | ${this.name} | `;
+  }
+
+  trace(message: any, ...params: any[]) {
+    this.out(LogLevel.TRACE, message, params);
   }
 
   debug(message: any, ...params: any[]) {
