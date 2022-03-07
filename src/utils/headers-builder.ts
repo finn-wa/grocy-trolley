@@ -9,6 +9,11 @@ export class HeadersBuilder {
     this.headers = new Headers(init);
   }
 
+  apikey(key: string): HeadersBuilder {
+    this.headers.append("apikey", key);
+    return this;
+  }
+
   contentType(mimeType: string): HeadersBuilder {
     this.headers.append("Content-Type", mimeType);
     return this;

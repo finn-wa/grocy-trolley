@@ -47,7 +47,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
       try {
         await this.postProducts(chunk);
       } catch (error) {
-        await this.addProductsToCartIndividually(products);
+        await this.addProductsToCartIndividually(chunk);
       }
     } while (chunk.length === 5);
     return this.getCart();

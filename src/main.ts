@@ -2,23 +2,9 @@ import { exit } from "process";
 import prompts from "prompts";
 import { BarcodeBuddyService } from "./barcodebuddy/scraper";
 import { getEnv } from "./env";
-import {
-  GrocyIdMapService,
-  GrocyOrderRecordService,
-  GrocyProductService,
-  grocyServices,
-  GrocyUserEntityService,
-} from "./grocy";
-import { GrocyStockService } from "./grocy/grocy-stock";
+import { grocyServices } from "./grocy";
 import { foodstuffsServices } from "./store/foodstuffs";
 import { foodstuffsImporters } from "./store/foodstuffs/grocy";
-import { FoodstuffsToGrocyConverter } from "./store/foodstuffs/grocy/foodstuffs-converter";
-import {
-  FoodstuffsBarcodesImporter,
-  FoodstuffsCartImporter,
-  FoodstuffsListImporter,
-  FoodstuffsOrderImporter,
-} from "./store/foodstuffs/grocy/foodstuffs-importers";
 import { Logger } from "./utils/logger";
 
 type Action =
@@ -57,13 +43,12 @@ async function main() {
   if (choice === "EXIT") {
     return;
   }
-  if (choice === "IMPORT_RECEIPT") {
-    console.log("Not yet");
-    return;
-  }
 
   await foodstuffs.authService.login();
-
+  if (choice === "IMPORT_RECEIPT") {
+    const filepathRes = await prompts([{ name: "path", type: "text", message: "Enter filepath" }]);
+    return importers.receiptImporter.importReceipt(filepathRes.path);
+  }
   if (choice === "IMPORT_CART") {
     return importers.cartImporter.importProductsFromCart();
   }

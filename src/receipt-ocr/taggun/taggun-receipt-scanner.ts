@@ -1,15 +1,19 @@
-import { paths } from "./api";
-import FormData from "form-data";
-import fs from "fs";
-import fetch from "node-fetch";
-import path from "path";
+import { getEnv } from "@grocy-trolley/env";
 import { ReceiptScanner } from "@grocy-trolley/receipt-ocr/receipts.model";
-import { prettyPrint } from "@grocy-trolley/utils/logger";
+import { headers } from "@grocy-trolley/utils/headers-builder";
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
+import { RestService } from "@grocy-trolley/utils/rest";
+import { FormData } from "formdata-node";
+import { createReadStream } from "fs";
+import { readFile } from "fs/promises";
+import path from "path";
+import { basename } from "path/posix";
+import { paths } from "./api";
 
-const endpoint = "/api/receipt/v1/verbose/file";
+const endpoint = "/api/receipt/v1/verbose/encoded";
 const method = "post";
 type ReceiptApi = paths[typeof endpoint][typeof method];
-type ReceiptFormData = ReceiptApi["parameters"]["formData"];
+type ReceiptData = ReceiptApi["parameters"]["body"]["body"];
 type ReceiptResponseOk = ReceiptApi["responses"]["200"]["schema"];
 type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
 
@@ -20,8 +24,10 @@ type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
  *
  * @see https://www.taggun.io/
  */
-export class TaggunReceiptScanner implements ReceiptScanner {
-  constructor(private readonly apiKey: string) {}
+export class TaggunReceiptScanner extends RestService implements ReceiptScanner {
+  protected readonly baseUrl = "https://api.taggun.io/";
+  protected readonly logger = new Logger(this.constructor.name);
+  private readonly apiKey = getEnv().TAGGUN_API_KEY;
 
   async scan(filePath: string): Promise<string> {
     const taggunRes = await this.fetchReceiptData(filePath);
@@ -35,31 +41,27 @@ export class TaggunReceiptScanner implements ReceiptScanner {
   }
 
   async fetchReceiptData(filePath: string): Promise<ReceiptResponseOk | ReceiptResponseError> {
-    const url = "https://api.taggun.io" + endpoint;
-    const headers = {
-      Accept: "application/json",
-      apikey: this.apiKey,
-      "Content-Type": this.getContentType(filePath),
-    };
-    const body = this.createFormData(filePath, {
+    const imageData = await readFile(filePath, { encoding: "base64" });
+    const body: ReceiptData = {
+      image: imageData,
+      contentType: this.getContentType(filePath),
+      filename: basename(filePath),
+      near: "Auckland, New Zealand",
       refresh: false,
       language: "en",
-    });
-    const response = await fetch(url, { headers, method, body });
-    return response.json();
-  }
-
-  private createFormData(filePath: string, data: ReceiptFormData): FormData {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, (value as any).toString());
-    });
-    const fileStream = fs.createReadStream(filePath, { autoClose: true });
-    formData.append("file", fileStream, {
-      filename: path.basename(filePath),
-      contentType: this.getContentType(filePath),
-    });
-    return formData;
+      extractTime: false,
+      incognito: false,
+    };
+    return this.postForJson(
+      this.buildUrl("api/receipt/v1/verbose/encoded"),
+      headers()
+        .acceptJson()
+        .contentTypeJson()
+        .apikey(this.apiKey)
+        .append("Accept-Encoding", "gzip, deflate, br")
+        .build(),
+      body
+    );
   }
 
   private getContentType(filePath: string) {
@@ -70,7 +72,7 @@ export class TaggunReceiptScanner implements ReceiptScanner {
       case ".pdf":
         return "application/pdf";
       default:
-        return "image/jpg";
+        return "image/jpeg";
     }
   }
 }

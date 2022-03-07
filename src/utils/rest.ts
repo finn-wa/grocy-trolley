@@ -1,5 +1,6 @@
-import fetch, { Body, Headers, Response } from "node-fetch";
+import fetch, { Body, BodyInit, Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
+import { APPLICATION_JSON } from "./headers-builder";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
@@ -32,7 +33,7 @@ export abstract class RestService {
   }
 
   protected async extractJson<T>(response: Response): Promise<T> {
-    return this.extract(response, (r) => r.json());
+    return this.extract<T>(response, (r) => r.json() as Promise<T>);
   }
 
   protected async extractText(response: Response): Promise<string> {
@@ -43,7 +44,7 @@ export abstract class RestService {
     method: string,
     url: string,
     headers?: Headers,
-    body?: unknown
+    body?: BodyInit | any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
     if (headers) {
@@ -56,8 +57,11 @@ export abstract class RestService {
     if (body) {
       this.logger.trace(body);
     }
-    const bodyString = body ? JSON.stringify(body) : undefined;
-    const response = await fetch(url, { method, headers, body: bodyString });
+    const contentType = headers?.get("content-type");
+    if (contentType === APPLICATION_JSON && body) {
+      body = JSON.stringify(body);
+    }
+    const response = await fetch(url, { method, headers, body });
     this.logger.trace(`Response: ${response.status}`);
     if (!response.ok) {
       throw new Error(`Response not OK: ${await response.text()}`);
@@ -69,33 +73,57 @@ export abstract class RestService {
     method: string,
     url: string,
     headers?: Headers,
-    body?: unknown
+    body?: BodyInit | unknown
   ): Promise<T> {
     const response = await this.fetchWithMethod(method, url, headers, body);
     return this.extractJson(response) as Promise<T>;
   }
 
-  protected async get(url: string, headers?: Headers, body?: unknown): Promise<Response> {
+  protected async get(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<Response> {
     return this.fetchWithMethod("GET", url, headers, body);
   }
 
-  protected async getForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
+  protected async getForJson<T>(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<T> {
     return this.fetchJsonWithMethod("GET", url, headers, body);
   }
 
-  protected async post(url: string, headers?: Headers, body?: unknown): Promise<Response> {
+  protected async post(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<Response> {
     return this.fetchWithMethod("POST", url, headers, body);
   }
 
-  protected async postForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
+  protected async postForJson<T>(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<T> {
     return this.fetchJsonWithMethod("POST", url, headers, body);
   }
 
-  protected async put(url: string, headers?: Headers, body?: unknown): Promise<Response> {
+  protected async put(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<Response> {
     return this.fetchWithMethod("PUT", url, headers, body);
   }
 
-  protected async putForJson<T>(url: string, headers?: Headers, body?: unknown): Promise<T> {
+  protected async putForJson<T>(
+    url: string,
+    headers?: Headers,
+    body?: BodyInit | unknown
+  ): Promise<T> {
     return this.fetchJsonWithMethod("PUT", url, headers, body);
   }
 
