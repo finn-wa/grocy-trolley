@@ -1,0 +1,19 @@
+{
+  "ParsedResults": [
+    {
+      "TextOverlay": {
+        "Lines": [],
+        "HasOverlay": false,
+        "Message": "Text overlay is not provided as it is not requested"
+      },
+      "TextOrientation": "0",
+      "FileParseExitCode": 1,
+      "ParsedText": "ALL on! MILK BARISTA IL\r\n$10.09\r\nALLEGRO VIRGIN OIL IL\r\nto, 99\r\nBLUSH\r\ncoo\r\nCADBURY BOURNVILLE cocon\r\nMICELLAR 400ML\r\nBAG MILK CHOCOLATE IBOG\r\nFRUIT DRINK POMEGRANATE IL\r\nMCCOY FRUIT DRINK RUBY\r\n$2.60\r\nMCCOY JUICE CLASSIC CRANBERRY IL\r\nEGGS FREE RANGE MIXED\r\n13.60\r\nFINEST CHEESE 125G\r\nFINEST 150G\r\n$3.99\r\nREXONA UMN R/ON SEXY\r\n$3.09\r\nU BY KOTEX I.JI WINGED\r\nVN PRAWN SKEWER GARLIC (PERL')\r\n$4.95\r\n$0.99\r\nVN PRAWN SKEWER SWEET CHILLI (PRFZ)\r\n$4.95\r\n$0,99\r\nPAMS BLUEBERRIES PP 125G\r\nPAMS BLUEBERRIES PP\r\nPOTATOES YELLOW\r\n$4.34\r\n1.451\r\n$2.99/Kg\r\nPICK N MIX\r\n$2.90\r\n0.200\r\n$14.60/Kg\r\nLETS EAT FROZEN GOLDEN NUGGETS 400G\r\nMCCAIN PIZZA MARGHERITA\r\nPAMS FINEST SAUSGE ROLLS SPNCH/FETA 400G\r\n$2.79\r\nANCHOR SOUR CREAM ORIGINAL 250G\r\n$5.99\r\nGROVE FRUIT JUICE ORANGE 21\r\n$3.99\r\nLISAS TOPPINGS HUMMUS DUKKH/PSTCHO 200G\r\n$4.29\r\nMSR DOUBLE CREAM CAMEMBERT 125G\r\n$4.85\r\nPAMS BUTTER 500G\r\n$6.29\r\nVILLANI MONTANARO SALAMI SLICED 70G\r\nKORBONO OH WHAT FUN TABLECLOTH\r\n$1 .55\r\nNOVELTY CHRISTMAS STRAUS 2PK\r\n3}\r\n$2.49\r\nSURV CHRTMS DSGN NAPKIN 3PLY ASSRTO 20PK\r\nSupervisor\r\nMATEUS ROSE 750ML\r\n$10.99\r\nRUFF INO PROSECCO 750ML\r\n$14.49\r\nSupervisor t$72\r\nBAKERY - DEPARTMENT KEY\r\nFRIED B/STRIP SNACK\r\n$2.00\r\nMEYER CHEESE FENUGREEK i30G\r\nQUINCE FRUIT PASTE 120G\r\n53 BALANCE DUE\r\n-$0.68\r\n$10.49\r\n$7.47\r\n$2.33\r\n$21.98\r\n$28.98\r\n$3.00\r\n$6.00\r\n$6.99\r\n$4.99\r\n'227.70\r\n",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    }
+  ],
+  "OCRExitCode": 1,
+  "IsErroredOnProcessing": false,
+  "ProcessingTimeInMilliseconds": "1328"
+}
