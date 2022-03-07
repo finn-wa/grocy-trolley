@@ -5,6 +5,7 @@ const EnvVars = [
   "GROCY_API_KEY",
   "GROCY_URL",
   "GT_LOG_LEVEL",
+  "OCR_API_KEY",
   "PAKNSAVE_EMAIL",
   "PAKNSAVE_PASSWORD",
   "TAGGUN_API_KEY",
