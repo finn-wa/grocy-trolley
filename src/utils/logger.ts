@@ -31,17 +31,17 @@ export class Logger {
     this.level = LogLevel[level];
   }
 
-  private out(level: LogLevel, message: any, ...params: any[]) {
+  private out(level: LogLevel, message: any, params: any[]) {
     if (this.level <= level) {
       process.stdout.write(this.prefix(level));
-      params.length ? console.log(message, params) : console.log(message);
+      params.length > 0 ? console.log(message, params) : console.log(message);
     }
   }
 
-  private err(level: LogLevel, message: any, ...params: any[]) {
+  private err(level: LogLevel, message: any, params: any[]) {
     if (this.level <= level) {
       process.stderr.write(this.prefix(level));
-      params.length ? console.error(message, params) : console.error(message);
+      params.length > 0 ? console.error(message, params) : console.error(message);
     }
   }
 

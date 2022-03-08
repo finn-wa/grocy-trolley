@@ -19,6 +19,7 @@ const env = getEnv();
 const logger = new Logger("main");
 
 async function main() {
+  logger.debug("Loading services...");
   const foodstuffs = foodstuffsServices();
   const grocy = await grocyServices();
   const importers = foodstuffsImporters(foodstuffs, grocy);
@@ -47,7 +48,7 @@ async function main() {
   await foodstuffs.authService.login();
   if (choice === "IMPORT_RECEIPT") {
     const filepathRes = await prompts([{ name: "path", type: "text", message: "Enter filepath" }]);
-    return importers.receiptImporter.importReceipt(filepathRes.path);
+    return importers.receiptImporter.importReceipt(filepathRes.path as string);
   }
   if (choice === "IMPORT_CART") {
     return importers.cartImporter.importProductsFromCart();
