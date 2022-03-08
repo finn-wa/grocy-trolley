@@ -1,3 +1,4 @@
+import { GrocyProductService } from "@grocy-trolley/grocy";
 import { ReceiptScanner } from "@grocy-trolley/receipt-ocr";
 import { ReceiptItem, ReceiptItemiser } from "@grocy-trolley/receipt-ocr/receipts.model";
 import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
@@ -5,6 +6,8 @@ import { readFile, writeFile } from "fs/promises";
 import prompts from "prompts";
 import { FoodstuffsCartImporter } from ".";
 import { CartProductRef, FoodstuffsSearchService } from "..";
+import { toCartProductRef } from "../foodstuffs-cart";
+import { FoodstuffsCartProduct } from "../foodstuffs.model";
 
 export class FoodstuffsReceiptImporter implements ReceiptItemiser {
   private readonly logger = new Logger(this.constructor.name);
@@ -12,7 +15,8 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
   constructor(
     private readonly cartImporter: FoodstuffsCartImporter,
     private readonly searchService: FoodstuffsSearchService,
-    private readonly scanner: ReceiptScanner
+    private readonly scanner: ReceiptScanner,
+    private readonly grocyProductService: GrocyProductService
   ) {}
 
   async importReceipt(filepath: string): Promise<void> {
@@ -65,13 +69,27 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
 
   async importScannedItems(scannedItems: ReceiptItem[]) {
     const notFound: ReceiptItem[] = [];
-    const cartRefs: CartProductRef[] = [];
+    const cartRefs: Record<string, CartProductRef> = {};
+    const existingProducts = await this.grocyProductService
+      .getProductsWithParsedUserfields()
+      .then((products) => products.filter((p) => p.userfields.storeMetadata?.receiptNames?.length));
+
     for (const item of scannedItems) {
+      const existingMatch = existingProducts.find((p) =>
+        (p.userfields.storeMetadata?.receiptNames as string[]).includes(item.name)
+      );
+      if (existingMatch) {
+        this.logger.info(`Matched receipt item ${item.name} to Grocy product!`);
+        cartRefs[item.name] = toCartProductRef(
+          existingMatch.userfields.storeMetadata?.PNS as FoodstuffsCartProduct
+        );
+        continue;
+      }
       const searchRes = await this.searchService.searchAndSelectProduct(item.name);
       if (searchRes === null) {
         notFound.push(item);
       } else {
-        cartRefs.push(this.searchService.resultToCartRef(searchRes));
+        cartRefs[item.name] = this.searchService.resultToCartRef(searchRes);
       }
     }
     this.logger.info("Failed to find:\n" + prettyPrint(notFound));
@@ -84,7 +102,37 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       },
     ]);
     if (importProducts.value) {
-      return this.cartImporter.importProductRefs(cartRefs);
+      return this.importReceiptCartRefs(cartRefs);
+    }
+  }
+
+  /**
+   * Imports resolved receipt items.
+   * @param cartRefs map of receipt item name to cart ref
+   */
+  async importReceiptCartRefs(cartRefs: Record<string, CartProductRef>) {
+    await this.cartImporter.importProductRefs(Object.values(cartRefs));
+    const productsByPnsId = await this.grocyProductService.getProductsByFoodstuffsId();
+    for (const [name, ref] of Object.entries(cartRefs)) {
+      const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];
+      if (!product) {
+        this.logger.error(`No product found for ${ref.productId} / ${name}`);
+        continue;
+      }
+      const userfields = await this.grocyProductService.getProductUserfields(product.id);
+      const storeMetadata = userfields.storeMetadata ?? {};
+      const receiptNames = storeMetadata.receiptNames ?? [];
+      if (!receiptNames.includes(name)) {
+        receiptNames.push(name);
+      }
+      const updatedUserfields = {
+        ...userfields,
+        storeMetadata: {
+          ...storeMetadata,
+          receiptNames: [name, ...receiptNames],
+        },
+      };
+      await this.grocyProductService.updateProductUserfields(product.id, updatedUserfields);
     }
   }
 
@@ -99,7 +147,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       line = lines.next();
       if (!line.value) break;
       const lineValue = line.value.trim();
-      if (lineValue.startsWith("Supervisor")) {
+      if (lineValue.startsWith("Supervisor") || lineValue.startsWith("Restricted")) {
         continue;
       }
       const split = lineValue.split("$");

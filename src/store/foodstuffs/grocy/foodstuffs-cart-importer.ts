@@ -34,7 +34,7 @@ export class FoodstuffsCartImporter {
     const existingProducts = await this.grocyProductService.getProductsWithParsedUserfields();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
-      .map((product) => product.userfields.storeMetadata.PNS?.productId);
+      .map((product) => product.userfields.storeMetadata?.PNS?.productId);
 
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
       (p) => !existingProductIds.includes(p.productId)
@@ -66,12 +66,7 @@ export class FoodstuffsCartImporter {
     if (!cart) {
       cart = await this.cartService.getCart();
     }
-    const existingProducts = await this.grocyProductService.getProductsWithParsedUserfields();
-    const productsByPnsId: Record<string, SerializedProduct> = Object.fromEntries(
-      existingProducts
-        .filter((p) => p.userfields?.storeMetadata?.PNS)
-        .map((product) => [product.userfields.storeMetadata.PNS?.productId, product])
-    );
+    const productsByPnsId = await this.grocyProductService.getProductsByFoodstuffsId();
     // Not including unavailable products for stock
     for (const product of cart.products) {
       const grocyProduct = productsByPnsId[product.productId];
