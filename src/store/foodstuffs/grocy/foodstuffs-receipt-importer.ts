@@ -24,7 +24,16 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
     let scannedItems: ReceiptItem[] = [];
     const cachedScannedItems = await this.getCachedScannedItems(scannedItemsPath);
     if (cachedScannedItems !== null) {
-      scannedItems = cachedScannedItems;
+      const confirm = await prompts([
+        {
+          name: "useCache",
+          message: `Use cached items found at "${filepath}"?`,
+          type: "confirm",
+        },
+      ]);
+      if (confirm.useCache) {
+        scannedItems = cachedScannedItems;
+      }
     }
     if (scannedItems.length === 0) {
       const text = await this.scanner.scan(filepath);
@@ -54,17 +63,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       this.logger.debug("No cached scanned items found at " + filepath);
       return null;
     }
-    const confirm = await prompts([
-      {
-        name: "useCache",
-        message: `Use cached items found at "${filepath}"?`,
-        type: "confirm",
-      },
-    ]);
-    if (confirm.useCache) {
-      return JSON.parse(itemsString);
-    }
-    return null;
+    return JSON.parse(itemsString) as ReceiptItem[];
   }
 
   async importScannedItems(scannedItems: ReceiptItem[]) {
@@ -121,15 +120,13 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       }
       const userfields = await this.grocyProductService.getProductUserfields(product.id);
       const storeMetadata = userfields.storeMetadata ?? {};
-      const receiptNames = storeMetadata.receiptNames ?? [];
-      if (!receiptNames.includes(name)) {
-        receiptNames.push(name);
-      }
+      const receiptNames = new Set(userfields?.storeMetadata?.receiptNames ?? []);
+      receiptNames.add(name);
       const updatedUserfields = {
         ...userfields,
         storeMetadata: {
           ...storeMetadata,
-          receiptNames: [name, ...receiptNames],
+          receiptNames: Array.from(receiptNames),
         },
       };
       await this.grocyProductService.updateProductUserfields(product.id, updatedUserfields);
