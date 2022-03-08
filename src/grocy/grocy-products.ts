@@ -16,11 +16,16 @@ export class GrocyProductService extends GrocyRestService {
 
   async getProductsWithParsedUserfields(): Promise<SerializedProduct[]> {
     const products = await this.getProducts();
-    return products.map((product) => this.parseUserFields(product));
+    return products.map((product) => this.deserialiseProductUserfields(product));
   }
 
   async getProduct(id: string | number): Promise<Product> {
     return this.getEntity<"Product">("products", id);
+  }
+
+  async getProductWithParsedUserfields(id: string | number): Promise<SerializedProduct> {
+    const product = await this.getProduct(id);
+    return this.deserialiseProductUserfields(product);
   }
 
   async getParentProducts(products?: SerializedProduct[]): Promise<ParentProduct[]> {
@@ -35,15 +40,30 @@ export class GrocyProductService extends GrocyRestService {
       }));
   }
 
-  parseUserFields(product: Product): SerializedProduct {
-    const storeMetadata = JSON.parse(product.userfields.storeMetadata);
+  async getProductsByFoodstuffsId(): Promise<Record<string, SerializedProduct>> {
+    const existingProducts = await this.getProductsWithParsedUserfields();
+    return Object.fromEntries(
+      existingProducts
+        .filter((p) => p.userfields?.storeMetadata?.PNS)
+        .map((product) => [product.userfields.storeMetadata?.PNS?.productId, product])
+    );
+  }
+
+  deserialiseProductUserfields(product: Product): SerializedProduct {
     return {
       ...product,
-      userfields: {
-        ...product.userfields,
-        storeMetadata,
-      },
+      userfields: this.deserialiseUserfields(product.userfields),
     } as SerializedProduct;
+  }
+
+  deserialiseUserfields(userfields: Product["userfields"]): ProductUserfields {
+    const storeMetadata = userfields.storeMetadata
+      ? JSON.parse(userfields.storeMetadata)
+      : undefined;
+    return {
+      ...userfields,
+      storeMetadata,
+    };
   }
 
   async createProduct(product: NewProduct): Promise<CreatedObjectResponse> {
@@ -64,6 +84,29 @@ export class GrocyProductService extends GrocyRestService {
 
   async updateProduct(product: Product): Promise<Response> {
     return this.updateEntity("products", product.id as number, product);
+  }
+
+  async getProductUserfields(productId: string | number): Promise<ProductUserfields> {
+    const userfields = await this.getForJson<Product["userfields"]>(
+      this.buildUrl(`userfields/products/${productId}`),
+      this.authHeaders().acceptJson().build()
+    );
+    return this.deserialiseUserfields(userfields);
+  }
+
+  async updateProductUserfields(
+    productId: string | number,
+    userfields: ProductUserfields
+  ): Promise<Response> {
+    const serialisedUserfields = {
+      ...userfields,
+      storeMetadata: JSON.stringify(userfields.storeMetadata),
+    };
+    return this.put(
+      this.buildUrl(`userfields/products/${productId}`),
+      this.authHeaders().contentTypeJson().build(),
+      serialisedUserfields
+    );
   }
 
   async deleteAllChildProducts() {
@@ -87,10 +130,11 @@ export class GrocyProductService extends GrocyRestService {
 export type Product = components["schemas"]["Product"];
 
 export interface ProductUserfields {
-  storeMetadata: {
+  storeMetadata?: {
     PNS?: FoodstuffsCartProduct;
+    receiptNames?: string[];
   };
-  isParent: GrocyBoolean;
+  isParent?: GrocyBoolean;
 }
 
 export interface NewProduct {

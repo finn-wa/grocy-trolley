@@ -46,8 +46,9 @@ export function foodstuffsImporters(
     receiptImporter: new FoodstuffsReceiptImporter(
       cartImporter,
       foodstuffs.searchService,
-      new TaggunReceiptScanner()
       // new OcrReceiptScanner()
+      new TaggunReceiptScanner(),
+      grocy.productService
     ),
   };
 }

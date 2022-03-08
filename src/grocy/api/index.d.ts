@@ -2318,7 +2318,7 @@ export interface components {
       /** @description Key/value pairs of userfields */
       userfields: {
         isParent?: GrocyBoolean;
-        storeMetadata: string;
+        storeMetadata?: string;
       };
     };
     /** @example [object Object] */

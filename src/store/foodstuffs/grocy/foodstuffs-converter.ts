@@ -38,6 +38,12 @@ export class FoodstuffsToGrocyConverter {
     let quantitySuffix: string;
 
     if (purchaseSaleType.type === "UNITS") {
+      if (!product.weightDisplayName) {
+        this.logger.warn(
+          'Product has no weightDisplayName, defaulting to "ea": ' + prettyPrint(product)
+        );
+        product.weightDisplayName = "ea";
+      }
       const displayUnit = this.getUnitFromString(product.weightDisplayName);
       // Foodstuffs is inconsistent with capitalisation of units
       quantitySuffix =
@@ -92,7 +98,7 @@ export class FoodstuffsToGrocyConverter {
   }
 
   forAddStock(product: SerializedProduct, storeId: string): StockActionRequestBody<"add"> {
-    const fsProduct = product.userfields.storeMetadata.PNS;
+    const fsProduct = product.userfields.storeMetadata?.PNS;
     if (!fsProduct) {
       throw new Error(
         `Product "${product.name}" has no PNS store metadata:\n${prettyPrint(product)}`
