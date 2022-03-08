@@ -13,8 +13,8 @@ export enum LogLevel {
   WARN,
   ERROR,
 }
-const LOG_LEVELS = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR"] as const;
-type LogLevelString = typeof LOG_LEVELS[number];
+export const LOG_LEVELS = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR"] as const;
+export type LogLevelString = typeof LOG_LEVELS[number];
 
 export function isLogLevel(level: string): level is LogLevelString {
   return (LOG_LEVELS as readonly string[]).includes(level);

@@ -21,7 +21,7 @@ export function initEnv(overrides: Partial<Env>) {
   if (envValidated) {
     throw new Error("initEnv has already been called");
   }
-  Object.assign(overrides, env);
+  Object.assign(env, overrides);
   const undefinedVars = EnvVars.filter((envVar) => env[envVar] === undefined);
   if (undefinedVars.length > 0) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
