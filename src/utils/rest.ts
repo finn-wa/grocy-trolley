@@ -1,4 +1,4 @@
-import fetch, { Body, BodyInit, Headers, Response } from "node-fetch";
+import fetch, { BodyInit, Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
 import { APPLICATION_JSON } from "./headers-builder";
 import { Logger, prettyPrint } from "./logger";

@@ -1,76 +1,81 @@
+import { Argument, Option, program } from "commander";
 import { exit } from "process";
 import prompts from "prompts";
-import { BarcodeBuddyService } from "./barcodebuddy/scraper";
-import { getEnv } from "./env";
+import { initEnv } from "./env";
 import { grocyServices } from "./grocy";
 import { foodstuffsServices } from "./store/foodstuffs";
 import { foodstuffsImporters } from "./store/foodstuffs/grocy";
-import { Logger } from "./utils/logger";
+import { LogLevelString, LOG_LEVELS } from "./utils/logger";
 
-type Action =
-  | "IMPORT_CART"
-  | "IMPORT_ORDER"
-  | "IMPORT_LIST"
-  | "IMPORT_RECEIPT"
-  | "GET_BARCODES"
-  | "EXIT";
+const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
+type ImportSource = typeof IMPORT_SOURCES[number];
 
-const env = getEnv();
-const logger = new Logger("main");
+program
+  .name("grocy-trolley")
+  .description("Links Grocy to PAK'n'SAVE online shopping")
+  .version("0.0.1")
+  .addOption(
+    new Option("-l, --log-level <level>").choices(LOG_LEVELS).default("DEBUG").makeOptionMandatory()
+  );
 
-async function main() {
-  logger.debug("Loading services...");
-  const foodstuffs = foodstuffsServices();
-  const grocy = await grocyServices();
-  const importers = foodstuffsImporters(foodstuffs, grocy);
+program.command("prompt", { isDefault: true, hidden: true }).action(promptForAction);
 
+program
+  .command("import")
+  .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
+  .action((source) => importFrom(source));
+
+async function promptForAction() {
   const response = await prompts([
     {
       name: "action",
       message: "Select an action",
       type: "select",
       choices: [
-        { title: "Import from cart", value: "IMPORT_CART" },
-        { title: "Import latest orders", value: "IMPORT_ORDER" },
-        { title: "Import from list", value: "IMPORT_LIST" },
-        { title: "Import from receipt", value: "IMPORT_RECEIPT" },
-        { title: "Get barcodes from BB", value: "GET_BARCODES" },
-        { title: "Exit", value: "EXIT" },
+        { title: "Import from cart", value: "cart" },
+        { title: "Import latest orders", value: "order" },
+        { title: "Import from list", value: "list" },
+        { title: "Import from receipt", value: "receipt" },
+        { title: "Get barcodes from BB", value: "barcodes" },
+        { title: "Exit", value: "exit" },
       ],
     },
   ]);
-
-  const choice = response["action"] as Action;
-  if (choice === "EXIT") {
+  const choice = response["action"] as ImportSource | "exit";
+  if (choice === "exit") {
     return;
   }
+  return importFrom(choice);
+}
 
+async function importFrom(choice: ImportSource) {
+  const opts = program.opts() as { logLevel: LogLevelString };
+  initEnv({ GT_LOG_LEVEL: opts.logLevel });
+
+  const foodstuffs = foodstuffsServices();
+  const grocy = await grocyServices();
+  const importers = foodstuffsImporters(foodstuffs, grocy);
   await foodstuffs.authService.login();
-  if (choice === "IMPORT_RECEIPT") {
+
+  if (choice === "receipt") {
     const filepathRes = await prompts([{ name: "path", type: "text", message: "Enter filepath" }]);
     return importers.receiptImporter.importReceipt(filepathRes.path as string);
   }
-  if (choice === "IMPORT_CART") {
+  if (choice === "cart") {
     return importers.cartImporter.importProductsFromCart();
   }
-  if (choice === "IMPORT_LIST") {
+  if (choice === "list") {
     return importers.listImporter.selectAndImportList();
   }
-  if (choice === "IMPORT_ORDER") {
+  if (choice === "order") {
     return importers.orderImporter.importLatestOrders();
   }
-  if (choice === "GET_BARCODES") {
+  if (choice === "barcodes") {
     return importers.barcodeImporter.importFromBarcodeBuddy();
   }
 }
 
-async function test() {
-  const svc = new BarcodeBuddyService();
-  const barcodes = await svc.getBarcodes();
-  console.log(barcodes);
-}
-
-main().then(
+program.parseAsync().then(
   () => exit(0),
   (err) => {
     console.error(err);
