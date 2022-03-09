@@ -3,6 +3,7 @@
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "node ./out/main.js",
+    "gt": "node ./out/main.js",
     "build": "node scripts/build.js",
     "build:dev": "node scripts/build.js -t dev --sourcemap",
     "build:prod": "node scripts/build.js -t prod",

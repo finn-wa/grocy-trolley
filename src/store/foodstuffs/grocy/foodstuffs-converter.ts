@@ -129,8 +129,10 @@ export class FoodstuffsToGrocyConverter {
     product: FoodstuffsCartProduct,
     parents: ParentProduct[]
   ): Promise<ParentProduct | null> {
-    const parentMatches = parents.filter((parent) =>
-      parent.tags.some((tag) => product.name.match(tag))
+    const parentMatches = parents.filter(
+      (parent) =>
+        parent.category === product.categoryName &&
+        parent.tags.some((tag) => product.name.match(tag))
     );
     if (parentMatches.length === 0) {
       return null;
@@ -142,7 +144,10 @@ export class FoodstuffsToGrocyConverter {
         type: "select",
         choices: [
           { title: "None", value: null },
-          ...parentMatches.map((parent) => ({ title: parent.product.name, value: parent })),
+          ...(parentMatches.map((parent) => ({
+            title: parent.product.name,
+            value: parent,
+          })) as any), // Values are meant to be strings only, but fuck it
         ],
       },
     ]);
