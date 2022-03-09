@@ -1,4 +1,4 @@
-import { FoodstuffsCartProduct } from "@grocy-trolley/store/foodstuffs";
+import { FoodstuffsCartProduct, FoodstuffsCategory } from "@grocy-trolley/store/foodstuffs";
 import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
 import { setTimeout } from "timers/promises";
@@ -36,6 +36,7 @@ export class GrocyProductService extends GrocyRestService {
       .filter((product) => toBoolean(product.userfields.isParent))
       .map((product) => ({
         product,
+        category: product.userfields.storeMetadata?.PNS?.categoryName ?? "Other",
         tags: product.name.replace("(Generic)", "").trim().split(" "),
       }));
   }
@@ -209,5 +210,6 @@ export interface SerializedProduct {
 
 export interface ParentProduct {
   tags: string[];
+  category: FoodstuffsCategory;
   product: SerializedProduct;
 }
