@@ -1,4 +1,4 @@
-import { GrocyProductService, SerializedProduct } from "@grocy-trolley/grocy";
+import { GrocyProductService } from "@grocy-trolley/grocy";
 import { GrocyStockService } from "@grocy-trolley/grocy/grocy-stock";
 import { Logger } from "@grocy-trolley/utils/logger";
 import { prompt } from "prompts";
@@ -76,12 +76,10 @@ export class FoodstuffsCartImporter {
         );
         continue;
       }
+      this.logger.info("Stocking product: " + grocyProduct.name);
       try {
-        await this.grocyStockService.stock(
-          "add",
-          grocyProduct.id,
-          this.converter.forAddStock(grocyProduct, cart.store.storeId)
-        );
+        const addStockRequest = this.converter.forAddStock(grocyProduct, cart.store.storeId);
+        await this.grocyStockService.stock("add", grocyProduct.id, addStockRequest);
       } catch (error) {
         this.logger.error("Error stocking product ", error);
       }
