@@ -3,7 +3,8 @@ out
 out-ts
 node_modules
 temp
-src/resources/cache
+src/resources/cache/*
+!src/resources/cache/info.txt
 src/resources/receipts
 
 # Yarn
