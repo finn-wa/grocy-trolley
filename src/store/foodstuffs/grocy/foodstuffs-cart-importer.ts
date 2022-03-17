@@ -39,7 +39,7 @@ export class FoodstuffsCartImporter {
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
       (p) => !existingProductIds.includes(p.productId)
     );
-    const parentProducts = await this.grocyProductService.getParentProducts();
+    const parentProducts = Object.values(await this.grocyProductService.getParentProducts());
     let newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {

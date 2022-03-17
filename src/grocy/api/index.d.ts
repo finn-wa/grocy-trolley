@@ -2521,14 +2521,15 @@ export interface components {
       row_created_timestamp?: string;
     };
     ShoppingListItem: {
-      id?: number;
-      shopping_list_id?: number;
-      product_id?: number;
-      note?: string;
+      id: number;
+      qu_id: number | string;
+      shopping_list_id: number;
+      product_id: number;
+      note: string;
       /** @description The manual entered amount */
-      amount?: number;
+      amount: number;
       /** Format: date-time */
-      row_created_timestamp?: string;
+      row_created_timestamp: string;
       /** @description Key/value pairs of userfields */
       userfields?: { [key: string]: unknown };
     };
