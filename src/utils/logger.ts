@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { getEnv } from "@grocy-trolley/env";
+import { getEnv } from "env";
 
 export function prettyPrint(obj: any) {
   return JSON.stringify(obj, undefined, 2);

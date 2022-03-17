@@ -1,12 +1,12 @@
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
+import { Logger, prettyPrint } from "utils/logger";
 import {
-  FoodstuffsAuthService,
-  FoodstuffsBaseProduct,
-  FoodstuffsCartProduct,
-  FoodstuffsStore,
-  ProductsSnapshot,
-  SaleTypeString,
+    FoodstuffsAuthService,
+    FoodstuffsBaseProduct,
+    FoodstuffsCartProduct,
+    FoodstuffsStore,
+    ProductsSnapshot,
+    SaleTypeString
 } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 

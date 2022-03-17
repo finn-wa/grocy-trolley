@@ -1,6 +1,6 @@
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
 import { Headers } from "node-fetch";
+import { Logger, prettyPrint } from "utils/logger";
+import { RestService } from "utils/rest";
 
 export interface OpenFoodFactsProduct {
   /** e.g. Noodle bowl */

@@ -9,5 +9,5 @@ TODO
 - handle cached cookie expiry
 - shopping list -> cart
 - make sure purchase price updates if product already imported
-- remote access
 - scheduled backups
+- grocy API types are wrong, everything is always a string

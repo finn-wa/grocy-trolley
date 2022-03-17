@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "paths": { "@grocy-trolley/*": ["./src/*"] }
+    "baseUrl": "./src",
+    "paths": { "@grocy-trolley/*": ["*"] }
   }
 }

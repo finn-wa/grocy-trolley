@@ -1,10 +1,10 @@
-import { Logger } from "@grocy-trolley/utils/logger";
+import { Logger } from "utils/logger";
 import {
-  FoodstuffsAuthService,
-  FoodstuffsBaseProduct,
-  FoodstuffsListProduct,
-  ProductsSnapshot,
-  SaleTypeString,
+    FoodstuffsAuthService,
+    FoodstuffsBaseProduct,
+    FoodstuffsListProduct,
+    ProductsSnapshot,
+    SaleTypeString
 } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 

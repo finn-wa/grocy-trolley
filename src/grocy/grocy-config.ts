@@ -1,5 +1,5 @@
-import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@grocy-trolley/store/foodstuffs";
-import { Logger } from "@grocy-trolley/utils/logger";
+import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "store/foodstuffs";
+import { Logger } from "utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 

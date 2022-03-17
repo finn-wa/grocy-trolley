@@ -1,8 +1,8 @@
-import { getEnv } from "@grocy-trolley/env";
-import { headers } from "@grocy-trolley/utils/headers-builder";
-import { Logger } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
+import { getEnv } from "env";
 import { HTMLElement, parse } from "node-html-parser";
+import { headers } from "utils/headers-builder";
+import { Logger } from "utils/logger";
+import { RestService } from "utils/rest";
 
 export class BarcodeBuddyService extends RestService {
   protected readonly baseUrl: `${string}/`;

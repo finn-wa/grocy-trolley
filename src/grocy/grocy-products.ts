@@ -1,7 +1,7 @@
-import { FoodstuffsCartProduct, FoodstuffsCategory } from "@grocy-trolley/store/foodstuffs";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
+import { FoodstuffsCartProduct, FoodstuffsCategory } from "store/foodstuffs";
 import { setTimeout } from "timers/promises";
+import { Logger } from "utils/logger";
 import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
 import { GrocyBoolean, toBoolean } from "./grocy-model";

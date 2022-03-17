@@ -1,10 +1,7 @@
-import { GrocyProductService } from "@grocy-trolley/grocy";
-import {
-  GrocyShoppingListService,
-  ShoppingListItem,
-} from "@grocy-trolley/grocy/grocy-shopping-lists";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
+import { GrocyProductService } from "grocy";
+import { GrocyShoppingListService } from "grocy/grocy-shopping-lists";
 import prompts from "prompts";
+import { Logger, prettyPrint } from "utils/logger";
 import { CartProductRef, FoodstuffsCartService } from "../foodstuffs-cart";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
 

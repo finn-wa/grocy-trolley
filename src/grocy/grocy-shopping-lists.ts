@@ -1,4 +1,4 @@
-import { Logger } from "@grocy-trolley/utils/logger";
+import { Logger } from "utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 

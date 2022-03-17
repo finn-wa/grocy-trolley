@@ -1,8 +1,8 @@
-import { getEnv } from "@grocy-trolley/env";
-import { headers } from "@grocy-trolley/utils/headers-builder";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
+import { getEnv } from "env";
 import { readFile, writeFile } from "fs/promises";
+import { headers } from "utils/headers-builder";
+import { Logger, prettyPrint } from "utils/logger";
+import { RestService } from "utils/rest";
 import { PAKNSAVE_URL } from ".";
 
 export class FoodstuffsAuthService extends RestService {

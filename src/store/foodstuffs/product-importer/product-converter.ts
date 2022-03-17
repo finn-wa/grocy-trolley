@@ -1,19 +1,14 @@
+import { matchQuantityUnit, NewProduct, ParentProduct, SerializedProduct } from "grocy";
+import { GrocyIdMaps, QuantityUnitName } from "grocy/grocy-config";
+import { GrocyFalse } from "grocy/grocy-model";
+import { StockActionRequestBody } from "grocy/grocy-stock";
+import prompts from "prompts";
+import { Logger, prettyPrint } from "utils/logger";
 import {
-  matchQuantityUnit,
-  NewProduct,
-  ParentProduct,
-  SerializedProduct,
-} from "@grocy-trolley/grocy";
-import { GrocyIdMaps, QuantityUnitName } from "@grocy-trolley/grocy/grocy-config";
-import { GrocyFalse } from "@grocy-trolley/grocy/grocy-model";
-import { StockActionRequestBody } from "@grocy-trolley/grocy/grocy-stock";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
-import prompts, { prompt } from "prompts";
-import {
-  CategoryLocations,
-  FoodstuffsCartProduct,
-  FoodstuffsCategory,
-  FOODSTUFFS_CATEGORIES,
+    CategoryLocations,
+    FoodstuffsCartProduct,
+    FoodstuffsCategory,
+    FOODSTUFFS_CATEGORIES
 } from "..";
 
 export class FoodstuffsToGrocyConverter {
