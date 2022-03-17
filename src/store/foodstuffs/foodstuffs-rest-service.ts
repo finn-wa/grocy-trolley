@@ -1,5 +1,5 @@
-import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
-import { RestService } from "@grocy-trolley/utils/rest";
+import { headers, HeadersBuilder } from "utils/headers-builder";
+import { RestService } from "utils/rest";
 import { FoodstuffsAuthService } from ".";
 
 export abstract class FoodstuffsRestService extends RestService {

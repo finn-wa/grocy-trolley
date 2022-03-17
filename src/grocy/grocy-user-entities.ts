@@ -1,5 +1,5 @@
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
+import { Logger, prettyPrint } from "utils/logger";
 import { StoreBrand } from "./grocy-config";
 import { GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";

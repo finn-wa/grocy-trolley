@@ -1,4 +1,4 @@
-import { Logger } from "@grocy-trolley/utils/logger";
+import { Logger } from "utils/logger";
 import { FoodstuffsAuthService, FoodstuffsOrderProduct } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 

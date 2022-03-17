@@ -1,9 +1,9 @@
-import { GrocyProductService } from "@grocy-trolley/grocy";
-import { ReceiptScanner } from "@grocy-trolley/receipt-ocr";
-import { ReceiptItem, ReceiptItemiser } from "@grocy-trolley/receipt-ocr/receipts.model";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import { readFile, writeFile } from "fs/promises";
+import { GrocyProductService } from "grocy";
 import prompts from "prompts";
+import { ReceiptScanner } from "receipt-ocr";
+import { ReceiptItem, ReceiptItemiser } from "receipt-ocr/receipts.model";
+import { Logger, prettyPrint } from "utils/logger";
 import { FoodstuffsCartImporter } from ".";
 import { CartProductRef, FoodstuffsSearchService } from "..";
 import { toCartProductRef } from "../foodstuffs-cart";

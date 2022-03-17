@@ -1,13 +1,11 @@
-import { getEnv } from "@grocy-trolley/env";
-import { ReceiptScanner } from "@grocy-trolley/receipt-ocr/receipts.model";
-import { headers } from "@grocy-trolley/utils/headers-builder";
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
-import { FormData } from "formdata-node";
-import { createReadStream } from "fs";
+import { getEnv } from "env";
 import { readFile } from "fs/promises";
 import path from "path";
 import { basename } from "path/posix";
+import { ReceiptScanner } from "receipt-ocr/receipts.model";
+import { headers } from "utils/headers-builder";
+import { Logger, prettyPrint } from "utils/logger";
+import { RestService } from "utils/rest";
 import { paths } from "./api";
 
 const endpoint = "/api/receipt/v1/verbose/encoded";

@@ -1,7 +1,7 @@
-import { headers } from "@grocy-trolley/utils/headers-builder";
-import { Logger } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
+import { headers } from "utils/headers-builder";
+import { Logger } from "utils/logger";
 import { CartProductRef, SaleTypeString } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 

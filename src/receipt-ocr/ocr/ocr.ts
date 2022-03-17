@@ -1,9 +1,9 @@
-import { getEnv } from "@grocy-trolley/env";
-import { headers } from "@grocy-trolley/utils/headers-builder";
-import { Logger } from "@grocy-trolley/utils/logger";
-import { RestService } from "@grocy-trolley/utils/rest";
+import { getEnv } from "env";
 import { FormData } from "formdata-node";
 import path from "path/posix";
+import { headers } from "utils/headers-builder";
+import { Logger } from "utils/logger";
+import { RestService } from "utils/rest";
 import { ReceiptScanner } from "..";
 
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {
@@ -22,11 +22,7 @@ export class OcrReceiptScanner extends RestService implements ReceiptScanner {
     formData.append("url", filepath);
     const res = await this.post(
       this.buildUrl("parse/image"),
-      headers()
-        .apikey(this.apikey)
-        .append("redirect", "follow")
-        .append("OCREngine", "2")
-        .build(),
+      headers().apikey(this.apikey).append("redirect", "follow").append("OCREngine", "2").build(),
       formData
     );
     return JSON.parse(await this.extractText(res));

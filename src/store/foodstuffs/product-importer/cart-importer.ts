@@ -1,7 +1,7 @@
-import { GrocyProductService } from "@grocy-trolley/grocy";
-import { GrocyStockService } from "@grocy-trolley/grocy/grocy-stock";
-import { Logger } from "@grocy-trolley/utils/logger";
+import { GrocyProductService } from "grocy";
+import { GrocyStockService } from "grocy/grocy-stock";
 import { prompt } from "prompts";
+import { Logger } from "utils/logger";
 import { CartProductRef, FoodstuffsBaseProduct, FoodstuffsCartProduct, toCartProductRef } from "..";
 import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
 import { FoodstuffsToGrocyConverter } from "./product-converter";

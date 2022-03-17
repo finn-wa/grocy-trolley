@@ -1,7 +1,7 @@
-import { getEnv } from "@grocy-trolley/env";
-import { headers, HeadersBuilder } from "@grocy-trolley/utils/headers-builder";
-import { RestService } from "@grocy-trolley/utils/rest";
+import { getEnv } from "env";
 import { Response } from "node-fetch";
+import { headers, HeadersBuilder } from "utils/headers-builder";
+import { RestService } from "utils/rest";
 import { components } from "./api";
 
 type Schemas = components["schemas"];

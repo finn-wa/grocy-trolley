@@ -1,5 +1,5 @@
-import { Logger } from "@grocy-trolley/utils/logger";
 import { Response } from "node-fetch";
+import { Logger } from "utils/logger";
 import { CreatedObjectResponse, OrderRecord } from ".";
 import { GrocyTrue } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
