@@ -28,17 +28,27 @@ export class GrocyProductService extends GrocyRestService {
     return this.deserialiseProductUserfields(product);
   }
 
-  async getParentProducts(products?: SerializedProduct[]): Promise<ParentProduct[]> {
+  async getParentProducts(products?: SerializedProduct[]): Promise<Record<string, ParentProduct>> {
     if (!products) {
       products = await this.getProductsWithParsedUserfields();
     }
-    return products
-      .filter((product) => toBoolean(product.userfields.isParent))
-      .map((product) => ({
-        product,
-        category: product.userfields.storeMetadata?.PNS?.categoryName ?? "Other",
-        tags: product.name.replace("(Generic)", "").trim().split(" "),
-      }));
+    const parents: Record<string, ParentProduct> = Object.fromEntries(
+      products
+        .filter((product) => toBoolean(product.userfields.isParent))
+        .map((product) => {
+          const category = product.userfields.storeMetadata?.PNS?.categoryName ?? "Other";
+          const tags = product.name.replace("(Generic)", "").trim().split(" ");
+          const parent = { product, category, tags, children: [] };
+          return [product.id, parent];
+        })
+    );
+    products.forEach((product) => {
+      const parent = parents[product.parent_product_id as string];
+      if (parent) {
+        parent.children.push(product);
+      }
+    });
+    return parents;
   }
 
   async getProductsByFoodstuffsId(): Promise<Record<string, SerializedProduct>> {
@@ -205,6 +215,7 @@ export interface SerializedProduct {
   picture_file_name?: string;
   row_created_timestamp: string;
   shopping_location_id: number;
+  parent_product_id?: string | number | null;
   userfields: ProductUserfields;
 }
 
@@ -212,4 +223,5 @@ export interface ParentProduct {
   tags: string[];
   category: FoodstuffsCategory;
   product: SerializedProduct;
+  children: SerializedProduct[];
 }
