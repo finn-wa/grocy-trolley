@@ -45,7 +45,7 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
         name: "value",
         type: "select",
         choices: [
-          { title: "Skip", value: null },
+          { title: "Skip", value: null as any },
           ...results.map((r) => ({
             title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
             value: r,
