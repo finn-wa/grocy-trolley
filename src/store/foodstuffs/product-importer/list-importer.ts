@@ -1,6 +1,6 @@
 import prompts from "prompts";
 import { FoodstuffsListService } from "..";
-import { FoodstuffsCartImporter } from "./foodstuffs-cart-importer";
+import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsListImporter {
   constructor(

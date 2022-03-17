@@ -7,7 +7,7 @@ import {
 import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import prompts from "prompts";
 import { CartProductRef, FoodstuffsSearchService, ProductResult } from "..";
-import { FoodstuffsCartImporter } from "./foodstuffs-cart-importer";
+import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsBarcodeImporter {
   private readonly logger = new Logger(this.constructor.name);

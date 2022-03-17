@@ -4,7 +4,7 @@ import { Logger } from "@grocy-trolley/utils/logger";
 import { prompt } from "prompts";
 import { CartProductRef, FoodstuffsBaseProduct, FoodstuffsCartProduct, toCartProductRef } from "..";
 import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
-import { FoodstuffsToGrocyConverter } from "./foodstuffs-converter";
+import { FoodstuffsToGrocyConverter } from "./product-converter";
 
 export class FoodstuffsCartImporter {
   private readonly logger = new Logger("FoodstuffsCartImporter");

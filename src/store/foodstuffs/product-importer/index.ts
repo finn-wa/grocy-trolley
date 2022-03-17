@@ -1,14 +1,13 @@
 import { BarcodeBuddyService } from "@grocy-trolley/barcodebuddy/scraper";
 import { GrocyServices } from "@grocy-trolley/grocy";
 import { TaggunReceiptScanner } from "@grocy-trolley/receipt-ocr";
-import { OcrReceiptScanner } from "@grocy-trolley/receipt-ocr/ocr/ocr";
 import { FoodstuffsServices } from "..";
-import { FoodstuffsBarcodeImporter } from "./foodstuffs-barcode-importer";
-import { FoodstuffsCartImporter } from "./foodstuffs-cart-importer";
-import { FoodstuffsToGrocyConverter } from "./foodstuffs-converter";
-import { FoodstuffsListImporter } from "./foodstuffs-list-importer";
-import { FoodstuffsOrderImporter } from "./foodstuffs-order-importer";
-import { FoodstuffsReceiptImporter } from "./foodstuffs-receipt-importer";
+import { FoodstuffsToGrocyConverter } from "./product-converter";
+import { FoodstuffsOrderImporter } from "./order-importer";
+import { FoodstuffsReceiptImporter } from "./receipt-importer";
+import { FoodstuffsBarcodeImporter } from "./barcode-importer";
+import { FoodstuffsCartImporter } from "./cart-importer";
+import { FoodstuffsListImporter } from "./list-importer";
 
 export {
   FoodstuffsBarcodeImporter,
