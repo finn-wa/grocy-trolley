@@ -2,7 +2,7 @@ import { GrocyOrderRecordService } from "@grocy-trolley/grocy";
 import { GrocyFalse, GrocyTrue } from "@grocy-trolley/grocy/grocy-model";
 import { Logger } from "@grocy-trolley/utils/logger";
 import { FoodstuffsOrderService as FoodstuffsOrderService } from "../foodstuffs-orders";
-import { FoodstuffsCartImporter } from "./foodstuffs-cart-importer";
+import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsOrderImporter {
   private readonly logger = new Logger(this.constructor.name);

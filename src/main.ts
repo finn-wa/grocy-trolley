@@ -4,7 +4,7 @@ import prompts from "prompts";
 import { initEnv } from "./env";
 import { grocyServices } from "./grocy";
 import { foodstuffsServices } from "./store/foodstuffs";
-import { foodstuffsImporters } from "./store/foodstuffs/grocy";
+import { foodstuffsImporters } from "./store/foodstuffs/product-importer";
 import { LogLevelString, LOG_LEVELS } from "./utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
