@@ -28,7 +28,7 @@ export function initEnv(overrides: Partial<Env>) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
   envValidated = true;
-  new Logger("env").debug(`Initialised env: \n${prettyPrint(env)}`);
+  new Logger("env").trace(`Initialised env: \n${prettyPrint(env)}`);
 }
 
 export function getEnv(): Env {

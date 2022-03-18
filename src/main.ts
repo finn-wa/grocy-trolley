@@ -5,7 +5,7 @@ import { exit } from "process";
 import prompts from "prompts";
 import { foodstuffsServices, GrocyShoppingListExporter } from "store/foodstuffs";
 import { foodstuffsImporters } from "store/foodstuffs/product-importer";
-import { LOG_LEVELS } from "utils/logger";
+import { Logger, LOG_LEVELS } from "utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -32,6 +32,25 @@ program
   .action((source) => importFrom(source));
 
 program.command("shop").action(shop);
+
+program.command("test").action(() => {
+  const logger = new Logger("test");
+  logger.trace("bing bong");
+  logger.trace("Testy business 12345", ["hello", "world"]);
+  logger.trace({ a: 1, b: 2, c: 3 });
+  logger.debug("bing bong");
+  logger.debug("Testy business 12345", ["hello", "world"]);
+  logger.debug({ a: 1, b: 2, c: 3 });
+  logger.info("bing bong");
+  logger.info("Testy business 12345", ["hello", "world"]);
+  logger.info({ a: 1, b: 2, c: 3 });
+  logger.warn("bing bong");
+  logger.warn("Testy business 12345", ["hello", "world"]);
+  logger.warn({ a: 1, b: 2, c: 3 });
+  logger.error("bing bong");
+  logger.error("Testy business 12345", ["hello", "world"]);
+  logger.error({ a: 1, b: 2, c: 3 });
+});
 
 async function commandPrompt() {
   const choices = await prompts([
@@ -103,7 +122,8 @@ async function shop(): Promise<void> {
   const exporter = new GrocyShoppingListExporter(
     grocy.productService,
     grocy.shoppingListService,
-    foodstuffs.cartService
+    foodstuffs.cartService,
+    foodstuffs.listService
   );
   return exporter.addShoppingListToCart();
 }
