@@ -1,6 +1,7 @@
 import { GrocyIdMaps, GrocyIdMapService } from "./grocy-config";
 import { GrocyOrderRecordService } from "./grocy-order-records";
 import { GrocyProductService } from "./grocy-products";
+import { GrocyShoppingListService } from "./grocy-shopping-lists";
 import { GrocyStockService } from "./grocy-stock";
 import { GrocyUserEntityService } from "./grocy-user-entities";
 
@@ -20,6 +21,7 @@ export async function grocyServices(): Promise<GrocyServices> {
     orderRecordService: new GrocyOrderRecordService(userEntityService),
     productService: new GrocyProductService(),
     stockService: new GrocyStockService(),
+    shoppingListService: new GrocyShoppingListService(),
   };
 }
 
@@ -29,4 +31,5 @@ export interface GrocyServices {
   orderRecordService: GrocyOrderRecordService;
   productService: GrocyProductService;
   stockService: GrocyStockService;
+  shoppingListService: GrocyShoppingListService;
 }

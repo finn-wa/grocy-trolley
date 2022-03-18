@@ -11,6 +11,7 @@ export * from "./foodstuffs-lists";
 export * from "./foodstuffs-orders";
 export * from "./foodstuffs-search";
 export * from "./foodstuffs.model";
+export * from "./purchase/shopping-list-exporter";
 
 export function foodstuffsServices(): FoodstuffsServices {
   const authService = new FoodstuffsAuthService();
