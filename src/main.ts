@@ -3,9 +3,9 @@ import { initEnv } from "env";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
-import { foodstuffsServices } from "store/foodstuffs";
+import { foodstuffsServices, GrocyShoppingListExporter } from "store/foodstuffs";
 import { foodstuffsImporters } from "store/foodstuffs/product-importer";
-import { LogLevelString, LOG_LEVELS } from "utils/logger";
+import { LOG_LEVELS } from "utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -15,43 +15,64 @@ program
   .description("Links Grocy to PAK'n'SAVE online shopping")
   .version("0.0.1")
   .addOption(
-    new Option("-l, --log-level <level>").choices(LOG_LEVELS).default("DEBUG").makeOptionMandatory()
-  );
+    new Option("-l, --log-level <level>") //
+      .choices(LOG_LEVELS)
+      .default("DEBUG")
+      .makeOptionMandatory()
+  )
+  .hook("preAction", (command) => initEnv({ GT_LOG_LEVEL: command.opts().logLevel }));
 
-program.command("prompt", { isDefault: true, hidden: true }).action(promptForAction);
+program
+  .command("prompt", { isDefault: true, hidden: true }) //
+  .action(commandPrompt);
 
 program
   .command("import")
   .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
   .action((source) => importFrom(source));
 
-async function promptForAction() {
-  const response = await prompts([
+program.command("shop").action(shop);
+
+async function commandPrompt() {
+  const choices = await prompts([
     {
-      name: "action",
-      message: "Select an action",
+      name: "command",
+      message: "Select a command",
       type: "select",
       choices: [
-        { title: "Import from cart", value: "cart" },
-        { title: "Import latest orders", value: "order" },
-        { title: "Import from list", value: "list" },
-        { title: "Import from receipt", value: "receipt" },
-        { title: "Get barcodes from BB", value: "barcodes" },
+        { title: "Import products (import)", value: "import" },
+        { title: "Export shopping list (shop)", value: "shop" },
+        { title: "Exit", value: "exit" },
+      ],
+    },
+    {
+      name: "importSource",
+      message: "Select an import source",
+      type: (prev) => (prev === "import" ? "select" : (null as any)),
+      choices: [
+        { title: "Foodstuffs cart", value: "cart" },
+        { title: "Foodstuffs orders", value: "order" },
+        { title: "Foodstuffs list", value: "list" },
+        { title: "Foodstuffs receipt", value: "receipt" },
+        { title: "Barcode Buddy", value: "barcodes" },
         { title: "Exit", value: "exit" },
       ],
     },
   ]);
-  const choice = response["action"] as ImportSource | "exit";
-  if (choice === "exit") {
+  const command = choices["command"] as "import" | "shop" | "exit";
+  if (command === "exit" || choices["importSource"] === "exit") {
     return;
   }
-  return importFrom(choice);
+  if (command === "import") {
+    return importFrom(choices["importSource"] as ImportSource);
+  }
+  if (command === "shop") {
+    return shop();
+  }
+  throw new Error("Unexpected prompt command: " + command);
 }
 
 async function importFrom(choice: ImportSource) {
-  const opts = program.opts() as { logLevel: LogLevelString };
-  initEnv({ GT_LOG_LEVEL: opts.logLevel });
-
   const foodstuffs = foodstuffsServices();
   const grocy = await grocyServices();
   const importers = foodstuffsImporters(foodstuffs, grocy);
@@ -73,6 +94,18 @@ async function importFrom(choice: ImportSource) {
   if (choice === "barcodes") {
     return importers.barcodeImporter.importFromBarcodeBuddy();
   }
+}
+
+async function shop(): Promise<void> {
+  const foodstuffs = foodstuffsServices();
+  const grocy = await grocyServices();
+  await foodstuffs.authService.login();
+  const exporter = new GrocyShoppingListExporter(
+    grocy.productService,
+    grocy.shoppingListService,
+    foodstuffs.cartService
+  );
+  return exporter.addShoppingListToCart();
 }
 
 program.parseAsync().then(

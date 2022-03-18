@@ -1,3 +1,4 @@
+import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
 import "dotenv/config";
 
 const EnvVars = [
@@ -27,7 +28,7 @@ export function initEnv(overrides: Partial<Env>) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
   envValidated = true;
-  return getEnv();
+  new Logger("env").debug(`Initialised env: \n${prettyPrint(env)}`);
 }
 
 export function getEnv(): Env {
