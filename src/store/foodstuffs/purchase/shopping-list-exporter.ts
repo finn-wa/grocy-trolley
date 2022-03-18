@@ -4,6 +4,7 @@ import { GrocyShoppingListService } from "grocy/grocy-shopping-lists";
 import prompts from "prompts";
 import { Logger, prettyPrint } from "utils/logger";
 import { CartProductRef, FoodstuffsCartService, toCartProductRef } from "../foodstuffs-cart";
+import { FoodstuffsListService } from "../foodstuffs-lists";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
 
 export class GrocyShoppingListExporter {
@@ -12,7 +13,8 @@ export class GrocyShoppingListExporter {
   constructor(
     private readonly productService: GrocyProductService,
     private readonly shoppingListService: GrocyShoppingListService,
-    private readonly foodstuffsCartService: FoodstuffsCartService
+    private readonly foodstuffsCartService: FoodstuffsCartService,
+    private readonly foodstuffsListService: FoodstuffsListService
   ) {}
 
   async addShoppingListToCart() {
@@ -43,20 +45,26 @@ export class GrocyShoppingListExporter {
   ): Promise<FoodstuffsCartProduct | null> {
     if (product.userfields.isParent === GrocyTrue) {
       const parent = parentProducts[product.id];
-      if (parent.children.length > 0) {
+      if (parent.children.length === 0) {
         this.logger.warn(
           `Parent product ${parent.product.id} / ${parent.product.name} does not have children`
         );
         return null;
       }
+      const children = await this.foodstuffsListService.refreshProductPrices(
+        parent.children
+          .filter((child) => !!child.userfields?.storeMetadata?.PNS)
+          .map((child) => child.userfields.storeMetadata?.PNS as FoodstuffsCartProduct)
+      );
+      const choices = children.map((child) => ({
+        title: `$${child.price / 100} - ${child.brand} ${child.name} ${child.weightDisplayName}`,
+        value: child as any,
+      }));
       const choice = await prompts([
         {
           name: "product",
           type: "select",
-          choices: [
-            { title: "Skip", value: null as any },
-            ...parent.children.map((child) => ({ title: child.name, value: child as any })),
-          ],
+          choices: [{ title: "Skip", value: null as any }, ...choices],
           message: `Select a product for ${parent.product.name}`,
         },
       ]);

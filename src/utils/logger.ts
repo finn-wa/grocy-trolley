@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import chalk, { ChalkInstance } from "chalk";
 import { getEnv } from "env";
 
 export function prettyPrint(obj: any) {
@@ -31,42 +32,51 @@ export class Logger {
     this.level = LogLevel[level];
   }
 
-  private out(level: LogLevel, message: any, params: any[]) {
+  private out(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
     if (this.level <= level) {
-      process.stdout.write(this.prefix(level));
-      params.length > 0 ? console.log(message, params) : console.log(message);
+      const msg = this.colourIfString(message, colour);
+      process.stdout.write(colour(this.prefix(level)));
+      params.length > 0 ? console.log(colour(message), params) : console.log(colour(message));
     }
   }
 
-  private err(level: LogLevel, message: any, params: any[]) {
+  private err(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
     if (this.level <= level) {
-      process.stderr.write(this.prefix(level));
-      params.length > 0 ? console.error(message, params) : console.error(message);
+      const msg = this.colourIfString(message, colour);
+      process.stderr.write(colour(this.prefix(level)));
+      params.length > 0 ? console.error(msg, params) : console.error(msg);
     }
   }
 
-  private prefix(level: LogLevel) {
+  private prefix(level: LogLevel): string {
     const date = new Date().toISOString().match(/\d{2}:\d{2}:\d{2}.\d{3}/) as RegExpMatchArray;
-    return `${date[0]} | ${LogLevel[level]} | ${this.name} | `;
+    return `${date[0]} | ${LogLevel[level].padEnd(5, " ")} | ${this.name} | `;
+  }
+
+  private colourIfString<T>(obj: T, colour: ChalkInstance): T {
+    if (typeof obj === "string") {
+      return colour(obj) as any;
+    }
+    return obj;
   }
 
   trace(message: any, ...params: any[]) {
-    this.out(LogLevel.TRACE, message, params);
+    this.out(LogLevel.TRACE, message, params, chalk.gray);
   }
 
   debug(message: any, ...params: any[]) {
-    this.out(LogLevel.DEBUG, message, params);
+    this.out(LogLevel.DEBUG, message, params, chalk.blue);
   }
 
   info(message: any, ...params: any[]) {
-    this.out(LogLevel.INFO, message, params);
+    this.out(LogLevel.INFO, message, params, chalk.green);
   }
 
   warn(message: any, ...params: any[]) {
-    this.err(LogLevel.WARN, message, params);
+    this.err(LogLevel.WARN, message, params, chalk.yellow);
   }
 
   error(message: any, ...params: any[]) {
-    this.err(LogLevel.ERROR, message, params);
+    this.err(LogLevel.ERROR, message, params, chalk.red);
   }
 }
