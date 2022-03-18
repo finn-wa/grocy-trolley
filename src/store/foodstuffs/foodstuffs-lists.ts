@@ -60,7 +60,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
 
   async refreshProductPrices<T extends FoodstuffsBaseProduct>(products: T[]) {
     const list = await this.createListWithProducts(
-      "Temporary (price refresh) " + new Date().toISOString(),
+      `[temporary] price refresh - ${new Date().toISOString()}`,
       products
     );
     const refreshedProducts = products.map((product) => {
@@ -75,6 +75,17 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     });
     await this.deleteList(list.listId);
     return refreshedProducts;
+  }
+
+  async deleteTemporaryLists(lists?: List[]): Promise<Response[]> {
+    if (!lists) {
+      lists = await this.getLists();
+    }
+    return Promise.all(
+      lists
+        .filter((list) => list.name.toLowerCase().includes("temporary"))
+        .map((list) => this.deleteList(list.listId))
+    );
   }
 }
 

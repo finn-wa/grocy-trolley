@@ -11,3 +11,4 @@ TODO
 - scheduled backups
 - grocy API types are wrong, everything is always a string
 - generic products choice should show a current price
+- foodstuffsRestService global request throttle?
