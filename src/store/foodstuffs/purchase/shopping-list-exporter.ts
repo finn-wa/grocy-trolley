@@ -19,10 +19,13 @@ export class GrocyShoppingListExporter {
 
   async addShoppingListToCart() {
     await this.foodstuffsCartService.clearCart();
+    await this.foodstuffsListService.deleteTemporaryLists();
+
     const listItems = await this.shoppingListService.getShoppingListItems();
     const products = await this.productService.getProductsWithParsedUserfields();
     const parentProducts = await this.productService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
+
     for (const item of listItems) {
       this.logger.debug(`Processing shopping list item: ${item.product_id}`);
       const product = products.find((p) => p.id === item.product_id);
