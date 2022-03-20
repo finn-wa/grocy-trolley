@@ -1,11 +1,11 @@
+import { ConversionWithoutId } from "@grocy-trolley/store/foodstuffs/product-importer/product-converter";
 import { Response } from "node-fetch";
 import { FoodstuffsCartProduct, FoodstuffsCategory } from "store/foodstuffs";
-import { setTimeout } from "timers/promises";
 import { Logger } from "utils/logger";
-import { CreatedObjectResponse, CreatedUserObject } from ".";
 import { components } from "./api";
-import { GrocyBoolean, toBoolean } from "./grocy-model";
+import { CreatedObjectId, GrocyBoolean, QuantityUnitConversion, toBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
+import { CreatedObjectResponse } from "./grocy-user-entities";
 
 export class GrocyProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -77,20 +77,32 @@ export class GrocyProductService extends GrocyRestService {
     };
   }
 
-  async createProduct(product: NewProduct): Promise<CreatedObjectResponse> {
+  async createProduct(
+    product: NewProduct,
+    quConversions?: ConversionWithoutId[]
+  ): Promise<CreatedProductResponse> {
     const { userfields, ...coreProduct } = product;
-    const postResponse: CreatedUserObject = await this.postForJson(
-      this.buildUrl("objects/products"),
-      this.authHeaders().acceptJson().contentTypeJson().build(),
-      coreProduct
-    );
-    const objectId = postResponse.created_object_id;
-    const response = await this.put(
-      this.buildUrl(`userfields/products/${objectId}`),
+    const productResponse = await this.createEntity("products", coreProduct);
+    const id = productResponse.created_object_id;
+    const userfieldsResponse = await this.put(
+      this.buildUrl(`userfields/products/${id}`),
       this.authHeaders().contentTypeJson().build(),
       userfields
     );
-    return { response, objectId };
+    if (!quConversions || quConversions.length === 0) {
+      return { id, userfieldsResponse, quConversionIds: [] };
+    }
+    const quConversionResponses: CreatedObjectId[] = await Promise.all(
+      quConversions.map((conversion) =>
+        this.createQuantityUnitConversion({ ...conversion, product_id: id })
+      )
+    );
+    const quConversionIds = quConversionResponses.map((res) => res.created_object_id);
+    return { id, userfieldsResponse, quConversionIds };
+  }
+
+  async createQuantityUnitConversion(conversion: QuantityUnitConversion): Promise<CreatedObjectId> {
+    return this.createEntity("quantity_unit_conversions", conversion);
   }
 
   async updateProduct(product: Product): Promise<Response> {
@@ -118,17 +130,6 @@ export class GrocyProductService extends GrocyRestService {
       this.authHeaders().contentTypeJson().build(),
       serialisedUserfields
     );
-  }
-
-  async deleteAllChildProducts() {
-    this.logger.warn("DELETING ALL CHILD PRODUCTS IN FIVE SECONDS");
-    await setTimeout(5000);
-    const products = await this.getProducts();
-    for (const product of products) {
-      if (!toBoolean(product.userfields.isParent)) {
-        await this.deleteProduct(product.id as number);
-      }
-    }
   }
 
   async deleteProduct(id: number): Promise<Response> {
@@ -224,4 +225,10 @@ export interface ParentProduct {
   category: FoodstuffsCategory;
   product: SerializedProduct;
   children: SerializedProduct[];
+}
+
+export interface CreatedProductResponse {
+  id: string;
+  userfieldsResponse: Response;
+  quConversionIds: string[];
 }

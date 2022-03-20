@@ -36,7 +36,7 @@ export class Logger {
     if (this.level <= level) {
       const msg = this.colourIfString(message, colour);
       process.stdout.write(colour(this.prefix(level)));
-      params.length > 0 ? console.log(colour(message), params) : console.log(colour(message));
+      params.length > 0 ? console.log(colour(msg), params) : console.log(colour(msg));
     }
   }
 
