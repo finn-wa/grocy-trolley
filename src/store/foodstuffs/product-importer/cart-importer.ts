@@ -39,18 +39,21 @@ export class FoodstuffsCartImporter {
     const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
       (p) => !existingProductIds.includes(p.productId)
     );
+    if (productsToImport.length === 0) {
+      this.logger.info("All products have already been imported");
+      return;
+    }
     const parentProducts = Object.values(await this.grocyProductService.getParentProducts());
     let newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
-      const grocyProduct = await this.converter.forImport(
-        product,
-        cart.store.storeId,
-        parentProducts
+      const payloads = await this.converter.forImport(product, cart.store.storeId, parentProducts);
+      this.logger.info(`Importing product ${payloads.product.name}...`);
+      const createdProduct = await this.grocyProductService.createProduct(
+        payloads.product,
+        payloads.quConversions
       );
-      this.logger.info(`Importing product ${grocyProduct.name}...`);
-      const createdProduct = await this.grocyProductService.createProduct(grocyProduct);
-      newProducts.push({ id: createdProduct.objectId, product });
+      newProducts.push({ id: createdProduct.id, product });
     }
     const stock: { value: boolean } = await prompt({
       name: "value",

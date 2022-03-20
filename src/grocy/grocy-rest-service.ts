@@ -3,8 +3,8 @@ import { Response } from "node-fetch";
 import { headers, HeadersBuilder } from "utils/headers-builder";
 import { RestService } from "utils/rest";
 import { components } from "./api";
-
-type Schemas = components["schemas"];
+import { CreatedObjectId, GrocySchemas } from "./grocy-model";
+import { CreatedObjectResponse } from "./grocy-user-entities";
 
 export abstract class GrocyRestService extends RestService {
   private readonly env = getEnv();
@@ -15,32 +15,43 @@ export abstract class GrocyRestService extends RestService {
     return headers().append("GROCY-API-KEY", this.apiKey);
   }
 
-  protected async getEntities<K extends keyof Schemas>(
-    entityName: Schemas["ExposedEntity"]
-  ): Promise<Schemas[K][]> {
+  protected async getEntities<K extends keyof GrocySchemas>(
+    entityName: GrocySchemas["ExposedEntity"]
+  ): Promise<GrocySchemas[K][]> {
     return this.getForJson(
       this.buildUrl("objects/" + entityName),
       this.authHeaders().acceptJson().build()
     );
   }
 
-  protected async getEntity<K extends keyof Schemas>(
-    entityName: Schemas["ExposedEntity"],
+  protected async getEntity<K extends keyof GrocySchemas>(
+    entityName: GrocySchemas["ExposedEntity"],
     id: string | number
-  ): Promise<Schemas[K]> {
+  ): Promise<GrocySchemas[K]> {
     return this.getForJson(
       this.buildUrl(`objects/${entityName}/${id}`),
       this.authHeaders().acceptJson().build()
     );
   }
 
-  protected async updateEntity<K extends keyof Schemas>(
-    entityName: Schemas["ExposedEntity"],
+  protected async updateEntity<K extends keyof GrocySchemas>(
+    entityName: GrocySchemas["ExposedEntity"],
     id: string | number,
-    entity: Schemas[K]
+    entity: GrocySchemas[K]
   ): Promise<Response> {
     return this.postForJson(
       this.buildUrl(`objects/${entityName}/${id}`),
+      this.authHeaders().acceptJson().contentTypeJson().build(),
+      entity
+    );
+  }
+
+  protected async createEntity<K extends keyof GrocySchemas>(
+    entityName: GrocySchemas["ExposedEntity"],
+    entity: GrocySchemas[K]
+  ): Promise<CreatedObjectId> {
+    return this.postForJson(
+      this.buildUrl(`objects/${entityName}`),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       entity
     );

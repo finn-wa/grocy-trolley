@@ -1,7 +1,7 @@
 import { Response } from "node-fetch";
 import { Logger, prettyPrint } from "utils/logger";
 import { StoreBrand } from "./grocy-config";
-import { GrocyBoolean } from "./grocy-model";
+import { CreatedObjectId, GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 
 export class GrocyUserEntityService extends GrocyRestService {
@@ -71,7 +71,7 @@ export class GrocyUserEntityService extends GrocyRestService {
 
   async createUserObject(entityName: UserEntityName, obj: any): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const postResponse: CreatedUserObject = await this.postForJson(
+    const postResponse: CreatedObjectId = await this.postForJson(
       this.buildUrl("objects/userobjects"),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       { userentity_id: entityId }
@@ -108,10 +108,6 @@ export interface UserEntity {
   row_created_timestamp: string;
 }
 
-export interface CreatedUserObject {
-  created_object_id: string;
-}
-
 export interface CreatedObjectResponse {
   response: Response;
   objectId: string;
@@ -123,8 +119,8 @@ export interface CreatedObjectResponse {
  * retrieved one at a time from /userfields/:entity/:objectId, which is fun.
  */
 export interface UserObjectReference {
-  id: string;
   userentity_id: string;
+  id: string;
   row_created_timestamp: string;
 }
 

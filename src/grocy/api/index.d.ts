@@ -2333,6 +2333,12 @@ export interface components {
       /** @description Key/value pairs of userfields */
       userfields?: { [key: string]: unknown };
     };
+    QuantityUnitConversion: {
+      product_id: string | number;
+      from_qu_id: string | number;
+      to_qu_id: string | number;
+      factor: number;
+    };
     /** @example [object Object] */
     Location: {
       id?: number;

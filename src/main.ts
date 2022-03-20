@@ -2,10 +2,10 @@ import { Argument, Option, program } from "commander";
 import { initEnv } from "env";
 import { grocyServices } from "grocy";
 import { exit } from "process";
-import prompts from "prompts";
+import prompts, { prompt } from "prompts";
 import { foodstuffsServices, GrocyShoppingListExporter } from "store/foodstuffs";
-import { foodstuffsImporters } from "store/foodstuffs/product-importer";
-import { Logger, LOG_LEVELS } from "utils/logger";
+import { foodstuffsImporters, FoodstuffsToGrocyConverter } from "store/foodstuffs/product-importer";
+import { Logger, LOG_LEVELS, prettyPrint } from "utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -33,23 +33,36 @@ program
 
 program.command("shop").action(shop);
 
-program.command("test").action(() => {
-  const logger = new Logger("test");
-  logger.trace("bing bong");
-  logger.trace("Testy business 12345", ["hello", "world"]);
-  logger.trace({ a: 1, b: 2, c: 3 });
-  logger.debug("bing bong");
-  logger.debug("Testy business 12345", ["hello", "world"]);
-  logger.debug({ a: 1, b: 2, c: 3 });
-  logger.info("bing bong");
-  logger.info("Testy business 12345", ["hello", "world"]);
-  logger.info({ a: 1, b: 2, c: 3 });
-  logger.warn("bing bong");
-  logger.warn("Testy business 12345", ["hello", "world"]);
-  logger.warn({ a: 1, b: 2, c: 3 });
-  logger.error("bing bong");
-  logger.error("Testy business 12345", ["hello", "world"]);
-  logger.error({ a: 1, b: 2, c: 3 });
+program.command("dev", { hidden: true }).action(async () => {
+  const logger = new Logger("dev");
+  const grocy = await grocyServices();
+  const converter = new FoodstuffsToGrocyConverter(grocy.idMaps);
+  const products = await grocy.productService.getProductsWithParsedUserfields();
+  for (const product of products.filter((p) => p.userfields.storeMetadata?.PNS)) {
+    logger.info(`Updating product ${product.id} - ${product.name}`);
+    const toCreate = await converter.forImport(
+      product.userfields.storeMetadata?.PNS!,
+      "e1925ea7-01bc-4358-ae7c-c6502da5ab12",
+      []
+    );
+    logger.info(prettyPrint(toCreate.quConversions));
+    await Promise.all(
+      toCreate.quConversions.map((x) =>
+        grocy.productService
+          .createQuantityUnitConversion({ ...x, product_id: product.id })
+          .catch(async (err) => {
+            logger.warn(err);
+            const choice = await prompts([
+              { name: "continue", type: "confirm", message: "continue?" },
+            ]);
+            if (choice.continue) {
+              return null;
+            }
+            throw err;
+          })
+      )
+    );
+  }
 });
 
 async function commandPrompt() {
