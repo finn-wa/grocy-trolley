@@ -2,7 +2,7 @@ import { GrocyProductService } from "grocy";
 import { GrocyStockService } from "grocy/grocy-stock";
 import { prompt } from "prompts";
 import { Logger } from "utils/logger";
-import { CartProductRef, FoodstuffsBaseProduct, FoodstuffsCartProduct, toCartProductRef } from "..";
+import { CartProductRef, FoodstuffsBaseProduct, toCartProductRef } from "..";
 import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
@@ -31,29 +31,26 @@ export class FoodstuffsCartImporter {
     if (!cart) {
       cart = await this.cartService.getCart();
     }
-    const existingProducts = await this.grocyProductService.getProductsWithParsedUserfields();
-    const existingProductIds = existingProducts
-      .filter((p) => p.userfields?.storeMetadata?.PNS)
-      .map((product) => product.userfields.storeMetadata?.PNS?.productId);
-
-    const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
-      (p) => !existingProductIds.includes(p.productId)
-    );
-    if (productsToImport.length === 0) {
-      this.logger.info("All products have already been imported");
-      return;
-    }
+    const existingProducts = await this.grocyProductService.getProductsByFoodstuffsId();
+    const productsToImport = [...cart.products, ...cart.unavailableProducts];
     const parentProducts = Object.values(await this.grocyProductService.getParentProducts());
-    let newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
-      const payloads = await this.converter.forImport(product, cart.store.storeId, parentProducts);
-      this.logger.info(`Importing product ${payloads.product.name}...`);
-      const createdProduct = await this.grocyProductService.createProduct(
-        payloads.product,
-        payloads.quConversions
-      );
-      newProducts.push({ id: createdProduct.id, product });
+      const existingProduct = existingProducts[product.productId];
+      if (existingProduct) {
+        this.logger.info(`Updating product ${existingProduct.name}`);
+        const { id, userfields } = existingProduct;
+        userfields.storeMetadata!.PNS = product;
+        await this.grocyProductService.updateProductUserfields(id, userfields);
+      } else {
+        const payloads = await this.converter.forImport(
+          product,
+          cart.store.storeId,
+          parentProducts
+        );
+        this.logger.info(`Importing product ${payloads.product.name}...`);
+        await this.grocyProductService.createProduct(payloads.product, payloads.quConversions);
+      }
     }
     const stock: { value: boolean } = await prompt({
       name: "value",
