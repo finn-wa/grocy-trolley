@@ -154,7 +154,8 @@ export class FoodstuffsToGrocyConverter {
   }
 
   private getPurchaseSaleType(product: FoodstuffsCartProduct) {
-    const purchaseSaleType = product.saleTypes.find((x) => x.type === product.sale_type);
+    const saleType = product.sale_type === "BOTH" ? "WEIGHT" : product.sale_type;
+    const purchaseSaleType = product.saleTypes.find((x) => x.type === saleType);
     if (!purchaseSaleType?.unit) {
       throw new Error(`Unit mismatch in ${prettyPrint(product)}`);
     }
