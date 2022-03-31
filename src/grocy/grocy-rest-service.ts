@@ -39,7 +39,7 @@ export abstract class GrocyRestService extends RestService {
     id: string | number,
     entity: GrocySchemas[K]
   ): Promise<Response> {
-    return this.postForJson(
+    return this.put(
       this.buildUrl(`objects/${entityName}/${id}`),
       this.authHeaders().acceptJson().contentTypeJson().build(),
       entity

@@ -1,29 +1,29 @@
 import { GrocyTrue } from "@grocy-trolley/grocy/grocy-model";
-import { GrocyProductService, ParentProduct, SerializedProduct } from "grocy";
-import { GrocyShoppingListService } from "grocy/grocy-shopping-lists";
+import { GrocyServices, ParentProduct, Product } from "grocy";
 import prompts from "prompts";
 import { Logger, prettyPrint } from "utils/logger";
-import { CartProductRef, FoodstuffsCartService, toCartProductRef } from "../foodstuffs-cart";
-import { FoodstuffsListService } from "../foodstuffs-lists";
+import { FoodstuffsServices } from "..";
+import { CartProductRef, toCartProductRef } from "../foodstuffs-cart";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
 
 export class GrocyShoppingListExporter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly productService: GrocyProductService,
-    private readonly shoppingListService: GrocyShoppingListService,
-    private readonly foodstuffsCartService: FoodstuffsCartService,
-    private readonly foodstuffsListService: FoodstuffsListService
+    private readonly grocy: Pick<
+      GrocyServices,
+      "productService" | "parentProductService" | "shoppingListService"
+    >,
+    private readonly foodstuffs: Pick<FoodstuffsServices, "listService" | "cartService">
   ) {}
 
   async addShoppingListToCart() {
-    await this.foodstuffsCartService.clearCart();
-    await this.foodstuffsListService.deleteTemporaryLists();
+    await this.foodstuffs.cartService.clearCart();
+    await this.foodstuffs.listService.deleteTemporaryLists();
 
-    const listItems = await this.shoppingListService.getShoppingListItems();
-    const products = await this.productService.getProductsWithParsedUserfields();
-    const parentProducts = await this.productService.getParentProducts(products);
+    const listItems = await this.grocy.shoppingListService.getShoppingListItems();
+    const products = await this.grocy.productService.getProducts();
+    const parentProducts = await this.grocy.parentProductService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
 
     for (const item of listItems) {
@@ -39,11 +39,11 @@ export class GrocyShoppingListExporter {
       }
     }
     this.logger.info("Adding products to cart");
-    await this.foodstuffsCartService.addProductsToCart(cartRefs);
+    await this.foodstuffs.cartService.addProductsToCart(cartRefs);
   }
 
   private async getFoodstuffsProduct(
-    product: SerializedProduct,
+    product: Product,
     parentProducts: Record<string, ParentProduct>
   ): Promise<FoodstuffsCartProduct | null> {
     if (product.userfields.isParent === GrocyTrue) {
@@ -54,7 +54,7 @@ export class GrocyShoppingListExporter {
         );
         return null;
       }
-      const children = await this.foodstuffsListService.refreshProductPrices(
+      const children = await this.foodstuffs.listService.refreshProductPrices(
         parent.children
           .filter((child) => !!child.userfields?.storeMetadata?.PNS)
           .map((child) => child.userfields.storeMetadata?.PNS as FoodstuffsCartProduct)

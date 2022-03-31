@@ -70,7 +70,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
     const notFound: ReceiptItem[] = [];
     const cartRefs: Record<string, CartProductRef> = {};
     const existingProducts = await this.grocyProductService
-      .getProductsWithParsedUserfields()
+      .getProducts()
       .then((products) => products.filter((p) => p.userfields.storeMetadata?.receiptNames?.length));
 
     for (const item of scannedItems) {
@@ -111,14 +111,14 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
    */
   async importReceiptCartRefs(cartRefs: Record<string, CartProductRef>) {
     await this.cartImporter.importProductRefs(Object.values(cartRefs));
-    const productsByPnsId = await this.grocyProductService.getProductsByFoodstuffsId();
+    const productsByPnsId = await this.cartImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(cartRefs)) {
       const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];
       if (!product) {
         this.logger.error(`No product found for ${ref.productId} / ${name}`);
         continue;
       }
-      const userfields = await this.grocyProductService.getProductUserfields(product.id);
+      const userfields = product.userfields;
       const storeMetadata = userfields.storeMetadata ?? {};
       const receiptNames = new Set(userfields?.storeMetadata?.receiptNames ?? []);
       receiptNames.add(name);
@@ -129,7 +129,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
           receiptNames: Array.from(receiptNames),
         },
       };
-      await this.grocyProductService.updateProductUserfields(product.id, updatedUserfields);
+      await this.grocyProductService.patchProduct(product.id, { userfields: updatedUserfields });
     }
   }
 

@@ -50,10 +50,11 @@ export class FoodstuffsBarcodeImporter {
 
   async importBarcodes(cartRefs: Record<string, CartProductRef>) {
     await this.cartImporter.importProductRefs(Object.values(cartRefs));
+    const products = await this.cartImporter.getProductsByFoodstuffsId();
     for (const [barcode, ref] of Object.entries(cartRefs)) {
-      const existing = await this.productService.getProduct(ref.productId);
+      const existing = products[ref.productId];
       existing.barcode = barcode;
-      await this.productService.updateProduct(existing);
+      await this.productService.patchProduct(ref.productId, { barcode });
     }
   }
 

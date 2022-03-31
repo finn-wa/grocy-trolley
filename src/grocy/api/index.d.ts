@@ -2295,7 +2295,7 @@ export interface components {
     UserObjectReference: UserObjectReference;
     /** @example [object Object] */
     Product: {
-      id?: number;
+      id: number;
       name?: string;
       description: string;
       location_id?: number;

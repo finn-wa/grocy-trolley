@@ -10,11 +10,11 @@ import { FoodstuffsToGrocyConverter } from "./product-converter";
 import { FoodstuffsReceiptImporter } from "./receipt-importer";
 
 export {
-    FoodstuffsBarcodeImporter,
-    FoodstuffsCartImporter,
-    FoodstuffsToGrocyConverter,
-    FoodstuffsListImporter,
-    FoodstuffsOrderImporter,
+  FoodstuffsBarcodeImporter,
+  FoodstuffsCartImporter,
+  FoodstuffsToGrocyConverter,
+  FoodstuffsListImporter,
+  FoodstuffsOrderImporter,
 };
 
 export function foodstuffsImporters(
@@ -22,12 +22,7 @@ export function foodstuffsImporters(
   grocy: GrocyServices
 ): FoodstuffsImporters {
   const converter = new FoodstuffsToGrocyConverter(grocy.idMaps);
-  const cartImporter = new FoodstuffsCartImporter(
-    converter,
-    foodstuffs.cartService,
-    grocy.productService,
-    grocy.stockService
-  );
+  const cartImporter = new FoodstuffsCartImporter(converter, foodstuffs.cartService, grocy);
   return {
     cartImporter,
     listImporter: new FoodstuffsListImporter(cartImporter, foodstuffs.listService),
