@@ -1,8 +1,7 @@
-import { matchQuantityUnit, NewProduct, ParentProduct, SerializedProduct } from "grocy";
+import { matchQuantityUnit, NewProduct, ParentProduct, Product } from "grocy";
 import { GrocyIdMaps, QuantityUnitName } from "grocy/grocy-config";
 import { GrocyFalse, QuantityUnitConversion } from "grocy/grocy-model";
 import { StockActionRequestBody } from "grocy/grocy-stock";
-import prompts from "prompts";
 import { Logger, prettyPrint } from "utils/logger";
 import {
   CategoryLocations,
@@ -19,10 +18,9 @@ export class FoodstuffsToGrocyConverter {
   async forImport(
     product: FoodstuffsCartProduct,
     storeId: string,
-    parentProducts: ParentProduct[]
+    parent?: ParentProduct
   ): Promise<NewProductPayloads> {
     const purchaseSaleType = this.getPurchaseSaleType(product);
-    const parent = await this.findParent(product, parentProducts);
     let purchaseUnitId: number;
     let stockUnitId: number;
     let stockQuantityFactor: number;
@@ -101,7 +99,7 @@ export class FoodstuffsToGrocyConverter {
     return { product: newProduct, quConversions };
   }
 
-  forAddStock(product: SerializedProduct, storeId: string): StockActionRequestBody<"add"> {
+  forAddStock(product: Product, storeId: string): StockActionRequestBody<"add"> {
     const fsProduct = product.userfields.storeMetadata?.PNS;
     if (!fsProduct) {
       throw new Error(
@@ -160,35 +158,6 @@ export class FoodstuffsToGrocyConverter {
       throw new Error(`Unit mismatch in ${prettyPrint(product)}`);
     }
     return purchaseSaleType;
-  }
-
-  private async findParent(
-    product: FoodstuffsCartProduct,
-    parents: ParentProduct[]
-  ): Promise<ParentProduct | null> {
-    const parentMatches = parents.filter(
-      (parent) =>
-        parent.category === product.categoryName &&
-        parent.tags.some((tag) => product.name.match(tag))
-    );
-    if (parentMatches.length === 0) {
-      return null;
-    }
-    const chosenParent = await prompts([
-      {
-        message: "Select parent product for " + product.name,
-        name: "value",
-        type: "select",
-        choices: [
-          { title: "None", value: null },
-          ...(parentMatches.map((parent) => ({
-            title: parent.product.name,
-            value: parent,
-          })) as any), // Values are meant to be strings only, but fuck it
-        ],
-      },
-    ]);
-    return chosenParent.value as ParentProduct | null;
   }
 
   private getDisplayQuantity(weightDisplayName: string): number | null {
