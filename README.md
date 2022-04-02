@@ -18,3 +18,11 @@ TODO
 - multi-select generic products when exporting
 - also figure out what's up with $0 items
 - source from other stores?
+
+- BOTH still an issue
+- parse the damn amounts
+- all prompts should have exit
+- catch all errors when doing things
+- consider using receipt prices
+- save skipped items
+- use lists for importing?
