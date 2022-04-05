@@ -1,5 +1,5 @@
 import { GrocyServices, Product } from "grocy";
-import { prompt } from "prompts";
+import prompts, { prompt } from "prompts";
 import { Logger } from "utils/logger";
 import { CartProductRef, FoodstuffsBaseProduct, toCartProductRef } from "..";
 import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
@@ -7,7 +7,7 @@ import { FoodstuffsCartProduct } from "../foodstuffs.model";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
 export class FoodstuffsCartImporter {
-  private readonly logger = new Logger("FoodstuffsCartImporter");
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly converter: FoodstuffsToGrocyConverter,
@@ -62,7 +62,7 @@ export class FoodstuffsCartImporter {
       );
       newProducts.push({ id: createdProduct.id, product });
     }
-    const stock: { value: boolean } = await prompt({
+    const stock: { value: boolean } = await prompts({
       name: "value",
       message: "Stock imported products?",
       type: "confirm",

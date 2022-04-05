@@ -120,13 +120,13 @@ export class GrocyIdMaps {
   private toNameMap<T extends string>(namesToIds: Record<T, number>): Record<number, T> {
     return Object.fromEntries(Object.entries(namesToIds).map(([name, id]) => [id, name]));
   }
-}
 
-export function matchQuantityUnit(unit: string): QuantityUnitName {
-  const lowercasedUnit = unit.toLowerCase();
-  const resolvedUnit = QUANTITY_UNITS.find((u) => u.toLowerCase() === lowercasedUnit);
-  if (!resolvedUnit) {
-    throw new Error("Unrecognised unit: " + unit);
+  /**
+   * Warning: defaults to ea if not found
+   */
+  matchQuantityUnit(unit: string): QuantityUnitName {
+    const lowercasedUnit = unit.toLowerCase();
+    const resolvedUnit = QUANTITY_UNITS.find((u) => u.toLowerCase() === lowercasedUnit);
+    return resolvedUnit ?? "ea";
   }
-  return resolvedUnit;
 }
