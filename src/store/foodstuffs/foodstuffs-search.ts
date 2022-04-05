@@ -1,8 +1,10 @@
+import { uniqueByProperty } from "@grocy-trolley/utils/arrays";
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
 import { headers } from "utils/headers-builder";
 import { Logger } from "utils/logger";
 import { CartProductRef, SaleTypeString } from ".";
+import { ListProductRef } from "./foodstuffs-lists";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsSearchService extends FoodstuffsRestService {
@@ -13,24 +15,49 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
   private lastSearchTime = 0;
   private _searchCookie: string | null = null;
 
-  async search(query: string): Promise<ProductSearchResponse> {
+  /**
+   * Searches Foodstuffs.
+   * @param query Search query
+   * @param options Search options
+   * @returns Search response
+   */
+  async search(
+    query: string,
+    options: SearchOptions = { includeCookies: false }
+  ): Promise<ProductSearchResponse> {
     this.logger.info("Searching Foodstuffs: " + query);
     await this.cooldown();
-    const searchCookie = await this.getSearchCookie();
+    const headersBuilder = headers().acceptJson().contentTypeJson();
+    if (options.includeCookies) {
+      const searchCookie = await this.getSearchCookie();
+      headersBuilder.cookie(searchCookie);
+    }
     return this.postForJson(
       this.buildUrl("SearchAutoComplete/AutoComplete"),
-      headers().acceptJson().contentTypeJson().cookie(searchCookie).build(),
+      headersBuilder.build(),
       { SearchTerm: query }
     );
   }
 
-  async searchProducts(query: string): Promise<ProductResult[]> {
-    const response = await this.search(query);
+  /**
+   * Searches Foodstuffs products.
+   * @param query Search query
+   * @param options Search options
+   * @returns Search response
+   */
+  async searchProducts(
+    query: string,
+    options: SearchOptions = { includeCookies: false }
+  ): Promise<ProductResult[]> {
+    const response = await this.search(query, options);
     return response.productResults;
   }
 
   async searchAndSelectProduct(barcode: string): Promise<ProductResult | null> {
-    let results = await this.searchProducts(barcode);
+    const results = await Promise.all([
+      this.searchProducts(barcode, { includeCookies: false }),
+      this.searchProducts(barcode, { includeCookies: true }),
+    ]).then((results) => uniqueByProperty(results.flat(), "ProductId"));
     if (results.length === 0) {
       return null;
     }
@@ -61,6 +88,14 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
       productId: product.ProductId,
       restricted: product.Restricted,
       sale_type: product.SaleType,
+      quantity: 1,
+    };
+  }
+
+  resultToListRef(product: ProductResult): ListProductRef {
+    return {
+      productId: product.ProductId,
+      saleType: product.SaleType,
       quantity: 1,
     };
   }
@@ -108,4 +143,12 @@ export interface ProductSearchResponse {
   productResults: ProductResult[];
   UserDataSearchMessage: string;
   Success: boolean;
+}
+
+export interface SearchOptions {
+  /**
+   * Restricts results to those in stock for the selected store, but reduces
+   * chance of "Product not ranged for online" error when adding to cart.
+   */
+  includeCookies: boolean;
 }

@@ -33,7 +33,12 @@ program
 
 program.command("shop").action(shop);
 
-program.command("dev", { hidden: true }).action(async () => {});
+program.command("dev", { hidden: true }).action(async () => {
+  const foodstuffs = foodstuffsServices();
+  const grocy = await grocyServices();
+  const importers = foodstuffsImporters(foodstuffs, grocy);
+  await foodstuffs.authService.login();
+});
 
 async function commandPrompt() {
   const choices = await prompts([

@@ -1,5 +1,6 @@
 import { Response } from "node-fetch";
-import { Logger } from "utils/logger";
+import prompts from "prompts";
+import { Logger, prettyPrint } from "utils/logger";
 import {
   FoodstuffsAuthService,
   FoodstuffsBaseProduct,
@@ -48,20 +49,58 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), this.authHeaders().build());
   }
 
-  async createListWithProducts(name: string, products: FoodstuffsBaseProduct[]): Promise<List> {
-    const refs = products.map((product) => toListProductRef(product));
+  async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {
     const createdList = await this.createList(name);
-    return this.updateList({
-      listId: createdList.listId,
-      Name: name,
-      products: refs,
-    });
+    return this.addProductsToList(createdList.listId, products);
+  }
+
+  async addProductsToList(listId: string, products: ListProductRef[]): Promise<List> {
+    try {
+      const list = await this.updateList({ listId, products });
+      return list;
+    } catch (error) {
+      this.logger.error(error);
+      this.logger.error("Failed to add products to list. Falling back to chunks.");
+    }
+    const iter = products[Symbol.iterator]();
+    let chunk: ListProductRef[];
+    do {
+      chunk = Array.from({ length: 5 }, () => iter.next().value).filter((p) => !!p);
+      try {
+        await this.updateList({ listId, products: chunk });
+      } catch (error) {
+        await this.addProductsToListIndividually(listId, chunk);
+      }
+    } while (chunk.length === 5);
+    return this.getList(listId);
+  }
+
+  private async addProductsToListIndividually(
+    listId: string,
+    products: ListProductRef[]
+  ): Promise<List> {
+    for (const product of products) {
+      this.logger.debug("Adding product " + product.productId);
+      try {
+        await this.updateList({ listId, products });
+      } catch (error) {
+        this.logger.error("Failed to add product to list!\n" + prettyPrint(product));
+        this.logger.error(error);
+        const response = await prompts([
+          { name: "resume", type: "confirm", message: "Resume adding products?" },
+        ]);
+        if (!response.resume) {
+          throw error;
+        }
+      }
+    }
+    return this.getList(listId);
   }
 
   async refreshProductPrices<T extends FoodstuffsBaseProduct>(products: T[]) {
     const list = await this.createListWithProducts(
       `[temporary] price refresh - ${new Date().toISOString()}`,
-      products
+      products.map((product) => toListProductRef(product))
     );
     const refreshedProducts = products.map((product) => {
       const listProduct = list.products.find((x) => x.productId === product.productId);
@@ -97,8 +136,8 @@ export interface ListProductRef {
 
 export interface ListUpdate {
   listId: string;
-  products: ListProductRef[];
-  Name: string;
+  products?: ListProductRef[];
+  Name?: string;
 }
 
 export interface List {

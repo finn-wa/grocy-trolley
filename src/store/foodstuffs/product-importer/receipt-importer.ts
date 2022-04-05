@@ -4,17 +4,17 @@ import prompts from "prompts";
 import { ReceiptScanner } from "receipt-ocr";
 import { ReceiptItem, ReceiptItemiser } from "receipt-ocr/receipts.model";
 import { Logger, prettyPrint } from "utils/logger";
-import { FoodstuffsCartImporter } from ".";
-import { CartProductRef, FoodstuffsSearchService } from "..";
-import { toCartProductRef } from "../foodstuffs-cart";
+import { FoodstuffsServices } from "..";
+import { ListProductRef, toListProductRef } from "../foodstuffs-lists";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
+import { FoodstuffsListImporter } from "./list-importer";
 
 export class FoodstuffsReceiptImporter implements ReceiptItemiser {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly cartImporter: FoodstuffsCartImporter,
-    private readonly searchService: FoodstuffsSearchService,
+    private readonly foodstuffs: Pick<FoodstuffsServices, "listService" | "searchService">,
+    private readonly listImporter: FoodstuffsListImporter,
     private readonly scanner: ReceiptScanner,
     private readonly grocyProductService: GrocyProductService
   ) {}
@@ -68,7 +68,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
 
   async importScannedItems(scannedItems: ReceiptItem[]) {
     const notFound: ReceiptItem[] = [];
-    const cartRefs: Record<string, CartProductRef> = {};
+    const listRefs: Record<string, ListProductRef> = {};
     const existingProducts = await this.grocyProductService
       .getProducts()
       .then((products) => products.filter((p) => p.userfields.storeMetadata?.receiptNames?.length));
@@ -79,20 +79,20 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       );
       if (existingMatch) {
         this.logger.info(`Matched receipt item ${item.name} to Grocy product!`);
-        cartRefs[item.name] = toCartProductRef(
+        listRefs[item.name] = toListProductRef(
           existingMatch.userfields.storeMetadata?.PNS as FoodstuffsCartProduct
         );
         continue;
       }
-      const searchRes = await this.searchService.searchAndSelectProduct(item.name);
+      const searchRes = await this.foodstuffs.searchService.searchAndSelectProduct(item.name);
       if (searchRes === null) {
         notFound.push(item);
       } else {
-        cartRefs[item.name] = this.searchService.resultToCartRef(searchRes);
+        listRefs[item.name] = this.foodstuffs.searchService.resultToListRef(searchRes);
       }
     }
     this.logger.info("Failed to find:\n" + prettyPrint(notFound));
-    this.logger.info("Found:\n" + prettyPrint(cartRefs));
+    this.logger.info("Found:\n" + prettyPrint(listRefs));
     const importProducts = await prompts([
       {
         message: "Import products?",
@@ -101,7 +101,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       },
     ]);
     if (importProducts.value) {
-      return this.importReceiptCartRefs(cartRefs);
+      return this.importReceiptListRefs(listRefs);
     }
   }
 
@@ -109,9 +109,13 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
    * Imports resolved receipt items.
    * @param cartRefs map of receipt item name to cart ref
    */
-  async importReceiptCartRefs(cartRefs: Record<string, CartProductRef>) {
-    await this.cartImporter.importProductRefs(Object.values(cartRefs));
-    const productsByPnsId = await this.cartImporter.getProductsByFoodstuffsId();
+  async importReceiptListRefs(cartRefs: Record<string, ListProductRef>) {
+    const list = await this.foodstuffs.listService.createListWithProducts(
+      "Testing " + new Date().toISOString(),
+      Object.values(cartRefs)
+    );
+    await this.listImporter.importList(list.listId);
+    const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(cartRefs)) {
       const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];
       if (!product) {

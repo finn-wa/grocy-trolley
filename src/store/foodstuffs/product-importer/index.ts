@@ -21,11 +21,12 @@ export function foodstuffsImporters(
   foodstuffs: FoodstuffsServices,
   grocy: GrocyServices
 ): FoodstuffsImporters {
-  const converter = new FoodstuffsToGrocyConverter(grocy.idMaps);
+  const converter = new FoodstuffsToGrocyConverter(grocy.idMaps, foodstuffs.searchService);
   const cartImporter = new FoodstuffsCartImporter(converter, foodstuffs.cartService, grocy);
+  const listImporter = new FoodstuffsListImporter(converter, foodstuffs.listService, grocy);
   return {
     cartImporter,
-    listImporter: new FoodstuffsListImporter(cartImporter, foodstuffs.listService),
+    listImporter,
     orderImporter: new FoodstuffsOrderImporter(
       cartImporter,
       foodstuffs.orderService,
@@ -38,8 +39,8 @@ export function foodstuffsImporters(
       foodstuffs.searchService
     ),
     receiptImporter: new FoodstuffsReceiptImporter(
-      cartImporter,
-      foodstuffs.searchService,
+      foodstuffs,
+      listImporter,
       // new OcrReceiptScanner()
       new TaggunReceiptScanner(),
       grocy.productService
