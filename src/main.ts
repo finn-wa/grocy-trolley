@@ -38,6 +38,8 @@ program.command("dev", { hidden: true }).action(async () => {
   const grocy = await grocyServices();
   const importers = foodstuffsImporters(foodstuffs, grocy);
   await foodstuffs.authService.login();
+  const lists = await foodstuffs.listService.getListsPlaywright();
+  console.log(lists);
 });
 
 async function commandPrompt() {
