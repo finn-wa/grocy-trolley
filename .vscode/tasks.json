@@ -13,11 +13,12 @@
       "detail": "node scripts/build.js -t dev --watch"
     },
     {
-      "label": "Typecheck",
-      "script": "typecheck",
-      "type": "npm",
-      "group": "none",
-      "problemMatcher": "$tsc"
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build",
+      "label": "tsc: watch (typecheck)"
     }
   ]
 }
