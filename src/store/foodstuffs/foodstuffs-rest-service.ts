@@ -20,6 +20,6 @@ export abstract class FoodstuffsRestService extends RestService {
     headers?: Headers,
     body?: any
   ): Promise<Response> {
-    return this.userAgent.fetchAsUser(method, url, headers, body);
+    return this.userAgent.fetchWithBrowser(method, url, headers, body);
   }
 }
