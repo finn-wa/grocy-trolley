@@ -20,7 +20,11 @@ program
       .default("DEBUG")
       .makeOptionMandatory()
   )
-  .hook("preAction", (command) => initEnv({ GT_LOG_LEVEL: command.opts().logLevel }));
+  .option("-e, --env-file <path>", "Path to .env file", ".env")
+  .hook("preAction", (command) => {
+    const { logLevel, envFilePath } = command.opts();
+    initEnv({ envFilePath, overrides: { GT_LOG_LEVEL: logLevel } });
+  });
 
 program
   .command("prompt", { isDefault: true, hidden: true }) //

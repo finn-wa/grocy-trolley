@@ -2,9 +2,7 @@ import { getEnv } from "env";
 import { Response } from "node-fetch";
 import { headers, HeadersBuilder } from "utils/headers-builder";
 import { RestService } from "utils/rest";
-import { components } from "./api";
 import { CreatedObjectId, GrocySchemas } from "./grocy-model";
-import { CreatedObjectResponse } from "./grocy-user-entities";
 
 export abstract class GrocyRestService extends RestService {
   private readonly env = getEnv();

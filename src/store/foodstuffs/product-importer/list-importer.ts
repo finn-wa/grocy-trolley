@@ -1,6 +1,6 @@
-import { GrocyServices, Product } from "@grocy-trolley/grocy";
-import { Logger } from "@grocy-trolley/utils/logger";
+import { GrocyServices, Product } from "grocy";
 import prompts from "prompts";
+import { Logger } from "utils/logger";
 import { FoodstuffsListService } from "..";
 import { List } from "../foodstuffs-lists";
 import { FoodstuffsListProduct } from "../foodstuffs.model";

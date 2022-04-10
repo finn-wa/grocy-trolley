@@ -1,5 +1,5 @@
-import { GrocyTrue } from "@grocy-trolley/grocy/grocy-model";
 import { GrocyServices, ParentProduct, Product } from "grocy";
+import { GrocyTrue } from "grocy/grocy-model";
 import prompts from "prompts";
 import { Logger, prettyPrint } from "utils/logger";
 import { FoodstuffsServices } from "..";

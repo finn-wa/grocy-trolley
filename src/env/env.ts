@@ -1,5 +1,5 @@
-import { Logger, prettyPrint } from "@grocy-trolley/utils/logger";
-import "dotenv/config";
+import { Logger, prettyPrint } from "utils/logger";
+import { config } from "dotenv";
 
 const EnvVars = [
   "BARCODEBUDDY_URL",
@@ -15,25 +15,29 @@ type EnvVar = typeof EnvVars[number];
 
 export type Env = Record<EnvVar, string>;
 
-let envValidated = false;
-const env = Object.fromEntries(EnvVars.map((key) => [key, process.env[key]])) as Env;
+let env: Env | null = null;
 
-export function initEnv(overrides: Partial<Env>) {
-  if (envValidated) {
+export function initEnv(options: { envFilePath?: string; overrides?: Partial<Env> } = {}) {
+  if (env !== null) {
     throw new Error("initEnv has already been called");
   }
-  Object.assign(env, overrides);
-  const undefinedVars = EnvVars.filter((envVar) => env[envVar] === undefined);
+  // Load from .env file
+  options.envFilePath ? config({ path: options.envFilePath }) : config();
+  env = Object.fromEntries(EnvVars.map((key) => [key, process.env[key]])) as Env;
+  // Apply overrides
+  if (options.overrides) {
+    Object.assign(env, options.overrides);
+  }
+  const undefinedVars = EnvVars.filter((envVar) => env![envVar] === undefined);
   if (undefinedVars.length > 0) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
-  envValidated = true;
   new Logger("env").trace(`Initialised env: \n${prettyPrint(env)}`);
 }
 
 export function getEnv(): Env {
-  if (!envValidated) {
-    initEnv({});
+  if (env === null) {
+    initEnv();
   }
-  return { ...env };
+  return { ...(env as Env) };
 }
