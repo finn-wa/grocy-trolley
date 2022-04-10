@@ -1,17 +1,25 @@
-import { headers, HeadersBuilder } from "utils/headers-builder";
+import { Headers, Response } from "node-fetch";
 import { RestService } from "utils/rest";
-import { FoodstuffsAuthService } from ".";
+import { FoodstuffsUserAgent } from ".";
+import { PAKNSAVE_URL } from "./foodstuffs.model";
 
 export abstract class FoodstuffsRestService extends RestService {
-  constructor(protected readonly authService: FoodstuffsAuthService) {
+  protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi/`);
+
+  constructor(protected readonly userAgent: FoodstuffsUserAgent) {
     super();
   }
 
-  protected authHeaders(): HeadersBuilder {
-    return headers().cookie(this.authService.cookie);
-  }
-
-  protected get baseUrl() {
-    return this.authService.baseUrl;
+  /**
+   * Overrides the base {@link RestService.fetchWithMethod} to use the
+   * FoodstuffsUserAgent to perform requests.
+   */
+  protected async fetchWithMethod(
+    method: string,
+    url: string,
+    headers?: Headers,
+    body?: any
+  ): Promise<Response> {
+    return this.userAgent.fetchAsUser(method, url, headers, body);
   }
 }

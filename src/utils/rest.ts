@@ -9,7 +9,7 @@ export abstract class RestService {
 
   protected validateBaseUrl(baseUrl: string): `${string}/` {
     if (!baseUrl.endsWith("/")) {
-      throw new Error(`Base URL must end with a slash, found: ${this.baseUrl}`);
+      throw new Error(`Base URL must end with a slash, found: ${baseUrl}`);
     }
     return baseUrl as `${string}/`;
   }
@@ -25,7 +25,14 @@ export abstract class RestService {
 
   private async extract<T>(response: Response, extractor: (b: Response) => Promise<T>) {
     if (!response.ok) {
-      throw new Error(`[${response.status}] ${prettyPrint(await extractor(response))}`);
+      let errorMsg = `Response not OK, status: ${response.status}. `;
+      try {
+        const body = await extractor(response);
+        errorMsg += "Body: " + prettyPrint(body);
+      } catch (error) {
+        errorMsg += "Error extracting body: " + prettyPrint(error);
+      }
+      throw new Error(errorMsg);
     }
     const body = await extractor(response);
     this.logger.trace(prettyPrint(body));
@@ -40,23 +47,16 @@ export abstract class RestService {
     return this.extract(response, (r) => r.text());
   }
 
-  private async fetchWithMethod(
+  protected async fetchWithMethod(
     method: string,
     url: string,
     headers?: Headers,
     body?: BodyInit | any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
-    if (headers) {
-      this.logger.trace(
-        Array.from(headers.entries())
-          .map(([k, v]) => `${k}=${v}`)
-          .join("\n")
-      );
-    }
-    if (body) {
-      this.logger.trace(body);
-    }
+    if (headers) this.logger.trace(prettyPrint(headers));
+    if (body) this.logger.trace(body);
+
     const contentType = headers?.get("content-type");
     if (contentType === APPLICATION_JSON && body) {
       body = JSON.stringify(body);
@@ -69,7 +69,7 @@ export abstract class RestService {
     return response;
   }
 
-  private async fetchJsonWithMethod<T>(
+  protected async fetchJsonWithMethod<T>(
     method: string,
     url: string,
     headers?: Headers,
