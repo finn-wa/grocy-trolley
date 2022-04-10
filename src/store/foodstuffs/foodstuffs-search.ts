@@ -6,32 +6,27 @@ import { Logger } from "utils/logger";
 import { CartProductRef, SaleTypeString } from ".";
 import { ListProductRef } from "./foodstuffs-lists";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
+import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
 
-export class FoodstuffsSearchService extends FoodstuffsRestService {
-  protected readonly logger = new Logger(this.constructor.name);
-
+class FoodstuffsSearchAgent extends FoodstuffsRestService {
+  protected readonly logger;
   private readonly timeout = 1000;
-  private readonly searchCookieKeys = ["STORE_ID_V2", "Region", "AllowRestrictedItems"];
   private lastSearchTime = 0;
-  private _searchCookie: string | null = null;
+
+  constructor(name: string, userAgent: FoodstuffsUserAgent) {
+    super(userAgent);
+    this.logger = new Logger(name);
+  }
 
   /**
    * Searches Foodstuffs.
    * @param query Search query
-   * @param options Search options
    * @returns Search response
    */
-  async search(
-    query: string
-    // options: SearchOptions = { includeCookies: false }
-  ): Promise<ProductSearchResponse> {
+  async search(query: string): Promise<ProductSearchResponse> {
     this.logger.info("Searching Foodstuffs: " + query);
     await this.cooldown();
     const headersBuilder = headers().acceptJson().contentTypeJson();
-    // if (options.includeCookies) {
-    // const searchCookie = await this.getSearchCookie();
-    // headersBuilder.cookie(searchCookie);
-    // }
     return this.postForJson(
       this.buildUrl("SearchAutoComplete/AutoComplete"),
       headersBuilder.build(),
@@ -42,23 +37,40 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
   /**
    * Searches Foodstuffs products.
    * @param query Search query
-   * @param options Search options
    * @returns Search response
    */
-  async searchProducts(
-    query: string,
-    options: SearchOptions = { includeCookies: false }
-  ): Promise<ProductResult[]> {
-    // TODO: reinstate options
+  async searchProducts(query: string): Promise<ProductResult[]> {
     const response = await this.search(query);
     return response.productResults;
   }
 
+  private async cooldown(): Promise<void> {
+    const elapsed = Date.now() - this.lastSearchTime;
+    if (elapsed < this.timeout) {
+      await setTimeout(this.timeout - elapsed);
+    }
+    this.lastSearchTime = Date.now();
+  }
+}
+
+export class FoodstuffsSearchService {
+  protected readonly logger = new Logger(this.constructor.name);
+  private readonly userAgent: FoodstuffsSearchAgent;
+  private readonly anonAgent: FoodstuffsSearchAgent;
+
+  /**
+   * Creates a new FoodstuffSearchService.
+   * @param userAgent Authenticated user agent
+   */
+  constructor(userAgent: FoodstuffsUserAgent) {
+    this.userAgent = new FoodstuffsSearchAgent("FoodstuffsUserSearchAgent", userAgent);
+    this.anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
+  }
+
   async searchAndSelectProduct(barcode: string): Promise<ProductResult | null> {
-    const results = await Promise.all([
-      this.searchProducts(barcode, { includeCookies: false }),
-      // this.searchProducts(barcode, { includeCookies: true }),
-    ]).then((results) => uniqueByProperty(results.flat(), "ProductId"));
+    const results = await Promise.all(
+      [this.userAgent, this.anonAgent].map((agent) => agent.searchProducts(barcode))
+    ).then((results) => uniqueByProperty(results.flat(), "ProductId"));
     if (results.length === 0) {
       return null;
     }
@@ -100,14 +112,6 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
       quantity: 1,
     };
   }
-
-  private async cooldown(): Promise<void> {
-    const elapsed = Date.now() - this.lastSearchTime;
-    if (elapsed < this.timeout) {
-      await setTimeout(this.timeout - elapsed);
-    }
-    this.lastSearchTime = Date.now();
-  }
 }
 
 export interface ProductResult {
@@ -126,19 +130,11 @@ export interface ProductResult {
 }
 
 /** TODO: get model */
-// export interface ProductCategoryResults {}
+export type ProductCategoryResults = unknown;
 
 export interface ProductSearchResponse {
-  productCategoryResults: ProductResult[];
+  productCategoryResults: ProductCategoryResults[];
   productResults: ProductResult[];
   UserDataSearchMessage: string;
   Success: boolean;
-}
-
-export interface SearchOptions {
-  /**
-   * Restricts results to those in stock for the selected store, but reduces
-   * chance of "Product not ranged for online" error when adding to cart.
-   */
-  includeCookies: boolean;
 }

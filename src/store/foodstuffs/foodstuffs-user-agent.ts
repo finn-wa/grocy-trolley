@@ -1,29 +1,41 @@
-import { getEnv } from "env";
 import { access } from "fs/promises";
 import { Headers, Response as NodeResponse } from "node-fetch";
+import path from "path";
 import { Browser, BrowserContext, JSHandle, Page } from "playwright";
 import { APPLICATION_JSON, headers } from "utils/headers-builder";
 import { Logger, prettyPrint } from "utils/logger";
 import { PAKNSAVE_URL } from "./foodstuffs.model";
 
+/**
+ * Uses Playwright to perform Foodstuffs requests from a browser. Necessary
+ * because Cloudflare now blocks requests that are not sent from a browser.
+ */
 export class FoodstuffsUserAgent {
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly loginDetails: LoginDetails;
   private context?: BrowserContext;
   private page?: Page;
 
-  // TODO: support creating a user agent without logging in. for unauthenticated search requests
+  /**
+   * Creates a new FoodstuffsUserAgent.
+   * @param browser Playwright Browser instance to use to perform requests
+   * @param loginDetails Optional Foodstuffs login details. If provided, Playwright
+   *    logs into this account and sends requests with credentials.
+   * @param storageStateDir Path to directory used for saved storage state (only
+   *    used when loginDetails are provided).
+   */
   constructor(
     private readonly browser: Browser,
-    loginDetails?: LoginDetails,
-    private readonly storageStatePath = "src/resources/cache/playwright.json"
-  ) {
-    if (loginDetails) {
-      this.loginDetails = loginDetails;
-    } else {
-      const { PAKNSAVE_EMAIL: email, PAKNSAVE_PASSWORD: password } = getEnv();
-      this.loginDetails = { email, password };
-    }
+    private readonly loginDetails?: LoginDetails | null,
+    private readonly storageStateDir = "src/resources/cache/playwright",
+  ) {}
+
+  /**
+   * Creates a new agent with the same browser but new login details
+   * @param loginDetails Login details for the new agent, or null to omit them
+   * @returns the new agent
+   */
+  clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
+    return new FoodstuffsUserAgent(this.browser, loginDetails ?? undefined, this.storageStateDir);
   }
 
   /**
@@ -34,19 +46,16 @@ export class FoodstuffsUserAgent {
    * @param body Request body
    * @returns Request response
    */
-  async fetchAsUser(
-    method: string,
-    url: string,
-    headers?: Headers,
-    body?: any
-  ): Promise<NodeResponse> {
+  async fetchWithBrowser(method: string, url: string, headers?: Headers, body?: any): Promise<
+    NodeResponse
+  > {
     const page = await this.getPage();
     return this.fetchWithPage(page, method, url, headers, body);
   }
 
   /**
-   * Performs a fetch request from the browser using Playwright. Necessary
-   * because Cloudflare now blocks requests that are not sent from a browser.
+   * Performs a fetch request from the browser using Playwright. 
+   * Necessary because Cloudflare now blocks requests that are not sent from a browser.
    * WARNING: not every method on the returned Response is callable, see
    * {@link FoodstuffsRequest}.
    * @param page Playwright page instance to use to perform the request
@@ -61,7 +70,7 @@ export class FoodstuffsUserAgent {
     method: string,
     url: string,
     headers?: Headers,
-    body?: BodyInit | any
+    body?: BodyInit | any,
   ): Promise<NodeResponse> {
     this.logger.debug(`${method} ${url}`);
     if (headers) {
@@ -76,24 +85,30 @@ export class FoodstuffsUserAgent {
     }
     const responseHandle = await page.evaluateHandle(
       async ({ url, method, headers, body }) =>
-        fetch(url, {
-          credentials: "include",
-          referrer: "https://www.paknsave.co.nz/shop",
-          mode: "cors",
-          method,
-          headers,
-          body,
-        }),
-      { url, method, headers, body }
+        fetch(
+          url,
+          {
+            credentials: this.loginDetails ? "include" : undefined,
+            referrer: "https://www.paknsave.co.nz/shop",
+            mode: "cors",
+            method,
+            headers,
+            body,
+          },
+        ),
+      { url, method, headers, body },
     );
     // Response is not serialisable, so we must serialise it
-    const response = await responseHandle.evaluate((response, props) => {
-      const responseJson: Record<string, any> = Object.fromEntries(
-        props.map((key) => [key, response[key]])
-      );
-      responseJson.headers = Object.fromEntries(responseJson.headers.entries());
-      return responseJson as SerialisedResponse;
-    }, SERIALISABLE_RESPONSE_PROPS);
+    const response = await responseHandle.evaluate(
+      (response, props) => {
+        const responseJson: Record<string, any> = Object.fromEntries(
+          props.map((key) => [key, response[key]]),
+        );
+        responseJson.headers = Object.fromEntries(responseJson.headers.entries());
+        return responseJson as SerialisedResponse;
+      },
+      SERIALISABLE_RESPONSE_PROPS,
+    );
     if (!response.ok) {
       throw new Error(`Response not OK: ${prettyPrint(response)}`);
     }
@@ -112,28 +127,39 @@ export class FoodstuffsUserAgent {
     const context = await this.getContext();
     const page = await context.newPage();
     await page.goto(PAKNSAVE_URL + "shop");
-    // Check if already logged in
-    try {
-      await this.fetchWithPage(
-        page,
-        "GET",
-        `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
-        headers().acceptJson().build()
-      );
-    } catch (error) {
-      await page.click('button[id="login-form"]');
-      await page.fill('input[id="login-email"]', this.loginDetails.email);
-      await page.fill('input[id="login-password"]', this.loginDetails.password);
-      await page.click("button.login-form-submit");
-      // page refreshes after submission
-      await page.waitForLoadState("networkidle");
-      // search box seems to pop in last
-      await page.locator('input[aria-label="Search products"]').waitFor();
-      // save logged in state
-      await page.context().storageState({ path: this.storageStatePath });
+    // If loginDetails exist, log in
+    if (this.loginDetails) {
+      // Test if already logged in
+      try {
+        await this.fetchWithPage(
+          page,
+          "GET",
+          `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
+          headers().acceptJson().build(),
+        );
+      } catch (error) {
+        await page.click('button[id="login-form"]');
+        await page.fill('input[id="login-email"]', this.loginDetails.email);
+        await page.fill('input[id="login-password"]', this.loginDetails.password);
+        await page.click("button.login-form-submit");
+        // page refreshes after submission
+        await page.waitForLoadState("networkidle");
+        // search box seems to pop in last
+        await page.locator('input[aria-label="Search products"]').waitFor();
+        // save logged in state
+
+        await page.context().storageState({ path: this.getStorageStateFilePath() });
+      }
     }
     this.page = page;
     return this.page;
+  }
+
+  private getStorageStateFilePath(): string | undefined {
+    if (!this.loginDetails) {
+      return undefined;
+    }
+    return path.join(this.storageStateDir, this.loginDetails.email.replace(/\W+/g, "_") + ".json");
   }
 
   /**
@@ -142,40 +168,39 @@ export class FoodstuffsUserAgent {
    * @returns Browser context
    */
   private async getContext(): Promise<BrowserContext> {
-    if (!this.context) {
+    if (this.context) {
+      return this.context;
+    }
+    if (this.loginDetails) {
+      const storageStatePath = this.getStorageStateFilePath();
       try {
-        await access(this.storageStatePath);
+        await access(this.storageStateDir);
         // No error means that cached storageState exists
-        this.context = await this.browser.newContext({ storageState: this.storageStatePath });
+        this.context = await this.browser.newContext({ storageState: storageStatePath });
+        return this.context;
       } catch (error) {
         this.logger.info("No storageState found, creating new context");
-        this.context = await this.browser.newContext();
       }
     }
+    this.context = await this.browser.newContext();
     return this.context;
   }
 }
 
-export interface LoginDetails {
-  email: string;
-  password: string;
-}
+export interface LoginDetails { email: string, password: string }
 
 export interface FoodstuffsUserProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  agreedToMarketing: boolean;
-  agreedToTermsAndConditions: boolean;
-  clubCardUser: boolean;
+  id: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  phone: string,
+  agreedToMarketing: boolean,
+  agreedToTermsAndConditions: boolean,
+  clubCardUser: boolean,
 }
 
-export interface LoginResponse {
-  success: boolean;
-  userProfile: FoodstuffsUserProfile;
-}
+export interface LoginResponse { success: boolean, userProfile: FoodstuffsUserProfile }
 
 /**
  * Response backed by a Playwright JSHandle browser fetch Response. json()
@@ -191,10 +216,7 @@ class FoodstuffsResponse implements NodeResponse {
   readonly type: ResponseType;
   readonly url: string;
 
-  constructor(
-    private readonly responseHandle: JSHandle<Response>,
-    responseJson: SerialisedResponse
-  ) {
+  constructor(private readonly responseHandle: JSHandle<Response>, responseJson: SerialisedResponse) {
     this.bodyUsed = responseJson.bodyUsed;
     this.ok = responseJson.ok;
     this.redirected = responseJson.redirected;
@@ -257,6 +279,6 @@ const SERIALISABLE_RESPONSE_PROPS = [
 ] as const;
 
 interface SerialisedResponse
-  extends Omit<Response, typeof UNSERIALISABLE_RESPONSE_PROPS[number] | "headers"> {
-  headers: Record<string, string>;
-}
+  extends
+    Omit<Response, typeof UNSERIALISABLE_RESPONSE_PROPS[number] | "headers">
+{ headers: Record<string, string> }

@@ -116,8 +116,9 @@ export class FoodstuffsToGrocyConverter {
     let quantitySuffix: string;
     let quConversions: ConversionWithoutId[] = [];
 
-    const searchResults = await this.foodstuffsSearchService.searchProducts(product.productId);
-    const searchProduct: ProductResult | undefined = searchResults[0];
+    const searchProduct = await this.foodstuffsSearchService.searchAndSelectProduct(
+      product.productId
+    );
 
     if (purchaseSaleType.type === "UNITS") {
       const weightDisplayName = searchProduct?.ProductWeightDisplayName ?? "ea";
