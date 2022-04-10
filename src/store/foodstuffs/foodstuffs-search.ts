@@ -1,4 +1,4 @@
-import { uniqueByProperty } from "@grocy-trolley/utils/arrays";
+import { uniqueByProperty } from "utils/arrays";
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
 import { headers } from "utils/headers-builder";
@@ -22,16 +22,16 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
    * @returns Search response
    */
   async search(
-    query: string,
-    options: SearchOptions = { includeCookies: false }
+    query: string
+    // options: SearchOptions = { includeCookies: false }
   ): Promise<ProductSearchResponse> {
     this.logger.info("Searching Foodstuffs: " + query);
     await this.cooldown();
     const headersBuilder = headers().acceptJson().contentTypeJson();
-    if (options.includeCookies) {
-      const searchCookie = await this.getSearchCookie();
-      headersBuilder.cookie(searchCookie);
-    }
+    // if (options.includeCookies) {
+    // const searchCookie = await this.getSearchCookie();
+    // headersBuilder.cookie(searchCookie);
+    // }
     return this.postForJson(
       this.buildUrl("SearchAutoComplete/AutoComplete"),
       headersBuilder.build(),
@@ -49,14 +49,15 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
     query: string,
     options: SearchOptions = { includeCookies: false }
   ): Promise<ProductResult[]> {
-    const response = await this.search(query, options);
+    // TODO: reinstate options
+    const response = await this.search(query);
     return response.productResults;
   }
 
   async searchAndSelectProduct(barcode: string): Promise<ProductResult | null> {
     const results = await Promise.all([
       this.searchProducts(barcode, { includeCookies: false }),
-      this.searchProducts(barcode, { includeCookies: true }),
+      // this.searchProducts(barcode, { includeCookies: true }),
     ]).then((results) => uniqueByProperty(results.flat(), "ProductId"));
     if (results.length === 0) {
       return null;
@@ -98,17 +99,6 @@ export class FoodstuffsSearchService extends FoodstuffsRestService {
       saleType: product.SaleType,
       quantity: 1,
     };
-  }
-
-  private async getSearchCookie(): Promise<string> {
-    if (!this._searchCookie) {
-      const cookieHeaders = await this.authService.getCookieHeaders();
-      const searchCookieHeaders = cookieHeaders.filter((cookie) =>
-        this.searchCookieKeys.some((key) => cookie.startsWith(key))
-      );
-      this._searchCookie = this.authService.toCookieRequestHeader(searchCookieHeaders);
-    }
-    return this._searchCookie;
   }
 
   private async cooldown(): Promise<void> {

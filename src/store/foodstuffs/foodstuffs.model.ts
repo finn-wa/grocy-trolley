@@ -1,6 +1,6 @@
 import { FoodstuffsCategory } from ".";
 
-export const PAKNSAVE_URL = "https://www.paknsave.co.nz/CommonApi/";
+export const PAKNSAVE_URL = "https://www.paknsave.co.nz/";
 
 export type SaleTypeString = "UNITS" | "WEIGHT" | "BOTH";
 

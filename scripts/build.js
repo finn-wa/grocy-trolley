@@ -51,7 +51,7 @@ function getBuildOptions(args) {
     tsconfig: "./tsconfig.json",
     watch: args.watch,
     // Things require()d by Playwright
-    external: ["electron/index.js", "ws", "./appIcon.png"],
+    external: ["electron/index.js", "ws", "./appIcon.png", "pixelmatch"],
   };
 
   if (args.target === "test") {

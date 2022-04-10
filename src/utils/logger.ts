@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import chalk, { ChalkInstance } from "chalk";
 import { getEnv } from "env";
+import { Logger as PlaywrightLogger } from "playwright";
 
 export function prettyPrint(obj: any) {
   return JSON.stringify(obj, undefined, 2);
@@ -17,19 +17,19 @@ export enum LogLevel {
 export const LOG_LEVELS = ["TRACE", "DEBUG", "INFO", "WARN", "ERROR"] as const;
 export type LogLevelString = typeof LOG_LEVELS[number];
 
-export function isLogLevel(level: string): level is LogLevelString {
-  return (LOG_LEVELS as readonly string[]).includes(level);
-}
-
 export class Logger {
   readonly level: LogLevel;
 
-  constructor(readonly name: string) {
-    const level = getEnv().GT_LOG_LEVEL;
-    if (!isLogLevel(level)) {
-      throw new Error(`Invalid log level "${level}". Valid values: ${LOG_LEVELS.join()}`);
+  constructor(readonly name: string, logLevel?: LogLevel) {
+    if (logLevel) {
+      this.level = logLevel;
+    } else {
+      const level = getEnv().GT_LOG_LEVEL;
+      if (!isLogLevel(level)) {
+        throw new Error(`Invalid log level "${level}". Valid values: ${LOG_LEVELS.join()}`);
+      }
+      this.level = LogLevel[level];
     }
-    this.level = LogLevel[level];
   }
 
   private out(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
@@ -60,6 +60,21 @@ export class Logger {
     return obj;
   }
 
+  log(level: LogLevel, message: any, params: any[]) {
+    switch (level) {
+      case LogLevel.TRACE:
+        return this.trace(message, ...params);
+      case LogLevel.DEBUG:
+        return this.debug(message, ...params);
+      case LogLevel.INFO:
+        return this.info(message, ...params);
+      case LogLevel.WARN:
+        return this.warn(message, ...params);
+      case LogLevel.ERROR:
+        return this.error(message, ...params);
+    }
+  }
+
   trace(message: any, ...params: any[]) {
     this.out(LogLevel.TRACE, message, params, chalk.gray);
   }
@@ -79,4 +94,24 @@ export class Logger {
   error(message: any, ...params: any[]) {
     this.err(LogLevel.ERROR, message, params, chalk.red);
   }
+}
+
+export function isLogLevel(level: string): level is LogLevelString {
+  return (LOG_LEVELS as readonly string[]).includes(level);
+}
+
+export function playwrightLogger(levelOverride?: LogLevel): PlaywrightLogger {
+  const logger = new Logger("Playwright", levelOverride);
+  type PlaywrightSeverity = Parameters<PlaywrightLogger["isEnabled"]>[1];
+  const logLevel: Record<PlaywrightSeverity, LogLevel> = {
+    verbose: LogLevel.DEBUG,
+    info: LogLevel.INFO,
+    warning: LogLevel.WARN,
+    error: LogLevel.ERROR,
+  };
+  return {
+    isEnabled: (_name, _severity) => true,
+    log: (name, severity, message, args, _options) =>
+      logger.log(logLevel[severity], name + ": " + message, args),
+  };
 }

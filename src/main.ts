@@ -38,12 +38,9 @@ program
 program.command("shop").action(shop);
 
 program.command("dev", { hidden: true }).action(async () => {
-  const foodstuffs = foodstuffsServices();
-  const grocy = await grocyServices();
+  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const importers = foodstuffsImporters(foodstuffs, grocy);
-  await foodstuffs.authService.login();
-  const lists = await foodstuffs.listService.getListsPlaywright();
-  console.log(lists);
+  await foodstuffs.cartService.getCart();
 });
 
 async function commandPrompt() {
@@ -86,10 +83,8 @@ async function commandPrompt() {
 }
 
 async function importFrom(choice: ImportSource) {
-  const foodstuffs = foodstuffsServices();
-  const grocy = await grocyServices();
+  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const importers = foodstuffsImporters(foodstuffs, grocy);
-  await foodstuffs.authService.login();
 
   if (choice === "receipt") {
     const filepathRes = await prompts([{ name: "path", type: "text", message: "Enter filepath" }]);
@@ -110,9 +105,7 @@ async function importFrom(choice: ImportSource) {
 }
 
 async function shop(): Promise<void> {
-  const foodstuffs = foodstuffsServices();
-  const grocy = await grocyServices();
-  await foodstuffs.authService.login();
+  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const exporter = new GrocyShoppingListExporter(grocy, foodstuffs);
   return exporter.addShoppingListToCart();
 }
