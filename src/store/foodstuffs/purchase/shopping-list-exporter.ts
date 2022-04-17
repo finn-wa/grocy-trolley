@@ -3,7 +3,7 @@ import { GrocyTrue } from "grocy/grocy-model";
 import prompts from "prompts";
 import { Logger, prettyPrint } from "utils/logger";
 import { FoodstuffsServices } from "..";
-import { CartProductRef, toCartProductRef } from "../foodstuffs-cart";
+import { CartProductRef, toCartProductRef } from "../cart/foodstuffs-cart";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
 
 export class GrocyShoppingListExporter {
