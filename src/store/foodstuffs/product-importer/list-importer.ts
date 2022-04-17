@@ -23,6 +23,11 @@ export class FoodstuffsListImporter {
     return this.importList(listId);
   }
 
+  async selectAndStockList() {
+    const listId = await this.selectList();
+    return this.stockProductsFromList(listId);
+  }
+
   private async selectList(): Promise<string> {
     const lists = await this.listService.getLists();
     const response = await prompts([
@@ -75,7 +80,15 @@ export class FoodstuffsListImporter {
     }
   }
 
-  async stockProductsFromList(list: List) {
+  async stockProductsFromList(list: List): Promise<void>;
+  async stockProductsFromList(listId: string): Promise<void>;
+  async stockProductsFromList(listOrId: List | string): Promise<void> {
+    let list: List;
+    if (typeof listOrId === "string") {
+      list = await this.listService.getList(listOrId);
+    } else {
+      list = listOrId;
+    }
     const productsByPnsId = await this.getProductsByFoodstuffsId();
     // Not including unavailable products for stock
     for (const product of list.products) {

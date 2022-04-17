@@ -1,12 +1,13 @@
+import { getEnvAs } from "env";
 import { firefox } from "playwright";
 import { LogLevel, playwrightLogger } from "utils/logger";
-import { FoodstuffsCartService } from "./foodstuffs-cart";
+import { FoodstuffsCartService } from "./cart/foodstuffs-cart";
 import { FoodstuffsListService } from "./foodstuffs-lists";
 import { FoodstuffsOrderService } from "./foodstuffs-orders";
 import { FoodstuffsSearchService } from "./foodstuffs-search";
 import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
 
-export * from "./foodstuffs-cart";
+export * from "./cart/foodstuffs-cart";
 export * from "./foodstuffs-categories";
 export * from "./foodstuffs-lists";
 export * from "./foodstuffs-orders";
@@ -20,7 +21,10 @@ export async function foodstuffsServices(): Promise<FoodstuffsServices> {
     headless: true,
     logger: playwrightLogger(LogLevel.WARN),
   });
-  const userAgent = new FoodstuffsUserAgent(browser);
+  const userAgent = new FoodstuffsUserAgent(
+    browser,
+    getEnvAs({ PAKNSAVE_EMAIL: "email", PAKNSAVE_PASSWORD: "password" })
+  );
   return {
     userAgent,
     cartService: new FoodstuffsCartService(userAgent),

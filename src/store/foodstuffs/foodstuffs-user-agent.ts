@@ -1,5 +1,5 @@
 import { access } from "fs/promises";
-import { Headers, Response as NodeResponse } from "node-fetch";
+import { Headers as NodeHeaders, Response as NodeResponse } from "node-fetch";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page } from "playwright";
 import { APPLICATION_JSON, headers } from "utils/headers-builder";
@@ -26,7 +26,7 @@ export class FoodstuffsUserAgent {
   constructor(
     private readonly browser: Browser,
     private readonly loginDetails?: LoginDetails | null,
-    private readonly storageStateDir = "src/resources/cache/playwright",
+    private readonly storageStateDir = "src/resources/cache/playwright"
   ) {}
 
   /**
@@ -46,15 +46,18 @@ export class FoodstuffsUserAgent {
    * @param body Request body
    * @returns Request response
    */
-  async fetchWithBrowser(method: string, url: string, headers?: Headers, body?: any): Promise<
-    NodeResponse
-  > {
+  async fetchWithBrowser(
+    method: string,
+    url: string,
+    headers?: NodeHeaders,
+    body?: any
+  ): Promise<NodeResponse> {
     const page = await this.getPage();
     return this.fetchWithPage(page, method, url, headers, body);
   }
 
   /**
-   * Performs a fetch request from the browser using Playwright. 
+   * Performs a fetch request from the browser using Playwright.
    * Necessary because Cloudflare now blocks requests that are not sent from a browser.
    * WARNING: not every method on the returned Response is callable, see
    * {@link FoodstuffsRequest}.
@@ -69,8 +72,8 @@ export class FoodstuffsUserAgent {
     page: Page,
     method: string,
     url: string,
-    headers?: Headers,
-    body?: BodyInit | any,
+    headers?: NodeHeaders,
+    body?: BodyInit | any
   ): Promise<NodeResponse> {
     this.logger.debug(`${method} ${url}`);
     if (headers) {
@@ -85,30 +88,25 @@ export class FoodstuffsUserAgent {
     }
     const responseHandle = await page.evaluateHandle(
       async ({ url, method, headers, body }) =>
-        fetch(
-          url,
-          {
-            credentials: this.loginDetails ? "include" : undefined,
-            referrer: "https://www.paknsave.co.nz/shop",
-            mode: "cors",
-            method,
-            headers,
-            body,
-          },
-        ),
-      { url, method, headers, body },
+        fetch(url, {
+          credentials: this.loginDetails ? "include" : undefined,
+          referrer: "https://www.paknsave.co.nz/shop",
+          mode: "cors",
+          method,
+          // Record<string, string[]> is not in HeadersInit but it works
+          headers: headers as unknown as HeadersInit | undefined,
+          body,
+        }),
+      { url, method, headers: headers?.raw(), body }
     );
     // Response is not serialisable, so we must serialise it
-    const response = await responseHandle.evaluate(
-      (response, props) => {
-        const responseJson: Record<string, any> = Object.fromEntries(
-          props.map((key) => [key, response[key]]),
-        );
-        responseJson.headers = Object.fromEntries(responseJson.headers.entries());
-        return responseJson as SerialisedResponse;
-      },
-      SERIALISABLE_RESPONSE_PROPS,
-    );
+    const response = await responseHandle.evaluate((response, props) => {
+      const responseJson: Record<string, any> = Object.fromEntries(
+        props.map((key) => [key, response[key]])
+      );
+      responseJson.headers = Object.fromEntries(responseJson.headers.entries());
+      return responseJson as SerialisedResponse;
+    }, SERIALISABLE_RESPONSE_PROPS);
     if (!response.ok) {
       throw new Error(`Response not OK: ${prettyPrint(response)}`);
     }
@@ -135,7 +133,7 @@ export class FoodstuffsUserAgent {
           page,
           "GET",
           `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
-          headers().acceptJson().build(),
+          headers().acceptJson().build()
         );
       } catch (error) {
         await page.click('button[id="login-form"]');
@@ -147,7 +145,6 @@ export class FoodstuffsUserAgent {
         // search box seems to pop in last
         await page.locator('input[aria-label="Search products"]').waitFor();
         // save logged in state
-
         await page.context().storageState({ path: this.getStorageStateFilePath() });
       }
     }
@@ -155,9 +152,9 @@ export class FoodstuffsUserAgent {
     return this.page;
   }
 
-  private getStorageStateFilePath(): string | undefined {
+  private getStorageStateFilePath(): string {
     if (!this.loginDetails) {
-      return undefined;
+      throw new Error("No storage state is saved when loginDetails is undefined");
     }
     return path.join(this.storageStateDir, this.loginDetails.email.replace(/\W+/g, "_") + ".json");
   }
@@ -174,7 +171,7 @@ export class FoodstuffsUserAgent {
     if (this.loginDetails) {
       const storageStatePath = this.getStorageStateFilePath();
       try {
-        await access(this.storageStateDir);
+        await access(storageStatePath);
         // No error means that cached storageState exists
         this.context = await this.browser.newContext({ storageState: storageStatePath });
         return this.context;
@@ -187,20 +184,26 @@ export class FoodstuffsUserAgent {
   }
 }
 
-export interface LoginDetails { email: string, password: string }
-
-export interface FoodstuffsUserProfile {
-  id: string,
-  firstName: string,
-  lastName: string,
-  email: string,
-  phone: string,
-  agreedToMarketing: boolean,
-  agreedToTermsAndConditions: boolean,
-  clubCardUser: boolean,
+export interface LoginDetails {
+  email: string;
+  password: string;
 }
 
-export interface LoginResponse { success: boolean, userProfile: FoodstuffsUserProfile }
+export interface FoodstuffsUserProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  agreedToMarketing: boolean;
+  agreedToTermsAndConditions: boolean;
+  clubCardUser: boolean;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  userProfile: FoodstuffsUserProfile;
+}
 
 /**
  * Response backed by a Playwright JSHandle browser fetch Response. json()
@@ -208,7 +211,7 @@ export interface LoginResponse { success: boolean, userProfile: FoodstuffsUserPr
  */
 class FoodstuffsResponse implements NodeResponse {
   readonly bodyUsed: boolean;
-  readonly headers: Headers;
+  readonly headers: NodeHeaders;
   readonly ok: boolean;
   readonly redirected: boolean;
   readonly status: number;
@@ -216,7 +219,10 @@ class FoodstuffsResponse implements NodeResponse {
   readonly type: ResponseType;
   readonly url: string;
 
-  constructor(private readonly responseHandle: JSHandle<Response>, responseJson: SerialisedResponse) {
+  constructor(
+    private readonly responseHandle: JSHandle<Response>,
+    responseJson: SerialisedResponse
+  ) {
     this.bodyUsed = responseJson.bodyUsed;
     this.ok = responseJson.ok;
     this.redirected = responseJson.redirected;
@@ -224,14 +230,19 @@ class FoodstuffsResponse implements NodeResponse {
     this.statusText = responseJson.statusText;
     this.type = responseJson.type;
     this.url = responseJson.url;
-    this.headers = new Headers(responseJson.headers);
+    this.headers = new NodeHeaders(responseJson.headers);
   }
 
-  json(): Promise<any> {
-    return this.responseHandle.evaluate((response) => response.json());
+  async json(): Promise<any> {
+    const body = await this.text();
+    try {
+      return JSON.parse(body);
+    } catch (error) {
+      throw new Error("Failed to parse response body as JSON: \n" + body);
+    }
   }
 
-  text(): Promise<string> {
+  async text(): Promise<string> {
     return this.responseHandle.evaluate((response) => response.text());
   }
 
@@ -279,6 +290,6 @@ const SERIALISABLE_RESPONSE_PROPS = [
 ] as const;
 
 interface SerialisedResponse
-  extends
-    Omit<Response, typeof UNSERIALISABLE_RESPONSE_PROPS[number] | "headers">
-{ headers: Record<string, string> }
+  extends Omit<Response, typeof UNSERIALISABLE_RESPONSE_PROPS[number] | "headers"> {
+  headers: Record<string, string>;
+}
