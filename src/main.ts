@@ -9,6 +9,8 @@ import { LOG_LEVELS } from "utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
+const STOCK_SOURCES = ["list"];
+type StockSource = typeof STOCK_SOURCES[number];
 
 program
   .name("grocy-trolley")
@@ -34,6 +36,11 @@ program
   .command("import")
   .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
   .action((source) => importFrom(source));
+
+program
+  .command("stock")
+  .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
+  .action((source) => stockFrom(source));
 
 program.command("shop").action(shop);
 
@@ -101,6 +108,18 @@ async function importFrom(choice: ImportSource) {
   }
   if (choice === "barcodes") {
     return importers.barcodeImporter.importFromBarcodeBuddy();
+  }
+}
+
+async function stockFrom(choice: StockSource) {
+  try {
+    const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
+    const importers = foodstuffsImporters(foodstuffs, grocy);
+    if (choice === "list") {
+      return importers.listImporter.selectAndStockList();
+    }
+  } catch (error) {
+    await prompts([{ type: "invisible", name: "prompt", message: "continue?" }]);
   }
 }
 

@@ -54,7 +54,7 @@ export abstract class RestService {
     body?: BodyInit | any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
-    if (headers) this.logger.trace(prettyPrint(headers));
+    if (headers) this.logger.trace(prettyPrint(headers.raw()));
     if (body) this.logger.trace(body);
 
     const contentType = headers?.get("content-type");
