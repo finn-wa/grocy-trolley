@@ -8,8 +8,8 @@ import {
   FoodstuffsStore,
   ProductsSnapshot,
   SaleTypeString,
-} from ".";
-import { FoodstuffsRestService } from "./foodstuffs-rest-service";
+} from "..";
+import { FoodstuffsRestService } from "../foodstuffs-rest-service";
 
 export class FoodstuffsCartService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -111,11 +111,16 @@ export interface CartProductRef {
 }
 
 export function toCartProductRef(product: FoodstuffsBaseProduct): CartProductRef {
+  const saleType = product.sale_type === "BOTH" ? "UNITS" : product.sale_type;
+  let productId = product.productId.replaceAll("-", "_");
+  if (!productId.endsWith("PNS")) {
+    productId += "PNS";
+  }
   return {
-    productId: product.productId,
+    productId,
     quantity: product.quantity,
     restricted: product.restricted,
-    sale_type: product.sale_type,
+    sale_type: saleType,
   };
 }
 

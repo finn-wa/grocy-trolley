@@ -3,10 +3,45 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
+  "inputs": [
+    {
+      "type": "pickString",
+      "default": "dev",
+      "description": "gt <command>",
+      "id": "command",
+      "options": ["dev", "stock", "import", "help", "shop"]
+    },
+    {
+      "type": "pickString",
+      "default": "cart",
+      "description": "gt import <source>",
+      "id": "importSource",
+      "options": ["cart", "list", "receipt", "order", "barcodes"]
+    },
+    {
+      "type": "pickString",
+      "default": "cart",
+      "description": "gt stock <srouce>",
+      "id": "stockSource",
+      "options": ["list"]
+    }
+  ],
   "configurations": [
     {
-      "command": "yarn gt dev",
-      "name": "Run yarn gt dev",
+      "command": "yarn gt ${input:command}",
+      "name": "Run yarn gt",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "yarn gt import ${input:importSource}",
+      "name": "Run yarn gt import",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "yarn gt stock ${input:stockSource}",
+      "name": "Run yarn gt stock",
       "request": "launch",
       "type": "node-terminal"
     },
