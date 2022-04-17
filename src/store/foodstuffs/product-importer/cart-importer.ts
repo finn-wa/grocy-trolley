@@ -1,8 +1,8 @@
 import { GrocyServices, Product } from "grocy";
-import prompts, { prompt } from "prompts";
+import prompts from "prompts";
 import { Logger } from "utils/logger";
 import { CartProductRef, FoodstuffsBaseProduct, toCartProductRef } from "..";
-import { FoodstuffsCart, FoodstuffsCartService } from "../foodstuffs-cart";
+import { FoodstuffsCart, FoodstuffsCartService } from "../cart/foodstuffs-cart";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
