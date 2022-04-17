@@ -12,9 +12,12 @@ export class GrocyShoppingListExporter {
   constructor(
     private readonly grocy: Pick<
       GrocyServices,
-      "productService" | "parentProductService" | "shoppingListService"
+      "productService" | "parentProductService" | "shoppingListService" | "idMaps"
     >,
-    private readonly foodstuffs: Pick<FoodstuffsServices, "listService" | "cartService">
+    private readonly foodstuffs: Pick<
+      FoodstuffsServices,
+      "listService" | "cartService" | "searchService"
+    >
   ) {}
 
   async addShoppingListToCart() {
@@ -33,51 +36,58 @@ export class GrocyShoppingListExporter {
         throw new Error(`Product with ID ${item.id} not found`);
       }
       this.logger.info(`Found product: ${product.name}`);
-      const fsProduct = await this.getFoodstuffsProduct(product, parentProducts);
-      if (fsProduct) {
-        cartRefs.push(toCartProductRef({ ...fsProduct, quantity: item.amount }));
-      }
+      const fsProducts = await this.getFoodstuffsProducts(product, parentProducts);
+      const unit = this.grocy.idMaps.quantityUnitNames[item.qu_id as number];
+      const quantity = unit === "ea" ? item.amount : 1;
+      cartRefs.push(...fsProducts.map((product) => ({ ...product, quantity })));
     }
     this.logger.info("Adding products to cart");
     await this.foodstuffs.cartService.addProductsToCart(cartRefs);
   }
 
-  private async getFoodstuffsProduct(
+  private async getFoodstuffsProducts(
     product: Product,
     parentProducts: Record<string, ParentProduct>
-  ): Promise<FoodstuffsCartProduct | null> {
+  ): Promise<CartProductRef[]> {
     if (product.userfields.isParent === GrocyTrue) {
       const parent = parentProducts[product.id];
       if (parent.children.length === 0) {
         this.logger.warn(
           `Parent product ${parent.product.id} / ${parent.product.name} does not have children`
         );
-        return null;
+        const result = await this.foodstuffs.searchService.searchAndSelectProduct(
+          product.name.replace("(Generic)", "")
+        );
+        if (!result) return [];
+        return [this.foodstuffs.searchService.resultToCartRef(result)];
       }
       const children = await this.foodstuffs.listService.refreshProductPrices(
         parent.children
           .filter((child) => !!child.userfields?.storeMetadata?.PNS)
           .map((child) => child.userfields.storeMetadata?.PNS as FoodstuffsCartProduct)
       );
+      if (children.length === 1) {
+        return [toCartProductRef(children[0])];
+      }
       const choices = children.map((child) => ({
         title: `$${child.price / 100} - ${child.brand} ${child.name} ${child.weightDisplayName}`,
-        value: child as any,
+        value: toCartProductRef(child) as any,
       }));
       const choice = await prompts([
         {
-          name: "product",
-          type: "select",
-          choices: [{ title: "Skip", value: null as any }, ...choices],
+          name: "products",
+          type: "multiselect",
+          choices,
           message: `Select a product for ${parent.product.name}`,
         },
       ]);
-      return choice.product;
+      return choice.products;
     }
     const pnsProduct = product.userfields.storeMetadata?.PNS;
     if (!pnsProduct) {
       this.logger.warn("Product does not have PNS metadata, skipping: " + prettyPrint(product));
-      return null;
+      return [];
     }
-    return pnsProduct;
+    return [toCartProductRef(pnsProduct)];
   }
 }
