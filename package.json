@@ -38,7 +38,7 @@
     "eslint": "8.13.0",
     "eslint-config-prettier": "8.5.0",
     "fast-glob": "3.2.11",
-    "jasmine": "4.0.2",
+    "jasmine": "4.1.0",
     "jasmine-spec-reporter": "7.0.0",
     "jasmine-ts": "0.4.0",
     "openapi-typescript": "5.2.0",
