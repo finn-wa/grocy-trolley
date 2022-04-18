@@ -1086,9 +1086,9 @@ pixelmatch@5.2.1:
   dependencies:
     pngjs "^4.0.1"
 
-playwright-core@1.21.0:
-  version "1.21.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.21.0.tgz#1b68e87f4fd2fc5653def1e61ccdef6845c604a6"
+playwright-core@1.21.1:
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.21.1.tgz#2757be7921576f047c0a622194dc45f4e1962e17"
   dependencies:
     colors "1.4.0"
     commander "8.3.0"
@@ -1109,11 +1109,11 @@ playwright-core@1.21.0:
     yauzl "2.10.0"
     yazl "2.5.1"
 
-playwright@^1.20.2:
-  version "1.21.0"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.21.0.tgz#375a2a6419070e59d7e7f24ce4e7150afbbff9f1"
+playwright@^1.21.1:
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.21.1.tgz#62bdefc0e8baba192d93d8daf0c0eb9213869d76"
   dependencies:
-    playwright-core "1.21.0"
+    playwright-core "1.21.1"
 
 pngjs@6.0.0:
   version "6.0.0"
