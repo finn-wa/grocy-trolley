@@ -1,4 +1,4 @@
-import { getEnvAs } from "env";
+import { getEnvAs } from "utils/env";
 import { LoginDetails } from "../foodstuffs-user-agent";
 
 class TestData {
@@ -10,4 +10,7 @@ class TestData {
 
 describe("FoodstuffsCartService", () => {
   let loginDetails: LoginDetails;
+  test("example", () => {
+    expect(1 + 1).toEqual(2);
+  });
 });

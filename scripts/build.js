@@ -40,7 +40,7 @@ function killTestProcess() {
 function getBuildOptions(args) {
   /** @type {esbuild.BuildOptions} */
   const buildOptions = {
-    bundle: true,
+    bundle: false,
     format: "cjs",
     logLevel: "info",
     minify: args.target === "prod",
@@ -51,18 +51,20 @@ function getBuildOptions(args) {
     tsconfig: "./tsconfig.json",
     watch: args.watch,
     // Things require()d by Playwright
-    external: ["electron/index.js", "ws", "./appIcon.png", "pixelmatch"],
+    // external: ["electron/index.js", "ws", "./appIcon.png", "pixelmatch"],
   };
 
   if (args.target === "test") {
+    delete buildOptions.external;
+    buildOptions.bundle = false;
     buildOptions.entryPoints = glob.sync("./src/**/*.ts");
-    buildOptions.plugins.push({
-      name: "JasmineRunner",
-      setup: (build) => {
-        build.onStart(() => killTestProcess());
-        build.onEnd((res) => runTestProcess(res));
-      },
-    });
+    // buildOptions.plugins.push({
+    //   name: "JasmineRunner",
+    //   setup: (build) => {
+    //     build.onStart(() => killTestProcess());
+    //     build.onEnd((res) => runTestProcess(res));
+    //   },
+    // });
   } else {
     buildOptions.entryPoints = ["./src/main.ts"];
     buildOptions.watch = args.watch;

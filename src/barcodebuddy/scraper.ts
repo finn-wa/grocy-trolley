@@ -1,4 +1,4 @@
-import { getEnv } from "env";
+import { getEnv } from "utils/env";
 import { HTMLElement, parse } from "node-html-parser";
 import { headers } from "utils/headers-builder";
 import { Logger } from "utils/logger";
