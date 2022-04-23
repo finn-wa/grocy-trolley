@@ -1,11 +1,11 @@
-import { headers } from "utils/headers-builder";
 import prompts from "prompts";
+import { headersBuilder } from "utils/headers";
 import { Logger, prettyPrint } from "utils/logger";
 import {
-  FoodstuffsUserAgent,
   FoodstuffsBaseProduct,
   FoodstuffsCartProduct,
   FoodstuffsStore,
+  FoodstuffsUserAgent,
   ProductsSnapshot,
   SaleTypeString,
 } from "..";
@@ -19,13 +19,13 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
   }
 
   getCart(): Promise<FoodstuffsCart> {
-    return this.getForJson(this.buildUrl("Cart/Index"), headers().acceptJson().build());
+    return this.getForJson(this.buildUrl("Cart/Index"), headersBuilder().acceptJson().build());
   }
 
   async clearCart(): Promise<{ success: true }> {
     const response = await this.deleteForJson<{ success: boolean }>(
       this.buildUrl("Cart/Clear"),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     );
     if (!response.success) {
       throw new Error(`Failed to clear cart: ${response}`);
@@ -76,7 +76,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
   private async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
     return this.postForJson(
       this.buildUrl("Cart/Index"),
-      headers().contentTypeJson().acceptJson().build(),
+      headersBuilder().contentTypeJson().acceptJson().build(),
       { products }
     );
   }

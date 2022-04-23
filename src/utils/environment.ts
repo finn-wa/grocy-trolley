@@ -32,7 +32,7 @@ export function initEnv(options: { envFilePath?: string; overrides?: Partial<Env
   if (undefinedVars.length > 0) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
-  new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
+  // new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
 }
 
 export function getEnv(): Env {

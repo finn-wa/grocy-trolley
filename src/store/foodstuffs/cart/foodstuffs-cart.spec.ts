@@ -1,16 +1,14 @@
-import { getEnvAs } from "utils/env";
-import { LoginDetails } from "../foodstuffs-user-agent";
+import { getEnvAs, initEnv } from "utils/environment";
+import { LoginDetails } from "../user-agent/foodstuffs-user-agent";
 
-class TestData {
-  readonly loginDetails: LoginDetails = getEnvAs({
+class TestData {}
+
+describe("FoodstuffsCartService", () => {
+  initEnv({ envFilePath: ".test.env" });
+  const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
   });
-}
 
-describe("FoodstuffsCartService", () => {
-  let loginDetails: LoginDetails;
-  test("example", () => {
-    expect(1 + 1).toEqual(2);
-  });
+  test("l", () => {});
 });

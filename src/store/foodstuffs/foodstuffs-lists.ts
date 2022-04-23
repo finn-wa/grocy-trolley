@@ -1,6 +1,5 @@
-import { Response } from "node-fetch";
 import prompts from "prompts";
-import { headers } from "utils/headers-builder";
+import { headersBuilder } from "utils/headers";
 import { Logger, prettyPrint } from "utils/logger";
 import {
   FoodstuffsBaseProduct,
@@ -20,34 +19,34 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   async createList(name: string): Promise<List> {
     return this.putForJson(
       this.buildUrl("ShoppingLists/CreateList", { name }),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     );
   }
 
   async getLists(): Promise<List[]> {
     return this.getForJson<{ lists: List[] }>(
       this.buildUrl("ShoppingLists/GetLists"),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     ).then((res) => res.lists);
   }
 
   async getList(id: string): Promise<List> {
     return this.getForJson(
       this.buildUrl("ShoppingLists/GetList", { id }),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     );
   }
 
   async updateList(listUpdate: ListUpdate): Promise<List> {
     return this.postForJson(
       this.buildUrl("ShoppingLists/UpdateList"),
-      headers().contentTypeJson().acceptJson().build(),
+      headersBuilder().contentTypeJson().acceptJson().build(),
       listUpdate
     );
   }
 
   async deleteList(id: string | number): Promise<Response> {
-    return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), headers().build());
+    return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), headersBuilder().build());
   }
 
   async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {

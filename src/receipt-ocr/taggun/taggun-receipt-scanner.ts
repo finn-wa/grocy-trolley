@@ -1,9 +1,9 @@
-import { getEnv } from "utils/env";
 import { readFile } from "fs/promises";
 import path from "path";
 import { basename } from "path/posix";
 import { ReceiptScanner } from "receipt-ocr/receipts.model";
-import { headers } from "utils/headers-builder";
+import { getEnv } from "utils/environment";
+import { headersBuilder } from "utils/headers";
 import { Logger, prettyPrint } from "utils/logger";
 import { RestService } from "utils/rest";
 import { paths } from "./api";
@@ -52,7 +52,7 @@ export class TaggunReceiptScanner extends RestService implements ReceiptScanner 
     };
     return this.postForJson(
       this.buildUrl("api/receipt/v1/verbose/encoded"),
-      headers()
+      headersBuilder()
         .acceptJson()
         .contentTypeJson()
         .apikey(this.apiKey)

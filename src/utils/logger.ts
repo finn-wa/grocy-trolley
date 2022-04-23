@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import chalk from "chalk";
-import { getEnv } from "utils/env";
+import { getEnv } from "utils/environment";
 import { Logger as PlaywrightLogger } from "playwright";
 // Unfortunately ESM Chalk 5 doesn't work with ts-jest
 // If it ever does, change this to an import when upgrading

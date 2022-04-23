@@ -1,6 +1,5 @@
-import fetch, { BodyInit, Headers, Response } from "node-fetch";
 import { URL, URLSearchParams } from "url";
-import { APPLICATION_JSON } from "./headers-builder";
+import { APPLICATION_JSON, raw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
@@ -54,7 +53,7 @@ export abstract class RestService {
     body?: BodyInit | any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
-    if (headers) this.logger.trace(prettyPrint(headers.raw()));
+    if (headers) this.logger.trace(prettyPrint(raw(headers)));
     if (body) this.logger.trace(body);
 
     const contentType = headers?.get("content-type");

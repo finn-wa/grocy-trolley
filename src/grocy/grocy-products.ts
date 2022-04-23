@@ -1,5 +1,4 @@
 import { ConversionWithoutId } from "store/foodstuffs/product-importer/product-converter";
-import { Response } from "node-fetch";
 import { FoodstuffsCartProduct } from "store/foodstuffs";
 import { Logger } from "utils/logger";
 import { components } from "./api";

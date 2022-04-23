@@ -1,6 +1,6 @@
-import { getEnv } from "utils/env";
 import { HTMLElement, parse } from "node-html-parser";
-import { headers } from "utils/headers-builder";
+import { getEnv, initEnv } from "@gt/utils/environment";
+import { headersBuilder } from "utils/headers";
 import { Logger } from "utils/logger";
 import { RestService } from "utils/rest";
 
@@ -16,7 +16,7 @@ export class BarcodeBuddyService extends RestService {
   async getBarcodes(): Promise<BarcodeBuddyBarcode[]> {
     const pageText = await this.get(
       this.buildUrl("index.php"),
-      headers().accept("text/html").build()
+      headersBuilder().accept("text/html").build()
     ).then((body) => this.extractText(body));
     const page = parse(pageText);
     return page.querySelectorAll("table").flatMap((t) => this.parseBarcodes(t));

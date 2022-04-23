@@ -1,6 +1,5 @@
-import { getEnv } from "utils/env";
-import { Response } from "node-fetch";
-import { headers, HeadersBuilder } from "utils/headers-builder";
+import { getEnv } from "utils/environment";
+import { headersBuilder, HeadersBuilder } from "utils/headers";
 import { RestService } from "utils/rest";
 import { CreatedObjectId, GrocySchemas } from "./grocy-model";
 
@@ -10,7 +9,7 @@ export abstract class GrocyRestService extends RestService {
   protected readonly baseUrl = this.validateBaseUrl(this.env.GROCY_URL);
 
   protected authHeaders(): HeadersBuilder {
-    return headers().append("GROCY-API-KEY", this.apiKey);
+    return headersBuilder().append("GROCY-API-KEY", this.apiKey);
   }
 
   protected async getEntities<K extends keyof GrocySchemas>(

@@ -1,10 +1,9 @@
 import { access } from "fs/promises";
-import { Headers as NodeHeaders, Response as NodeResponse } from "node-fetch";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page } from "playwright";
-import { APPLICATION_JSON, headers } from "utils/headers-builder";
+import { APPLICATION_JSON, headersBuilder, raw } from "utils/headers";
 import { Logger, prettyPrint } from "utils/logger";
-import { PAKNSAVE_URL } from "./foodstuffs.model";
+import { PAKNSAVE_URL } from "../foodstuffs.model";
 
 /**
  * Uses Playwright to perform Foodstuffs requests from a browser. Necessary
@@ -49,9 +48,9 @@ export class FoodstuffsUserAgent {
   async fetchWithBrowser(
     method: string,
     url: string,
-    headers?: NodeHeaders,
+    headers?: Headers,
     body?: any
-  ): Promise<NodeResponse> {
+  ): Promise<Response> {
     const page = await this.getPage();
     return this.fetchWithPage(page, method, url, headers, body);
   }
@@ -72,9 +71,9 @@ export class FoodstuffsUserAgent {
     page: Page,
     method: string,
     url: string,
-    headers?: NodeHeaders,
+    headers?: Headers,
     body?: BodyInit | any
-  ): Promise<NodeResponse> {
+  ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
     if (headers) {
       this.logger.trace(headers);
@@ -86,18 +85,19 @@ export class FoodstuffsUserAgent {
     if (contentType === APPLICATION_JSON && body) {
       body = JSON.stringify(body);
     }
+    const rawHeaders = headers ? raw(headers) : undefined;
     const responseHandle = await page.evaluateHandle(
-      async ({ url, method, headers, body }) =>
+      async ({ url, method, rawHeaders, body }) =>
         fetch(url, {
           credentials: this.loginDetails ? "include" : undefined,
           referrer: "https://www.paknsave.co.nz/shop",
           mode: "cors",
           method,
-          // Record<string, string[]> is not in HeadersInit but it works
-          headers: headers as unknown as HeadersInit | undefined,
+          // Record<string, string[]> is not in HeadersInit but it works in firefox at least
+          headers: rawHeaders as unknown as HeadersInit | undefined,
           body,
         }),
-      { url, method, headers: headers?.raw(), body }
+      { url, method, rawHeaders, body }
     );
     // Response is not serialisable, so we must serialise it
     const response = await responseHandle.evaluate((response, props) => {
@@ -133,7 +133,7 @@ export class FoodstuffsUserAgent {
           page,
           "GET",
           `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
-          headers().acceptJson().build()
+          headersBuilder().acceptJson().build()
         );
       } catch (error) {
         await page.click('button[id="login-form"]');
@@ -209,9 +209,9 @@ export interface LoginResponse {
  * Response backed by a Playwright JSHandle browser fetch Response. json()
  * and text() extraction methods are available.
  */
-class FoodstuffsResponse implements NodeResponse {
+class FoodstuffsResponse implements Response {
   readonly bodyUsed: boolean;
-  readonly headers: NodeHeaders;
+  readonly headers: Headers;
   readonly ok: boolean;
   readonly redirected: boolean;
   readonly status: number;
@@ -230,7 +230,7 @@ class FoodstuffsResponse implements NodeResponse {
     this.statusText = responseJson.statusText;
     this.type = responseJson.type;
     this.url = responseJson.url;
-    this.headers = new NodeHeaders(responseJson.headers);
+    this.headers = new Headers(responseJson.headers);
   }
 
   async json(): Promise<any> {
@@ -246,7 +246,7 @@ class FoodstuffsResponse implements NodeResponse {
     return this.responseHandle.evaluate((response) => response.text());
   }
 
-  get body(): NodeJS.ReadableStream | null {
+  get body(): ReadableStream<Uint8Array> | null {
     throw new Error("Cannot access body of FoodstuffsResponse directly");
   }
   get size(): number {
@@ -255,7 +255,7 @@ class FoodstuffsResponse implements NodeResponse {
   buffer(): Promise<Buffer> {
     throw new Error("Method not implemented.");
   }
-  clone(): NodeResponse {
+  clone(): Response {
     throw new Error("Method not implemented.");
   }
   arrayBuffer(): Promise<ArrayBuffer> {

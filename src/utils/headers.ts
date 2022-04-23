@@ -1,6 +1,16 @@
-import { Headers, HeadersInit } from "node-fetch";
-
 export const APPLICATION_JSON = "application/json";
+
+/**
+ * Non-spec util method from node-fetch library.
+ * @returns Record mapping each header key to all of its values as an array.
+ */
+export function raw(headers: Headers): Record<string, string[]> {
+  const entries: Record<string, string[]> = {};
+  headers.forEach(([value, key]) =>
+    key in entries ? entries[key].push(value) : (entries[key] = [value])
+  );
+  return entries;
+}
 
 export class HeadersBuilder {
   private readonly headers: Headers;
@@ -45,12 +55,16 @@ export class HeadersBuilder {
   build(): Headers {
     return this.headers;
   }
+
+  raw(): Record<string, string[]> {
+    return raw(this.headers);
+  }
 }
 
 /**
  * Gotta save those characters on constructors
  * @returns new HeadersBuilder()
  */
-export function headers(): HeadersBuilder {
+export function headersBuilder(): HeadersBuilder {
   return new HeadersBuilder();
 }

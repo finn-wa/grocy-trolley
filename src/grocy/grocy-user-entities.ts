@@ -1,4 +1,3 @@
-import { Response } from "node-fetch";
 import { Logger, prettyPrint } from "utils/logger";
 import { StoreBrand } from "./grocy-config";
 import { CreatedObjectId, GrocyBoolean } from "./grocy-model";

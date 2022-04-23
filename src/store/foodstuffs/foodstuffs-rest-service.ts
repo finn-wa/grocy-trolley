@@ -1,4 +1,3 @@
-import { Headers, Response } from "node-fetch";
 import { RestService } from "utils/rest";
 import { FoodstuffsUserAgent } from ".";
 import { PAKNSAVE_URL } from "./foodstuffs.model";
