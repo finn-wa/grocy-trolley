@@ -1,4 +1,4 @@
-import { getEnvAs } from "env";
+import { getEnvAs } from "utils/env";
 import { firefox } from "playwright";
 import { LogLevel, playwrightLogger } from "utils/logger";
 import { FoodstuffsCartService } from "./cart/foodstuffs-cart";

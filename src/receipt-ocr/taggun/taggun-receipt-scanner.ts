@@ -1,4 +1,4 @@
-import { getEnv } from "env";
+import { getEnv } from "utils/env";
 import { readFile } from "fs/promises";
 import path from "path";
 import { basename } from "path/posix";

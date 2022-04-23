@@ -1,4 +1,4 @@
-import { getEnv } from "env";
+import { getEnv } from "utils/env";
 import { Response } from "node-fetch";
 import { headers, HeadersBuilder } from "utils/headers-builder";
 import { RestService } from "utils/rest";
