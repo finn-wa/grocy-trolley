@@ -1,6 +1,6 @@
 import { firefox, FirefoxBrowser } from "playwright";
-import { getEnvAs, initEnv } from "utils/environment";
-import { headersBuilder } from "utils/headers";
+import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { headersBuilder } from "@gt/utils/headers";
 import { PAKNSAVE_URL } from "../foodstuffs.model";
 import { FoodstuffsUserAgent, LoginDetails } from "./foodstuffs-user-agent";
 
@@ -28,7 +28,7 @@ describe("FoodstuffsUserAgent", () => {
     jest.setTimeout(15_000);
     const userProfile = await userAgent.fetchWithBrowser(
       "GET",
-      `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
+      `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
       headersBuilder().acceptJson().build()
     );
     expect(userProfile).toMatchInlineSnapshot();

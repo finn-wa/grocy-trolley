@@ -1,5 +1,5 @@
-import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "store/foodstuffs";
-import { Logger } from "utils/logger";
+import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@gt/store/foodstuffs";
+import { Logger } from "@gt/utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 

@@ -1,4 +1,4 @@
-import { Logger, prettyPrint } from "utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { StoreBrand } from "./grocy-config";
 import { CreatedObjectId, GrocyBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";

@@ -1,4 +1,4 @@
-import { RestService } from "utils/rest";
+import { RestService } from "@gt/utils/rest";
 import { FoodstuffsUserAgent } from ".";
 import { PAKNSAVE_URL } from "./foodstuffs.model";
 

@@ -1,5 +1,5 @@
-import { Logger, prettyPrint } from "utils/logger";
-import { RestService } from "utils/rest";
+import { Logger, prettyPrint } from "@gt/utils/logger";
+import { RestService } from "@gt/utils/rest";
 
 export interface OpenFoodFactsProduct {
   /** e.g. Noodle bowl */

@@ -1,8 +1,8 @@
 import path from "path/posix";
-import { getEnv } from "utils/environment";
-import { headersBuilder } from "utils/headers";
-import { Logger } from "utils/logger";
-import { RestService } from "utils/rest";
+import { getEnv } from "@gt/utils/environment";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger } from "@gt/utils/logger";
+import { RestService } from "@gt/utils/rest";
 import { ReceiptScanner } from "..";
 
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {

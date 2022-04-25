@@ -1,6 +1,6 @@
-import { getEnv } from "utils/environment";
-import { headersBuilder, HeadersBuilder } from "utils/headers";
-import { RestService } from "utils/rest";
+import { getEnv } from "@gt/utils/environment";
+import { headersBuilder, HeadersBuilder } from "@gt/utils/headers";
+import { RestService } from "@gt/utils/rest";
 import { CreatedObjectId, GrocySchemas } from "./grocy-model";
 
 export abstract class GrocyRestService extends RestService {

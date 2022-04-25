@@ -1,9 +1,9 @@
 import { NewProduct, ParentProduct, Product } from "grocy";
-import { GrocyIdMaps, QuantityUnitName } from "grocy/grocy-config";
-import { GrocyFalse, QuantityUnitConversion } from "grocy/grocy-model";
-import { StockActionRequestBody } from "grocy/grocy-stock";
+import { GrocyIdMaps, QuantityUnitName } from "@gt/grocy/grocy-config";
+import { GrocyFalse, QuantityUnitConversion } from "@gt/grocy/grocy-model";
+import { StockActionRequestBody } from "@gt/grocy/grocy-stock";
 import prompts from "prompts";
-import { Logger, prettyPrint } from "utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import {
   CategoryLocations,
   FoodstuffsCartProduct,

@@ -1,4 +1,4 @@
-import { Logger } from "utils/logger";
+import { Logger } from "@gt/utils/logger";
 import { CreatedObjectResponse, OrderRecord } from ".";
 import { GrocyTrue } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";

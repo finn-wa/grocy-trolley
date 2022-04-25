@@ -1,6 +1,6 @@
-import { getEnvAs } from "utils/environment";
+import { getEnvAs } from "@gt/utils/environment";
 import { firefox } from "playwright";
-import { LogLevel, playwrightLogger } from "utils/logger";
+import { LogLevel, playwrightLogger } from "@gt/utils/logger";
 import { FoodstuffsCartService } from "./cart/foodstuffs-cart";
 import { FoodstuffsListService } from "./foodstuffs-lists";
 import { FoodstuffsOrderService } from "./foodstuffs-orders";

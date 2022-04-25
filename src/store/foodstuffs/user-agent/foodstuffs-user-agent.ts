@@ -1,8 +1,8 @@
 import { access } from "fs/promises";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page } from "playwright";
-import { APPLICATION_JSON, headersBuilder, raw } from "utils/headers";
-import { Logger, prettyPrint } from "utils/logger";
+import { APPLICATION_JSON, headersBuilder, raw } from "@gt/utils/headers";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { PAKNSAVE_URL } from "../foodstuffs.model";
 
 /**
@@ -132,7 +132,7 @@ export class FoodstuffsUserAgent {
         await this.fetchWithPage(
           page,
           "GET",
-          `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
+          `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
           headersBuilder().acceptJson().build()
         );
       } catch (error) {
