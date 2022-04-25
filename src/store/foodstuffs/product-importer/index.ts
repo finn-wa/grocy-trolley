@@ -1,4 +1,4 @@
-import { BarcodeBuddyService } from "barcodebuddy/scraper";
+import { BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
 import { GrocyServices } from "grocy";
 import { TaggunReceiptScanner } from "receipt-ocr";
 import { FoodstuffsServices } from "..";

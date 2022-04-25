@@ -1,8 +1,8 @@
 import { HTMLElement, parse } from "node-html-parser";
 import { getEnv, initEnv } from "@gt/utils/environment";
-import { headersBuilder } from "utils/headers";
-import { Logger } from "utils/logger";
-import { RestService } from "utils/rest";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger } from "@gt/utils/logger";
+import { RestService } from "@gt/utils/rest";
 
 export class BarcodeBuddyService extends RestService {
   protected readonly baseUrl: `${string}/`;

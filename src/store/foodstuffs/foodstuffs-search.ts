@@ -1,8 +1,8 @@
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
-import { uniqueByProperty } from "utils/arrays";
-import { headersBuilder } from "utils/headers";
-import { Logger } from "utils/logger";
+import { uniqueByProperty } from "@gt/utils/arrays";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger } from "@gt/utils/logger";
 import { CartProductRef, SaleTypeString } from ".";
 import { ListProductRef } from "./foodstuffs-lists";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";

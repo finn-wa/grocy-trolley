@@ -1,4 +1,4 @@
-import { GrocyLocation } from "grocy/grocy-config";
+import { GrocyLocation } from "@gt/grocy/grocy-config";
 
 export const FOODSTUFFS_CATEGORIES = [
   // Fresh Foods & Bakery

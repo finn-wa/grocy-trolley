@@ -1,7 +1,7 @@
 import { GrocyServices, ParentProduct, Product } from "grocy";
-import { GrocyTrue } from "grocy/grocy-model";
+import { GrocyTrue } from "@gt/grocy/grocy-model";
 import prompts from "prompts";
-import { Logger, prettyPrint } from "utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { FoodstuffsServices } from "..";
 import { CartProductRef, toCartProductRef } from "../cart/foodstuffs-cart";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";

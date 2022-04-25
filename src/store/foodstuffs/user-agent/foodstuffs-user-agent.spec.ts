@@ -1,6 +1,6 @@
 import { firefox, FirefoxBrowser } from "playwright";
-import { getEnvAs, initEnv } from "utils/environment";
-import { headersBuilder } from "utils/headers";
+import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { headersBuilder } from "@gt/utils/headers";
 import { PAKNSAVE_URL } from "../foodstuffs.model";
 import { FoodstuffsUserAgent, LoginDetails } from "./foodstuffs-user-agent";
 

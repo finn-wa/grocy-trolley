@@ -1,11 +1,11 @@
 import { Argument, Option, program } from "commander";
-import { initEnv } from "utils/environment";
+import { initEnv } from "@gt/utils/environment";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
-import { foodstuffsServices, GrocyShoppingListExporter } from "store/foodstuffs";
-import { foodstuffsImporters } from "store/foodstuffs/product-importer";
-import { LOG_LEVELS } from "utils/logger";
+import { foodstuffsServices, GrocyShoppingListExporter } from "@gt/store/foodstuffs";
+import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
+import { LOG_LEVELS } from "@gt/utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];

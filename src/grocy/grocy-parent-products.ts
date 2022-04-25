@@ -1,6 +1,6 @@
 import { GrocyIdMaps } from "grocy";
 import prompts from "prompts";
-import { Logger } from "utils/logger";
+import { Logger } from "@gt/utils/logger";
 import { toBoolean } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";
 import { GrocyProductService, Product } from "./grocy-products";

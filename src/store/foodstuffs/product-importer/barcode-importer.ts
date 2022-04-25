@@ -1,8 +1,8 @@
-import { BarcodeBuddyBarcode, BarcodeBuddyService } from "barcodebuddy/scraper";
+import { BarcodeBuddyBarcode, BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
 import { GrocyProductService } from "grocy";
-import { OpenFoodFactsNZService, OpenFoodFactsWorldService } from "openfoodfacts/openfoodfacts";
+import { OpenFoodFactsNZService, OpenFoodFactsWorldService } from "@gt/openfoodfacts/openfoodfacts";
 import prompts from "prompts";
-import { Logger, prettyPrint } from "utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { CartProductRef, FoodstuffsSearchService, ProductResult } from "..";
 import { FoodstuffsCartImporter } from "./cart-importer";
 

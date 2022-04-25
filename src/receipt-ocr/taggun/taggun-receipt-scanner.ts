@@ -1,11 +1,11 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { basename } from "path/posix";
-import { ReceiptScanner } from "receipt-ocr/receipts.model";
-import { getEnv } from "utils/environment";
-import { headersBuilder } from "utils/headers";
-import { Logger, prettyPrint } from "utils/logger";
-import { RestService } from "utils/rest";
+import { ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
+import { getEnv } from "@gt/utils/environment";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger, prettyPrint } from "@gt/utils/logger";
+import { RestService } from "@gt/utils/rest";
 import { paths } from "./api";
 
 const endpoint = "/api/receipt/v1/verbose/encoded";

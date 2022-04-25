@@ -1,5 +1,5 @@
-import { headersBuilder } from "utils/headers";
-import { Logger } from "utils/logger";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger } from "@gt/utils/logger";
 import { FoodstuffsOrderProduct, FoodstuffsUserAgent } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 

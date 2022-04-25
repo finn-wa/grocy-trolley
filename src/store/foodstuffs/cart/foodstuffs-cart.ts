@@ -1,6 +1,6 @@
 import prompts from "prompts";
-import { headersBuilder } from "utils/headers";
-import { Logger, prettyPrint } from "utils/logger";
+import { headersBuilder } from "@gt/utils/headers";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import {
   FoodstuffsBaseProduct,
   FoodstuffsCartProduct,

@@ -1,4 +1,4 @@
-import { getEnvAs, initEnv } from "utils/environment";
+import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { LoginDetails } from "../user-agent/foodstuffs-user-agent";
 
 class TestData {}

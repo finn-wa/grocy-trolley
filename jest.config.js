@@ -8,17 +8,17 @@ const swcOptions = {
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  transform: {
-    "^.+\\.(t|j)sx?$": ["@swc-node/jest", swcOptions],
-  },
+  //   transform: {
+  //     "^.+\\.(t|j)sx?$": ["@swc-node/jest", swcOptions],
+  //   },
+  preset: "ts-jest",
   testEnvironment: "node",
 
   // testNamePattern: "src/.*\\.spec\\.ts",
   testMatch: ["<rootDir>/src/**/*.spec.ts"],
   //   moduleDirectories: ["node_modules", "src"],
   moduleNameMapper: {
-    "^\\w/(.*)$": "<rootDir>/src/$1",
-    "^lib/(.*)$": "<rootDir>/common/$1",
+    "^@gt/(.*)$": "<rootDir>/src/$1",
   },
   // d
   // Required to use Node 18 experimental built-in fetch
