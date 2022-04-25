@@ -28,7 +28,7 @@ describe("FoodstuffsUserAgent", () => {
     jest.setTimeout(15_000);
     const userProfile = await userAgent.fetchWithBrowser(
       "GET",
-      `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
+      `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
       headersBuilder().acceptJson().build()
     );
     expect(userProfile).toMatchInlineSnapshot();

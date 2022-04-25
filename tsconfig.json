@@ -1,18 +1,14 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ESNext", "DOM"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "outDir": "./out-ts",
-    "resolveJsonModule": true,
-    "rootDir": "src",
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "strict": true,
     "target": "ESNext",
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "paths": { "@gt/*": ["./*"] },
     "typeRoots": ["node_modules/@types", "src/types"],
-    "paths": { "@gt/*": ["./src/*"] }
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./out-ts",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
   }
 }

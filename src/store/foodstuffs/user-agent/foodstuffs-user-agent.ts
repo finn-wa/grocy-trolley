@@ -132,7 +132,7 @@ export class FoodstuffsUserAgent {
         await this.fetchWithPage(
           page,
           "GET",
-          `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
+          `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
           headersBuilder().acceptJson().build()
         );
       } catch (error) {
