@@ -1,4 +1,3 @@
-import { Headers } from "node-fetch";
 import { Logger, prettyPrint } from "utils/logger";
 import { RestService } from "utils/rest";
 

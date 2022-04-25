@@ -1,7 +1,6 @@
-import { getEnv } from "utils/env";
-import { FormData } from "formdata-node";
 import path from "path/posix";
-import { headers } from "utils/headers-builder";
+import { getEnv } from "utils/environment";
+import { headersBuilder } from "utils/headers";
 import { Logger } from "utils/logger";
 import { RestService } from "utils/rest";
 import { ReceiptScanner } from "..";
@@ -22,7 +21,11 @@ export class OcrReceiptScanner extends RestService implements ReceiptScanner {
     formData.append("url", filepath);
     const res = await this.post(
       this.buildUrl("parse/image"),
-      headers().apikey(this.apikey).append("redirect", "follow").append("OCREngine", "2").build(),
+      headersBuilder()
+        .apikey(this.apikey)
+        .append("redirect", "follow")
+        .append("OCREngine", "2")
+        .build(),
       formData
     );
     return JSON.parse(await this.extractText(res));

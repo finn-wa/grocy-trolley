@@ -1,5 +1,5 @@
 import { Argument, Option, program } from "commander";
-import { initEnv } from "utils/env";
+import { initEnv } from "utils/environment";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";

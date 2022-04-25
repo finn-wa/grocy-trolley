@@ -1,4 +1,3 @@
-import { Response } from "node-fetch";
 import { Logger } from "utils/logger";
 import { CreatedObjectResponse, OrderRecord } from ".";
 import { GrocyTrue } from "./grocy-model";

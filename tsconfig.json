@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "./out-ts",
@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "baseUrl": "./src"
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "paths": { "@gt/*": ["./src/*"] }
   }
 }

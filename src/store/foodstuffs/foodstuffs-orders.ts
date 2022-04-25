@@ -1,6 +1,6 @@
-import { headers } from "utils/headers-builder";
+import { headersBuilder } from "utils/headers";
 import { Logger } from "utils/logger";
-import { FoodstuffsUserAgent, FoodstuffsOrderProduct } from ".";
+import { FoodstuffsOrderProduct, FoodstuffsUserAgent } from ".";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 export class FoodstuffsOrderService extends FoodstuffsRestService {
@@ -13,7 +13,7 @@ export class FoodstuffsOrderService extends FoodstuffsRestService {
   async getOrders(): Promise<FoodstuffsOrder[]> {
     const response: FoodstuffsOrdersResponse = await this.getForJson(
       this.buildUrl("Checkout/Orders"),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     );
     return response.orders;
   }
@@ -21,7 +21,7 @@ export class FoodstuffsOrderService extends FoodstuffsRestService {
   async getOrderDetails(id: string): Promise<FoodstuffsOrderDetails> {
     return this.getForJson(
       this.buildUrl("Checkout/OrderDetails", { id }),
-      headers().acceptJson().build()
+      headersBuilder().acceptJson().build()
     );
   }
 }
