@@ -1,5 +1,6 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { config } from "dotenv";
+import { accessSync } from "fs";
 
 const EnvVars = [
   "BARCODEBUDDY_URL",
@@ -21,18 +22,26 @@ export function initEnv(options: { envFilePath?: string; overrides?: Partial<Env
   if (_env !== null) {
     throw new Error("initEnv has already been called");
   }
-  // Load from .env file
-  options.envFilePath ? config({ path: options.envFilePath }) : config();
+  if (options.envFilePath) {
+    try {
+      accessSync(options.envFilePath);
+    } catch (error) {
+      throw new Error(`Env file ${options.envFilePath} does not exist`);
+    }
+    config({ path: options.envFilePath });
+  } else {
+    config();
+  }
   _env = Object.fromEntries(EnvVars.map((key) => [key, process.env[key]])) as Env;
   // Apply overrides
   if (options.overrides) {
-    Object.assign(_env, options.overrides);
+    _env = { ..._env, ...options.overrides };
   }
   const undefinedVars = EnvVars.filter((envVar) => _env![envVar] === undefined);
   if (undefinedVars.length > 0) {
     throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
   }
-  // new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
+  new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
 }
 
 export function getEnv(): Env {
