@@ -18,7 +18,7 @@ export * from "./purchase/shopping-list-exporter";
 
 export async function foodstuffsServices(): Promise<FoodstuffsServices> {
   const browser = await firefox.launch({
-    headless: true,
+    headless: false,
     logger: playwrightLogger(LogLevel.WARN),
   });
   const userAgent = new FoodstuffsUserAgent(

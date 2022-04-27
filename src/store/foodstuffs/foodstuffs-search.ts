@@ -65,12 +65,18 @@ export class FoodstuffsSearchService {
     this.anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
   }
 
-  // TODO: add single search methods for with/without credentials and use searchWithCredentials from shop
-
-  async searchAndSelectProduct(query: string): Promise<ProductResult | null> {
-    const results = await Promise.all(
-      [this.userAgent, this.anonAgent].map((agent) => agent.searchProducts(query))
-    ).then((results) => uniqueByProperty(results.flat(), "ProductId"));
+  async searchAndSelectProduct(
+    query: string,
+    agentType: SearchAgentType = "USER"
+  ): Promise<ProductResult | null> {
+    const agents = (() => {
+      if (agentType === "USER") return [this.userAgent];
+      if (agentType === "ANON") return [this.anonAgent];
+      return [this.userAgent, this.anonAgent];
+    })();
+    const results = await Promise.all(agents.map((agent) => agent.searchProducts(query))).then(
+      (results) => uniqueByProperty(results.flat(), "ProductId")
+    );
     if (results.length === 0) {
       return null;
     }
@@ -114,6 +120,8 @@ export class FoodstuffsSearchService {
     };
   }
 }
+
+export type SearchAgentType = "USER" | "ANON" | "BOTH";
 
 export interface ProductResult {
   ProductName: string;

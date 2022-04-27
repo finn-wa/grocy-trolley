@@ -56,7 +56,8 @@ export class GrocyShoppingListExporter {
           `Parent product ${parent.product.id} / ${parent.product.name} does not have children`
         );
         const result = await this.foodstuffs.searchService.searchAndSelectProduct(
-          product.name.replace("(Generic)", "")
+          product.name.replace("(Generic)", ""),
+          "BOTH"
         );
         if (!result) return [];
         return [this.foodstuffs.searchService.resultToCartRef(result)];
