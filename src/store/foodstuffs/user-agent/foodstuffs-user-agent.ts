@@ -76,10 +76,10 @@ export class FoodstuffsUserAgent {
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
     if (headers) {
-      this.logger.trace(headers);
+      this.logger.trace("Headers: " + prettyPrint(Array.from(headers.entries())));
     }
     if (body) {
-      this.logger.trace(body);
+      this.logger.trace("Body: " + prettyPrint(body));
     }
     const contentType = headers?.get("content-type");
     if (contentType === APPLICATION_JSON && body) {
@@ -124,7 +124,7 @@ export class FoodstuffsUserAgent {
     }
     const context = await this.getContext();
     const page = await context.newPage();
-    await page.goto(PAKNSAVE_URL + "shop");
+    await page.goto(`${PAKNSAVE_URL}/shop`);
     // If loginDetails exist, log in
     if (this.loginDetails) {
       // Test if already logged in
@@ -132,7 +132,7 @@ export class FoodstuffsUserAgent {
         await this.fetchWithPage(
           page,
           "GET",
-          `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
+          `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
           headersBuilder().acceptJson().build()
         );
       } catch (error) {
@@ -142,6 +142,7 @@ export class FoodstuffsUserAgent {
         await page.click("button.login-form-submit");
         // page refreshes after submission
         await page.waitForLoadState("networkidle");
+        await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
         // search box seems to pop in last
         await page.locator('input[aria-label="Search products"]').waitFor();
         // save logged in state

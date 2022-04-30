@@ -23,6 +23,17 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     );
   }
 
+  async createListWithNamePrompt(): Promise<List> {
+    const input = await prompts([
+      {
+        name: "name",
+        message: "Enter a name for your new list:",
+        type: "text",
+      },
+    ]);
+    return input.name;
+  }
+
   async getLists(): Promise<List[]> {
     return this.getForJson<{ lists: List[] }>(
       this.buildUrl("ShoppingLists/GetLists"),
@@ -35,6 +46,25 @@ export class FoodstuffsListService extends FoodstuffsRestService {
       this.buildUrl("ShoppingLists/GetList", { id }),
       headersBuilder().acceptJson().build()
     );
+  }
+
+  async selectList(): Promise<string> {
+    const lists = await this.getLists();
+    const response = await prompts([
+      {
+        name: "listId",
+        message: "Select list",
+        type: "select",
+        choices: [
+          { title: "Create new list", value: null },
+          ...lists.map((list) => ({ title: list.name, value: list.listId })),
+        ],
+      },
+    ]);
+    if (response.listId !== null) {
+      return response.listId;
+    }
+    return this.createListWithNamePrompt().then((list) => list.listId);
   }
 
   async updateList(listUpdate: ListUpdate): Promise<List> {

@@ -6,7 +6,7 @@ import { RestService } from "@gt/utils/rest";
 import { ReceiptScanner } from "..";
 
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {
-  protected readonly baseUrl = "https://api.ocr.space/";
+  protected readonly baseUrl = this.validateBaseUrl("https://api.ocr.space");
   protected readonly logger = new Logger(this.constructor.name);
   private readonly apikey = getEnv().OCR_API_KEY;
 
@@ -20,7 +20,7 @@ export class OcrReceiptScanner extends RestService implements ReceiptScanner {
     formData.append("language", "eng");
     formData.append("url", filepath);
     const res = await this.post(
-      this.buildUrl("parse/image"),
+      this.buildUrl("/parse/image"),
       headersBuilder()
         .apikey(this.apikey)
         .append("redirect", "follow")

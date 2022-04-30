@@ -19,26 +19,13 @@ export class FoodstuffsListImporter {
   ) {}
 
   async selectAndImportList() {
-    const listId = await this.selectList();
+    const listId = await this.listService.selectList();
     return this.importList(listId);
   }
 
   async selectAndStockList() {
-    const listId = await this.selectList();
+    const listId = await this.listService.selectList();
     return this.stockProductsFromList(listId);
-  }
-
-  private async selectList(): Promise<string> {
-    const lists = await this.listService.getLists();
-    const response = await prompts([
-      {
-        name: "list",
-        message: "Select list",
-        type: "select",
-        choices: lists.map((list) => ({ title: list.name, value: list.listId })),
-      },
-    ]);
-    return response.list as string;
   }
 
   async importList(id: string): Promise<void> {

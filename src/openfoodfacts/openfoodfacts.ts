@@ -40,9 +40,9 @@ abstract class OpenFoodFactsService extends RestService {
 }
 
 export class OpenFoodFactsNZService extends OpenFoodFactsService {
-  readonly baseUrl = "https://nz.openfoodfacts.org/api/v0/product/";
+  readonly baseUrl = this.validateBaseUrl("https://nz.openfoodfacts.org/api/v0/product");
 }
 
 export class OpenFoodFactsWorldService extends OpenFoodFactsService {
-  readonly baseUrl = "https://world.openfoodfacts.org/api/v0/product/";
+  readonly baseUrl = this.validateBaseUrl("https://world.openfoodfacts.org/api/v0/product");
 }

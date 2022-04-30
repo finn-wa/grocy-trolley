@@ -23,7 +23,7 @@ type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
  * @see https://www.taggun.io/
  */
 export class TaggunReceiptScanner extends RestService implements ReceiptScanner {
-  protected readonly baseUrl = "https://api.taggun.io/";
+  protected readonly baseUrl = this.validateBaseUrl("https://api.taggun.io");
   protected readonly logger = new Logger(this.constructor.name);
   private readonly apiKey = getEnv().TAGGUN_API_KEY;
 

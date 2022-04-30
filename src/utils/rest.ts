@@ -3,19 +3,20 @@ import { APPLICATION_JSON, raw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
-  protected abstract readonly baseUrl: `${string}/`;
+  protected abstract readonly baseUrl: string;
   protected abstract readonly logger: Logger;
 
-  protected validateBaseUrl(baseUrl: string): `${string}/` {
-    if (!baseUrl.endsWith("/")) {
-      throw new Error(`Base URL must end with a slash, found: ${baseUrl}`);
+  protected validateBaseUrl(baseUrl: string): string {
+    if (baseUrl.endsWith("/")) {
+      throw new Error(`Base URL must not end with a slash, found: ${baseUrl}`);
     }
-    return baseUrl as `${string}/`;
+    return baseUrl;
   }
 
   protected buildUrl(path: string, params?: Record<string, string>): string {
+    const prefix = path.startsWith("/") ? this.baseUrl : this.baseUrl + "/";
     if (!params) {
-      return this.baseUrl + path;
+      return prefix + path;
     }
     const url = new URL(path, this.baseUrl);
     url.search = new URLSearchParams(params).toString();
