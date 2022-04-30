@@ -3,7 +3,7 @@ import { FoodstuffsUserAgent } from ".";
 import { PAKNSAVE_URL } from "./foodstuffs.model";
 
 export abstract class FoodstuffsRestService extends RestService {
-  protected readonly baseUrl = this.validateBaseUrl(PAKNSAVE_URL + "CommonApi/");
+  protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
 
   constructor(protected readonly userAgent: FoodstuffsUserAgent) {
     super();

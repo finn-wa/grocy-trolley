@@ -1,9 +1,9 @@
+import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { readFile, writeFile } from "fs/promises";
 import { GrocyProductService } from "grocy";
 import prompts from "prompts";
 import { ReceiptScanner } from "receipt-ocr";
-import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
-import { Logger, prettyPrint } from "@gt/utils/logger";
 import { FoodstuffsServices } from "..";
 import { ListProductRef, toListProductRef } from "../foodstuffs-lists";
 import { FoodstuffsCartProduct } from "../foodstuffs.model";
@@ -110,11 +110,9 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
    * @param cartRefs map of receipt item name to cart ref
    */
   async importReceiptListRefs(cartRefs: Record<string, ListProductRef>) {
-    const list = await this.foodstuffs.listService.createListWithProducts(
-      "Testing " + new Date().toISOString(),
-      Object.values(cartRefs)
-    );
-    await this.listImporter.importList(list.listId);
+    const listId = await this.foodstuffs.listService.selectList();
+    await this.foodstuffs.listService.updateList({ listId, products: Object.values(cartRefs) });
+    await this.listImporter.importList(listId);
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(cartRefs)) {
       const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];

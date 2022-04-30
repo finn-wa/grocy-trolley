@@ -1,11 +1,11 @@
-import { HTMLElement, parse } from "node-html-parser";
-import { getEnv, initEnv } from "@gt/utils/environment";
+import { getEnv } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
+import { HTMLElement, parse } from "node-html-parser";
 
 export class BarcodeBuddyService extends RestService {
-  protected readonly baseUrl: `${string}/`;
+  protected readonly baseUrl: string;
   protected readonly logger = new Logger(this.constructor.name);
 
   constructor() {
@@ -29,7 +29,7 @@ export class BarcodeBuddyService extends RestService {
       return table.querySelectorAll(selector).map((cell) => cell.innerText);
     };
     const names = getCells("Name");
-    console.log(names);
+    this.logger.debug(names);
     return getCells("Barcode").map((barcode, i) => ({ barcode, name: names[i] }));
   }
 }

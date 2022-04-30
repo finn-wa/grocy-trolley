@@ -33,7 +33,7 @@ describe("FoodstuffsUserAgent", () => {
     const userProfile = await userAgent
       .fetchWithBrowser(
         "GET",
-        `${PAKNSAVE_URL}CommonApi/Account/GetUserProfile`,
+        `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
         headersBuilder().acceptJson().build()
       )
       .then((res) => res.json());
