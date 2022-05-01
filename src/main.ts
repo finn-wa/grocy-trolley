@@ -45,9 +45,9 @@ program
 program.command("shop").action(shop);
 
 program.command("dev", { hidden: true }).action(async () => {
-  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const importers = foodstuffsImporters(foodstuffs, grocy);
-  await foodstuffs.cartService.getCart();
+  // const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
+  const foodstuffs = await foodstuffsServices();
+  const list = await foodstuffs.listService.createListWithNamePrompt();
 });
 
 async function commandPrompt() {

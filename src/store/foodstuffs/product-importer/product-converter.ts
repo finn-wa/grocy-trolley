@@ -175,7 +175,7 @@ export class FoodstuffsToGrocyConverter {
       name: [searchProduct?.ProductBrand, product.name, quantitySuffix]
         .filter((x) => !!x)
         .join(" "),
-      parent_product_id: parent?.product.id,
+      parent_product_id: parent?.product?.id,
       description: "",
       location_id: this.categoryToLocationId(product.category),
       qu_id_purchase: purchaseUnitId,
@@ -232,11 +232,12 @@ export class FoodstuffsToGrocyConverter {
         to_qu_id: displayUnitId,
         factor: displayWeight,
       },
-      {
-        from_qu_id: displayUnitId,
-        to_qu_id: eaUnitId,
-        factor: 1 / displayWeight,
-      },
+      // I believe this is now created automatically
+      // {
+      //   from_qu_id: displayUnitId,
+      //   to_qu_id: eaUnitId,
+      //   factor: 1 / displayWeight,
+      // },
     ];
   }
 

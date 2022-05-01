@@ -1,5 +1,5 @@
 import { URL, URLSearchParams } from "url";
-import { APPLICATION_JSON, raw } from "./headers";
+import { APPLICATION_JSON, toRaw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
@@ -18,7 +18,7 @@ export abstract class RestService {
     if (!params) {
       return prefix + path;
     }
-    const url = new URL(path, this.baseUrl);
+    const url = new URL(path, this.baseUrl + "/");
     url.search = new URLSearchParams(params).toString();
     return url.toString();
   }
@@ -40,7 +40,12 @@ export abstract class RestService {
   }
 
   protected async extractJson<T>(response: Response): Promise<T> {
-    return this.extract<T>(response, (r) => r.json() as Promise<T>);
+    try {
+      return this.extract<T>(response, (r) => r.json() as Promise<T>);
+    } catch (error) {
+      this.logger.error(`Error parsing JSON:\n${await response.text()}`);
+      throw error;
+    }
   }
 
   protected async extractText(response: Response): Promise<string> {
@@ -54,7 +59,7 @@ export abstract class RestService {
     body?: BodyInit | any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
-    if (headers) this.logger.trace(prettyPrint(raw(headers)));
+    if (headers) this.logger.trace(prettyPrint(toRaw(headers)));
     if (body) this.logger.trace(body);
 
     const contentType = headers?.get("content-type");

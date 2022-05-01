@@ -50,7 +50,9 @@ export class GrocyProductService extends GrocyRestService {
     }
     const quConversionResponses: CreatedObjectId[] = await Promise.all(
       quConversions.map((conversion) =>
-        this.createQuantityUnitConversion({ ...conversion, product_id: id })
+        this.createQuantityUnitConversion({ ...conversion, product_id: id }).catch(() => ({
+          created_object_id: "-1",
+        }))
       )
     );
     const quConversionIds = quConversionResponses.map((res) => res.created_object_id);
