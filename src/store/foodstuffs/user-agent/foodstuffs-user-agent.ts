@@ -1,8 +1,8 @@
+import { APPLICATION_JSON, toRaw } from "@gt/utils/headers";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { access } from "fs/promises";
 import path from "path";
-import { Browser, BrowserContext, JSHandle, Page } from "playwright";
-import { APPLICATION_JSON, headersBuilder, raw } from "@gt/utils/headers";
-import { Logger, prettyPrint } from "@gt/utils/logger";
+import { Browser, BrowserContext, JSHandle, Page, Request as PlaywrightRequest } from "playwright";
 import { PAKNSAVE_URL } from "../foodstuffs.model";
 
 /**
@@ -13,6 +13,7 @@ export class FoodstuffsUserAgent {
   protected readonly logger = new Logger(this.constructor.name);
   private context?: BrowserContext;
   private page?: Page;
+  private headers?: Headers;
 
   /**
    * Creates a new FoodstuffsUserAgent.
@@ -37,6 +38,17 @@ export class FoodstuffsUserAgent {
     return new FoodstuffsUserAgent(this.browser, loginDetails ?? undefined, this.storageStateDir);
   }
 
+  async getHeaders(): Promise<Headers> {
+    if (this.headers) {
+      return this.headers;
+    }
+    await this.getLoginPage();
+    if (this.headers) {
+      return this.headers;
+    }
+    throw new Error("Failed to init headers with getLoginPage");
+  }
+
   /**
    * Performs a fetch request as a logged in user on the PAK'n'SAVE website.
    * @param method Request method
@@ -49,43 +61,14 @@ export class FoodstuffsUserAgent {
     method: string,
     url: string,
     headers?: Headers,
-    body?: any
-  ): Promise<Response> {
-    const page = await this.getPage();
-    return this.fetchWithPage(page, method, url, headers, body);
-  }
-
-  /**
-   * Performs a fetch request from the browser using Playwright.
-   * Necessary because Cloudflare now blocks requests that are not sent from a browser.
-   * WARNING: not every method on the returned Response is callable, see
-   * {@link FoodstuffsRequest}.
-   * @param page Playwright page instance to use to perform the request
-   * @param method Request method
-   * @param url Request URL
-   * @param headers Request headers
-   * @param body Request body
-   * @returns Request response
-   */
-  private async fetchWithPage(
-    page: Page,
-    method: string,
-    url: string,
-    headers?: Headers,
     body?: BodyInit | any
   ): Promise<Response> {
-    this.logger.debug(`${method} ${url}`);
-    if (headers) {
-      this.logger.trace("Headers: " + prettyPrint(Array.from(headers.entries())));
-    }
-    if (body) {
-      this.logger.trace("Body: " + prettyPrint(body));
-    }
+    const page = await this.getLoginPage();
     const contentType = headers?.get("content-type");
     if (contentType === APPLICATION_JSON && body) {
       body = JSON.stringify(body);
     }
-    const rawHeaders = headers ? raw(headers) : undefined;
+    const rawHeaders = headers ? toRaw(headers) : undefined;
     const responseHandle = await page.evaluateHandle(
       async ({ url, method, rawHeaders, body }) =>
         fetch(url, {
@@ -118,46 +101,32 @@ export class FoodstuffsUserAgent {
    * Returns the login page. Creates a new page and logs in if needed.
    * @returns Login page
    */
-  private async getPage(): Promise<Page> {
+  async getLoginPage(): Promise<Page> {
     if (this.page) {
       return this.page;
     }
     const context = await this.getContext();
     const page = await context.newPage();
     await page.goto(`${PAKNSAVE_URL}/shop`);
-    // If loginDetails exist, log in
-    if (this.loginDetails) {
-      // Test if already logged in
-      try {
-        await this.fetchWithPage(
-          page,
-          "GET",
-          `${PAKNSAVE_URL}/CommonApi/Account/GetUserProfile`,
-          headersBuilder().acceptJson().build()
-        );
-      } catch (error) {
-        await page.click('button[id="login-form"]');
-        await page.fill('input[id="login-email"]', this.loginDetails.email);
-        await page.fill('input[id="login-password"]', this.loginDetails.password);
-        await page.click("button.login-form-submit");
-        // page refreshes after submission
-        await page.waitForLoadState("networkidle");
-        await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
-        // search box seems to pop in last
-        await page.locator('input[aria-label="Search products"]').waitFor();
-        // save logged in state
-        await page.context().storageState({ path: this.getStorageStateFilePath() });
-      }
+    let cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
+
+    if (this.loginDetails && !(await this.isLoggedIn(page))) {
+      this.logger.info("Logging in to foodstuffs...");
+      await page.click('button[id="login-form"]');
+      await page.fill('input[id="login-email"]', this.loginDetails.email);
+      await page.fill('input[id="login-password"]', this.loginDetails.password);
+      await page.click("button.login-form-submit");
+      cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
+      // page refreshes after submission
+      await page.waitForLoadState("networkidle");
+      // search box seems to pop in last
+      await page.locator('input[aria-label="Search products"]').waitFor();
+      // save logged in state
+      await page.context().storageState({ path: this.getStorageStateFilePath() });
     }
     this.page = page;
+    this.headers = await this.getHeadersFromRequest(cartRequest);
     return this.page;
-  }
-
-  private getStorageStateFilePath(): string {
-    if (!this.loginDetails) {
-      throw new Error("No storage state is saved when loginDetails is undefined");
-    }
-    return path.join(this.storageStateDir, this.loginDetails.email.replace(/\W+/g, "_") + ".json");
   }
 
   /**
@@ -182,6 +151,28 @@ export class FoodstuffsUserAgent {
     }
     this.context = await this.browser.newContext();
     return this.context;
+  }
+
+  private async isLoggedIn(page: Page) {
+    const loginState: "loggedIn" | "guest" | undefined = await page.evaluate(() => {
+      const dataLayer = (globalThis as unknown as { dataLayer: any[] }).dataLayer;
+      return dataLayer.find((entry) => "loginState" in entry)?.loginState;
+    });
+    return loginState === "loggedIn";
+  }
+
+  private async getHeadersFromRequest(request: PlaywrightRequest) {
+    const headers = new Headers();
+    const headersArray = await request.headersArray();
+    headersArray.forEach(({ name, value }) => headers.append(name, value));
+    return headers;
+  }
+
+  private getStorageStateFilePath(): string {
+    if (!this.loginDetails) {
+      throw new Error("No storage state is saved when loginDetails is undefined");
+    }
+    return path.join(this.storageStateDir, this.loginDetails.email.replace(/\W+/g, "_") + ".json");
   }
 }
 

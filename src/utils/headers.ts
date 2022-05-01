@@ -1,19 +1,37 @@
+import { Logger, prettyPrint } from "./logger";
+
 export const APPLICATION_JSON = "application/json";
 
 /**
  * Non-spec util method from node-fetch library.
  * @returns Record mapping each header key to all of its values as an array.
+ * @see {@link toHeaders}
  */
-export function raw(headers: Headers): Record<string, string[]> {
+export function toRaw(headers: Headers): Record<string, string[]> {
   const entries: Record<string, string[]> = {};
-  headers.forEach(([value, key]) =>
+  headers.forEach((value, key) =>
     key in entries ? entries[key].push(value) : (entries[key] = [value])
   );
   return entries;
 }
 
+/**
+ * Converts node-fetch raw headers format to native fetch Headers.
+ * Inverse of {@link toRaw}.
+ * @param rawHeaders
+ * @returns Headers object
+ */
+export function toHeaders(rawHeaders: Record<string, string[]>): Headers {
+  const headers = new Headers();
+  Object.entries(rawHeaders).forEach(([name, values]) =>
+    values.forEach((value) => headers.append(name, value))
+  );
+  return headers;
+}
+
 export class HeadersBuilder {
-  private readonly headers: Headers;
+  readonly headers: Headers;
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(init?: HeadersInit) {
     this.headers = new Headers(init);
@@ -57,7 +75,11 @@ export class HeadersBuilder {
   }
 
   raw(): Record<string, string[]> {
-    return raw(this.headers);
+    return toRaw(this.headers);
+  }
+
+  toString(): string {
+    return prettyPrint(this.raw());
   }
 }
 
@@ -65,6 +87,9 @@ export class HeadersBuilder {
  * Gotta save those characters on constructors
  * @returns new HeadersBuilder()
  */
-export function headersBuilder(): HeadersBuilder {
-  return new HeadersBuilder();
+export function headersBuilder(raw?: Record<string, string[]>): HeadersBuilder {
+  if (!raw) {
+    return new HeadersBuilder();
+  }
+  return new HeadersBuilder(toHeaders(raw));
 }

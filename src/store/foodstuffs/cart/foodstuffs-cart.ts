@@ -1,6 +1,5 @@
-import prompts from "prompts";
-import { headersBuilder } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import prompts from "prompts";
 import {
   FoodstuffsBaseProduct,
   FoodstuffsCartProduct,
@@ -9,7 +8,7 @@ import {
   ProductsSnapshot,
   SaleTypeString,
 } from "..";
-import { FoodstuffsRestService } from "../foodstuffs-rest-service";
+import { FoodstuffsRestService } from "../rest-service/foodstuffs-rest-service";
 
 export class FoodstuffsCartService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -18,14 +17,16 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
     super(userAgent);
   }
 
-  getCart(): Promise<FoodstuffsCart> {
-    return this.getForJson(this.buildUrl("Cart/Index"), headersBuilder().acceptJson().build());
+  async getCart(): Promise<FoodstuffsCart> {
+    const headersBuilder = await this.authHeaders();
+    return this.getForJson(this.buildUrl("Cart/Index"), headersBuilder.acceptJson().build());
   }
 
   async clearCart(): Promise<{ success: true }> {
+    const headersBuilder = await this.authHeaders();
     const response = await this.deleteForJson<{ success: boolean }>(
       this.buildUrl("Cart/Clear"),
-      headersBuilder().acceptJson().build()
+      headersBuilder.acceptJson().build()
     );
     if (!response.success) {
       throw new Error(`Failed to clear cart: ${response}`);
@@ -74,9 +75,10 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
   }
 
   private async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
+    const headersBuilder = await this.authHeaders();
     return this.postForJson(
       this.buildUrl("Cart/Index"),
-      headersBuilder().contentTypeJson().acceptJson().build(),
+      headersBuilder.contentTypeJson().acceptJson().build(),
       { products }
     );
   }

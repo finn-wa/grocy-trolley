@@ -1,6 +1,5 @@
-import prompts from "prompts";
-import { headersBuilder } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import prompts from "prompts";
 import {
   FoodstuffsBaseProduct,
   FoodstuffsListProduct,
@@ -8,18 +7,21 @@ import {
   ProductsSnapshot,
   SaleTypeString,
 } from ".";
-import { FoodstuffsRestService } from "./foodstuffs-rest-service";
+import { PAKNSAVE_URL } from "./foodstuffs.model";
+import { FoodstuffsRestService } from "./rest-service/foodstuffs-rest-service";
 
 export class FoodstuffsListService extends FoodstuffsRestService {
+  protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
   protected readonly logger = new Logger(this.constructor.name);
   constructor(userAgent: FoodstuffsUserAgent) {
     super(userAgent);
   }
 
   async createList(name: string): Promise<List> {
+    const headersBuilder = await this.authHeaders();
     return this.putForJson(
       this.buildUrl("ShoppingLists/CreateList", { name }),
-      headersBuilder().acceptJson().build()
+      headersBuilder.acceptJson().build()
     );
   }
 
@@ -31,20 +33,22 @@ export class FoodstuffsListService extends FoodstuffsRestService {
         type: "text",
       },
     ]);
-    return input.name;
+    return this.createList(input.name);
   }
 
   async getLists(): Promise<List[]> {
+    const headersBuilder = await this.authHeaders();
     return this.getForJson<{ lists: List[] }>(
       this.buildUrl("ShoppingLists/GetLists"),
-      headersBuilder().acceptJson().build()
+      headersBuilder.acceptJson().build()
     ).then((res) => res.lists);
   }
 
   async getList(id: string): Promise<List> {
+    const headersBuilder = await this.authHeaders();
     return this.getForJson(
       this.buildUrl("ShoppingLists/GetList", { id }),
-      headersBuilder().acceptJson().build()
+      headersBuilder.acceptJson().build()
     );
   }
 
@@ -68,15 +72,17 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   }
 
   async updateList(listUpdate: ListUpdate): Promise<List> {
+    const headersBuilder = await this.authHeaders();
     return this.postForJson(
       this.buildUrl("ShoppingLists/UpdateList"),
-      headersBuilder().contentTypeJson().acceptJson().build(),
+      headersBuilder.contentTypeJson().acceptJson().build(),
       listUpdate
     );
   }
 
   async deleteList(id: string | number): Promise<Response> {
-    return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), headersBuilder().build());
+    const headersBuilder = await this.authHeaders();
+    return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), headersBuilder.build());
   }
 
   async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {

@@ -1,11 +1,10 @@
+import { uniqueByProperty } from "@gt/utils/arrays";
+import { Logger } from "@gt/utils/logger";
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
-import { uniqueByProperty } from "@gt/utils/arrays";
-import { headersBuilder } from "@gt/utils/headers";
-import { Logger } from "@gt/utils/logger";
 import { CartProductRef, SaleTypeString } from ".";
 import { ListProductRef } from "./foodstuffs-lists";
-import { FoodstuffsRestService } from "./foodstuffs-rest-service";
+import { FoodstuffsRestService } from "./rest-service/foodstuffs-rest-service";
 import { FoodstuffsUserAgent } from "./user-agent/foodstuffs-user-agent";
 
 class FoodstuffsSearchAgent extends FoodstuffsRestService {
@@ -26,10 +25,12 @@ class FoodstuffsSearchAgent extends FoodstuffsRestService {
   async search(query: string): Promise<ProductSearchResponse> {
     this.logger.info("Searching Foodstuffs: " + query);
     await this.cooldown();
-    const headers = headersBuilder().acceptJson().contentTypeJson();
-    return this.postForJson(this.buildUrl("SearchAutoComplete/AutoComplete"), headers.build(), {
-      SearchTerm: query,
-    });
+    const headersBuilder = await this.authHeaders();
+    return this.postForJson(
+      this.buildUrl("SearchAutoComplete/AutoComplete"),
+      headersBuilder.acceptJson().contentTypeJson().build(),
+      { SearchTerm: query }
+    );
   }
 
   /**
