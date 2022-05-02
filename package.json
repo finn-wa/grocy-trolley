@@ -19,8 +19,6 @@
     "chalk": "4",
     "commander": "9.2.0",
     "dotenv": "16.0.0",
-    "formdata-node": "4.3.2",
-    "node-fetch": "3.2.4",
     "node-html-parser": "5.3.3",
     "playwright": "^1.21.1",
     "prompts": "2.4.2",
