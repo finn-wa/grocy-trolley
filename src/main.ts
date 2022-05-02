@@ -5,50 +5,12 @@ import { exit } from "process";
 import prompts from "prompts";
 import { foodstuffsServices, GrocyShoppingListExporter } from "@gt/store/foodstuffs";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
-import { LOG_LEVELS } from "@gt/utils/logger";
+import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
 const STOCK_SOURCES = ["list"];
 type StockSource = typeof STOCK_SOURCES[number];
-
-program
-  .name("grocy-trolley")
-  .description("Links Grocy to PAK'n'SAVE online shopping")
-  .version("0.0.1")
-  .addOption(
-    new Option("-l, --log-level <level>") //
-      .choices(LOG_LEVELS)
-      .default("DEBUG")
-      .makeOptionMandatory()
-  )
-  .option("-e, --env-file <path>", "Path to .env file", ".env")
-  .hook("preAction", (command) => {
-    const { logLevel, envFilePath } = command.opts();
-    initEnv({ envFilePath, overrides: { GT_LOG_LEVEL: logLevel } });
-  });
-
-program
-  .command("prompt", { isDefault: true, hidden: true }) //
-  .action(commandPrompt);
-
-program
-  .command("import")
-  .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
-  .action((source) => importFrom(source));
-
-program
-  .command("stock")
-  .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
-  .action((source) => stockFrom(source));
-
-program.command("shop").action(shop);
-
-program.command("dev", { hidden: true }).action(async () => {
-  // const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const foodstuffs = await foodstuffsServices();
-  const list = await foodstuffs.listService.createListWithNamePrompt();
-});
 
 async function commandPrompt() {
   const choices = await prompts([
@@ -58,6 +20,7 @@ async function commandPrompt() {
       type: "select",
       choices: [
         { title: "Import products (import)", value: "import" },
+        { title: "Stock products (stock)", value: "stock" },
         { title: "Export shopping list (shop)", value: "shop" },
         { title: "Exit", value: "exit" },
       ],
@@ -75,13 +38,30 @@ async function commandPrompt() {
         { title: "Exit", value: "exit" },
       ],
     },
+    {
+      name: "stockSource",
+      message: "Select a stock source",
+      type: (prev) => (prev === "stock" ? "select" : (null as any)),
+      choices: [
+        { title: "Foodstuffs cart", value: "cart" },
+        { title: "Foodstuffs list", value: "list" },
+        { title: "Exit", value: "exit" },
+      ],
+    },
   ]);
-  const command = choices["command"] as "import" | "shop" | "exit";
-  if (command === "exit" || choices["importSource"] === "exit") {
+  const command = choices["command"] as "import" | "shop" | "stock" | "exit";
+  if (
+    command === "exit" ||
+    choices["importSource"] === "exit" ||
+    choices["stockSource"] === "exit"
+  ) {
     return;
   }
   if (command === "import") {
     return importFrom(choices["importSource"] as ImportSource);
+  }
+  if (command === "stock") {
+    return stockFrom(choices["stockSource"] as StockSource);
   }
   if (command === "shop") {
     return shop();
@@ -112,14 +92,13 @@ async function importFrom(choice: ImportSource) {
 }
 
 async function stockFrom(choice: StockSource) {
-  try {
-    const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-    const importers = foodstuffsImporters(foodstuffs, grocy);
-    if (choice === "list") {
-      return importers.listImporter.selectAndStockList();
-    }
-  } catch (error) {
-    await prompts([{ type: "invisible", name: "prompt", message: "continue?" }]);
+  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
+  const importers = foodstuffsImporters(foodstuffs, grocy);
+  if (choice === "list") {
+    return importers.listImporter.selectAndStockList();
+  }
+  if (choice === "cart") {
+    return importers.cartImporter.stockProductsFromCart();
   }
 }
 
@@ -129,10 +108,52 @@ async function shop(): Promise<void> {
   return exporter.addShoppingListToCart();
 }
 
-program.parseAsync().then(
+async function main(): Promise<unknown> {
+  program
+    .name("grocy-trolley")
+    .description("Links Grocy to PAK'n'SAVE online shopping")
+    .version("0.0.1")
+    .addOption(
+      new Option("-l, --log-level <level>") //
+        .choices(LOG_LEVELS)
+        .default("DEBUG")
+        .makeOptionMandatory()
+    )
+    .option("-e, --env-file <path>", "Path to .env file", ".env")
+    .hook("preAction", (command) => {
+      const { logLevel, envFilePath } = command.opts();
+      initEnv({ envFilePath, overrides: { GT_LOG_LEVEL: logLevel } });
+    });
+
+  program
+    .command("prompt", { isDefault: true, hidden: true }) //
+    .action(commandPrompt);
+
+  program
+    .command("import")
+    .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
+    .action((source) => importFrom(source));
+
+  program
+    .command("stock")
+    .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
+    .action((source) => stockFrom(source));
+
+  program.command("shop").action(shop);
+
+  program.command("dev", { hidden: true }).action(async () => {
+    // const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
+    const foodstuffs = await foodstuffsServices();
+    const list = await foodstuffs.listService.createListWithNamePrompt();
+  });
+
+  return program.parseAsync();
+}
+
+main().then(
   () => exit(0),
   (err) => {
-    console.error(err);
+    new Logger("main").error(err);
     exit(1);
   }
 );
