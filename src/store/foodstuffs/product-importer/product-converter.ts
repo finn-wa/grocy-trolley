@@ -204,7 +204,10 @@ export class FoodstuffsToGrocyConverter {
       price: fsProduct.price / 100 / priceFactor,
       best_before_date: "2999-12-31",
       shopping_location_id: this.getShoppingLocationId(storeId),
-      location_id: this.categoryToLocationId(fsProduct.categoryName),
+      location_id: this.categoryToLocationId(
+        (fsProduct as FoodstuffsCartProduct).categoryName ??
+          (fsProduct as FoodstuffsListProduct).category
+      ),
     };
   }
 
