@@ -1,5 +1,5 @@
 import { ConversionWithoutId } from "@gt/store/foodstuffs/product-importer/product-converter";
-import { FoodstuffsCartProduct } from "@gt/store/foodstuffs";
+import { FoodstuffsCartProduct, FoodstuffsListProduct } from "@gt/store/foodstuffs";
 import { Logger } from "@gt/utils/logger";
 import { components } from "./api";
 import { CreatedObjectId, GrocyBoolean, QuantityUnitConversion } from "./grocy-model";
@@ -165,7 +165,7 @@ export type UnparsedProduct = components["schemas"]["Product"];
 
 export interface ProductUserfields {
   storeMetadata?: {
-    PNS?: FoodstuffsCartProduct;
+    PNS?: FoodstuffsCartProduct | FoodstuffsListProduct;
     receiptNames?: string[];
   };
   isParent?: GrocyBoolean;
