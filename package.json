@@ -26,7 +26,7 @@
     "playwright": "^1.21.1",
     "prompts": "2.4.2",
     "ts-node": "10.7.0",
-    "typescript": "4.6.3"
+    "typescript": "4.6.4"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
