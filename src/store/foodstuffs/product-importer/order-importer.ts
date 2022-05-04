@@ -1,6 +1,6 @@
 import { GrocyOrderRecordService } from "grocy";
 import { GrocyFalse, GrocyTrue } from "@gt/grocy/grocy-model";
-import { Logger } from "@gt/utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 import { FoodstuffsOrderService as FoodstuffsOrderService } from "../foodstuffs-orders";
 import { FoodstuffsCartImporter } from "./cart-importer";
 
@@ -39,7 +39,7 @@ export class FoodstuffsOrderImporter {
 
   async importLatestOrders(): Promise<void> {
     const unimportedOrderNumbers = await this.getUnimportedOrderNumbers();
-    this.logger.info("Found unimported orders: " + unimportedOrderNumbers);
+    this.logger.info("Found unimported orders: " + prettyPrint(unimportedOrderNumbers));
     for (const id of unimportedOrderNumbers) {
       await this.importOrder(id);
     }

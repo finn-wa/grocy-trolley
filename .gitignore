@@ -1,7 +1,6 @@
 .env
 .test.env
-out
-out-ts
+build
 node_modules
 temp
 src/resources/cache/*

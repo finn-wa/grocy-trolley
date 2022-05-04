@@ -33,7 +33,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
         type: "text",
       },
     ]);
-    return this.createList(input.name);
+    return this.createList(input.name as string);
   }
 
   async getLists(): Promise<List[]> {
@@ -66,7 +66,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
       },
     ]);
     if (response.listId !== null) {
-      return response.listId;
+      return response.listId as string;
     }
     return this.createListWithNamePrompt().then((list) => list.listId);
   }
@@ -82,7 +82,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
 
   async deleteList(id: string | number): Promise<Response> {
     const headersBuilder = await this.authHeaders();
-    return this.delete(this.buildUrl("ShoppingLists/DeleteList/" + id), headersBuilder.build());
+    return this.delete(this.buildUrl(`ShoppingLists/DeleteList/${id}`), headersBuilder.build());
   }
 
   async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {
@@ -101,7 +101,10 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     const iter = products[Symbol.iterator]();
     let chunk: ListProductRef[];
     do {
-      chunk = Array.from({ length: 5 }, () => iter.next().value).filter((p) => !!p);
+      chunk = Array.from(
+        { length: 5 },
+        () => iter.next().value as ListProductRef | undefined
+      ).filter((p): p is ListProductRef => !!p);
       try {
         await this.updateList({ listId, products: chunk });
       } catch (error) {

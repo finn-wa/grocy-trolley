@@ -3,8 +3,8 @@
   "description": "Links Grocy to PAK'n'SAVE online shopping",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "start": "node ./out/main.js",
-    "gt": "node ./out/main.js",
+    "start": "node ./build/out/main.js",
+    "gt": "node ./build/out/main.js",
     "build": "node scripts/build.js",
     "build:dev": "node scripts/build.js -t dev --sourcemap",
     "build:prod": "node scripts/build.js -t prod",
@@ -12,7 +12,7 @@
     "test:watch": "node scripts/build.js -t test --watch",
     "test:debug": "node scripts/build.js -t test --sourcemap",
     "typecheck": "tsc -w",
-    "lint": "eslint src",
+    "lint": "eslint src --cache --cache-location=build",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },

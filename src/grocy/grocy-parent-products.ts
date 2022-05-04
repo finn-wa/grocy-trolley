@@ -57,10 +57,10 @@ export class GrocyParentProductService extends GrocyRestService {
         type: "select",
         choices: [
           { title: "None", value: undefined },
-          ...(parentMatches.map((parent) => ({
+          ...parentMatches.map((parent) => ({
             title: parent.product.name,
             value: parent,
-          })) as any), // Values are meant to be strings only, but fuck it
+          })),
         ],
       },
     ]);

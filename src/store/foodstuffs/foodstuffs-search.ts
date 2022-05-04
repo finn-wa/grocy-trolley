@@ -92,7 +92,7 @@ export class FoodstuffsSearchService {
         name: "value",
         type: "select",
         choices: [
-          { title: "Skip", value: null as any },
+          { title: "Skip", value: null },
           ...results.map((r) => ({
             title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
             value: r,
@@ -100,7 +100,7 @@ export class FoodstuffsSearchService {
         ],
       },
     ]);
-    return choice.value;
+    return choice.value as ProductResult | null;
   }
 
   resultToCartRef(product: ProductResult): CartProductRef {

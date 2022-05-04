@@ -29,7 +29,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
       headersBuilder.acceptJson().build()
     );
     if (!response.success) {
-      throw new Error(`Failed to clear cart: ${response}`);
+      throw new Error(`Failed to clear cart: ${prettyPrint(response)}`);
     }
     return response as { success: true };
   }
@@ -45,7 +45,10 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
     const iter = products[Symbol.iterator]();
     let chunk: CartProductRef[];
     do {
-      chunk = Array.from({ length: 5 }, () => iter.next().value).filter((p) => !!p);
+      chunk = Array.from(
+        { length: 5 },
+        () => iter.next().value as CartProductRef | undefined
+      ).filter((p): p is CartProductRef => !!p);
       try {
         await this.postProducts(chunk);
       } catch (error) {

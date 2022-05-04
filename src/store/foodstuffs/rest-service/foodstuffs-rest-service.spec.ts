@@ -12,7 +12,7 @@ import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 class TestRestService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
-  authHeaders = super.authHeaders;
+  authHeaders = () => super.authHeaders();
 
   // Doesn't seem to work
   async getUserProfile(): Promise<FoodstuffsUserProfile> {
