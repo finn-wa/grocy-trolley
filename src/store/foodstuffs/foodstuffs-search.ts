@@ -108,7 +108,7 @@ export class FoodstuffsSearchService {
     return {
       productId: product.ProductId.replaceAll("-", "_"),
       restricted: product.Restricted,
-      sale_type: product.SaleType,
+      sale_type: saleType,
       quantity: 1,
     };
   }

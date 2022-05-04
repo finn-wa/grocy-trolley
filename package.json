@@ -12,6 +12,7 @@
     "test:watch": "node scripts/build.js -t test --watch",
     "test:debug": "node scripts/build.js -t test --sourcemap",
     "typecheck": "tsc -w",
+    "lint": "eslint src",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
