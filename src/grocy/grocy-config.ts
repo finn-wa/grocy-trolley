@@ -118,7 +118,8 @@ export class GrocyIdMaps {
   }
 
   private toNameMap<T extends string>(namesToIds: Record<T, number>): Record<number, T> {
-    return Object.fromEntries(Object.entries(namesToIds).map(([name, id]) => [id, name]));
+    const reverseEntries = Object.entries(namesToIds).map(([name, id]) => [id, name]);
+    return Object.fromEntries(reverseEntries) as Record<number, T>;
   }
 
   /**

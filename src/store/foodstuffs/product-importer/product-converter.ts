@@ -1,16 +1,15 @@
-import { NewProduct, ParentProduct, Product } from "grocy";
 import { GrocyIdMaps, QuantityUnitName } from "@gt/grocy/grocy-config";
 import { GrocyFalse, QuantityUnitConversion } from "@gt/grocy/grocy-model";
 import { StockActionRequestBody } from "@gt/grocy/grocy-stock";
-import prompts from "prompts";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { NewProduct, ParentProduct, Product } from "grocy";
 import {
   CategoryLocations,
   FoodstuffsCartProduct,
   FoodstuffsCategory,
   FOODSTUFFS_CATEGORIES,
 } from "..";
-import { FoodstuffsSearchService, ProductResult } from "../foodstuffs-search";
+import { FoodstuffsSearchService } from "../foodstuffs-search";
 import { FoodstuffsListProduct, FoodstuffsLiveProduct } from "../foodstuffs.model";
 
 export class FoodstuffsToGrocyConverter {
@@ -21,11 +20,11 @@ export class FoodstuffsToGrocyConverter {
     private readonly foodstuffsSearchService: FoodstuffsSearchService
   ) {}
 
-  async forImport(
+  forImport(
     product: FoodstuffsCartProduct,
     storeId: string,
     parent?: ParentProduct
-  ): Promise<NewProductPayloads> {
+  ): NewProductPayloads {
     const purchaseSaleType = this.getPurchaseSaleType(product);
     let purchaseUnitId: number;
     let stockUnitId: number;

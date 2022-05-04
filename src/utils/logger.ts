@@ -37,7 +37,7 @@ export class Logger {
 
   private out(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
     if (this.level <= level) {
-      const msg = this.colourIfString(message, colour);
+      const msg = this.colourIfString(message, colour) as unknown;
       process.stdout.write(colour(this.prefix(level)));
       params.length > 0 ? console.log(colour(msg), params) : console.log(colour(msg));
     }
@@ -45,7 +45,7 @@ export class Logger {
 
   private err(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
     if (this.level <= level) {
-      const msg = this.colourIfString(message, colour);
+      const msg = this.colourIfString(message, colour) as unknown;
       process.stderr.write(colour(this.prefix(level)));
       params.length > 0 ? console.error(msg, params) : console.error(msg);
     }
@@ -56,14 +56,14 @@ export class Logger {
     return `${date[0]} | ${LogLevel[level].padEnd(5, " ")} | ${this.name} | `;
   }
 
-  private colourIfString<T>(obj: T, colour: ChalkInstance): T {
+  private colourIfString<T>(obj: T, colour: ChalkInstance): T extends string ? string : T {
     if (typeof obj === "string") {
-      return colour(obj) as any;
+      return colour(obj) as T extends string ? string : T;
     }
-    return obj;
+    return obj as T extends string ? string : T;
   }
 
-  log(level: LogLevel, message: any, params: any[]) {
+  log(level: LogLevel, message: any, params: unknown[]) {
     switch (level) {
       case LogLevel.TRACE:
         return this.trace(message, ...params);
@@ -115,6 +115,6 @@ export function playwrightLogger(levelOverride?: LogLevel): PlaywrightLogger {
   return {
     isEnabled: (_name, _severity) => true,
     log: (name, severity, message, args, _options) =>
-      logger.log(logLevel[severity], name + ": " + message, args),
+      logger.log(logLevel[severity], `${name}: ${message?.toString()}`, args),
   };
 }

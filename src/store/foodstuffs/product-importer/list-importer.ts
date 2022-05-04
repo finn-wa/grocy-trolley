@@ -41,7 +41,7 @@ export class FoodstuffsListImporter {
       return;
     }
     const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
-    let newProducts: { id: string; product: FoodstuffsListProduct }[] = [];
+    const newProducts: { id: string; product: FoodstuffsListProduct }[] = [];
 
     for (const product of productsToImport) {
       const parent = await this.grocy.parentProductService.findParent(
@@ -102,6 +102,6 @@ export class FoodstuffsListImporter {
       existingProducts
         .filter((p) => p.userfields?.storeMetadata?.PNS)
         .map((product) => [product.userfields.storeMetadata?.PNS?.productId, product])
-    );
+    ) as Record<string, Product>;
   }
 }

@@ -66,7 +66,7 @@ export abstract class RestService {
     if (contentType === APPLICATION_JSON && body) {
       body = JSON.stringify(body);
     }
-    const response = await fetch(url, { method, headers, body });
+    const response = await fetch(url, { method, headers, body: body as string | undefined });
     this.logger.trace(`Response: ${response.status}`);
     if (!response.ok) {
       throw new Error(`Response not OK: ${await response.text()}`);
@@ -81,7 +81,7 @@ export abstract class RestService {
     body?: BodyInit | unknown
   ): Promise<T> {
     const response = await this.fetchWithMethod(method, url, headers, body);
-    return this.extractJson(response) as Promise<T>;
+    return this.extractJson(response);
   }
 
   protected async get(

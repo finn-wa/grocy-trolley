@@ -68,7 +68,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     );
   }
 
-  async createUserObject(entityName: UserEntityName, obj: any): Promise<CreatedObjectResponse> {
+  async createUserObject(entityName: UserEntityName, obj: unknown): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
     const postResponse: CreatedObjectId = await this.postForJson(
       this.buildUrl("objects/userobjects"),

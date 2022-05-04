@@ -46,7 +46,7 @@ export class FoodstuffsCartImporter {
       return;
     }
     const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
-    let newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
+    const newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
       const parent = await this.grocy.parentProductService.findParent(
@@ -54,7 +54,7 @@ export class FoodstuffsCartImporter {
         product.categoryName,
         parentProducts
       );
-      const payloads = await this.converter.forImport(product, cart.store.storeId, parent);
+      const payloads = this.converter.forImport(product, cart.store.storeId, parent);
       this.logger.info(`Importing product ${payloads.product.name}...`);
       const createdProduct = await this.grocy.productService.createProduct(
         payloads.product,
@@ -102,6 +102,6 @@ export class FoodstuffsCartImporter {
       existingProducts
         .filter((p) => p.userfields?.storeMetadata?.PNS)
         .map((product) => [product.userfields.storeMetadata?.PNS?.productId, product])
-    );
+    ) as Record<string, Product>;
   }
 }

@@ -28,7 +28,7 @@ export class OcrReceiptScanner extends RestService implements ReceiptScanner {
         .build(),
       formData
     );
-    return JSON.parse(await this.extractText(res));
+    return JSON.parse(await this.extractText(res)) as ScanResponse;
   }
 
   private getContentType(filepath: string) {

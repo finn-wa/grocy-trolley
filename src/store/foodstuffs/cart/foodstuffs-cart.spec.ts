@@ -9,6 +9,4 @@ describe("FoodstuffsCartService", () => {
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
   });
-
-  test("l", () => {});
 });

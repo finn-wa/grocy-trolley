@@ -124,7 +124,7 @@ export class GrocyProductService extends GrocyRestService {
 
   private deserialiseUserfields(userfields: UnparsedProduct["userfields"]): ProductUserfields {
     const storeMetadata = userfields.storeMetadata
-      ? JSON.parse(userfields.storeMetadata)
+      ? (JSON.parse(userfields.storeMetadata) as ProductUserfields["storeMetadata"])
       : undefined;
     return {
       ...userfields,

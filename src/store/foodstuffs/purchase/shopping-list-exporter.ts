@@ -72,7 +72,7 @@ export class GrocyShoppingListExporter {
       }
       const choices = children.map((child) => ({
         title: `$${child.price / 100} - ${child.brand} ${child.name} ${child.weightDisplayName}`,
-        value: toCartProductRef(child) as any,
+        value: toCartProductRef(child),
       }));
       const choice = await prompts([
         {
@@ -82,7 +82,7 @@ export class GrocyShoppingListExporter {
           message: `Select a product for ${parent.product.name}`,
         },
       ]);
-      return choice.products;
+      return choice.products as CartProductRef[];
     }
     const pnsProduct = product.userfields.storeMetadata?.PNS;
     if (!pnsProduct) {

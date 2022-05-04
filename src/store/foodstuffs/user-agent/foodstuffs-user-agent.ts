@@ -61,7 +61,7 @@ export class FoodstuffsUserAgent {
     method: string,
     url: string,
     headers?: Headers,
-    body?: BodyInit | any
+    body?: BodyInit
   ): Promise<Response> {
     const page = await this.getLoginPage();
     const contentType = headers?.get("content-type");

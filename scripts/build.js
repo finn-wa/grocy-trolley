@@ -15,7 +15,7 @@ function getBuildOptions(args) {
     format: "cjs",
     logLevel: "info",
     minify: args.target === "prod",
-    outdir: "out",
+    outdir: "build/out",
     platform: "node",
     plugins: [],
     sourcemap: args.sourcemap ? "inline" : false,

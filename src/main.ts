@@ -28,7 +28,7 @@ async function commandPrompt() {
     {
       name: "importSource",
       message: "Select an import source",
-      type: (prev) => (prev === "import" ? "select" : (null as any)),
+      type: (prev) => (prev === "import" ? "select" : null),
       choices: [
         { title: "Foodstuffs cart", value: "cart" },
         { title: "Foodstuffs orders", value: "order" },
@@ -41,7 +41,7 @@ async function commandPrompt() {
     {
       name: "stockSource",
       message: "Select a stock source",
-      type: (prev) => (prev === "stock" ? "select" : (null as any)),
+      type: (prev) => (prev === "stock" ? "select" : null),
       choices: [
         { title: "Foodstuffs cart", value: "cart" },
         { title: "Foodstuffs list", value: "list" },
@@ -66,7 +66,7 @@ async function commandPrompt() {
   if (command === "shop") {
     return shop();
   }
-  throw new Error("Unexpected prompt command: " + command);
+  throw new Error("Unexpected prompt command: " + (command as string));
 }
 
 async function importFrom(choice: ImportSource) {
@@ -108,6 +108,10 @@ async function shop(): Promise<void> {
   return exporter.addShoppingListToCart();
 }
 
+interface CLIOptions {
+  logLevel: string;
+  envFilePath: string;
+}
 async function main(): Promise<unknown> {
   program
     .name("grocy-trolley")
@@ -121,7 +125,7 @@ async function main(): Promise<unknown> {
     )
     .option("-e, --env-file <path>", "Path to .env file", ".env")
     .hook("preAction", (command) => {
-      const { logLevel, envFilePath } = command.opts();
+      const { logLevel, envFilePath } = command.opts<CLIOptions>();
       initEnv({ envFilePath, overrides: { GT_LOG_LEVEL: logLevel } });
     });
 
@@ -132,12 +136,12 @@ async function main(): Promise<unknown> {
   program
     .command("import")
     .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
-    .action((source) => importFrom(source));
+    .action((source) => importFrom(source as ImportSource));
 
   program
     .command("stock")
     .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
-    .action((source) => stockFrom(source));
+    .action((source) => stockFrom(source as StockSource));
 
   program.command("shop").action(shop);
 
