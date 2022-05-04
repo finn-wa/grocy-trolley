@@ -19,6 +19,13 @@
       "problemMatcher": ["$tsc-watch"],
       "group": "build",
       "label": "tsc: watch (typecheck)"
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "npm: lint",
+      "detail": "eslint src"
     }
   ]
 }
