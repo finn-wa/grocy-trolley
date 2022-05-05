@@ -56,7 +56,7 @@ export abstract class RestService {
     method: string,
     url: string,
     headers?: Headers,
-    body?: BodyInit | any
+    body?: BodyInit | any // eslint-disable-line @typescript-eslint/no-explicit-any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
     if (headers) this.logger.trace(prettyPrint(toRaw(headers)));

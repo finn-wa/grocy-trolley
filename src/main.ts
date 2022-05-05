@@ -69,13 +69,18 @@ async function commandPrompt() {
   throw new Error("Unexpected prompt command: " + (command as string));
 }
 
-async function importFrom(choice: ImportSource) {
+async function importFrom(choice: ImportSource, opts: { inputFile?: string } = {}) {
   const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const importers = foodstuffsImporters(foodstuffs, grocy);
-
   if (choice === "receipt") {
-    const filepathRes = await prompts([{ name: "path", type: "text", message: "Enter filepath" }]);
-    return importers.receiptImporter.importReceipt(filepathRes.path as string);
+    let inputFilePath = opts.inputFile;
+    if (!inputFilePath) {
+      const filepathRes = await prompts([
+        { name: "path", type: "text", message: "Enter filepath" },
+      ]);
+      inputFilePath = filepathRes.path as string;
+    }
+    return importers.receiptImporter.importReceipt(inputFilePath);
   }
   if (choice === "cart") {
     return importers.cartImporter.importProductsFromCart();
@@ -130,26 +135,37 @@ async function main(): Promise<unknown> {
     });
 
   program
-    .command("prompt", { isDefault: true, hidden: true }) //
+    .command("prompt", { isDefault: true, hidden: true })
+    .description("Start an interactive prompt-based version of the CLI")
     .action(commandPrompt);
 
   program
     .command("import")
+    .description("Import products to Grocy")
     .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
-    .action((source) => importFrom(source as ImportSource));
+    .option("-i, --input-file [path]", "Path to receipt file")
+    .action((source, options) =>
+      importFrom(source as ImportSource, options as { inputFile?: string })
+    );
 
   program
     .command("stock")
+    .description("Stock products in Grocy")
     .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
     .action((source) => stockFrom(source as StockSource));
 
-  program.command("shop").action(shop);
+  program
+    .command("shop")
+    .description("Export a shopping list from Grocy to Foodstuffs")
+    .action(shop);
 
+  /* eslint-disable */
   program.command("dev", { hidden: true }).action(async () => {
     // const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
     const foodstuffs = await foodstuffsServices();
     const list = await foodstuffs.listService.createListWithNamePrompt();
   });
+  /* eslint-enable */
 
   return program.parseAsync();
 }

@@ -69,6 +69,7 @@ export interface FoodstuffsCartProduct extends FoodstuffsLiveProduct {
   weightDisplayName: string;
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const foodstuffsEndpoints = {
   BaseURL: "/shop",
   BaseServiceURL: "https://www.paknsave.co.nz/CommonApi/",
