@@ -75,32 +75,47 @@ export class FoodstuffsSearchService {
       if (agentType === "ANON") return [this.anonAgent];
       return [this.userAgent, this.anonAgent];
     })();
-    const results = await Promise.all(agents.map((agent) => agent.searchProducts(query))).then(
-      (results) => uniqueByProperty(results.flat(), "ProductId")
-    );
-    if (results.length === 0) {
-      return null;
+    while (true) {
+      const results = await Promise.all(agents.map((agent) => agent.searchProducts(query))).then(
+        (results) => uniqueByProperty(results.flat(), "ProductId")
+      );
+      if (results.length === 0) {
+        return null;
+      }
+      if (results.length === 1) {
+        const product = results[0];
+        this.logger.info(`Found product ${product.ProductId}: ${product.ProductName}`);
+        return product;
+      }
+
+      const response = (await prompts([
+        {
+          message: "Select a product",
+          name: "product",
+          type: "select",
+          choices: [
+            ...results.map((r) => ({
+              title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
+              value: r,
+            })),
+            { title: "Modify search query", value: "searchAgain" },
+            { title: "Skip", value: null },
+          ],
+        },
+        {
+          message: "Enter a new search query",
+          name: "query",
+          type: (prev) => (prev === "searchAgain" ? "text" : null),
+        },
+      ])) as { product: ProductResult | null | "searchAgain"; query?: string };
+      if (response.product !== "searchAgain") {
+        return response.product;
+      }
+      if (!response.query) {
+        return null;
+      }
+      query = response.query;
     }
-    if (results.length === 1) {
-      const product = results[0];
-      this.logger.info(`Found product ${product.ProductId}: ${product.ProductName}`);
-      return product;
-    }
-    const choice = await prompts([
-      {
-        message: "Select a product",
-        name: "value",
-        type: "select",
-        choices: [
-          { title: "Skip", value: null },
-          ...results.map((r) => ({
-            title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
-            value: r,
-          })),
-        ],
-      },
-    ]);
-    return choice.value as ProductResult | null;
   }
 
   resultToCartRef(product: ProductResult): CartProductRef {

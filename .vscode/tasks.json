@@ -31,13 +31,28 @@
         "echo": true,
         "reveal": "never",
         "focus": false,
-        "panel": "shared",
+        "panel": "dedicated",
         "showReuseMessage": true,
         "clear": true
       },
-      "options": {
-        // "env": { "TIMING": "1" }
-      }
+      "options": {}
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "label": "npm: lint",
+      "detail": "eslint src",
+      "isBackground": false,
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "options": {}
     }
   ]
 }

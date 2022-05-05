@@ -90,28 +90,36 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     return this.addProductsToList(createdList.listId, products);
   }
 
-  async addProductsToList(listId: string, products: ListProductRef[]): Promise<List> {
-    try {
-      const list = await this.updateList({ listId, products });
-      return list;
-    } catch (error) {
-      this.logger.error(error);
-      this.logger.error("Failed to add products to list. Falling back to chunks.");
-    }
-    const iter = products[Symbol.iterator]();
-    let chunk: ListProductRef[];
-    do {
-      chunk = Array.from(
-        { length: 5 },
-        () => iter.next().value as ListProductRef | undefined
-      ).filter((p): p is ListProductRef => !!p);
-      try {
-        await this.updateList({ listId, products: chunk });
-      } catch (error) {
-        await this.addProductsToListIndividually(listId, chunk);
-      }
-    } while (chunk.length === 5);
-    return this.getList(listId);
+  // TODO #55 Need to use full product, not ref
+  async addProductsToList(listId: string, productsToAdd: ListProductRef[]): Promise<List> {
+    const list = await this.getList(listId);
+    const products: ListProductRef[] = Object.values(
+      Object.fromEntries([
+        ...list.products.map((p) => [p.productId, toListProductRef(p)]),
+        ...productsToAdd.map((p) => [p.productId, p]),
+      ])
+    );
+
+    return this.updateList({ listId, products });
+    // try {
+    // } catch (error) {
+    //   this.logger.error(error);
+    //   this.logger.error("Failed to add products to list. Falling back to chunks.");
+    // }
+    // const iter = products[Symbol.iterator]();
+    // let chunk: ListProductRef[];
+    // do {
+    //   chunk = Array.from(
+    //     { length: 5 },
+    //     () => iter.next().value as ListProductRef | undefined
+    //   ).filter((p): p is ListProductRef => !!p);
+    //   try {
+    //     await this.updateList({ listId, products: chunk });
+    //   } catch (error) {
+    //     await this.addProductsToListIndividually(listId, chunk);
+    //   }
+    // } while (chunk.length === 5);
+    // return this.getList(listId);
   }
 
   private async addProductsToListIndividually(
@@ -186,10 +194,11 @@ export interface List {
 }
 
 export function toListProductRef(product: FoodstuffsBaseProduct): ListProductRef {
+  const saleType = product.sale_type === "BOTH" ? "UNITS" : product.sale_type;
   return {
     productId: product.productId,
     quantity: product.quantity,
-    saleType: product.sale_type,
+    saleType,
   };
 }
 

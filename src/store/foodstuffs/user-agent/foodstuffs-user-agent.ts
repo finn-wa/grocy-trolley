@@ -83,6 +83,7 @@ export class FoodstuffsUserAgent {
       { url, method, rawHeaders, body }
     );
     // Response is not serialisable, so we must serialise it
+    /* eslint-disable */
     const response = await responseHandle.evaluate((response, props) => {
       const responseJson: Record<string, any> = Object.fromEntries(
         props.map((key) => [key, response[key]])
@@ -90,6 +91,7 @@ export class FoodstuffsUserAgent {
       responseJson.headers = Object.fromEntries(responseJson.headers.entries());
       return responseJson as SerialisedResponse;
     }, SERIALISABLE_RESPONSE_PROPS);
+    /* eslint-enable */
     if (!response.ok) {
       throw new Error(`Response not OK: ${prettyPrint(response)}`);
     }
@@ -154,8 +156,9 @@ export class FoodstuffsUserAgent {
   }
 
   private async isLoggedIn(page: Page) {
-    const loginState: "loggedIn" | "guest" | undefined = await page.evaluate(() => {
-      const dataLayer = (globalThis as unknown as { dataLayer: any[] }).dataLayer;
+    type DataLayer = { loginState?: "loggedIn" | "guest" }[];
+    const loginState = await page.evaluate(() => {
+      const dataLayer = (globalThis as unknown as { dataLayer: DataLayer }).dataLayer;
       return dataLayer.find((entry) => "loginState" in entry)?.loginState;
     });
     return loginState === "loggedIn";
@@ -225,6 +228,7 @@ class FoodstuffsResponse implements Response {
     this.headers = new Headers(responseJson.headers);
   }
 
+  /* eslint-disable */
   async json(): Promise<any> {
     const body = await this.text();
     try {
@@ -233,6 +237,7 @@ class FoodstuffsResponse implements Response {
       throw new Error("Failed to parse response body as JSON: \n" + body);
     }
   }
+  /* eslint-enable */
 
   async text(): Promise<string> {
     return this.responseHandle.evaluate((response) => response.text());
@@ -270,6 +275,7 @@ const UNSERIALISABLE_RESPONSE_PROPS = [
   "clone",
   "body",
 ] as const;
+type UnserialisableResponseProp = typeof UNSERIALISABLE_RESPONSE_PROPS[number];
 
 const SERIALISABLE_RESPONSE_PROPS = [
   "headers",
@@ -281,7 +287,6 @@ const SERIALISABLE_RESPONSE_PROPS = [
   "url",
 ] as const;
 
-interface SerialisedResponse
-  extends Omit<Response, typeof UNSERIALISABLE_RESPONSE_PROPS[number] | "headers"> {
+interface SerialisedResponse extends Omit<Response, UnserialisableResponseProp | "headers"> {
   headers: Record<string, string>;
 }
