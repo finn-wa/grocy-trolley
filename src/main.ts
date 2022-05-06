@@ -1,11 +1,16 @@
-import { Argument, Option, program } from "commander";
+import {
+  foodstuffsServices,
+  GrocyShoppingListExporter,
+  ListProductRef,
+} from "@gt/store/foodstuffs";
+import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
 import { initEnv } from "@gt/utils/environment";
+import { Logger, LOG_LEVELS } from "@gt/utils/logger";
+import { Argument, Option, program } from "commander";
+import { readFile } from "fs/promises";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
-import { foodstuffsServices, GrocyShoppingListExporter } from "@gt/store/foodstuffs";
-import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
-import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -161,9 +166,12 @@ async function main(): Promise<unknown> {
 
   /* eslint-disable */
   program.command("dev", { hidden: true }).action(async () => {
-    // const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
+    const listStr = await readFile("./temp/cd-list.json", { encoding: "utf-8" });
+    const products = Object.values(JSON.parse(listStr)) as ListProductRef[];
     const foodstuffs = await foodstuffsServices();
-    const list = await foodstuffs.listService.createListWithNamePrompt();
+    const listId = await foodstuffs.listService.selectList();
+    await foodstuffs.listService.addProductsToList(listId, products);
+    console.log("Done");
   });
   /* eslint-enable */
 

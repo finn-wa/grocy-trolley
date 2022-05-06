@@ -111,7 +111,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
    */
   async importReceiptListRefs(cartRefs: Record<string, ListProductRef>) {
     const listId = await this.foodstuffs.listService.selectList();
-    await this.foodstuffs.listService.updateList({ listId, products: Object.values(cartRefs) });
+    await this.foodstuffs.listService.addProductsToList(listId, Object.values(cartRefs));
     await this.listImporter.importList(listId);
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(cartRefs)) {
