@@ -54,68 +54,86 @@ class FoodstuffsSearchAgent extends FoodstuffsRestService {
 
 export class FoodstuffsSearchService {
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly userAgent: FoodstuffsSearchAgent;
-  private readonly anonAgent: FoodstuffsSearchAgent;
+  private readonly agents: Readonly<Record<SearchAgentType, FoodstuffsSearchAgent[]>>;
 
   /**
    * Creates a new FoodstuffSearchService.
    * @param userAgent Authenticated user agent
    */
   constructor(userAgent: FoodstuffsUserAgent) {
-    this.userAgent = new FoodstuffsSearchAgent("FoodstuffsUserSearchAgent", userAgent);
-    this.anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
+    const userSearchAgent = new FoodstuffsSearchAgent("FoodstuffsUserSearchAgent", userAgent);
+    const anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
+    this.agents = {
+      USER: [userSearchAgent],
+      ANON: [anonAgent],
+      BOTH: [userSearchAgent, anonAgent],
+    };
   }
 
+  /**
+   * Search for and select a product using prompts.
+   * @param query Initial query (user can choose to modify after initial search)
+   * @param agentType Agent type to use for the search
+   * @returns The selected product, or null if no product was selected
+   */
   async searchAndSelectProduct(
     query: string,
     agentType: SearchAgentType = "USER"
   ): Promise<ProductResult | null> {
-    const agents = (() => {
-      if (agentType === "USER") return [this.userAgent];
-      if (agentType === "ANON") return [this.anonAgent];
-      return [this.userAgent, this.anonAgent];
-    })();
-    while (true) {
-      const results = await Promise.all(agents.map((agent) => agent.searchProducts(query))).then(
-        (results) => uniqueByProperty(results.flat(), "ProductId")
-      );
-      if (results.length === 0) {
+    for (let nextQuery: string | undefined = query; nextQuery; ) {
+      const results = await this.searchWithAgentType(query, agentType);
+      const response = await this.getSearchPromptResponse(results);
+      if (response.productChoice === "skip") {
         return null;
       }
-      if (results.length === 1) {
-        const product = results[0];
-        this.logger.info(`Found product ${product.ProductId}: ${product.ProductName}`);
-        return product;
+      if (response.productChoice && response.productChoice !== "searchAgain") {
+        return response.productChoice;
       }
+      nextQuery = response.query;
+    }
+    return null;
+  }
 
-      const response = (await prompts([
-        {
-          message: "Select a product",
-          name: "product",
-          type: "select",
-          choices: [
-            ...results.map((r) => ({
-              title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
-              value: r,
-            })),
-            { title: "Modify search query", value: "searchAgain" },
-            { title: "Skip", value: null },
-          ],
-        },
+  private async searchWithAgentType(
+    query: string,
+    agentType: SearchAgentType
+  ): Promise<ProductResult[]> {
+    return Promise.all(this.agents[agentType].map((agent) => agent.searchProducts(query))).then(
+      (results) => uniqueByProperty(results.flat(), "ProductId")
+    );
+  }
+
+  private async getSearchPromptResponse(results: ProductResult[]): Promise<SearchPromptResponse> {
+    if (results.length === 0) {
+      console.log("No results found.");
+      return prompts([
         {
           message: "Enter a new search query",
           name: "query",
-          type: (prev) => (prev === "searchAgain" ? "text" : null),
+          type: "text",
         },
-      ])) as { product: ProductResult | null | "searchAgain"; query?: string };
-      if (response.product !== "searchAgain") {
-        return response.product;
-      }
-      if (!response.query) {
-        return null;
-      }
-      query = response.query;
+      ]);
     }
+    return prompts([
+      {
+        message: "Select a product",
+        name: "product",
+        type: "select",
+        choices: [
+          ...results.map((r) => ({
+            title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
+            value: r,
+          })),
+          { title: "Modify search query", value: "searchAgain" },
+          { title: "Skip", value: "skip" },
+        ],
+      },
+      {
+        message: "Enter a new search query",
+        name: "query",
+        type: (prev) => (prev === "searchAgain" ? "text" : null),
+      },
+    ]);
   }
 
   resultToCartRef(product: ProductResult): CartProductRef {
@@ -135,6 +153,11 @@ export class FoodstuffsSearchService {
       quantity: 1,
     };
   }
+}
+
+interface SearchPromptResponse {
+  query?: string;
+  productChoice?: ProductResult | "searchAgain" | "skip";
 }
 
 export type SearchAgentType = "USER" | "ANON" | "BOTH";
