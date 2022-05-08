@@ -26,4 +26,5 @@ module.exports = {
     Response,
   },
   testEnvironment: "./jest-env",
+  clearMocks: true,
 };

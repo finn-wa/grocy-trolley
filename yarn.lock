@@ -3188,7 +3188,6 @@ __metadata:
     eslint: 8.14.0
     eslint-config-prettier: 8.5.0
     fast-glob: 3.2.11
-    jasmine-spec-reporter: 7.0.0
     jest: ^27.5.1
     node-html-parser: 5.3.3
     openapi-typescript: 5.2.0
@@ -3550,15 +3549,6 @@ __metadata:
     html-escaper: ^2.0.0
     istanbul-lib-report: ^3.0.0
   checksum: 2132983355710c522f6b26808015cab9a0ee8b9f5ae0db0d3edeff40b886dd83cb670fb123cb7b32dbe59473d7c00cdde2ba6136bc0acdb20a865fccea64dfe1
-  languageName: node
-  linkType: hard
-
-"jasmine-spec-reporter@npm:7.0.0":
-  version: 7.0.0
-  resolution: "jasmine-spec-reporter@npm:7.0.0"
-  dependencies:
-    colors: 1.4.0
-  checksum: d5dd5ee26aad98158653776111231889b21b6cffa136d712a814058ad099301045fa2b95f887fcdeaa20e2a82c3896ffd43b47e25190ddfc921782b09088224e
   languageName: node
   linkType: hard
 

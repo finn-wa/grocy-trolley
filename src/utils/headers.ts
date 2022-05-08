@@ -5,9 +5,9 @@ export const APPLICATION_JSON = "application/json";
 /**
  * Non-spec util method from node-fetch library.
  * @returns Record mapping each header key to all of its values as an array.
- * @see {@link toHeaders}
+ * @see {@link headersFromRaw}
  */
-export function toRaw(headers: Headers): Record<string, string[]> {
+export function headersToRaw(headers: Headers): Record<string, string[]> {
   const entries: Record<string, string[]> = {};
   headers.forEach((value, key) =>
     key in entries ? entries[key].push(value) : (entries[key] = [value])
@@ -17,11 +17,11 @@ export function toRaw(headers: Headers): Record<string, string[]> {
 
 /**
  * Converts node-fetch raw headers format to native fetch Headers.
- * Inverse of {@link toRaw}.
+ * Inverse of {@link headersToRaw}.
  * @param rawHeaders
  * @returns Headers object
  */
-export function toHeaders(rawHeaders: Record<string, string[]>): Headers {
+export function headersFromRaw(rawHeaders: Record<string, string[]>): Headers {
   const headers = new Headers();
   Object.entries(rawHeaders).forEach(([name, values]) =>
     values.forEach((value) => headers.append(name, value))
@@ -75,7 +75,7 @@ export class HeadersBuilder {
   }
 
   raw(): Record<string, string[]> {
-    return toRaw(this.headers);
+    return headersToRaw(this.headers);
   }
 
   toString(): string {
@@ -91,5 +91,5 @@ export function headersBuilder(raw?: Record<string, string[]>): HeadersBuilder {
   if (!raw) {
     return new HeadersBuilder();
   }
-  return new HeadersBuilder(toHeaders(raw));
+  return new HeadersBuilder(headersFromRaw(raw));
 }

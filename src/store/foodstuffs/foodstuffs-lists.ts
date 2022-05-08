@@ -93,14 +93,16 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   // TODO #55 Need to use full product, not ref
   async addProductsToList(listId: string, productsToAdd: ListProductRef[]): Promise<List> {
     const list = await this.getList(listId);
-    const products: ListProductRef[] = Object.values(
-      Object.fromEntries([
-        ...list.products.map((p) => [p.productId, toListProductRef(p)]),
-        ...productsToAdd.map((p) => [p.productId, p]),
-      ])
-    );
+    throw new Error("fuck");
+    // const products = [];
+    // Object.values(
+    //   Object.fromEntries([
+    //     ...list.products.map((p) => [p.productId, toListProductRef(p)]),
+    //     ...productsToAdd.map((p) => [p.productId, p]),
+    //   ])
+    // ) as ListProductRef[];
 
-    return this.updateList({ listId, products });
+    // return this.updateList({ listId, products });
     // try {
     // } catch (error) {
     //   this.logger.error(error);
@@ -119,7 +121,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     //     await this.addProductsToListIndividually(listId, chunk);
     //   }
     // } while (chunk.length === 5);
-    // return this.getList(listId);
+    return this.getList(listId);
   }
 
   private async addProductsToListIndividually(
@@ -129,7 +131,8 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     for (const product of products) {
       this.logger.debug("Adding product " + product.productId);
       try {
-        await this.updateList({ listId, products });
+        // TODO: fix
+        await this.updateList({ listId, products: products as any });
       } catch (error) {
         this.logger.error("Failed to add product to list!\n" + prettyPrint(product));
         this.logger.error(error);
@@ -183,7 +186,7 @@ export interface ListProductRef {
 
 export interface ListUpdate {
   listId: string;
-  products?: ListProductRef[];
+  products?: FoodstuffsListProduct[];
   Name?: string;
 }
 

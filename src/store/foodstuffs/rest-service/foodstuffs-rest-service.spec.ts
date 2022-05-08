@@ -1,6 +1,7 @@
+import { getCacheDir } from "@gt/utils/cache";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { toRaw } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
+import { rm } from "fs/promises";
 import { firefox, FirefoxBrowser } from "playwright";
 import { FoodstuffsCart } from "../cart/foodstuffs-cart";
 import {
@@ -26,12 +27,9 @@ class TestRestService extends FoodstuffsRestService {
   }
 }
 
-function cachePath() {
-  return "src/resources/cache/playwright-test/" + new Date().toISOString().replaceAll(":", "_");
-}
-
 describe("FoodstuffsRestService", () => {
   let browser: FirefoxBrowser;
+  let userAgent: FoodstuffsUserAgent;
   let service: TestRestService;
 
   initEnv({ envFilePath: ".test.env" });
@@ -44,8 +42,9 @@ describe("FoodstuffsRestService", () => {
     browser = await firefox.launch({ headless: true });
   });
 
-  beforeEach(() => {
-    const userAgent = new FoodstuffsUserAgent(browser, loginDetails, cachePath());
+  beforeEach(async () => {
+    await rm(getCacheDir(), { recursive: true, force: true });
+    userAgent = new FoodstuffsUserAgent(browser, loginDetails);
     service = new TestRestService(userAgent);
   });
 
@@ -54,10 +53,19 @@ describe("FoodstuffsRestService", () => {
   });
 
   test("authHeaders", async () => {
+    const getHeadersSpy = jest.spyOn(userAgent, "getHeaders");
     const builder = await service.authHeaders();
-    const rawHeaders = toRaw(builder.headers);
+    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
+
+    const rawHeaders = builder.raw();
     expect(rawHeaders.cookie).toHaveLength(1);
     expect(rawHeaders.cookie[0]).toMatch(/UserCookieV1/);
+
+    const newService = new TestRestService(userAgent);
+    // should load from cache without using browser
+    const cachedHeaders = (await newService.authHeaders()).raw();
+    expect(cachedHeaders).toEqual(rawHeaders);
+    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
   });
 
   test("get cart", async () => {

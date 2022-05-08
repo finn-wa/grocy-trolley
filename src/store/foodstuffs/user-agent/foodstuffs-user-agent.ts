@@ -1,4 +1,5 @@
-import { APPLICATION_JSON, toRaw } from "@gt/utils/headers";
+import { getCacheDirForEmail } from "@gt/utils/cache";
+import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { access } from "fs/promises";
 import path from "path";
@@ -20,13 +21,10 @@ export class FoodstuffsUserAgent {
    * @param browser Playwright Browser instance to use to perform requests
    * @param loginDetails Optional Foodstuffs login details. If provided, Playwright
    *    logs into this account and sends requests with credentials.
-   * @param storageStateDir Path to directory used for saved storage state (only
-   *    used when loginDetails are provided).
    */
   constructor(
     private readonly browser: Browser,
-    private readonly loginDetails?: LoginDetails | null,
-    private readonly storageStateDir = "src/resources/cache/playwright"
+    private readonly loginDetails?: LoginDetails | null
   ) {}
 
   /**
@@ -35,7 +33,11 @@ export class FoodstuffsUserAgent {
    * @returns the new agent
    */
   clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
-    return new FoodstuffsUserAgent(this.browser, loginDetails ?? undefined, this.storageStateDir);
+    return new FoodstuffsUserAgent(this.browser, loginDetails ?? undefined);
+  }
+
+  get email(): string | undefined {
+    return this.loginDetails?.email;
   }
 
   async getHeaders(): Promise<Headers> {
@@ -68,7 +70,7 @@ export class FoodstuffsUserAgent {
     if (contentType === APPLICATION_JSON && body) {
       body = JSON.stringify(body);
     }
-    const rawHeaders = headers ? toRaw(headers) : undefined;
+    const rawHeaders = headers ? headersToRaw(headers) : undefined;
     const responseHandle = await page.evaluateHandle(
       async ({ url, method, rawHeaders, body }) =>
         fetch(url, {
@@ -175,7 +177,7 @@ export class FoodstuffsUserAgent {
     if (!this.loginDetails) {
       throw new Error("No storage state is saved when loginDetails is undefined");
     }
-    return path.join(this.storageStateDir, this.loginDetails.email.replace(/\W+/g, "_") + ".json");
+    return path.join(getCacheDirForEmail(this.loginDetails.email), "playwright.json");
   }
 }
 
