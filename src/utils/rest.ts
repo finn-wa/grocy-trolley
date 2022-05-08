@@ -1,5 +1,5 @@
 import { URL, URLSearchParams } from "url";
-import { APPLICATION_JSON, toRaw } from "./headers";
+import { APPLICATION_JSON, headersToRaw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
 
 export abstract class RestService {
@@ -59,7 +59,7 @@ export abstract class RestService {
     body?: BodyInit | any // eslint-disable-line @typescript-eslint/no-explicit-any
   ): Promise<Response> {
     this.logger.debug(`${method} ${url}`);
-    if (headers) this.logger.trace(prettyPrint(toRaw(headers)));
+    if (headers) this.logger.trace(prettyPrint(headersToRaw(headers)));
     if (body) this.logger.trace(body);
 
     const contentType = headers?.get("content-type");

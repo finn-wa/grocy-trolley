@@ -1,7 +1,7 @@
 import {
+  FoodstuffsListProduct,
   foodstuffsServices,
   GrocyShoppingListExporter,
-  ListProductRef,
 } from "@gt/store/foodstuffs";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
 import { initEnv } from "@gt/utils/environment";
@@ -166,12 +166,11 @@ async function main(): Promise<unknown> {
 
   /* eslint-disable */
   program.command("dev", { hidden: true }).action(async () => {
-    const listStr = await readFile("./temp/cd-list.json", { encoding: "utf-8" });
-    const products = Object.values(JSON.parse(listStr)) as ListProductRef[];
+    const listStr = await readFile("./cart.json", { encoding: "utf-8" });
+    const products = JSON.parse(listStr).products as FoodstuffsListProduct[];
     const foodstuffs = await foodstuffsServices();
     const listId = await foodstuffs.listService.selectList();
-    await foodstuffs.listService.addProductsToList(listId, products);
-    console.log("Done");
+    await foodstuffs.listService.updateList({ listId, products });
   });
   /* eslint-enable */
 

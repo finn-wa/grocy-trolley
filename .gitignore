@@ -6,6 +6,7 @@ temp
 src/resources/cache/*
 !src/resources/cache/info.txt
 src/resources/receipts
+.cache
 
 # Yarn
 .pnp.*

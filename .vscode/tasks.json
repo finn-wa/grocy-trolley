@@ -29,7 +29,7 @@
       "isBackground": false,
       "presentation": {
         "echo": true,
-        "reveal": "never",
+        "reveal": "silent",
         "focus": false,
         "panel": "dedicated",
         "showReuseMessage": true,

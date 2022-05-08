@@ -4,6 +4,7 @@ import { accessSync } from "fs";
 
 const EnvVars = [
   "BARCODEBUDDY_URL",
+  "CACHE_DIR",
   "GROCY_API_KEY",
   "GROCY_URL",
   "GT_LOG_LEVEL",
