@@ -1,5 +1,3 @@
-import { FoodstuffsCategory } from ".";
-
 export const PAKNSAVE_URL = "https://www.paknsave.co.nz";
 
 export type SaleTypeString = "UNITS" | "WEIGHT" | "BOTH";
@@ -68,6 +66,60 @@ export interface FoodstuffsCartProduct extends FoodstuffsLiveProduct {
   promotionCode: string;
   weightDisplayName: string;
 }
+
+export const FOODSTUFFS_CATEGORIES = [
+  // Fresh Foods & Bakery
+  "Fruit & Vegetables",
+  "Butchery",
+  "Seafood",
+  "Deli, Salads & Cooked Meats",
+  "Bakery",
+  // Chilled, Frozen & Desserts
+  "Dairy & Eggs",
+  "Bulk & Loose Foods",
+  "Meal Kits",
+  "Ready to Heat",
+  "Dairy & Eggs",
+  "Cheese",
+  "Desserts",
+  "Frozen Foods",
+  // Pantry
+  "Baking Supplies & Sugar",
+  "Biscuits & Crackers",
+  "Breakfast Cereals",
+  "Canned & Prepared Foods",
+  "Condiments & Dressings",
+  "Confectionery",
+  "Hot Drinks",
+  "Jams, Honey & Spreads",
+  "Pasta, Rice & Noodles",
+  "Salad & Cooking Oils",
+  "Sauces, Stock & Marinades",
+  "Snack Foods",
+  "Spices & Seasonings",
+  "World Foods",
+  // Drinks
+  "Cold Drinks",
+  // Beer, Cider & Wine
+  "Beer & Cider",
+  "Wine",
+  // Personal Care
+  "Beauty & Grooming",
+  "Health & Wellness",
+  // Baby, Toddler & Kids
+  "Baby Care",
+  // Pets
+  "Pet Supplies",
+  // Kitchen, Dining & Household
+  "Cleaning Products",
+  "Garage & Outdoor",
+  "Household",
+  "Laundry",
+  "Stationery & Entertainment",
+  "Other",
+] as const;
+
+export type FoodstuffsCategory = typeof FOODSTUFFS_CATEGORIES[number];
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const foodstuffsEndpoints = {

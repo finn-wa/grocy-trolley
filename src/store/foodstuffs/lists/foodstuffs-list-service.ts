@@ -1,14 +1,9 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import prompts from "prompts";
-import {
-  FoodstuffsBaseProduct,
-  FoodstuffsListProduct,
-  FoodstuffsUserAgent,
-  ProductsSnapshot,
-  SaleTypeString,
-} from ".";
-import { PAKNSAVE_URL } from "./foodstuffs.model";
-import { FoodstuffsRestService } from "./rest-service/foodstuffs-rest-service";
+import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
+import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
+import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { List, ListProductRef, ListUpdate, toListProductRef } from "./foodstuffs-list.model";
 
 export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
@@ -176,37 +171,4 @@ export class FoodstuffsListService extends FoodstuffsRestService {
         .map((list) => this.deleteList(list.listId))
     );
   }
-}
-
-export interface ListProductRef {
-  productId: string;
-  quantity: number;
-  saleType: SaleTypeString;
-}
-
-export interface ListUpdate {
-  listId: string;
-  products?: FoodstuffsListProduct[];
-  Name?: string;
-}
-
-export interface List {
-  listId: string;
-  products: FoodstuffsListProduct[];
-  name: string;
-}
-
-export function toListProductRef(product: FoodstuffsBaseProduct): ListProductRef {
-  const saleType = product.sale_type === "BOTH" ? "UNITS" : product.sale_type;
-  return {
-    productId: product.productId,
-    quantity: product.quantity,
-    saleType,
-  };
-}
-
-export function snapshotToListProductRefs(products: ProductsSnapshot) {
-  return [...products.unavailableProducts, ...products.products].map((product) =>
-    toListProductRef(product)
-  );
 }

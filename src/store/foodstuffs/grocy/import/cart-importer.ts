@@ -1,55 +1,60 @@
+import { Logger } from "@gt/utils/logger";
 import { GrocyServices, Product } from "grocy";
 import prompts from "prompts";
-import { Logger } from "@gt/utils/logger";
-import { FoodstuffsListService } from "..";
-import { List } from "../foodstuffs-lists";
-import { FoodstuffsListProduct } from "../foodstuffs.model";
+import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
+import { CartProductRef, FoodstuffsCart, toCartProductRef } from "../../cart/foodstuffs-cart.model";
+import { FoodstuffsBaseProduct, FoodstuffsCartProduct } from "../../models";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
-export class FoodstuffsListImporter {
+export class FoodstuffsCartImporter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly converter: FoodstuffsToGrocyConverter,
-    private readonly listService: FoodstuffsListService,
+    private readonly cartService: FoodstuffsCartService,
     private readonly grocy: Pick<
       GrocyServices,
       "productService" | "parentProductService" | "stockService"
     >
   ) {}
 
-  async selectAndImportList() {
-    const listId = await this.listService.selectList();
-    return this.importList(listId);
+  async importProducts(products: FoodstuffsBaseProduct[]) {
+    const productRefs = products.map((product) => toCartProductRef(product));
+    return this.importProductRefs(productRefs);
   }
 
-  async selectAndStockList() {
-    const listId = await this.listService.selectList();
-    return this.stockProductsFromList(listId);
+  async importProductRefs(productRefs: CartProductRef[]) {
+    await this.cartService.clearCart();
+    const cart = await this.cartService.addProductsToCart(productRefs);
+    await this.importProductsFromCart(cart);
   }
 
-  async importList(id: string): Promise<void> {
-    const list = await this.listService.getList(id);
+  async importProductsFromCart(cart?: FoodstuffsCart): Promise<void> {
+    if (!cart) {
+      cart = await this.cartService.getCart();
+    }
     const existingProducts = await this.grocy.productService.getProducts();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
       .map((product) => product.userfields.storeMetadata?.PNS?.productId);
 
-    const productsToImport = list.products.filter((p) => !existingProductIds.includes(p.productId));
+    const productsToImport = [...cart.products, ...cart.unavailableProducts].filter(
+      (p) => !existingProductIds.includes(p.productId)
+    );
     if (productsToImport.length === 0) {
       this.logger.info("All products have already been imported");
       return;
     }
     const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
-    const newProducts: { id: string; product: FoodstuffsListProduct }[] = [];
+    const newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
       const parent = await this.grocy.parentProductService.findParent(
         product.name,
-        product.category,
+        product.categoryName,
         parentProducts
       );
-      const payloads = await this.converter.forImportListProduct(product, parent);
+      const payloads = this.converter.forImport(product, cart.store.storeId, parent);
       this.logger.info(`Importing product ${payloads.product.name}...`);
       const createdProduct = await this.grocy.productService.createProduct(
         payloads.product,
@@ -63,22 +68,17 @@ export class FoodstuffsListImporter {
       type: "confirm",
     });
     if (stock.value) {
-      await this.stockProductsFromList(list);
+      await this.stockProductsFromCart(cart);
     }
   }
 
-  async stockProductsFromList(list: List): Promise<void>;
-  async stockProductsFromList(listId: string): Promise<void>;
-  async stockProductsFromList(listOrId: List | string): Promise<void> {
-    let list: List;
-    if (typeof listOrId === "string") {
-      list = await this.listService.getList(listOrId);
-    } else {
-      list = listOrId;
+  async stockProductsFromCart(cart?: FoodstuffsCart) {
+    if (!cart) {
+      cart = await this.cartService.getCart();
     }
     const productsByPnsId = await this.getProductsByFoodstuffsId();
     // Not including unavailable products for stock
-    for (const product of list.products) {
+    for (const product of cart.products) {
       const grocyProduct = productsByPnsId[product.productId];
       if (!grocyProduct) {
         this.logger.error(
@@ -88,7 +88,7 @@ export class FoodstuffsListImporter {
       }
       this.logger.info("Stocking product: " + grocyProduct.name);
       try {
-        const addStockRequest = this.converter.forAddStock(grocyProduct);
+        const addStockRequest = this.converter.forAddStock(grocyProduct, cart.store.storeId);
         await this.grocy.stockService.stock("add", grocyProduct.id, addStockRequest);
       } catch (error) {
         this.logger.error("Error stocking product ", error);

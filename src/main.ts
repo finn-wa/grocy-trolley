@@ -1,9 +1,7 @@
-import {
-  FoodstuffsListProduct,
-  foodstuffsServices,
-  GrocyShoppingListExporter,
-} from "@gt/store/foodstuffs";
-import { foodstuffsImporters } from "@gt/store/foodstuffs/product-importer";
+import { FoodstuffsListProduct } from "@gt/store/foodstuffs/models";
+import { GrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/shopping-list-exporter";
+import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
+import { foodstuffsServices } from "@gt/store/foodstuffs/services";
 import { initEnv } from "@gt/utils/environment";
 import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 import { Argument, Option, program } from "commander";

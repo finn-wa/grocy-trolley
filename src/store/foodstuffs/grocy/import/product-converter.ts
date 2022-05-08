@@ -3,14 +3,15 @@ import { GrocyFalse, QuantityUnitConversion } from "@gt/grocy/grocy-model";
 import { StockActionRequestBody } from "@gt/grocy/grocy-stock";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { NewProduct, ParentProduct, Product } from "grocy";
+import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
 import {
-  CategoryLocations,
   FoodstuffsCartProduct,
   FoodstuffsCategory,
+  FoodstuffsListProduct,
+  FoodstuffsLiveProduct,
   FOODSTUFFS_CATEGORIES,
-} from "..";
-import { FoodstuffsSearchService } from "../foodstuffs-search";
-import { FoodstuffsListProduct, FoodstuffsLiveProduct } from "../foodstuffs.model";
+} from "../../models";
+import { CategoryLocations } from "../categories";
 
 export class FoodstuffsToGrocyConverter {
   private readonly logger = new Logger(this.constructor.name);

@@ -3,12 +3,8 @@ import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
 import { rm } from "fs/promises";
 import { firefox, FirefoxBrowser } from "playwright";
-import { FoodstuffsCart } from "../cart/foodstuffs-cart";
-import {
-  FoodstuffsUserAgent,
-  FoodstuffsUserProfile,
-  LoginDetails,
-} from "../user-agent/foodstuffs-user-agent";
+import { FoodstuffsCart } from "../cart/foodstuffs-cart.model";
+import { FoodstuffsUserAgent, FoodstuffsUserProfile, LoginDetails } from "./foodstuffs-user-agent";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
 
 class TestRestService extends FoodstuffsRestService {

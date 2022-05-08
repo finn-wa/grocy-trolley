@@ -1,31 +1,4 @@
-import { Logger } from "@gt/utils/logger";
-import { FoodstuffsOrderProduct, FoodstuffsUserAgent } from ".";
-import { FoodstuffsRestService } from "./rest-service/foodstuffs-rest-service";
-
-export class FoodstuffsOrderService extends FoodstuffsRestService {
-  protected readonly logger = new Logger(this.constructor.name);
-
-  constructor(userAgent: FoodstuffsUserAgent) {
-    super(userAgent);
-  }
-
-  async getOrders(): Promise<FoodstuffsOrder[]> {
-    const headersBuilder = await this.authHeaders();
-    const response: FoodstuffsOrdersResponse = await this.getForJson(
-      this.buildUrl("Checkout/Orders"),
-      headersBuilder.acceptJson().build()
-    );
-    return response.orders;
-  }
-
-  async getOrderDetails(id: string): Promise<FoodstuffsOrderDetails> {
-    const headersBuilder = await this.authHeaders();
-    return this.getForJson(
-      this.buildUrl("Checkout/OrderDetails", { id }),
-      headersBuilder.acceptJson().build()
-    );
-  }
-}
+import { FoodstuffsOrderProduct } from "../models";
 
 export interface Timeslot {
   slot: string;

@@ -1,7 +1,7 @@
 import { BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
 import { GrocyServices } from "grocy";
 import { TaggunReceiptScanner } from "receipt-ocr";
-import { FoodstuffsServices } from "..";
+import { FoodstuffsServices } from "../../services";
 import { FoodstuffsBarcodeImporter } from "./barcode-importer";
 import { FoodstuffsCartImporter } from "./cart-importer";
 import { FoodstuffsListImporter } from "./list-importer";

@@ -1,9 +1,12 @@
 import { BarcodeBuddyBarcode, BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
-import { GrocyProductService } from "grocy";
 import { OpenFoodFactsNZService, OpenFoodFactsWorldService } from "@gt/openfoodfacts/openfoodfacts";
-import prompts from "prompts";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { CartProductRef, FoodstuffsSearchService, ProductResult } from "..";
+import { GrocyProductService } from "grocy";
+import prompts from "prompts";
+import { CartProductRef } from "../../cart/foodstuffs-cart.model";
+import { resultToCartRef } from "../../search/foodstuffs-search-agent";
+import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
+import { ProductSearchResult } from "../../search/foodstuffs-search.model";
 import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsBarcodeImporter {
@@ -31,7 +34,7 @@ export class FoodstuffsBarcodeImporter {
       if (product === null) {
         notFound.push(barcode);
       } else {
-        cartRefs[barcode.barcode] = this.searchService.resultToCartRef(product);
+        cartRefs[barcode.barcode] = resultToCartRef(product);
       }
     }
     this.logger.info("Failed to find:\n" + prettyPrint(notFound));
@@ -58,7 +61,7 @@ export class FoodstuffsBarcodeImporter {
     }
   }
 
-  getTitle(res: ProductResult): string {
+  getTitle(res: ProductSearchResult): string {
     return `${res.ProductBrand} ${res.ProductName} ${res.ProductWeightDisplayName}`;
   }
 
@@ -74,7 +77,7 @@ export class FoodstuffsBarcodeImporter {
     return `${brand} ${p.product_name} ${p.quantity}`;
   }
 
-  private async search(bbb: BarcodeBuddyBarcode): Promise<ProductResult | null> {
+  private async search(bbb: BarcodeBuddyBarcode): Promise<ProductSearchResult | null> {
     const barcodeRes = await this.searchService.searchAndSelectProduct(bbb.barcode);
     if (barcodeRes !== null) return barcodeRes;
     if (bbb.name) {
