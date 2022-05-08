@@ -1,7 +1,7 @@
-import { GrocyOrderRecordService } from "grocy";
 import { GrocyFalse, GrocyTrue } from "@gt/grocy/grocy-model";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { FoodstuffsOrderService as FoodstuffsOrderService } from "../foodstuffs-orders";
+import { GrocyOrderRecordService } from "grocy";
+import { FoodstuffsOrderService } from "../../orders/foodstuffs-order-service";
 import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsOrderImporter {

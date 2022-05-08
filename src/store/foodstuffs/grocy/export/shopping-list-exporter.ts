@@ -1,10 +1,11 @@
-import { GrocyServices, ParentProduct, Product } from "grocy";
 import { GrocyTrue } from "@gt/grocy/grocy-model";
-import prompts from "prompts";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { FoodstuffsServices } from "..";
-import { CartProductRef, toCartProductRef } from "../cart/foodstuffs-cart";
-import { FoodstuffsCartProduct } from "../foodstuffs.model";
+import { GrocyServices, ParentProduct, Product } from "grocy";
+import prompts from "prompts";
+import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
+import { FoodstuffsServices } from "../../services";
+import { FoodstuffsCartProduct } from "../../models";
+import { resultToCartRef } from "../../search/foodstuffs-search-agent";
 
 export class GrocyShoppingListExporter {
   private readonly logger = new Logger(this.constructor.name);
@@ -60,7 +61,7 @@ export class GrocyShoppingListExporter {
           "BOTH"
         );
         if (!result) return [];
-        return [this.foodstuffs.searchService.resultToCartRef(result)];
+        return [resultToCartRef(result)];
       }
       const children = await this.foodstuffs.listService.refreshProductPrices(
         parent.children

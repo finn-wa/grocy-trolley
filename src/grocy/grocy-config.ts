@@ -1,4 +1,4 @@
-import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@gt/store/foodstuffs";
+import { FoodstuffsCategory, FOODSTUFFS_CATEGORIES } from "@gt/store/foodstuffs/models";
 import { Logger } from "@gt/utils/logger";
 import { GrocySchemas } from "./grocy-model";
 import { GrocyRestService } from "./grocy-rest-service";

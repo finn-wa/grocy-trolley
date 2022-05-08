@@ -4,8 +4,8 @@ import { prettyPrint } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
-import { FoodstuffsUserAgent } from "..";
-import { PAKNSAVE_URL } from "../foodstuffs.model";
+import { PAKNSAVE_URL } from "../models";
+import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
 
 const HEADERS = {
   allowed: [

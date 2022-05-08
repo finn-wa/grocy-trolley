@@ -1,20 +1,11 @@
 import { getEnvAs } from "@gt/utils/environment";
 import { firefox } from "playwright";
 import { LogLevel, playwrightLogger } from "@gt/utils/logger";
-import { FoodstuffsCartService } from "./cart/foodstuffs-cart";
-import { FoodstuffsListService } from "./foodstuffs-lists";
-import { FoodstuffsOrderService } from "./foodstuffs-orders";
-import { FoodstuffsSearchService } from "./foodstuffs-search";
-import { FoodstuffsUserAgent } from "./user-agent/foodstuffs-user-agent";
-
-export * from "./cart/foodstuffs-cart";
-export * from "./foodstuffs-categories";
-export * from "./foodstuffs-lists";
-export * from "./foodstuffs-orders";
-export * from "./foodstuffs-search";
-export * from "./user-agent/foodstuffs-user-agent";
-export * from "./foodstuffs.model";
-export * from "./purchase/shopping-list-exporter";
+import { FoodstuffsCartService } from "./cart/foodstuffs-cart-service";
+import { FoodstuffsListService } from "./lists/foodstuffs-list-service";
+import { FoodstuffsOrderService } from "./orders/foodstuffs-order-service";
+import { FoodstuffsSearchService } from "./search/foodstuffs-search-service";
+import { FoodstuffsUserAgent } from "./rest/foodstuffs-user-agent";
 
 export async function foodstuffsServices(): Promise<FoodstuffsServices> {
   const browser = await firefox.launch({

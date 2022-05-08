@@ -1,14 +1,8 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import prompts from "prompts";
-import {
-  FoodstuffsBaseProduct,
-  FoodstuffsCartProduct,
-  FoodstuffsStore,
-  FoodstuffsUserAgent,
-  ProductsSnapshot,
-  SaleTypeString,
-} from "..";
-import { FoodstuffsRestService } from "../rest-service/foodstuffs-rest-service";
+import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
+import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 
 export class FoodstuffsCartService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -85,52 +79,4 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
       { products }
     );
   }
-}
-
-export interface FoodstuffsCart {
-  products: FoodstuffsCartProduct[];
-  unavailableProducts: FoodstuffsCartProduct[];
-  subtotal: number;
-  promoCodeDiscount: number;
-  saving: number;
-  serviceFee: number;
-  bagFee: number;
-  store: FoodstuffsStore;
-  orderNumber: number;
-  allowSubstitutions: boolean;
-  wasRepriced: boolean;
-}
-
-export function getCartTitle(cart: FoodstuffsCart): string {
-  const now = new Date();
-  const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-  const numItems = cart.products.length + cart.unavailableProducts.length;
-  return `Cart | ${date} | ${numItems} item${numItems === 1 ? "" : "s"}`;
-}
-
-export interface CartProductRef {
-  productId: string;
-  quantity: number;
-  sale_type: SaleTypeString;
-  restricted: boolean;
-}
-
-export function toCartProductRef(product: FoodstuffsBaseProduct): CartProductRef {
-  const saleType = product.sale_type === "BOTH" ? "UNITS" : product.sale_type;
-  let productId = product.productId.replaceAll("-", "_");
-  if (!productId.endsWith("PNS")) {
-    productId += "PNS";
-  }
-  return {
-    productId,
-    quantity: product.quantity,
-    restricted: product.restricted,
-    sale_type: saleType,
-  };
-}
-
-export function snapshotToCartProductRefs(products: ProductsSnapshot) {
-  return [...products.unavailableProducts, ...products.products].map((product) =>
-    toCartProductRef(product)
-  );
 }

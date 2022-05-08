@@ -1,5 +1,5 @@
-import { ConversionWithoutId } from "@gt/store/foodstuffs/product-importer/product-converter";
-import { FoodstuffsCartProduct, FoodstuffsListProduct } from "@gt/store/foodstuffs";
+import { FoodstuffsCartProduct, FoodstuffsListProduct } from "@gt/store/foodstuffs/models";
+import { ConversionWithoutId } from "@gt/store/foodstuffs/grocy/import/product-converter";
 import { Logger } from "@gt/utils/logger";
 import { components } from "./api";
 import { CreatedObjectId, GrocyBoolean, QuantityUnitConversion } from "./grocy-model";

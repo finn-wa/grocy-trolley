@@ -4,10 +4,11 @@ import { readFile, writeFile } from "fs/promises";
 import { GrocyProductService } from "grocy";
 import prompts from "prompts";
 import { ReceiptScanner } from "receipt-ocr";
-import { FoodstuffsServices } from "..";
-import { ListProductRef, toListProductRef } from "../foodstuffs-lists";
-import { FoodstuffsCartProduct } from "../foodstuffs.model";
+import { FoodstuffsServices } from "../../services";
+import { FoodstuffsCartProduct } from "../../models";
+import { ListProductRef, toListProductRef } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsListImporter } from "./list-importer";
+import { resultToListRef } from "../../search/foodstuffs-search-agent";
 
 export class FoodstuffsReceiptImporter implements ReceiptItemiser {
   private readonly logger = new Logger(this.constructor.name);
@@ -88,7 +89,7 @@ export class FoodstuffsReceiptImporter implements ReceiptItemiser {
       if (searchRes === null) {
         notFound.push(item);
       } else {
-        listRefs[item.name] = this.foodstuffs.searchService.resultToListRef(searchRes);
+        listRefs[item.name] = resultToListRef(searchRes);
       }
     }
     this.logger.info("Failed to find:\n" + prettyPrint(notFound));

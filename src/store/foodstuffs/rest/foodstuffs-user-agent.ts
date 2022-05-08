@@ -4,7 +4,7 @@ import { Logger, prettyPrint } from "@gt/utils/logger";
 import { access } from "fs/promises";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page, Request as PlaywrightRequest } from "playwright";
-import { PAKNSAVE_URL } from "../foodstuffs.model";
+import { PAKNSAVE_URL } from "../models";
 
 /**
  * Uses Playwright to perform Foodstuffs requests from a browser. Necessary
