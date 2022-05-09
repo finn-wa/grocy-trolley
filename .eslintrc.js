@@ -17,12 +17,21 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
     tsconfigRootDir: __dirname,
-    project: ["tsconfig.json"],
+    project: ["tsconfig.eslint.json"],
   },
   rules: {
     "no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "_" }],
   },
-  ignorePatterns: [".eslintrc.js", "node_modules/**", "scripts", "build", "*.d.ts"],
+  ignorePatterns: [
+    ".eslintrc.js",
+    "node_modules/**",
+    "scripts",
+    "build",
+    "*.d.ts",
+    "*.spec.ts",
+    "temp",
+  ],
 };
