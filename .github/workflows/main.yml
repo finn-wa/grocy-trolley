@@ -17,53 +17,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: setup
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "yarn"
-      - run: yarn install
 
-      - name: build
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build
         run: yarn run build -t dev
 
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: main.js
-          path: ./build/out/main.js
+      - name: Typecheck
+        run: yarn run tsc
 
-  lint:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "yarn"
-      - run: yarn install
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: main.js
-      - run: yarn run tsc
-      - run: yarn run lint
+      - name: Lint
+        run: yarn run lint
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: "yarn"
-      - run: yarn install
-      - name: Download a single artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: main.js
-      - run: yarn playwright install-deps firefox
-      - run: yarn run test
+      - name: Setup for tests
+        run: yarn playwright install-deps firefox
+
+      - name: Test
+        run: yarn run test
