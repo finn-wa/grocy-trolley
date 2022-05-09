@@ -2,7 +2,6 @@ import { getCacheDirForEmail } from "@gt/utils/cache";
 import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { existsSync } from "fs";
-import { access } from "fs/promises";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page, Request as PlaywrightRequest } from "playwright";
 import { PAKNSAVE_URL } from "../models";

@@ -46,6 +46,7 @@ export class FoodstuffsSearchService {
       if (response.productChoice && response.productChoice !== "searchAgain") {
         return response.productChoice;
       }
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       nextQuery = response.query as string | undefined;
     }
     return null;
