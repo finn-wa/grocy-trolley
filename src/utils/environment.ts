@@ -19,12 +19,18 @@ export type Env = Record<EnvVar, string>;
 
 let _env: Env | null = null;
 
-export function initEnv(options: { envFilePath?: string; overrides?: Partial<Env> } = {}) {
+export interface EnvOptions {
+  envFilePath?: string;
+  envFilePathOptional?: boolean;
+  overrides?: Partial<Env>;
+}
+
+export function initEnv(options: EnvOptions = {}) {
   if (_env !== null) {
     throw new Error("initEnv has already been called");
   }
   if (options.envFilePath) {
-    if (!existsSync(options.envFilePath)) {
+    if (!options.envFilePathOptional && !existsSync(options.envFilePath)) {
       throw new Error(`Env file ${options.envFilePath} does not exist`);
     }
     config({ path: options.envFilePath });

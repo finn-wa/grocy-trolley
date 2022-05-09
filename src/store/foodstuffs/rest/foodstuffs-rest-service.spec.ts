@@ -3,7 +3,6 @@ import { Logger } from "@gt/utils/logger";
 import { jest } from "@jest/globals";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
-import { firefox, FirefoxBrowser } from "playwright";
 import * as cacheUtils from "../../../utils/cache";
 import { FoodstuffsCart } from "../cart/foodstuffs-cart.model";
 import { getBrowser } from "../services";
@@ -30,7 +29,7 @@ describe("FoodstuffsRestService", () => {
   let userAgent: FoodstuffsUserAgent;
   let service: TestRestService;
 
-  initEnv({ envFilePath: ".test.env" });
+  initEnv({ envFilePath: ".test.env", envFilePathOptional: true });
   const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
@@ -43,6 +42,11 @@ describe("FoodstuffsRestService", () => {
     await rm(cacheDir, { recursive: true, force: true });
     userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
     service = new TestRestService(userAgent);
+  });
+
+  afterAll(async () => {
+    const browser = await getBrowser();
+    await browser.close();
   });
 
   test("cache files are created", async () => {
