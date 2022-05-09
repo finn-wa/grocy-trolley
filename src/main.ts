@@ -1,4 +1,3 @@
-import { FoodstuffsListProduct } from "@gt/store/foodstuffs/models";
 import { GrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/shopping-list-exporter";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
@@ -9,6 +8,7 @@ import { readFile } from "fs/promises";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
+import { ListProductRef } from "./store/foodstuffs/lists/foodstuffs-list.model";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -164,11 +164,12 @@ async function main(): Promise<unknown> {
 
   /* eslint-disable */
   program.command("dev", { hidden: true }).action(async () => {
-    const listStr = await readFile("./cart.json", { encoding: "utf-8" });
-    const products = JSON.parse(listStr).products as FoodstuffsListProduct[];
+    const listStr = await readFile("./temp/cd-list.json", { encoding: "utf-8" });
+    const products = Object.values(JSON.parse(listStr)) as ListProductRef[];
     const foodstuffs = await foodstuffsServices();
     const listId = await foodstuffs.listService.selectList();
-    await foodstuffs.listService.updateList({ listId, products });
+    await foodstuffs.listService.addProductsToList(listId, products);
+    console.log("Done");
   });
   /* eslint-enable */
 

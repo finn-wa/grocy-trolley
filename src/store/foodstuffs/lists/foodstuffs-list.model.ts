@@ -13,8 +13,7 @@ export interface ListProductRef {
 
 export interface ListUpdate {
   listId: string;
-  products?: FoodstuffsListProduct[];
-  Name?: string;
+  products?: ListProductRef[];
 }
 
 export interface List {
@@ -24,11 +23,10 @@ export interface List {
 }
 
 export function toListProductRef(product: FoodstuffsBaseProduct): ListProductRef {
-  const saleType = product.sale_type === "BOTH" ? "UNITS" : product.sale_type;
   return {
-    productId: product.productId,
-    quantity: product.quantity,
-    saleType,
+    productId: product.productId.replace(/(PNS|NW)/g, ""),
+    quantity: product.quantity || (product as any).minUnit || 1,
+    saleType: !product.sale_type || product.sale_type === "BOTH" ? "UNITS" : product.sale_type,
   };
 }
 

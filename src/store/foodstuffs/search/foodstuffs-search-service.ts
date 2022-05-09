@@ -38,7 +38,7 @@ export class FoodstuffsSearchService {
     agentType: SearchAgentType = "USER"
   ): Promise<ProductSearchResult | null> {
     for (let nextQuery: string | undefined = query; nextQuery; ) {
-      const results = await this.searchWithAgentType(query, agentType);
+      const results = await this.searchWithAgentType(nextQuery, agentType);
       const response = await this.getSearchPromptResponse(results);
       if (response.productChoice === "skip") {
         return null;
@@ -46,7 +46,7 @@ export class FoodstuffsSearchService {
       if (response.productChoice && response.productChoice !== "searchAgain") {
         return response.productChoice;
       }
-      nextQuery = response.query;
+      nextQuery = response.query as string | undefined;
     }
     return null;
   }
@@ -73,10 +73,13 @@ export class FoodstuffsSearchService {
         },
       ]);
     }
+    if (results.length === 1) {
+      return Promise.resolve({ productChoice: results[0] });
+    }
     return prompts([
       {
         message: "Select a product",
-        name: "product",
+        name: "productChoice",
         type: "select",
         choices: [
           ...results.map((r) => ({

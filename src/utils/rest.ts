@@ -69,7 +69,7 @@ export abstract class RestService {
     const response = await fetch(url, { method, headers, body: body as string | undefined });
     this.logger.trace(`Response: ${response.status}`);
     if (!response.ok) {
-      throw new Error(`Response not OK: ${await response.text()}`);
+      throw new Error(`${response.status}: ${await response.text()}`);
     }
     return response;
   }
