@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  CACHE_DIR: "node_modules/.cache/test"
+  GT_LOG_LEVEL: "INFO"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,6 +29,3 @@ jobs:
     - run: yarn run lint
     - run: yarn playwright install-deps firefox
     - run: yarn run test
-  env:
-    CACHE_DIR: "node_modules/.cache/test"
-    GT_LOG_LEVEL: "INFO"
