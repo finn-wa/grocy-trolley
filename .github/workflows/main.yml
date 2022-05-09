@@ -43,3 +43,4 @@ jobs:
 
       - name: Test
         run: yarn run test
+        timeout-minutes: 10
