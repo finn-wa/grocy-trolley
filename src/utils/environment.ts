@@ -23,14 +23,16 @@ export interface EnvOptions {
   envFilePath?: string;
   envFilePathOptional?: boolean;
   overrides?: Partial<Env>;
-  allowUndefined?: EnvVar[] | boolean;
+  optionalVars?: EnvVar[] | boolean;
+  requiredVars?: EnvVar[];
 }
 
 export function initEnv({
   envFilePath,
   envFilePathOptional,
   overrides,
-  allowUndefined,
+  optionalVars,
+  requiredVars,
 }: EnvOptions = {}) {
   if (_env !== null) {
     throw new Error("initEnv has already been called");
@@ -48,9 +50,11 @@ export function initEnv({
   if (overrides) {
     _env = { ..._env, ...overrides };
   }
-  if (allowUndefined !== true) {
+  if (optionalVars !== true) {
     const undefinedVars = EnvVars.filter(
-      (envVar) => !_env![envVar] && allowUndefined && !allowUndefined.includes(envVar)
+      (envVar) =>
+        !_env![envVar] &&
+        (requiredVars?.includes(envVar) || (optionalVars && !optionalVars.includes(envVar)))
     );
     if (undefinedVars.length > 0) {
       throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);

@@ -41,7 +41,11 @@ describe("FoodstuffsListService", () => {
   let listService: FoodstuffsListService;
   const refs = new ProductRefs();
 
-  initEnv({ envFilePath: ".test.env", envFilePathOptional: true, allowUndefined: true });
+  initEnv({
+    envFilePath: ".test.env",
+    envFilePathOptional: true,
+    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
+  });
   const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
