@@ -1,5 +1,5 @@
 import { getEnvAs } from "@gt/utils/environment";
-import { Browser, firefox } from "playwright";
+import { Browser, firefox } from "playwright-firefox";
 import { LogLevel, playwrightLogger } from "@gt/utils/logger";
 import { FoodstuffsCartService } from "./cart/foodstuffs-cart-service";
 import { FoodstuffsListService } from "./lists/foodstuffs-list-service";

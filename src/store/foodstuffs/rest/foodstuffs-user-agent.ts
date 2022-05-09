@@ -3,7 +3,13 @@ import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { existsSync } from "fs";
 import path from "path";
-import { Browser, BrowserContext, JSHandle, Page, Request as PlaywrightRequest } from "playwright";
+import {
+  Browser,
+  BrowserContext,
+  JSHandle,
+  Page,
+  Request as PlaywrightRequest,
+} from "playwright-firefox";
 import { PAKNSAVE_URL } from "../models";
 
 /**
