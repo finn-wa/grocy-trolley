@@ -39,10 +39,3 @@ jobs:
 
       - name: Lint
         run: yarn run lint
-
-      - name: Setup for tests
-        run: yarn playwright install-deps firefox
-
-      - name: Test
-        run: yarn run test
-        timeout-minutes: 10
