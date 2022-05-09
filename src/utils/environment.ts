@@ -57,7 +57,7 @@ export function initEnv({
         (requiredVars?.includes(envVar) || (optionalVars && !optionalVars.includes(envVar)))
     );
     if (undefinedVars.length > 0) {
-      throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
+      throw new Error(`Undefined environment variables: ${undefinedVars.join(", ")}`);
     }
   }
   new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
