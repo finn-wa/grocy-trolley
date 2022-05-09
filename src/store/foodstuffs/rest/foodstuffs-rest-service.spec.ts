@@ -1,11 +1,14 @@
-import { getCacheDir } from "@gt/utils/cache";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
-import { rm } from "fs/promises";
+import { jest } from "@jest/globals";
+import { existsSync } from "fs";
+import { readdir, rm } from "fs/promises";
 import { firefox, FirefoxBrowser } from "playwright";
+import * as cacheUtils from "../../../utils/cache";
 import { FoodstuffsCart } from "../cart/foodstuffs-cart.model";
-import { FoodstuffsUserAgent, FoodstuffsUserProfile, LoginDetails } from "./foodstuffs-user-agent";
+import { getBrowser } from "../services";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
+import { FoodstuffsUserAgent, FoodstuffsUserProfile, LoginDetails } from "./foodstuffs-user-agent";
 
 class TestRestService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -24,7 +27,6 @@ class TestRestService extends FoodstuffsRestService {
 }
 
 describe("FoodstuffsRestService", () => {
-  let browser: FirefoxBrowser;
   let userAgent: FoodstuffsUserAgent;
   let service: TestRestService;
 
@@ -33,22 +35,22 @@ describe("FoodstuffsRestService", () => {
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
   });
-
-  beforeAll(async () => {
-    browser = await firefox.launch({ headless: true });
-  });
+  // Different cache dir for these tests to avoid clearing cache for other tests
+  const cacheDir = cacheUtils.getCacheDirForEmail(loginDetails.email) + "_rest-service-test";
+  (cacheUtils as any).getCacheDirForEmail = jest.fn((_email: string) => cacheDir);
 
   beforeEach(async () => {
-    await rm(getCacheDir(), { recursive: true, force: true });
-    userAgent = new FoodstuffsUserAgent(browser, loginDetails);
+    await rm(cacheDir, { recursive: true, force: true });
+    userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
     service = new TestRestService(userAgent);
   });
 
-  afterAll(async () => {
-    await browser.close();
+  test("cache files are created", async () => {
+    await service.authHeaders();
   });
 
   test("authHeaders", async () => {
+    expect(existsSync(cacheDir)).toBeFalsy();
     const getHeadersSpy = jest.spyOn(userAgent, "getHeaders");
     const builder = await service.authHeaders();
     expect(getHeadersSpy).toHaveBeenCalledTimes(1);
@@ -62,12 +64,8 @@ describe("FoodstuffsRestService", () => {
     const cachedHeaders = (await newService.authHeaders()).raw();
     expect(cachedHeaders).toEqual(rawHeaders);
     expect(getHeadersSpy).toHaveBeenCalledTimes(1);
-  });
-
-  test("get cart", async () => {
-    const cart = await service.getCart();
-    expect(cart).toBeTruthy();
-    expect(cart).toHaveProperty("products");
-    expect(Array.isArray(cart.products)).toBeTruthy();
+    // These assertions are more to test whether the separate cache path is working
+    const cacheFiles = await readdir(cacheDir);
+    expect(cacheFiles.length).toBeGreaterThan(1);
   });
 });

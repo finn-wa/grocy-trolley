@@ -1,6 +1,6 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { config } from "dotenv";
-import { accessSync } from "fs";
+import { existsSync } from "fs";
 
 const EnvVars = [
   "BARCODEBUDDY_URL",
@@ -24,9 +24,7 @@ export function initEnv(options: { envFilePath?: string; overrides?: Partial<Env
     throw new Error("initEnv has already been called");
   }
   if (options.envFilePath) {
-    try {
-      accessSync(options.envFilePath);
-    } catch (error) {
+    if (!existsSync(options.envFilePath)) {
       throw new Error(`Env file ${options.envFilePath} does not exist`);
     }
     config({ path: options.envFilePath });

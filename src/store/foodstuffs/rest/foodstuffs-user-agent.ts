@@ -1,6 +1,7 @@
 import { getCacheDirForEmail } from "@gt/utils/cache";
 import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { existsSync } from "fs";
 import { access } from "fs/promises";
 import path from "path";
 import { Browser, BrowserContext, JSHandle, Page, Request as PlaywrightRequest } from "playwright";
@@ -18,12 +19,13 @@ export class FoodstuffsUserAgent {
 
   /**
    * Creates a new FoodstuffsUserAgent.
-   * @param browser Playwright Browser instance to use to perform requests
+   * @param browserLoader Cold promise that returns the Playwright Browser
+   *    instance to use to perform requests.
    * @param loginDetails Optional Foodstuffs login details. If provided, Playwright
    *    logs into this account and sends requests with credentials.
    */
   constructor(
-    private readonly browser: Browser,
+    private readonly browserLoader: () => Promise<Browser>,
     private readonly loginDetails?: LoginDetails | null
   ) {}
 
@@ -33,7 +35,7 @@ export class FoodstuffsUserAgent {
    * @returns the new agent
    */
   clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
-    return new FoodstuffsUserAgent(this.browser, loginDetails ?? undefined);
+    return new FoodstuffsUserAgent(this.browserLoader, loginDetails ?? undefined);
   }
 
   get email(): string | undefined {
@@ -142,18 +144,16 @@ export class FoodstuffsUserAgent {
     if (this.context) {
       return this.context;
     }
+    const browser = await this.browserLoader();
     if (this.loginDetails) {
       const storageStatePath = this.getStorageStateFilePath();
-      try {
-        await access(storageStatePath);
-        // No error means that cached storageState exists
-        this.context = await this.browser.newContext({ storageState: storageStatePath });
+      if (existsSync(storageStatePath)) {
+        this.context = await browser.newContext({ storageState: storageStatePath });
         return this.context;
-      } catch (error) {
-        this.logger.info("No storageState found, creating new context");
       }
+      this.logger.info("No storageState found, creating new context");
     }
-    this.context = await this.browser.newContext();
+    this.context = await browser.newContext();
     return this.context;
   }
 
