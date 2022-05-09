@@ -2429,16 +2429,16 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-openapi-typescript@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/openapi-typescript/-/openapi-typescript-5.2.0.tgz#c0712d7a17e4502ac083162c42f946c0e966a505"
+openapi-typescript@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/openapi-typescript/-/openapi-typescript-5.3.0.tgz#06b38e887d7d7f49a74d3ba22ca272739d6c2430"
   dependencies:
     js-yaml "^4.1.0"
     mime "^3.0.0"
-    prettier "^2.5.1"
+    prettier "^2.6.2"
     tiny-glob "^0.2.9"
-    undici "^4.14.1"
-    yargs-parser "^21.0.0"
+    undici "^5.0.0"
+    yargs-parser "^21.0.1"
 
 optionator@^0.8.1:
   version "0.8.3"
@@ -2590,7 +2590,7 @@ prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
 
-prettier@^2.5.1:
+prettier@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.2.tgz#e26d71a18a74c3d0f0597f55f01fb6c06c206032"
 
@@ -2991,9 +2991,9 @@ typescript@4.6.4:
   version "4.6.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.4.tgz#caa78bbc3a59e6a5c510d35703f6a09877ce45e9"
 
-undici@^4.14.1:
-  version "4.16.0"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-4.16.0.tgz#469bb87b3b918818d3d7843d91a1d08da357d5ff"
+undici@^5.0.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.1.1.tgz#356427b0d1f032ca4cf85537b1e1694a52090438"
 
 universalify@^0.1.2:
   version "0.1.2"
@@ -3124,7 +3124,7 @@ yargs-parser@20.x, yargs-parser@^20.2.2:
   version "20.2.9"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.9.tgz#2eb7dc3b0289718fc295f362753845c41a0c94ee"
 
-yargs-parser@^21.0.0:
+yargs-parser@^21.0.1:
   version "21.0.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-21.0.1.tgz#0267f286c877a4f0f728fceb6f8a3e4cb95c6e35"
 
