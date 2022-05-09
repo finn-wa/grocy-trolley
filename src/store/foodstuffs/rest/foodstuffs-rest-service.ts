@@ -1,9 +1,9 @@
-import { getCacheDirForEmail } from "@gt/utils/cache";
-import { HeadersBuilder, headersToRaw, headersFromRaw } from "@gt/utils/headers";
+import { HeadersBuilder, headersFromRaw, headersToRaw } from "@gt/utils/headers";
 import { prettyPrint } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
+import { getCacheDirForEmail } from "../../../utils/cache";
 import { PAKNSAVE_URL } from "../models";
 import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
 
@@ -39,7 +39,7 @@ const HEADERS = {
 export abstract class FoodstuffsRestService extends RestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
   private _authHeaders: Headers | null = null;
-  private readonly headersCachePath;
+  private readonly headersCachePath: string;
 
   constructor(protected readonly userAgent: FoodstuffsUserAgent) {
     super();

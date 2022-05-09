@@ -24,7 +24,7 @@ export interface CartProductRef {
   productId: string;
   quantity: number;
   sale_type: SaleTypeString;
-  restricted: boolean;
+  restricted?: boolean;
 }
 
 export function toCartProductRef(product: FoodstuffsBaseProduct): CartProductRef {
