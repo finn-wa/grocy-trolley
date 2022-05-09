@@ -14,33 +14,56 @@ env:
   GT_LOG_LEVEL: "INFO"
 
 jobs:
-  setup:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup
+      - name: setup
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "yarn"
       - run: yarn install
 
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - run: yarn run build -t dev
+      - name: build
+        run: yarn run build -t dev
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: main.js
+          path: ./build/out/main.js
 
   lint:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+      - run: yarn install
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main.js
       - run: yarn run tsc
       - run: yarn run lint
-  
+
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+      - run: yarn install
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main.js
       - run: yarn playwright install-deps firefox
       - run: yarn run test
