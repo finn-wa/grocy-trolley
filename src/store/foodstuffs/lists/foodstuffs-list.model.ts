@@ -23,10 +23,19 @@ export interface List {
 }
 
 export function toListProductRef(product: FoodstuffsBaseProduct): ListProductRef {
+  const { productId, quantity, sale_type: saleType } = product;
+  return formatListProductRef({ productId, quantity, saleType });
+}
+
+export function formatListProductRef({
+  productId,
+  quantity,
+  saleType,
+}: ListProductRef): ListProductRef {
   return {
-    productId: product.productId.replace(/(PNS|NW)/g, ""),
-    quantity: product.quantity || (product as any).minUnit || 1,
-    saleType: !product.sale_type || product.sale_type === "BOTH" ? "UNITS" : product.sale_type,
+    productId: productId.replace(/(PNS|NW)/g, ""),
+    quantity: quantity || 1,
+    saleType: !saleType || saleType === "BOTH" ? "UNITS" : saleType,
   };
 }
 

@@ -3,9 +3,10 @@ import { Logger, prettyPrint } from "@gt/utils/logger";
 import { GrocyServices, ParentProduct, Product } from "grocy";
 import prompts from "prompts";
 import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
-import { FoodstuffsServices } from "../../services";
+import { TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";
 import { FoodstuffsCartProduct } from "../../models";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
+import { FoodstuffsServices } from "../../services";
 
 export class GrocyShoppingListExporter {
   private readonly logger = new Logger(this.constructor.name);
@@ -23,7 +24,8 @@ export class GrocyShoppingListExporter {
 
   async addShoppingListToCart() {
     await this.foodstuffs.cartService.clearCart();
-    await this.foodstuffs.listService.deleteTemporaryLists();
+    // We clean up before and intentionally leave dangling state for debugging
+    await this.foodstuffs.listService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
 
     const listItems = await this.grocy.shoppingListService.getShoppingListItems();
     const products = await this.grocy.productService.getProducts();

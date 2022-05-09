@@ -1,10 +1,18 @@
 import { uniqueByProperty } from "@gt/utils/arrays";
-import { Logger, prettyPrint } from "@gt/utils/logger";
+import { Logger } from "@gt/utils/logger";
 import prompts from "prompts";
 import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
-import { List, ListProductRef, ListUpdate, toListProductRef } from "./foodstuffs-list.model";
+import {
+  formatListProductRef,
+  List,
+  ListProductRef,
+  ListUpdate,
+  toListProductRef,
+} from "./foodstuffs-list.model";
+
+export const TEMP_LIST_PREFIX = "[temporary]";
 
 export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
@@ -67,6 +75,13 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     return this.createListWithNamePrompt().then((list) => list.listId);
   }
 
+  /**
+   * Performs a POST request to update the list with the specified ID. List
+   * contents are replaced with the products in the listUpdate. To add products
+   * to a list, use {@link addProductsToList}.
+   * @param listUpdate Request body containing list ID and new products
+   * @returns Updated list
+   */
   async updateList(listUpdate: ListUpdate): Promise<Omit<List, "name">> {
     const headersBuilder = await this.authHeaders();
     return this.postForJson(
@@ -76,58 +91,35 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     );
   }
 
-  async deleteList(id: string | number): Promise<Response> {
+  async deleteList(id: string | number): Promise<{ lists: Omit<List, "products">[] }> {
     const headersBuilder = await this.authHeaders();
-    return this.delete(this.buildUrl(`ShoppingLists/DeleteList/${id}`), headersBuilder.build());
+    return this.deleteForJson(
+      this.buildUrl(`ShoppingLists/DeleteList/${id}`),
+      headersBuilder.acceptJson().build()
+    );
   }
 
-  async createListWithProducts(name: string, products: ListProductRef[]): Promise<List> {
+  async createListWithProducts(
+    name: string,
+    products: ListProductRef[]
+  ): Promise<Omit<List, "name">> {
     const createdList = await this.createList(name);
     return this.addProductsToList(createdList.listId, products);
   }
 
-  // TODO #55 Need to use full product, not ref
   async addProductsToList(listId: string, productsToAdd: ListProductRef[]): Promise<List> {
     const list = await this.getList(listId);
     const existingProducts = list.products;
     const products = uniqueByProperty(
-      existingProducts.map(toListProductRef).concat(productsToAdd.map(this.formatProductRef)),
+      [...existingProducts.map(toListProductRef), ...productsToAdd.map(formatListProductRef)],
       "productId"
     );
     return this.updateList({ listId, products }) as Promise<List>;
   }
 
-  private formatProductRef(product: ListProductRef): ListProductRef {
-    const { saleType: sale_type, ...remainder } = product;
-    return toListProductRef({ ...remainder, sale_type } as FoodstuffsBaseProduct);
-  }
-
-  private async addProductsToListIndividually(
-    listId: string,
-    products: ListProductRef[]
-  ): Promise<List> {
-    for (const product of products) {
-      this.logger.debug("Adding product " + product.productId);
-      try {
-        // TODO: fix
-        await this.updateList({ listId, products: products as any });
-      } catch (error) {
-        this.logger.error("Failed to add product to list!\n" + prettyPrint(product));
-        this.logger.error(error);
-        const response = await prompts([
-          { name: "resume", type: "confirm", message: "Resume adding products?" },
-        ]);
-        if (!response.resume) {
-          throw error;
-        }
-      }
-    }
-    return this.getList(listId);
-  }
-
   async refreshProductPrices<T extends FoodstuffsBaseProduct>(products: T[]) {
     const list = await this.createListWithProducts(
-      `[temporary] price refresh - ${new Date().toISOString()}`,
+      `${TEMP_LIST_PREFIX} price refresh - ${new Date().toISOString()}`,
       products.map((product) => toListProductRef(product))
     );
     const refreshedProducts = products.map((product) => {
@@ -144,14 +136,24 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     return refreshedProducts;
   }
 
-  async deleteTemporaryLists(lists?: List[]): Promise<Response[]> {
+  /**
+   * Deletes lists with names matching the supplied pattern.
+   * @param namePattern Pattern to match list names
+   * @param lists Optional array of lists to search for names in
+   * @returns Array of responses to DELETE requests
+   */
+  async deleteLists(namePattern?: RegExp, lists?: List[]): Promise<Response[]> {
     if (!lists) {
       lists = await this.getLists();
     }
-    return Promise.all(
-      lists
-        .filter((list) => list.name.toLowerCase().includes("temporary"))
-        .map((list) => this.deleteList(list.listId))
-    );
+    const headersBuilder = await this.authHeaders();
+    const headers = headersBuilder.acceptJson().build();
+    const deletionUrls = lists
+      .filter((list) => namePattern?.test(list.name) ?? true)
+      .map(({ listId }) => this.buildUrl(`ShoppingLists/DeleteList/${listId}`));
+    // Promise.all doesn't seem to work well
+    const responses = [];
+    for (const url of deletionUrls) responses.push(await this.delete(url, headers));
+    return responses;
   }
 }
