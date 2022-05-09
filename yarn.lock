@@ -2802,7 +2802,7 @@ __metadata:
     jest: ^27.5.1
     node-html-parser: 5.3.3
     openapi-typescript: 5.2.0
-    playwright: ^1.21.1
+    playwright-firefox: ^1.21.1
     prompts: 2.4.2
     ts-jest: ^27.1.4
     ts-node: 10.7.0
@@ -4418,14 +4418,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:^1.21.1":
+"playwright-firefox@npm:^1.21.1":
   version: 1.21.1
-  resolution: "playwright@npm:1.21.1"
+  resolution: "playwright-firefox@npm:1.21.1"
   dependencies:
     playwright-core: 1.21.1
   bin:
     playwright: cli.js
-  checksum: daba932ee60b36fb0aba7053e801686dd145a88064f85df8a121c283d954b3322e837f1d52310d813e9001f9c8e9aa2e5b93ead08f9ceab2ab248a2a26011059
+  checksum: 557370839c17dc6394ea8bd633f2859007eedacc12f86179c73e461b1d16b7f9bf1a32a3f0887319002a8c6050067edfbe9af0a32cdcf479833b470c67f60e25
   languageName: node
   linkType: hard
 
