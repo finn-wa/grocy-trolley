@@ -23,28 +23,38 @@ export interface EnvOptions {
   envFilePath?: string;
   envFilePathOptional?: boolean;
   overrides?: Partial<Env>;
+  allowUndefined?: EnvVar[] | boolean;
 }
 
-export function initEnv(options: EnvOptions = {}) {
+export function initEnv({
+  envFilePath,
+  envFilePathOptional,
+  overrides,
+  allowUndefined,
+}: EnvOptions = {}) {
   if (_env !== null) {
     throw new Error("initEnv has already been called");
   }
-  if (options.envFilePath) {
-    if (!options.envFilePathOptional && !existsSync(options.envFilePath)) {
-      throw new Error(`Env file ${options.envFilePath} does not exist`);
+  if (envFilePath) {
+    if (!envFilePathOptional && !existsSync(envFilePath)) {
+      throw new Error(`Env file ${envFilePath} does not exist`);
     }
-    config({ path: options.envFilePath });
+    config({ path: envFilePath });
   } else {
     config();
   }
   _env = Object.fromEntries(EnvVars.map((key) => [key, process.env[key]])) as Env;
   // Apply overrides
-  if (options.overrides) {
-    _env = { ..._env, ...options.overrides };
+  if (overrides) {
+    _env = { ..._env, ...overrides };
   }
-  const undefinedVars = EnvVars.filter((envVar) => _env![envVar] === undefined);
-  if (undefinedVars.length > 0) {
-    throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
+  if (allowUndefined !== true) {
+    const undefinedVars = EnvVars.filter(
+      (envVar) => !_env![envVar] && allowUndefined && !allowUndefined.includes(envVar)
+    );
+    if (undefinedVars.length > 0) {
+      throw new Error(`Undefined environment variables: "${undefinedVars.join()}"`);
+    }
   }
   new Logger("env").trace(`Initialised env: \n${prettyPrint(_env)}`);
 }

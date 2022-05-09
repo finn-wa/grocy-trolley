@@ -7,7 +7,7 @@ import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 describe("FoodstuffsCartService", () => {
   let cartService: FoodstuffsCartService;
 
-  initEnv({ envFilePath: ".test.env", envFilePathOptional: true });
+  initEnv({ envFilePath: ".test.env", envFilePathOptional: true, allowUndefined: true });
   const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
