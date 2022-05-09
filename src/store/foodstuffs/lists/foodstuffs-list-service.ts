@@ -1,3 +1,4 @@
+import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import prompts from "prompts";
 import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
@@ -66,7 +67,7 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     return this.createListWithNamePrompt().then((list) => list.listId);
   }
 
-  async updateList(listUpdate: ListUpdate): Promise<List> {
+  async updateList(listUpdate: ListUpdate): Promise<Omit<List, "name">> {
     const headersBuilder = await this.authHeaders();
     return this.postForJson(
       this.buildUrl("ShoppingLists/UpdateList"),
@@ -88,35 +89,17 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   // TODO #55 Need to use full product, not ref
   async addProductsToList(listId: string, productsToAdd: ListProductRef[]): Promise<List> {
     const list = await this.getList(listId);
-    throw new Error("fuck");
-    // const products = [];
-    // Object.values(
-    //   Object.fromEntries([
-    //     ...list.products.map((p) => [p.productId, toListProductRef(p)]),
-    //     ...productsToAdd.map((p) => [p.productId, p]),
-    //   ])
-    // ) as ListProductRef[];
+    const existingProducts = list.products;
+    const products = uniqueByProperty(
+      existingProducts.map(toListProductRef).concat(productsToAdd.map(this.formatProductRef)),
+      "productId"
+    );
+    return this.updateList({ listId, products }) as Promise<List>;
+  }
 
-    // return this.updateList({ listId, products });
-    // try {
-    // } catch (error) {
-    //   this.logger.error(error);
-    //   this.logger.error("Failed to add products to list. Falling back to chunks.");
-    // }
-    // const iter = products[Symbol.iterator]();
-    // let chunk: ListProductRef[];
-    // do {
-    //   chunk = Array.from(
-    //     { length: 5 },
-    //     () => iter.next().value as ListProductRef | undefined
-    //   ).filter((p): p is ListProductRef => !!p);
-    //   try {
-    //     await this.updateList({ listId, products: chunk });
-    //   } catch (error) {
-    //     await this.addProductsToListIndividually(listId, chunk);
-    //   }
-    // } while (chunk.length === 5);
-    return this.getList(listId);
+  private formatProductRef(product: ListProductRef): ListProductRef {
+    const { saleType: sale_type, ...remainder } = product;
+    return toListProductRef({ ...remainder, sale_type } as FoodstuffsBaseProduct);
   }
 
   private async addProductsToListIndividually(
