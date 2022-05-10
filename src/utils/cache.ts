@@ -5,6 +5,6 @@ export function getCacheDir(): string {
   return getEnv().CACHE_DIR;
 }
 
-export function getCacheDirForEmail(email: string = "anon") {
+export function getCacheDirForEmail(email = "anon") {
   return path.join(getCacheDir(), email.replace(/\W+/g, "_"));
 }
