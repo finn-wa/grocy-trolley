@@ -1,3 +1,4 @@
+import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
 import { jest } from "@jest/globals";
@@ -7,7 +8,7 @@ import * as cacheUtils from "../../../utils/cache";
 import { FoodstuffsCart } from "../cart/foodstuffs-cart.model";
 import { getBrowser } from "../services";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
-import { FoodstuffsUserAgent, FoodstuffsUserProfile, LoginDetails } from "./foodstuffs-user-agent";
+import { FoodstuffsUserAgent, FoodstuffsUserProfile } from "./foodstuffs-user-agent";
 
 class TestRestService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -73,7 +74,7 @@ describe("FoodstuffsRestService", () => {
     expect(cachedHeaders).toEqual(rawHeaders);
     expect(getHeadersSpy).toHaveBeenCalledTimes(1);
     // These assertions are more to test whether the separate cache path is working
-    const cacheFiles = await readdir(cacheDir);
-    expect(cacheFiles.length).toBeGreaterThan(1);
+    const cacheFiles = await readdir(`${cacheDir}/${userAgent.storeName}`);
+    expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
   });
 });
