@@ -1,38 +1,38 @@
-import { getCacheDirForEmail } from "@gt/utils/cache";
+import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
+import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { existsSync } from "fs";
-import path from "path";
-import {
-  Browser,
-  BrowserContext,
-  JSHandle,
-  Page,
-  Request as PlaywrightRequest,
-} from "playwright-firefox";
+import { BrowserContext, JSHandle, Page } from "playwright-firefox";
 import { PAKNSAVE_URL } from "../models";
 
 /**
  * Uses Playwright to perform Foodstuffs requests from a browser. Necessary
  * because Cloudflare now blocks requests that are not sent from a browser.
  */
-export class FoodstuffsUserAgent {
+export class FoodstuffsUserAgent extends StoreUserAgent {
+  public readonly storeName = "foodstuffs";
   protected readonly logger = new Logger(this.constructor.name);
-  private context?: BrowserContext;
-  private page?: Page;
-  private headers?: Headers;
 
-  /**
-   * Creates a new FoodstuffsUserAgent.
-   * @param browserLoader Cold promise that returns the Playwright Browser
-   *    instance to use to perform requests.
-   * @param loginDetails Optional Foodstuffs login details. If provided, Playwright
-   *    logs into this account and sends requests with credentials.
-   */
-  constructor(
-    private readonly browserLoader: () => Promise<Browser>,
-    private readonly loginDetails?: LoginDetails | null
-  ) {}
+  async init(context: BrowserContext): Promise<{ page: Page; headers: Headers }> {
+    const page = await context.newPage();
+    await page.goto(`${PAKNSAVE_URL}/shop`);
+    let cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
+
+    if (this.loginDetails && !(await this.isLoggedIn(page))) {
+      this.logger.info("Logging in to foodstuffs...");
+      await page.click('button[id="login-form"]');
+      await page.fill('input[id="login-email"]', this.loginDetails.email);
+      await page.fill('input[id="login-password"]', this.loginDetails.password);
+      await page.click("button.login-form-submit");
+      cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
+      // page refreshes after submission
+      await page.waitForLoadState("networkidle");
+      // search box seems to pop in last
+      await page.locator('input[aria-label="Search products"]').waitFor();
+    }
+    const headers = await this.getHeadersFromRequest(cartRequest);
+    return { page, headers };
+  }
 
   /**
    * Creates a new agent with the same browser but new login details
@@ -41,21 +41,6 @@ export class FoodstuffsUserAgent {
    */
   clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
     return new FoodstuffsUserAgent(this.browserLoader, loginDetails ?? undefined);
-  }
-
-  get email(): string | undefined {
-    return this.loginDetails?.email;
-  }
-
-  async getHeaders(): Promise<Headers> {
-    if (this.headers) {
-      return this.headers;
-    }
-    await this.getLoginPage();
-    if (this.headers) {
-      return this.headers;
-    }
-    throw new Error("Failed to init headers with getLoginPage");
   }
 
   /**
@@ -108,60 +93,6 @@ export class FoodstuffsUserAgent {
     return new FoodstuffsResponse(responseHandle, response);
   }
 
-  /**
-   * Returns the login page. Creates a new page and logs in if needed.
-   * @returns Login page
-   */
-  async getLoginPage(): Promise<Page> {
-    if (this.page) {
-      return this.page;
-    }
-    const context = await this.getContext();
-    const page = await context.newPage();
-    await page.goto(`${PAKNSAVE_URL}/shop`);
-    let cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
-
-    if (this.loginDetails && !(await this.isLoggedIn(page))) {
-      this.logger.info("Logging in to foodstuffs...");
-      await page.click('button[id="login-form"]');
-      await page.fill('input[id="login-email"]', this.loginDetails.email);
-      await page.fill('input[id="login-password"]', this.loginDetails.password);
-      await page.click("button.login-form-submit");
-      cartRequest = await page.waitForRequest(`${PAKNSAVE_URL}/CommonApi/Cart/Index`);
-      // page refreshes after submission
-      await page.waitForLoadState("networkidle");
-      // search box seems to pop in last
-      await page.locator('input[aria-label="Search products"]').waitFor();
-      // save logged in state
-      await page.context().storageState({ path: this.getStorageStateFilePath() });
-    }
-    this.page = page;
-    this.headers = await this.getHeadersFromRequest(cartRequest);
-    return this.page;
-  }
-
-  /**
-   * Returns the browser context with cached storage state (if found).
-   * Creates a new browser context if needed.
-   * @returns Browser context
-   */
-  private async getContext(): Promise<BrowserContext> {
-    if (this.context) {
-      return this.context;
-    }
-    const browser = await this.browserLoader();
-    if (this.loginDetails) {
-      const storageStatePath = this.getStorageStateFilePath();
-      if (existsSync(storageStatePath)) {
-        this.context = await browser.newContext({ storageState: storageStatePath });
-        return this.context;
-      }
-      this.logger.info("No storageState found, creating new context");
-    }
-    this.context = await browser.newContext();
-    return this.context;
-  }
-
   private async isLoggedIn(page: Page) {
     type DataLayer = { loginState?: "loggedIn" | "guest" }[];
     const loginState = await page.evaluate(() => {
@@ -170,25 +101,6 @@ export class FoodstuffsUserAgent {
     });
     return loginState === "loggedIn";
   }
-
-  private async getHeadersFromRequest(request: PlaywrightRequest) {
-    const headers = new Headers();
-    const headersArray = await request.headersArray();
-    headersArray.forEach(({ name, value }) => headers.append(name, value));
-    return headers;
-  }
-
-  private getStorageStateFilePath(): string {
-    if (!this.loginDetails) {
-      throw new Error("No storage state is saved when loginDetails is undefined");
-    }
-    return path.join(getCacheDirForEmail(this.loginDetails.email), "playwright.json");
-  }
-}
-
-export interface LoginDetails {
-  email: string;
-  password: string;
 }
 
 export interface FoodstuffsUserProfile {
