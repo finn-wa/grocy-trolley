@@ -1,31 +1,46 @@
+import { getBrowser } from "@gt/store/shared/rest/browser";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { HeadersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { jest } from "@jest/globals";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import * as cacheUtils from "../../../utils/cache";
-import { getBrowser } from "../../shared/rest/browser";
-import { FoodstuffsRestService } from "./foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
+import { CountdownRestService } from "./countdown-rest-service";
+import { CountdownUserAgent } from "./countdown-user-agent";
 
-class TestRestService extends FoodstuffsRestService {
+class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
   authHeaders = () => super.authHeaders();
+
+  async isValid(headers: Headers): Promise<boolean> {
+    const builder = new HeadersBuilder(headers).acceptJson();
+    const response = await this.get(this.buildUrl("/v1/trolleys/my"), builder.build());
+    if (!response.ok) return false;
+    const body = await response.json();
+    this.logger.debug(body);
+    return body.isSuccessful;
+  }
+
+  async getTrolley(): Promise<any> {
+    const builder = await this.authHeaders();
+    return this.getForJson(this.buildUrl("/v1/trolleys/my"), builder.acceptJson().build());
+  }
 }
 
-describe("FoodstuffsRestService", () => {
-  let userAgent: FoodstuffsUserAgent;
+describe("CountdownRestService", () => {
+  let userAgent: CountdownUserAgent;
   let service: TestRestService;
 
   initEnv({
     envFilePath: ".test.env",
     envFilePathOptional: true,
-    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
+    requiredVars: ["COUNTDOWN_EMAIL", "COUNTDOWN_PASSWORD"],
   });
   const loginDetails: LoginDetails = getEnvAs({
-    PAKNSAVE_EMAIL: "email",
-    PAKNSAVE_PASSWORD: "password",
+    COUNTDOWN_EMAIL: "email",
+    COUNTDOWN_PASSWORD: "password",
   });
   // Different cache dir for these tests to avoid clearing cache for other tests
   const cacheDir = cacheUtils.getCacheDirForEmail(loginDetails.email) + "_rest-service-test";
@@ -33,7 +48,7 @@ describe("FoodstuffsRestService", () => {
 
   beforeEach(async () => {
     await rm(cacheDir, { recursive: true, force: true });
-    userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
+    userAgent = new CountdownUserAgent(getBrowser, loginDetails);
     service = new TestRestService(userAgent);
   });
 
@@ -49,8 +64,6 @@ describe("FoodstuffsRestService", () => {
     expect(getHeadersSpy).toHaveBeenCalledTimes(1);
 
     const rawHeaders = builder.raw();
-    expect(rawHeaders.cookie).toHaveLength(1);
-    expect(rawHeaders.cookie[0]).toMatch(/UserCookieV1/);
 
     const newService = new TestRestService(userAgent);
     // should load from cache without using browser
@@ -60,5 +73,12 @@ describe("FoodstuffsRestService", () => {
     // These assertions are more to test whether the separate cache path is working
     const cacheFiles = await readdir(`${cacheDir}/${userAgent.storeName}`);
     expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
+  });
+
+  test("getTrolley", async () => {
+    const trolley = await service.getTrolley();
+    expect(trolley).toBeTruthy();
+    expect(trolley.isSuccessful).toBe(true);
+    expect(trolley).toMatchSnapshot();
   });
 });

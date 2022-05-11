@@ -1,7 +1,6 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
-import { APPLICATION_JSON, headersToRaw } from "@gt/utils/headers";
-import { Logger, prettyPrint } from "@gt/utils/logger";
+import { Logger } from "@gt/utils/logger";
 import { BrowserContext, JSHandle, Page } from "playwright-firefox";
 import { PAKNSAVE_URL } from "../models";
 
@@ -12,6 +11,15 @@ import { PAKNSAVE_URL } from "../models";
 export class FoodstuffsUserAgent extends StoreUserAgent {
   public readonly storeName = "foodstuffs";
   protected readonly logger = new Logger(this.constructor.name);
+
+  /**
+   * Creates a new agent with the same browser but new login details
+   * @param loginDetails Login details for the new agent, or null to omit them
+   * @returns the new agent
+   */
+  clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
+    return new FoodstuffsUserAgent(this.browserLoader, loginDetails ?? undefined);
+  }
 
   async init(context: BrowserContext): Promise<{ page: Page; headers: Headers }> {
     const page = await context.newPage();
@@ -32,65 +40,6 @@ export class FoodstuffsUserAgent extends StoreUserAgent {
     }
     const headers = await this.getHeadersFromRequest(cartRequest);
     return { page, headers };
-  }
-
-  /**
-   * Creates a new agent with the same browser but new login details
-   * @param loginDetails Login details for the new agent, or null to omit them
-   * @returns the new agent
-   */
-  clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
-    return new FoodstuffsUserAgent(this.browserLoader, loginDetails ?? undefined);
-  }
-
-  /**
-   * Performs a fetch request as a logged in user on the PAK'n'SAVE website.
-   * @param method Request method
-   * @param url Request URL
-   * @param headers Request headers
-   * @param body Request body
-   * @returns Request response
-   */
-  async fetchWithBrowser(
-    method: string,
-    url: string,
-    headers?: Headers,
-    body?: BodyInit
-  ): Promise<Response> {
-    const page = await this.getLoginPage();
-    const contentType = headers?.get("content-type");
-    if (contentType === APPLICATION_JSON && body) {
-      body = JSON.stringify(body);
-    }
-    const rawHeaders = headers ? headersToRaw(headers) : undefined;
-    const responseHandle = await page.evaluateHandle(
-      async ({ url, method, rawHeaders, body }) =>
-        fetch(url, {
-          credentials: this.loginDetails ? "include" : undefined,
-          referrer: "https://www.paknsave.co.nz/shop",
-          mode: "cors",
-          method,
-          // Record<string, string[]> is not in HeadersInit but it works in firefox at least
-          headers: rawHeaders as unknown as HeadersInit | undefined,
-          body,
-        }),
-      { url, method, rawHeaders, body }
-    );
-    // Response is not serialisable, so we must serialise it
-    /* eslint-disable */
-    const response = await responseHandle.evaluate((response, props) => {
-      const responseJson: Record<string, any> = Object.fromEntries(
-        props.map((key) => [key, response[key]])
-      );
-      responseJson.headers = Object.fromEntries(responseJson.headers.entries());
-      return responseJson as SerialisedResponse;
-    }, SERIALISABLE_RESPONSE_PROPS);
-    /* eslint-enable */
-    if (!response.ok) {
-      throw new Error(`Response not OK: ${prettyPrint(response)}`);
-    }
-    this.logger.trace("Response: " + prettyPrint(response));
-    return new FoodstuffsResponse(responseHandle, response);
   }
 
   private async isLoggedIn(page: Page) {
@@ -122,6 +71,7 @@ export interface LoginResponse {
 /**
  * Response backed by a Playwright JSHandle browser fetch Response. json()
  * and text() extraction methods are available.
+ * @deprecated could probably use waitForRequest
  */
 class FoodstuffsResponse implements Response {
   readonly bodyUsed: boolean;

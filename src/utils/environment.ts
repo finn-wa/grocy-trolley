@@ -5,6 +5,8 @@ import { existsSync } from "fs";
 const EnvVars = [
   "BARCODEBUDDY_URL",
   "CACHE_DIR",
+  "COUNTDOWN_EMAIL",
+  "COUNTDOWN_PASSWORD",
   "GROCY_API_KEY",
   "GROCY_URL",
   "GT_LOG_LEVEL",

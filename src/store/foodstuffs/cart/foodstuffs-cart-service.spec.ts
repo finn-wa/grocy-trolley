@@ -1,7 +1,7 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
-import { getBrowser } from "../services";
+import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 
