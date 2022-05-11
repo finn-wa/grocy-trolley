@@ -1,4 +1,6 @@
 import { StoreRestService } from "@gt/store/shared/rest/store-rest-service";
+import { HeadersBuilder } from "@gt/utils/headers";
+import { prettyPrint } from "@gt/utils/logger";
 import { PAKNSAVE_URL } from "../models";
 
 export abstract class FoodstuffsRestService extends StoreRestService {
@@ -31,4 +33,20 @@ export abstract class FoodstuffsRestService extends StoreRestService {
       "te",
     ],
   };
+
+  async isValid(headers: Headers): Promise<boolean> {
+    try {
+      const cart = await this.getForJson(
+        this.buildUrl("/Cart/Index"),
+        new HeadersBuilder(headers).acceptJson().build()
+      );
+      if (!cart || typeof cart !== "object") {
+        throw new Error("Test getCart request failed: " + prettyPrint(cart));
+      }
+    } catch (error) {
+      this.logger.debug("Headers failed validation", headers, error);
+      return false;
+    }
+    return true;
+  }
 }

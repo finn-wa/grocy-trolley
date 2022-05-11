@@ -20,6 +20,13 @@ export abstract class StoreRestService extends RestService {
     );
   }
 
+  /**
+   * Used to test whether cached headers are valid or not.
+   * @param headers Headers to test
+   * @returns True if the headers are valid
+   */
+  protected abstract isValid(headers: Headers): Promise<boolean>;
+
   protected async authHeaders(): Promise<HeadersBuilder> {
     if (this._authHeaders) {
       return new HeadersBuilder(this._authHeaders);
@@ -38,14 +45,7 @@ export abstract class StoreRestService extends RestService {
     try {
       const headersStr = await readFile(this.headersCachePath, { encoding: "utf-8" });
       const headers = headersFromRaw(JSON.parse(headersStr) as Record<string, string[]>);
-      const cart = await this.getForJson(
-        this.buildUrl("/Cart/Index"),
-        new HeadersBuilder(headers).acceptJson().build()
-      );
-      if (!cart || typeof cart !== "object") {
-        throw new Error("Test getCart request failed: " + prettyPrint(cart));
-      }
-      return headers;
+      return (await this.isValid(headers)) ? headers : null;
     } catch (error) {
       this.logger.info("No valid cached headers found");
       this.logger.debug(error);

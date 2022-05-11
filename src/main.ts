@@ -1,14 +1,18 @@
 import { GrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/shopping-list-exporter";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
-import { initEnv } from "@gt/utils/environment";
-import { Logger, LOG_LEVELS } from "@gt/utils/logger";
+import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { Logger, LOG_LEVELS, prettyPrint } from "@gt/utils/logger";
 import { Argument, Option, program } from "commander";
 import { readFile } from "fs/promises";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
+import { CountdownRestService } from "./store/countdown/rest/countdown-rest-service";
+import { CountdownUserAgent } from "./store/countdown/rest/countdown-user-agent";
 import { ListProductRef } from "./store/foodstuffs/lists/foodstuffs-list.model";
+import { getBrowser } from "./store/shared/rest/browser";
+import { HeadersBuilder, headersBuilder } from "./utils/headers";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
@@ -164,11 +168,27 @@ async function main(): Promise<unknown> {
 
   /* eslint-disable */
   program.command("dev", { hidden: true }).action(async () => {
-    const listStr = await readFile("./temp/cd-list.json", { encoding: "utf-8" });
-    const products = Object.values(JSON.parse(listStr)) as ListProductRef[];
-    const foodstuffs = await foodstuffsServices();
-    const listId = await foodstuffs.listService.selectList();
-    await foodstuffs.listService.addProductsToList(listId, products);
+    class TestRestService extends CountdownRestService {
+      protected readonly logger = new Logger(this.constructor.name);
+      authHeaders = () => super.authHeaders();
+
+      async isValid(headers: Headers): Promise<boolean> {
+        const builder = new HeadersBuilder(headers).acceptJson();
+        const response = await this.get(this.buildUrl("/v1/trolleys/my"), builder.build());
+        if (!response.ok) return false;
+        const body = await response.json();
+        this.logger.debug(prettyPrint(body));
+        return body.isSuccessful;
+      }
+    }
+    const svc = new TestRestService(
+      new CountdownUserAgent(
+        getBrowser,
+        getEnvAs({ COUNTDOWN_EMAIL: "email", COUNTDOWN_PASSWORD: "password" })
+      )
+    );
+    await svc.isValid((await svc.authHeaders()).headers);
+    await prompts({ message: "done?", type: "invisible", name: "idk" });
     console.log("Done");
   });
   /* eslint-enable */
