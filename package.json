@@ -17,6 +17,7 @@
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
   "dependencies": {
+    "ajv": "^8.11.0",
     "chalk": "4",
     "commander": "9.2.0",
     "dotenv": "16.0.0",
