@@ -64,7 +64,6 @@ describe("CountdownRestService", () => {
     expect(getHeadersSpy).toHaveBeenCalledTimes(1);
 
     const rawHeaders = builder.raw();
-
     const newService = new TestRestService(userAgent);
     // should load from cache without using browser
     const cachedHeaders = (await newService.authHeaders()).raw();
