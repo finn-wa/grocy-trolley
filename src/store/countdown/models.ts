@@ -83,7 +83,7 @@ export interface DeliveryFee {
 export interface OneCardBalance {
   isOneCardInError: boolean;
   onecardPointsBalance: number;
-  continuitySpend?: any;
+  continuitySpend?: unknown;
   redeemableRewardVouchers: number;
   oneCardNumber: string;
   oneCardCurrency: string;
@@ -102,7 +102,7 @@ export interface Shopper {
   isSupplyLimitOverrideShopper: boolean;
   isPriorityShopper: boolean;
   isChangingOrder: boolean;
-  changingOrderId?: any;
+  changingOrderId?: unknown;
   hasActiveDeliverySubscription: boolean;
 }
 
@@ -113,25 +113,25 @@ export interface ExpressFulfilment {
 
 export interface Fulfilment {
   address: string;
-  selectedDate?: any;
-  selectedDateWithTZInfo?: any;
-  startTime?: any;
-  endTime?: any;
+  selectedDate?: unknown;
+  selectedDateWithTZInfo?: unknown;
+  startTime?: unknown;
+  endTime?: unknown;
   method: string;
-  cutOffTime?: any;
+  cutOffTime?: unknown;
   isSlotToday: boolean;
   isAddressInDeliveryZone: boolean;
   isDefaultDeliveryAddress: boolean;
   areaId: number;
   fulfilmentStoreId: number;
   perishableCode: string;
-  locker?: any;
+  locker?: unknown;
   expressFulfilment: ExpressFulfilment;
 }
 
 export interface BasketTotals {
   subtotal: string;
-  savings?: any;
+  savings?: unknown;
   totalItems: number;
   deliveryFees: string;
   bagFees: string;
@@ -159,9 +159,9 @@ export interface Shell {
   specials: Link[];
   dynamicHeaderLink: DynamicLink;
   mainNavs: MainNav[];
-  browseBanners: any[];
+  browseBanners: unknown[];
   specialsBanners: SpecialsBanner[];
-  recipesBanners: any[];
+  recipesBanners: unknown[];
   fulfilmentMessages: Record<string, string>;
   fulfilmentTimeouts: FulfilmentTimeouts;
   traderVersion: string;
@@ -176,5 +176,5 @@ export interface Shell {
   isSuccessful: boolean;
   rootUrl: string;
   context: Context;
-  messages?: any;
+  messages?: unknown;
 }

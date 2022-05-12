@@ -3,7 +3,7 @@ import path from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 
-function writeJsonFile(path: string, obj: any) {
+function writeJsonFile(path: string, obj: unknown) {
   return writeFile(path, JSON.stringify(obj), { encoding: "utf-8" });
 }
 
@@ -11,7 +11,7 @@ export async function generateTypes(
   methodName: string,
   typeName: string,
   sourceDir: string,
-  ...inputs: any[]
+  ...inputs: unknown[]
 ) {
   const typesDir = path.join(sourceDir, "types", methodName);
   await mkdir(typesDir, { recursive: true });

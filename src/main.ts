@@ -1,20 +1,13 @@
 import { GrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/shopping-list-exporter";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
-import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { Logger, LOG_LEVELS, prettyPrint } from "@gt/utils/logger";
+import { initEnv } from "@gt/utils/environment";
+import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 import { Argument, Option, program } from "commander";
-import { writeFile } from "fs/promises";
 import { grocyServices } from "grocy";
 import { exit } from "process";
 import prompts from "prompts";
 import { dev } from "./dev";
-import { jtdCodegen } from "./jtd/codegen";
-import { jtdInfer } from "./jtd/infer";
-import { CountdownOrderService } from "./store/countdown/orders/countdown-order-service";
-import { CountdownUserAgent } from "./store/countdown/rest/countdown-user-agent";
-import { CountdownTrolleyService } from "./store/countdown/trolley/countdown-trolley-service";
-import { getBrowser } from "./store/shared/rest/browser";
 
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];

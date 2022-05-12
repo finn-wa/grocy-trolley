@@ -24,6 +24,16 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "_" }],
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      {
+        allowNumber: true,
+        allowBoolean: true,
+        allowNullish: true,
+        allowRegExp: true,
+        allowAny: false,
+      },
+    ],
   },
   ignorePatterns: [
     ".eslintrc.js",

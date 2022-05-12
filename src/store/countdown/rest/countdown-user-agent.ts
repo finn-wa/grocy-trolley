@@ -9,7 +9,7 @@ export class CountdownUserAgent extends StoreUserAgent {
 
   async init(context: BrowserContext): Promise<{ page: Page; headers: Headers }> {
     const page = await context.newPage();
-    const [_, shellRequest] = await Promise.all([
+    const [_goto, shellRequest] = await Promise.all([
       page.goto(COUNTDOWN_URL + "/shop/securelogin"),
       page.waitForRequest(`${COUNTDOWN_URL}/api/v1/shell`),
     ]);
