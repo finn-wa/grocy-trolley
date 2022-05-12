@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "filterList": {
+      "elements": {
+        "properties": {
+          "selected": { "type": "boolean" },
+          "text": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      }
+    },
+    "items": {
+      "elements": {
+        "properties": {
+          "deliveryFee": { "type": "uint8" },
+          "fulfilmentDate": { "type": "string" },
+          "fulfilmentTime": { "type": "string" },
+          "isEditable": { "type": "boolean" },
+          "method": { "type": "string" },
+          "orderDate": { "type": "string" },
+          "orderId": { "type": "uint32" },
+          "prefix": { "type": "string" },
+          "status": { "type": "string" },
+          "total": { "type": "float64" }
+        }
+      }
+    },
+    "totalItems": { "type": "uint8" }
+  }
+}

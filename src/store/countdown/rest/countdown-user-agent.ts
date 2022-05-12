@@ -19,6 +19,7 @@ export class CountdownUserAgent extends StoreUserAgent {
     await page.waitForLoadState("networkidle");
     await page.type("#loginContainer input#loginID", this.loginDetails.email);
     await page.type("#loginContainer input#password", this.loginDetails.password);
+    await page.click("#loginContainer input#remember");
     await page.click('#loginContainer button[value="Submit"]');
     // Arbitrary authenticated request that happens after login
     const request = await page.waitForRequest(`${COUNTDOWN_URL}/api/v1/shoppers/my/recipes`);

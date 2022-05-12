@@ -1,7 +1,6 @@
 import { getBrowser } from "@gt/store/shared/rest/browser";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { HeadersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { jest } from "@jest/globals";
 import { existsSync } from "fs";
@@ -13,15 +12,6 @@ import { CountdownUserAgent } from "./countdown-user-agent";
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
   authHeaders = () => super.authHeaders();
-
-  async isValid(headers: Headers): Promise<boolean> {
-    const builder = new HeadersBuilder(headers).acceptJson();
-    const response = await this.get(this.buildUrl("/v1/trolleys/my"), builder.build());
-    if (!response.ok) return false;
-    const body = await response.json();
-    this.logger.debug(body);
-    return body.isSuccessful;
-  }
 
   async getTrolley(): Promise<any> {
     const builder = await this.authHeaders();
