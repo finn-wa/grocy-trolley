@@ -9,6 +9,8 @@ export class CountdownTrolleyService extends CountdownRestService {
 
   async getTrolley(): Promise<Trolley> {
     const builder = await this.authHeaders();
-    return this.getForJson(this.buildUrl("/v1/trolleys/my"), builder.acceptJson().build());
+    return this.getAndParse(this.buildUrl("/v1/trolleys/my"), {
+      headers: builder.acceptJson().build(),
+    });
   }
 }

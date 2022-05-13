@@ -15,7 +15,9 @@ class TestRestService extends CountdownRestService {
 
   async getTrolley(): Promise<any> {
     const builder = await this.authHeaders();
-    return this.getForJson(this.buildUrl("/v1/trolleys/my"), builder.acceptJson().build());
+    return this.getAndParse(this.buildUrl("/v1/trolleys/my"), {
+      headers: builder.acceptJson().build(),
+    });
   }
 }
 

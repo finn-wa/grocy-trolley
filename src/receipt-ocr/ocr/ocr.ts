@@ -2,7 +2,7 @@ import path from "path/posix";
 import { getEnv } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
-import { RestService } from "@gt/utils/rest";
+import { RestService, textParser } from "@gt/utils/rest";
 import { ReceiptScanner } from "..";
 
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {
@@ -19,16 +19,14 @@ export class OcrReceiptScanner extends RestService implements ReceiptScanner {
     const formData = new FormData();
     formData.append("language", "eng");
     formData.append("url", filepath);
-    const res = await this.post(
-      this.buildUrl("/parse/image"),
-      headersBuilder()
+    return this.postAndParse(this.buildUrl("/parse/image"), {
+      headers: headersBuilder()
         .apikey(this.apikey)
         .append("redirect", "follow")
         .append("OCREngine", "2")
         .build(),
-      formData
-    );
-    return JSON.parse(await this.extractText(res)) as ScanResponse;
+      body: formData,
+    });
   }
 
   private getContentType(filepath: string) {

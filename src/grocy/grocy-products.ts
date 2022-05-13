@@ -40,11 +40,11 @@ export class GrocyProductService extends GrocyRestService {
     const { userfields, ...coreProduct } = product;
     const productResponse = await this.createEntity("products", coreProduct);
     const id = productResponse.created_object_id;
-    const userfieldsResponse = await this.put(
-      this.buildUrl(`userfields/products/${id}`),
-      this.authHeaders().contentTypeJson().build(),
-      userfields
-    );
+    const userfieldsResponse = await this.fetch(this.buildUrl(`userfields/products/${id}`), {
+      method: "PUT",
+      headers: this.authHeaders().contentTypeJson().build(),
+      body: JSON.stringify(userfields),
+    });
     if (!quConversions || quConversions.length === 0) {
       return { id, userfieldsResponse, quConversionIds: [] };
     }
@@ -112,7 +112,10 @@ export class GrocyProductService extends GrocyRestService {
    * @returns API response
    */
   async deleteProduct(id: number): Promise<Response> {
-    return this.delete(this.buildUrl(`objects/products/${id}`), this.authHeaders().build());
+    return this.fetch(this.buildUrl(`objects/products/${id}`), {
+      method: "DELETE",
+      headers: this.authHeaders().build(),
+    });
   }
 
   private deserialiseProductUserfields(product: UnparsedProduct): Product {
@@ -133,9 +136,9 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   private async getProductUserfields(productId: string | number): Promise<ProductUserfields> {
-    const userfields = await this.getForJson<UnparsedProduct["userfields"]>(
+    const userfields = await this.getAndParse<UnparsedProduct["userfields"]>(
       this.buildUrl(`userfields/products/${productId}`),
-      this.authHeaders().acceptJson().build()
+      { headers: this.authHeaders().acceptJson().build() }
     );
     return this.deserialiseUserfields(userfields);
   }
@@ -148,11 +151,11 @@ export class GrocyProductService extends GrocyRestService {
       ...userfields,
       storeMetadata: JSON.stringify(userfields.storeMetadata),
     };
-    return this.put(
-      this.buildUrl(`userfields/products/${productId}`),
-      this.authHeaders().contentTypeJson().build(),
-      serialisedUserfields
-    );
+    return this.fetch(this.buildUrl(`userfields/products/${productId}`), {
+      method: "PUT",
+      headers: this.authHeaders().contentTypeJson().build(),
+      body: JSON.stringify(serialisedUserfields),
+    });
   }
 }
 

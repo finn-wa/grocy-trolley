@@ -13,15 +13,16 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
 
   async getCart(): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
-    return this.getForJson(this.buildUrl("Cart/Index"), headersBuilder.acceptJson().build());
+    return this.getAndParse(this.buildUrl("Cart/Index"), {
+      headers: headersBuilder.acceptJson().build(),
+    });
   }
 
   async clearCart(): Promise<{ success: true }> {
     const headersBuilder = await this.authHeaders();
-    const response = await this.deleteForJson<{ success: boolean }>(
-      this.buildUrl("Cart/Clear"),
-      headersBuilder.acceptJson().build()
-    );
+    const response = await this.deleteAndParse<{ success: boolean }>(this.buildUrl("Cart/Clear"), {
+      headers: headersBuilder.acceptJson().build(),
+    });
     if (!response.success) {
       throw new Error(`Failed to clear cart: ${prettyPrint(response)}`);
     }
@@ -73,10 +74,9 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
 
   private async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
-    return this.postForJson(
-      this.buildUrl("Cart/Index"),
-      headersBuilder.contentTypeJson().acceptJson().build(),
-      { products }
-    );
+    return this.postAndParse(this.buildUrl("Cart/Index"), {
+      headers: headersBuilder.contentTypeJson().acceptJson().build(),
+      body: JSON.stringify({ products }),
+    });
   }
 }

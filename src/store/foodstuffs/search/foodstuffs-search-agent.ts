@@ -29,11 +29,10 @@ export class FoodstuffsSearchAgent extends FoodstuffsRestService {
     this.logger.info("Searching Foodstuffs: " + query);
     await this.cooldown();
     const headersBuilder = await this.authHeaders();
-    return this.postForJson(
-      this.buildUrl("SearchAutoComplete/AutoComplete"),
-      headersBuilder.acceptJson().contentTypeJson().build(),
-      { SearchTerm: query }
-    );
+    return this.postAndParse(this.buildUrl("SearchAutoComplete/AutoComplete"), {
+      headers: headersBuilder.acceptJson().contentTypeJson().build(),
+      body: JSON.stringify({ SearchTerm: query }),
+    });
   }
 
   /**

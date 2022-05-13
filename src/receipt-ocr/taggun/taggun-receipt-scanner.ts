@@ -50,16 +50,15 @@ export class TaggunReceiptScanner extends RestService implements ReceiptScanner 
       extractTime: false,
       incognito: false,
     };
-    return this.postForJson(
-      this.buildUrl("api/receipt/v1/verbose/encoded"),
-      headersBuilder()
+    return this.postAndParse(this.buildUrl("api/receipt/v1/verbose/encoded"), {
+      headers: headersBuilder()
         .acceptJson()
         .contentTypeJson()
         .apikey(this.apiKey)
         .append("Accept-Encoding", "gzip, deflate, br")
         .build(),
-      body
-    );
+      body: JSON.stringify(body),
+    });
   }
 
   private getContentType(filePath: string) {

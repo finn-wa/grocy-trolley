@@ -9,7 +9,8 @@
     "outDir": "build/out-ts",
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "exclude": ["**/__snapshots"]
 }

@@ -36,10 +36,9 @@ export abstract class FoodstuffsRestService extends StoreRestService {
 
   async isValid(headers: Headers): Promise<boolean> {
     try {
-      const cart = await this.getForJson(
-        this.buildUrl("/Cart/Index"),
-        new HeadersBuilder(headers).acceptJson().build()
-      );
+      const cart = await this.getAndParse(this.buildUrl("/Cart/Index"), {
+        headers: new HeadersBuilder(headers).acceptJson().build(),
+      });
       if (!cart || typeof cart !== "object") {
         throw new Error("Test getCart request failed: " + prettyPrint(cart));
       }

@@ -20,10 +20,9 @@ export class GrocyUserEntityService extends GrocyRestService {
     if (!refresh && !!this.entities) {
       return this.entities;
     }
-    const entities: UserEntity[] = await this.getForJson(
-      this.buildUrl("objects/userentities"),
-      this.authHeaders().acceptJson().build()
-    );
+    const entities: UserEntity[] = await this.getAndParse(this.buildUrl("objects/userentities"), {
+      headers: this.authHeaders().acceptJson().build(),
+    });
     this.entities = entities;
     return entities;
   }
@@ -50,10 +49,9 @@ export class GrocyUserEntityService extends GrocyRestService {
     userEntityName: Name,
     objectId: number | string
   ): Promise<UserObjects[Name]> {
-    return this.getForJson(
-      this.buildUrl(`userfields/userentity-${userEntityName}/${objectId}`),
-      this.authHeaders().acceptJson().build()
-    );
+    return this.getAndParse(this.buildUrl(`userfields/userentity-${userEntityName}/${objectId}`), {
+      headers: this.authHeaders().acceptJson().build(),
+    });
   }
 
   async getObjectsForUserEntity<Name extends UserEntityName>(
@@ -70,16 +68,21 @@ export class GrocyUserEntityService extends GrocyRestService {
 
   async createUserObject(entityName: UserEntityName, obj: unknown): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const postResponse: CreatedObjectId = await this.postForJson(
+    const postResponse: CreatedObjectId = await this.postAndParse(
       this.buildUrl("objects/userobjects"),
-      this.authHeaders().acceptJson().contentTypeJson().build(),
-      { userentity_id: entityId }
+      {
+        headers: this.authHeaders().acceptJson().contentTypeJson().build(),
+        body: JSON.stringify({ userentity_id: entityId }),
+      }
     );
     const objectId = postResponse.created_object_id;
-    const response = await this.put(
+    const response = await this.fetch(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
-      this.authHeaders().contentTypeJson().build(),
-      obj
+      {
+        method: "PUT",
+        headers: this.authHeaders().contentTypeJson().build(),
+        body: JSON.stringify(obj),
+      }
     );
     return { response, objectId };
   }
@@ -89,11 +92,11 @@ export class GrocyUserEntityService extends GrocyRestService {
     objectId: string | number,
     body: UserObjects[Name]
   ): Promise<Response> {
-    return this.put(
-      this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
-      this.authHeaders().contentTypeJson().build(),
-      body
-    );
+    return this.fetch(this.buildUrl(`userfields/userentity-${entityName}/${objectId}`), {
+      method: "PUT",
+      headers: this.authHeaders().contentTypeJson().build(),
+      body: JSON.stringify(body),
+    });
   }
 }
 

@@ -15,20 +15,18 @@ export abstract class GrocyRestService extends RestService {
   protected async getEntities<K extends keyof GrocySchemas>(
     entityName: GrocySchemas["ExposedEntity"]
   ): Promise<GrocySchemas[K][]> {
-    return this.getForJson(
-      this.buildUrl("objects/" + entityName),
-      this.authHeaders().acceptJson().build()
-    );
+    return this.getAndParse(this.buildUrl("objects/" + entityName), {
+      headers: this.authHeaders().acceptJson().build(),
+    });
   }
 
   protected async getEntity<K extends keyof GrocySchemas>(
     entityName: GrocySchemas["ExposedEntity"],
     id: string | number
   ): Promise<GrocySchemas[K]> {
-    return this.getForJson(
-      this.buildUrl(`objects/${entityName}/${id}`),
-      this.authHeaders().acceptJson().build()
-    );
+    return this.getAndParse(this.buildUrl(`objects/${entityName}/${id}`), {
+      headers: this.authHeaders().acceptJson().build(),
+    });
   }
 
   protected async updateEntity<K extends keyof GrocySchemas>(
@@ -36,21 +34,20 @@ export abstract class GrocyRestService extends RestService {
     id: string | number,
     entity: GrocySchemas[K]
   ): Promise<Response> {
-    return this.put(
-      this.buildUrl(`objects/${entityName}/${id}`),
-      this.authHeaders().acceptJson().contentTypeJson().build(),
-      entity
-    );
+    return this.fetch(this.buildUrl(`objects/${entityName}/${id}`), {
+      method: "PUT",
+      headers: this.authHeaders().acceptJson().contentTypeJson().build(),
+      body: JSON.stringify(entity),
+    });
   }
 
   protected async createEntity<K extends keyof GrocySchemas>(
     entityName: GrocySchemas["ExposedEntity"],
     entity: GrocySchemas[K]
   ): Promise<CreatedObjectId> {
-    return this.postForJson(
-      this.buildUrl(`objects/${entityName}`),
-      this.authHeaders().acceptJson().contentTypeJson().build(),
-      entity
-    );
+    return this.postAndParse(this.buildUrl(`objects/${entityName}`), {
+      headers: this.authHeaders().acceptJson().contentTypeJson().build(),
+      body: JSON.stringify(entity),
+    });
   }
 }
