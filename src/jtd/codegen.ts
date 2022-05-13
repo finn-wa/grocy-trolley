@@ -6,14 +6,14 @@ import { Readable } from "stream";
 /**
  * Generates typescript type definitions based on JTD schema
  * @rootName
- * @param schema Schema
+ * @param schema JTD Schema as a string
  * @param outputDir Output directory for generated typescript files
  * @see https://jsontypedef.com/docs/jtd-codegen
  * @see https://github.com/jsontypedef/json-typedef-codegen
  */
 export async function jtdCodegen(
   rootName: string,
-  schema: JTDSchemaType<unknown>,
+  schema: string,
   outputDir: string
 ): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -37,10 +37,9 @@ export async function jtdCodegen(
     if (!jtdCodegen.stdin) {
       throw new Error(`[jtd-codegen] io error. stdin not initialised`);
     }
-    const input = JSON.stringify(schema);
     const inputStream = new Readable();
     inputStream.pipe(jtdCodegen.stdin);
-    inputStream.push(input);
+    inputStream.push(schema);
     inputStream.push(null);
   });
 }

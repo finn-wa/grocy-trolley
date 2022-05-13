@@ -1,4 +1,3 @@
-import { JTDSchemaType } from "ajv/dist/core";
 import { execFile } from "child_process";
 import { existsSync } from "fs";
 import { Readable } from "stream";
@@ -6,11 +5,11 @@ import { Readable } from "stream";
 /**
  * Infers a Json Type Definition from sample JS objects.
  * @param inputObjects Sample objects to infer
- * @returns JTD object
+ * @returns string containing the JTD
  * @see https://jsontypedef.com/docs/jtd-infer
  * @see https://github.com/jsontypedef/json-typedef-infer
  */
-export async function jtdInfer<T>(...inputObjects: T[]): Promise<JTDSchemaType<T>> {
+export async function jtdInfer<T>(...inputObjects: T[]): Promise<string> {
   return new Promise((resolve, reject) => {
     const jtdInferPath = process.platform === "win32" ? "bin/jtd-infer.exe" : "bin/jtd-infer";
     if (!existsSync(jtdInferPath)) {
@@ -22,7 +21,7 @@ export async function jtdInfer<T>(...inputObjects: T[]): Promise<JTDSchemaType<T
     }
     const jtdInfer = execFile(jtdInferPath, (error, stdout) => {
       if (error) reject(error);
-      if (stdout) resolve(JSON.parse(stdout) as JTDSchemaType<T>);
+      if (stdout) resolve(stdout);
     });
     if (!jtdInfer.stdin || !jtdInfer.stdout) {
       throw new Error(

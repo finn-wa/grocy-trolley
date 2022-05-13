@@ -1,6 +1,32 @@
+import { JTDParser } from "ajv/dist/types";
 import { URL, URLSearchParams } from "url";
-import { APPLICATION_JSON, headersToRaw } from "./headers";
+import { headersToRaw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
+
+export type BodyParser<T> = (res: Response) => Promise<T>;
+
+export const textParser: BodyParser<string> = (res) => res.text();
+
+export async function defaultJsonParser<T>(res: Response): Promise<T> {
+  const jsonString = await res.text();
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch (error) {
+    throw new Error(`Failed to parse JSON:\n${jsonString}`, { cause: error as Error });
+  }
+}
+
+export function jtdParser<T>(parser: JTDParser<T>): BodyParser<T> {
+  return async (res: Response) => {
+    const jsonString = await res.text();
+    const body = parser(jsonString);
+    if (body) {
+      return body;
+    }
+    const { position, message } = parser;
+    throw new Error(`Failed to validate body:\n${jsonString}\n\nError at ${position}: ${message}`);
+  };
+}
 
 export abstract class RestService {
   protected abstract readonly baseUrl: string;
@@ -23,120 +49,62 @@ export abstract class RestService {
     return url.toString();
   }
 
-  private async extract<T>(response: Response, extractor: (b: Response) => Promise<T>) {
-    if (!response.ok) {
-      let errorMsg = `Response not OK, status: ${response.status}. `;
-      try {
-        const body = await extractor(response);
-        errorMsg += "Body: " + prettyPrint(body);
-      } catch (error) {
-        errorMsg += "Error extracting body: " + prettyPrint(error);
-      }
-      throw new Error(errorMsg);
+  protected async fetch(url: string, init?: RequestInit): Promise<Response> {
+    this.logger.debug(`${init?.method ?? "GET"} ${url}`);
+    if (init?.headers) {
+      this.logger.trace(prettyPrint(headersToRaw(new Headers(init.headers))));
     }
-    const body = await extractor(response);
-    this.logger.trace(prettyPrint(body));
-    return body;
-  }
-
-  protected async extractJson<T>(response: Response): Promise<T> {
-    try {
-      return this.extract<T>(response, (r) => r.json() as Promise<T>);
-    } catch (error) {
-      this.logger.error(`Error parsing JSON:\n${await response.text()}`);
-      throw error;
+    if (init?.body) {
+      this.logger.trace(init.body);
     }
-  }
-
-  protected async extractText(response: Response): Promise<string> {
-    return this.extract(response, (r) => r.text());
-  }
-
-  protected async fetchWithMethod(
-    method: string,
-    url: string,
-    headers?: Headers,
-    body?: BodyInit | any // eslint-disable-line @typescript-eslint/no-explicit-any
-  ): Promise<Response> {
-    this.logger.debug(`${method} ${url}`);
-    if (headers) this.logger.trace(prettyPrint(headersToRaw(headers)));
-    if (body) this.logger.trace(body);
-
-    const contentType = headers?.get("content-type");
-    if (contentType === APPLICATION_JSON && body) {
-      body = JSON.stringify(body);
-    }
-    const response = await fetch(url, { method, headers, body: body as string | undefined });
-    this.logger.trace(`Response: ${response.status}`);
+    const response = await fetch(url, init);
+    this.logger.debug(`Response: ${response.status}`);
     if (!response.ok) {
       throw new Error(`${response.status}: ${await response.text()}`);
     }
     return response;
   }
 
-  protected async fetchJsonWithMethod<T>(
-    method: string,
+  protected async fetchAndParse<T>(
     url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
+    init?: RequestInit,
+    bodyParser: BodyParser<T> = defaultJsonParser
   ): Promise<T> {
-    const response = await this.fetchWithMethod(method, url, headers, body);
-    return this.extractJson(response);
+    const response = await this.fetch(url, init);
+    const responseBody = await bodyParser(response);
+    this.logger.trace(prettyPrint(responseBody));
+    return responseBody;
   }
 
-  protected async get(
+  protected async getAndParse<T>(
     url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
-  ): Promise<Response> {
-    return this.fetchWithMethod("GET", url, headers, body);
-  }
-
-  protected async getForJson<T>(
-    url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
+    init: RequestInit = {},
+    bodyParser: BodyParser<T> = defaultJsonParser
   ): Promise<T> {
-    return this.fetchJsonWithMethod("GET", url, headers, body);
+    return this.fetchAndParse(url, { ...init, method: "GET" }, bodyParser);
   }
 
-  protected async post(
+  protected async postAndParse<T>(
     url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
-  ): Promise<Response> {
-    return this.fetchWithMethod("POST", url, headers, body);
-  }
-
-  protected async postForJson<T>(
-    url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
+    init: RequestInit = {},
+    bodyParser: BodyParser<T> = defaultJsonParser
   ): Promise<T> {
-    return this.fetchJsonWithMethod("POST", url, headers, body);
+    return this.fetchAndParse(url, { ...init, method: "POST" }, bodyParser);
   }
 
-  protected async put(
+  protected async putAndParse<T>(
     url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
-  ): Promise<Response> {
-    return this.fetchWithMethod("PUT", url, headers, body);
-  }
-
-  protected async putForJson<T>(
-    url: string,
-    headers?: Headers,
-    body?: BodyInit | unknown
+    init: RequestInit = {},
+    bodyParser: BodyParser<T> = defaultJsonParser
   ): Promise<T> {
-    return this.fetchJsonWithMethod("PUT", url, headers, body);
+    return this.fetchAndParse(url, { ...init, method: "PUT" }, bodyParser);
   }
 
-  protected async delete(url: string, headers?: Headers): Promise<Response> {
-    return this.fetchWithMethod("DELETE", url, headers);
-  }
-
-  protected async deleteForJson<T>(url: string, headers?: Headers): Promise<T> {
-    return this.fetchJsonWithMethod("DELETE", url, headers);
+  protected async deleteAndParse<T>(
+    url: string,
+    init: RequestInit = {},
+    bodyParser: BodyParser<T> = defaultJsonParser
+  ): Promise<T> {
+    return this.fetchAndParse(url, { ...init, method: "DELETE" }, bodyParser);
   }
 }

@@ -23,10 +23,9 @@ export class FoodstuffsListService extends FoodstuffsRestService {
 
   async createList(name: string): Promise<List> {
     const headersBuilder = await this.authHeaders();
-    return this.putForJson(
-      this.buildUrl("ShoppingLists/CreateList", { name }),
-      headersBuilder.acceptJson().build()
-    );
+    return this.putAndParse(this.buildUrl("ShoppingLists/CreateList", { name }), {
+      headers: headersBuilder.acceptJson().build(),
+    });
   }
 
   async createListWithNamePrompt(): Promise<List> {
@@ -42,18 +41,16 @@ export class FoodstuffsListService extends FoodstuffsRestService {
 
   async getLists(): Promise<List[]> {
     const headersBuilder = await this.authHeaders();
-    return this.getForJson<{ lists: List[] }>(
-      this.buildUrl("ShoppingLists/GetLists"),
-      headersBuilder.acceptJson().build()
-    ).then((res) => res.lists);
+    return this.getAndParse<{ lists: List[] }>(this.buildUrl("ShoppingLists/GetLists"), {
+      headers: headersBuilder.acceptJson().build(),
+    }).then((res) => res.lists);
   }
 
   async getList(id: string): Promise<List> {
     const headersBuilder = await this.authHeaders();
-    return this.getForJson(
-      this.buildUrl("ShoppingLists/GetList", { id }),
-      headersBuilder.acceptJson().build()
-    );
+    return this.getAndParse(this.buildUrl("ShoppingLists/GetList", { id }), {
+      headers: headersBuilder.acceptJson().build(),
+    });
   }
 
   async selectList(): Promise<string> {
@@ -84,19 +81,17 @@ export class FoodstuffsListService extends FoodstuffsRestService {
    */
   async updateList(listUpdate: ListUpdate): Promise<Omit<List, "name">> {
     const headersBuilder = await this.authHeaders();
-    return this.postForJson(
-      this.buildUrl("ShoppingLists/UpdateList"),
-      headersBuilder.contentTypeJson().acceptJson().build(),
-      listUpdate
-    );
+    return this.postAndParse(this.buildUrl("ShoppingLists/UpdateList"), {
+      headers: headersBuilder.contentTypeJson().acceptJson().build(),
+      body: JSON.stringify(listUpdate),
+    });
   }
 
   async deleteList(id: string | number): Promise<{ lists: Omit<List, "products">[] }> {
     const headersBuilder = await this.authHeaders();
-    return this.deleteForJson(
-      this.buildUrl(`ShoppingLists/DeleteList/${id}`),
-      headersBuilder.acceptJson().build()
-    );
+    return this.deleteAndParse(this.buildUrl(`ShoppingLists/DeleteList/${id}`), {
+      headers: headersBuilder.acceptJson().build(),
+    });
   }
 
   async createListWithProducts(
@@ -147,13 +142,13 @@ export class FoodstuffsListService extends FoodstuffsRestService {
       lists = await this.getLists();
     }
     const headersBuilder = await this.authHeaders();
-    const headers = headersBuilder.acceptJson().build();
+    const request: RequestInit = { method: "DELETE", headers: headersBuilder.acceptJson().build() };
     const deletionUrls = lists
       .filter((list) => namePattern?.test(list.name) ?? true)
       .map(({ listId }) => this.buildUrl(`ShoppingLists/DeleteList/${listId}`));
     // Promise.all doesn't seem to work well
     const responses = [];
-    for (const url of deletionUrls) responses.push(await this.delete(url, headers));
+    for (const url of deletionUrls) responses.push(await this.fetch(url, request));
     return responses;
   }
 }

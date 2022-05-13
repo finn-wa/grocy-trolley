@@ -16,18 +16,17 @@ export class FoodstuffsOrderService extends FoodstuffsRestService {
 
   async getOrders(): Promise<FoodstuffsOrder[]> {
     const headersBuilder = await this.authHeaders();
-    const response: FoodstuffsOrdersResponse = await this.getForJson(
+    const response: FoodstuffsOrdersResponse = await this.getAndParse(
       this.buildUrl("Checkout/Orders"),
-      headersBuilder.acceptJson().build()
+      { headers: headersBuilder.acceptJson().build() }
     );
     return response.orders;
   }
 
   async getOrderDetails(id: string): Promise<FoodstuffsOrderDetails> {
     const headersBuilder = await this.authHeaders();
-    return this.getForJson(
-      this.buildUrl("Checkout/OrderDetails", { id }),
-      headersBuilder.acceptJson().build()
-    );
+    return this.getAndParse(this.buildUrl("Checkout/OrderDetails", { id }), {
+      headers: headersBuilder.acceptJson().build(),
+    });
   }
 }

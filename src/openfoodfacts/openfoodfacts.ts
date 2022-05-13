@@ -22,10 +22,9 @@ abstract class OpenFoodFactsService extends RestService {
 
   async getInfo(barcode: string): Promise<ProductResponseBody> {
     this.logger.info("Searching OFF for barcode " + barcode);
-    const body = await this.getForJson<ProductResponseBody>(
-      this.buildUrl(barcode + ".json"),
-      new Headers({ "User-Agent": "GrocyTrolley v0.0.1 / finnwa24@gmail.com" })
-    );
+    const body = await this.getAndParse<ProductResponseBody>(this.buildUrl(barcode + ".json"), {
+      headers: new Headers({ "User-Agent": "GrocyTrolley v0.0.1 / finnwa24@gmail.com" }),
+    });
     if (body.status === 0) {
       this.logger.warn(
         `OpenFoodFacts response status not OK: ${body.status_verbose}\n${prettyPrint(body)}`
