@@ -1,19 +1,11 @@
-import { ajvCompile } from "@gt/utils/ajv";
 import { Logger } from "@gt/utils/logger";
 import { COUNTDOWN_URL } from "../models";
 import { CountdownRestService } from "../rest/countdown-rest-service";
 import { Order } from "./types/getOrder";
-import getOrderSchema from "./types/getOrder/schema.json";
-import { OrderDetails } from "./types/getOrderDetails";
-import getOrderDetailsSchema from "./types/getOrderDetails/schema.json";
+import { OrderSchema } from "./types/getOrder/schema";
+import { OrderDetailsSchema } from "./types/getOrderDetails/schema";
 import { Orders } from "./types/getOrders";
-import getOrdersSchema from "./types/getOrders/schema.json";
-
-const serialisation = {
-  getOrder: ajvCompile<Order>(getOrderSchema),
-  getOrders: ajvCompile<Orders>(getOrdersSchema),
-  getOrderDetails: ajvCompile<OrderDetails>(getOrderDetailsSchema),
-};
+import { OrdersSchema } from "./types/getOrders/schema";
 
 export class CountdownOrderService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -26,7 +18,7 @@ export class CountdownOrderService extends CountdownRestService {
     return this.getAndParse(
       this.baseUrl,
       { headers: builder.acceptJson().build() },
-      serialisation.getOrders.parser
+      OrdersSchema.parseResponse
     );
   }
 
@@ -35,18 +27,16 @@ export class CountdownOrderService extends CountdownRestService {
     return this.getAndParse(
       this.buildUrl(id.toString()),
       { headers: builder.acceptJson().build() },
-      serialisation.getOrder.parser
+      OrderSchema.parseResponse
     );
   }
 
-  async getOrderDetails(id: number): Promise<OrderDetails> {
+  async getOrderDetails(id: number): Promise<unknown> {
     const builder = await this.authHeaders();
     return this.getAndParse(
       this.buildUrl(`${id}/items`),
       { headers: builder.acceptJson().build() },
-      serialisation.getOrderDetails.parser
+      OrderDetailsSchema.parseResponse
     );
   }
 }
-
-type x = keyof CountdownOrderService;
