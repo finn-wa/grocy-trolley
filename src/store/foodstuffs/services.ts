@@ -7,10 +7,8 @@ import { FoodstuffsUserAgent } from "./rest/foodstuffs-user-agent";
 import { FoodstuffsSearchService } from "./search/foodstuffs-search-service";
 
 export async function foodstuffsServices(): Promise<FoodstuffsServices> {
-  const userAgent = new FoodstuffsUserAgent(
-    getBrowser,
-    getEnvAs({ PAKNSAVE_EMAIL: "email", PAKNSAVE_PASSWORD: "password" })
-  );
+  const loginDetails = getEnvAs({ PAKNSAVE_EMAIL: "email", PAKNSAVE_PASSWORD: "password" });
+  const userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
   return {
     userAgent,
     cartService: new FoodstuffsCartService(userAgent),

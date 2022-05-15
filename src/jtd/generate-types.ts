@@ -3,28 +3,29 @@ import { join } from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 
-function writeJsonFile(path: string, obj: unknown) {
-  return writeFile(path, JSON.stringify(obj), { encoding: "utf-8" });
-}
-
-function generateTypecheckFile(type: string, jtd: string): string {
-  return `
-/**
- * This file is for confirming that the TypeScript types and the schema
- * stay in sync, allowing the types to be safely modified.
- */
-
-import { JTDDataType } from "ajv/dist/core";
+const generateTypecheckFile = (type: string, jtd: string): string => `
+import { compileSchema } from "@gt/jtd/ajv";
+import { JTDSchemaType } from "ajv/dist/core";
 import { ${type} } from ".";
 
-/* eslint-disable */
-type JTD${type} = JTDDataType<${jtd}>;
-type DoesExtend<X, Y extends X> = Y;
-type _CustomExtendsJTD = DoesExtend<JTD${type}, ${type}>;
-type _JTDExtendsCustom = DoesExtend<${type}, JTD${type}>;
-/* eslint-enable */
+/**
+ * This will cause a TypeScript compiler error if the Order type defined in
+ * index.ts is modified in a way that makes it incompatible with the schema.
+ */
+const schema: JTDSchemaType<${type}> = ${jtd};
+export default schema;
+
+export const ${type}Schema = compileSchema<${type}>(schema);
 `;
-}
+
+const generateSchemaSpecFile = (type: string): string => `
+import { describeSchema } from "@gt/jtd/test-utils";
+import samples from "./samples.json";
+import { ${type}Schema } from "./schema";
+
+/** Ensures the schema matches the samples */
+describeSchema("${type}Schema", ${type}Schema, samples);
+`;
 
 export async function generateTypes(
   methodName: string,
@@ -34,13 +35,19 @@ export async function generateTypes(
 ) {
   const typesDir = join(sourceDir, "types", methodName);
   await mkdir(typesDir, { recursive: true });
-  // Save raw JSON files as samples
-  await writeJsonFile(join(typesDir, "samples.json"), inputs);
+  const writeStaticFiles = Promise.all([
+    // Save raw JSON files as samples
+    writeFile(join(typesDir, "samples.json"), JSON.stringify(inputs)),
+    // Write spec file
+    writeFile(join(typesDir, "schema.spec.ts"), generateSchemaSpecFile(typeName)),
+  ]);
   // Infer JTD and save as schema
-  const inferred = await jtdInfer<unknown>(...inputs);
-  await writeJsonFile(join(typesDir, "schema.json"), inferred);
-  // Generate code and save as index.ts
-  await jtdCodegen(typeName, inferred, typesDir);
-  // Write typecheck file
-  await writeFile(join(typesDir, "typecheck.ts"), generateTypecheckFile(typeName, inferred));
+  const inferredJTD = JSON.stringify(jtdInfer<unknown>(...inputs));
+  return Promise.all([
+    writeStaticFiles,
+    // Generate code and save as index.ts
+    jtdCodegen(typeName, inferredJTD, typesDir),
+    // Write typecheck file
+    writeFile(join(typesDir, "schema.ts"), generateTypecheckFile(typeName, inferredJTD)),
+  ]);
 }

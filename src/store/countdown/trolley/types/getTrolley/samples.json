@@ -1,6 +1,6 @@
 [
   {
-    "itemCount": 34,
+    "itemCount": 33,
     "items": [
       {
         "categoryType": "OutOfStock",
@@ -55,6 +55,59 @@
             "productTag": null,
             "subsAllowed": true,
             "dasFacetsUrl": "/health-body/medical-first-aid/cough-cold",
+            "supportsBothEachAndKgPricing": false,
+            "adId": null,
+            "priceUnitLabel": "ea"
+          },
+          {
+            "type": "Product",
+            "name": "The Bakers Son Chilled Single Pie Vegan Mince & Cheese",
+            "barcode": null,
+            "variety": null,
+            "brand": null,
+            "slug": "the-bakers-son-chilled-single-pie-vegan-mince-cheese",
+            "sku": "86520",
+            "unit": "Each",
+            "selectedPurchasingUnit": null,
+            "price": {
+              "originalPrice": 0,
+              "salePrice": 0,
+              "savePrice": 0,
+              "hasBonusPoints": false,
+              "isClubPrice": false,
+              "isSpecial": false,
+              "isNew": false,
+              "canShowOriginalPrice": true,
+              "discount": null,
+              "total": null,
+              "isTargetedOffer": false,
+              "averagePricePerSingleUnit": null,
+              "purchasingUnitPrice": null
+            },
+            "images": {
+              "small": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
+              "big": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
+            },
+            "quantity": {
+              "min": 1,
+              "max": 100,
+              "increment": 1,
+              "value": 1,
+              "quantityInOrder": 1,
+              "purchasingQuantityString": "1"
+            },
+            "eachUnitQuantity": null,
+            "averageWeightPerUnit": null,
+            "size": {
+              "cupPrice": 0,
+              "cupMeasure": "100g",
+              "packageType": null,
+              "volumeSize": "200g"
+            },
+            "hasShopperNotes": false,
+            "productTag": null,
+            "subsAllowed": true,
+            "dasFacetsUrl": "/fridge-deli/prepared-meals-sides/garlic-other-bread",
             "supportsBothEachAndKgPricing": false,
             "adId": null,
             "priceUnitLabel": "ea"
@@ -441,58 +494,6 @@
               "cupMeasure": "1kg",
               "packageType": null,
               "volumeSize": "500g"
-            },
-            "hasShopperNotes": false,
-            "productTag": null,
-            "subsAllowed": true,
-            "supportsBothEachAndKgPricing": false,
-            "adId": null,
-            "priceUnitLabel": "ea"
-          },
-          {
-            "type": "Product",
-            "name": "The Bakers Son Chilled Single Pie Vegan Mince & Cheese",
-            "barcode": null,
-            "variety": null,
-            "brand": null,
-            "slug": "the-bakers-son-chilled-single-pie-vegan-mince-cheese",
-            "sku": "86520",
-            "unit": "Each",
-            "selectedPurchasingUnit": null,
-            "price": {
-              "originalPrice": 5.9,
-              "salePrice": 5.9,
-              "savePrice": 0,
-              "hasBonusPoints": false,
-              "isClubPrice": false,
-              "isSpecial": false,
-              "isNew": false,
-              "canShowOriginalPrice": true,
-              "discount": null,
-              "total": "$5.90",
-              "isTargetedOffer": false,
-              "averagePricePerSingleUnit": null,
-              "purchasingUnitPrice": null
-            },
-            "images": {
-              "small": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
-              "big": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
-            },
-            "quantity": {
-              "min": 1,
-              "max": 100,
-              "increment": 1,
-              "value": 1,
-              "quantityInOrder": 1,
-              "purchasingQuantityString": "1"
-            },
-            "eachUnitQuantity": null,
-            "averageWeightPerUnit": null,
-            "size": {
-              "cupPrice": 2.95,
-              "cupMeasure": "100g",
-              "packageType": null,
-              "volumeSize": "200g"
             },
             "hasShopperNotes": false,
             "productTag": null,
@@ -2097,6 +2098,7 @@
         "JQueryDeprecationLogging",
         "Optimizely",
         "ExpressDelivery",
+        "PaperPackingSlipPreference",
         "ShowThatACardIsLinkedToDeliverySaver",
         "DeliverySaverBannerOnTrolleyPage"
       ],
@@ -2157,12 +2159,12 @@
         "robert harris nespresso"
       ],
       "basketTotals": {
-        "subtotal": "$205.44",
+        "subtotal": "$199.54",
         "savings": "$11.81",
         "totalItems": 36,
         "deliveryFees": "$0.00",
         "bagFees": "$1.00",
-        "totalIncludingDeliveryFees": "$205.44",
+        "totalIncludingDeliveryFees": "$199.54",
         "eligibilityForDeliverySubscriptionDiscount": "Eligible"
       },
       "advancedSettingsResponse": {
