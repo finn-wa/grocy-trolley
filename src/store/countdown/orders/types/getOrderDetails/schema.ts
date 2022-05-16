@@ -10,7 +10,6 @@ import { OrderDetails } from ".";
 const schema: JTDSchemaType<OrderDetails> = {
   properties: {
     breadcrumb: {
-      properties: {},
       optionalProperties: {
         aisle: {},
         department: {},
@@ -102,7 +101,6 @@ const schema: JTDSchemaType<OrderDetails> = {
     facets: { elements: UNKNOWN },
     isSuccessful: { type: "boolean" },
     partialFailures: {
-      properties: {},
       optionalProperties: {
         breadcrumbGenerationFailed: {},
         maxSupplyLimitFetchFailed: {},
