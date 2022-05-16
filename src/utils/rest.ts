@@ -1,4 +1,5 @@
 import { JTDParser } from "ajv/dist/types";
+import prompts from "prompts";
 import { URL, URLSearchParams } from "url";
 import { headersToRaw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
@@ -16,7 +17,7 @@ export async function defaultJsonParser<T>(res: Response): Promise<T> {
   }
 }
 
-export function jtdParser<T>(parser: JTDParser<T>): BodyParser<T> {
+export function jtdParser<T>(name: string, parser: JTDParser<T>): BodyParser<T> {
   return async (res: Response) => {
     const jsonString = await res.text();
     const body = parser(jsonString);
@@ -24,7 +25,20 @@ export function jtdParser<T>(parser: JTDParser<T>): BodyParser<T> {
       return body;
     }
     const { position, message } = parser;
-    throw new Error(`Failed to validate body:\n${jsonString}\n\nError at ${position}: ${message}`);
+    const logger = new Logger(name);
+    const errorMsg = `JSON validation error:\n${jsonString}\n\nError at ${position}: ${message}`;
+    logger.warn(errorMsg);
+    logger.info("Trying JSON.parse...");
+    const jsonBody = JSON.parse(jsonString) as T;
+    const choice = await prompts({
+      name: "continue",
+      type: "confirm",
+      message: "JSON.parse successful, continue?",
+    });
+    if (!choice.continue) {
+      throw new Error(errorMsg);
+    }
+    return jsonBody;
   };
 }
 
