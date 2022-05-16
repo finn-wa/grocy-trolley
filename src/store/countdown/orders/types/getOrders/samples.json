@@ -1,1 +1,28 @@
-[{"filterList":[{"value":"days-30","text":"Past 30 Days","selected":false},{"value":"days-180","text":"Past 180 Days","selected":true},{"value":"year-2022","text":"2022","selected":false},{"value":"year-2021","text":"2021","selected":false},{"value":"year-2020","text":"2020","selected":false},{"value":"year-2019","text":"2019","selected":false},{"value":"all","text":"All","selected":false}],"items":[{"orderId":24875327,"prefix":"CD","orderDate":"2022-05-08T20:39:09.103","method":"Delivery","total":222.16,"fulfilmentDate":"2022-05-09T18:00:00","fulfilmentTime":"06:00PM - 08:30PM","deliveryFee":1,"status":"Shipped / Collected","isEditable":false}],"totalItems":1}]
+[
+  {
+    "filterList": [
+      { "value": "days-30", "text": "Past 30 Days", "selected": false },
+      { "value": "days-180", "text": "Past 180 Days", "selected": true },
+      { "value": "year-2022", "text": "2022", "selected": false },
+      { "value": "year-2021", "text": "2021", "selected": false },
+      { "value": "year-2020", "text": "2020", "selected": false },
+      { "value": "year-2019", "text": "2019", "selected": false },
+      { "value": "all", "text": "All", "selected": false }
+    ],
+    "items": [
+      {
+        "orderId": 24875327,
+        "prefix": "CD",
+        "orderDate": "2022-05-08T20:39:09.103",
+        "method": "Delivery",
+        "total": 222.16,
+        "fulfilmentDate": "2022-05-09T18:00:00",
+        "fulfilmentTime": "06:00PM - 08:30PM",
+        "deliveryFee": 1,
+        "status": "Shipped / Collected",
+        "isEditable": false
+      }
+    ],
+    "totalItems": 1
+  }
+]

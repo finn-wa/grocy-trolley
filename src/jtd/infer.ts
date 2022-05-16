@@ -39,8 +39,12 @@ function moveAnyTypePropertiesToOptional<T extends Partial<JTDRecordSchemaType>>
         schema.optionalProperties[key] = {};
       }
     }
-    for (const obj of Object.values(schema.properties)) {
-      moveAnyTypePropertiesToOptional(obj);
+    if (Object.keys(schema.properties).length === 0) {
+      delete schema.properties;
+    } else {
+      for (const obj of Object.values(schema.properties)) {
+        moveAnyTypePropertiesToOptional(obj);
+      }
     }
   }
 }
@@ -74,7 +78,7 @@ export function jtdInfer<T>(...inputObjects: T[]): JTDSchemaType<T> {
  * @see https://github.com/ajv-validator/ajv/issues/1877
  * @see {@link UNKNOWN}
  */
-export type Unknown = false;
+export type Unknown = "?";
 
 /**
  * JTDSchemaType is restricted to concrete types, and cannot validate type
@@ -83,10 +87,4 @@ export type Unknown = false;
  * @see https://github.com/ajv-validator/ajv/issues/1877
  * @see {@link Unknown}
  */
-export const UNKNOWN: JTDSchemaType<Unknown> = {
-  properties: {},
-  optionalProperties: {},
-  metadata: {
-    description: "Placeholder for unknown - workaround for JTDSchemaType concrete type limitation",
-  },
-};
+export const UNKNOWN: JTDSchemaType<Unknown> = { enum: ["?"] };
