@@ -1,4 +1,3 @@
-import { JTDSchemaType } from "ajv/dist/core";
 import { execFile } from "child_process";
 import { existsSync } from "fs";
 import { Readable } from "stream";

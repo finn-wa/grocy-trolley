@@ -3,11 +3,11 @@
 import { Unknown } from "@gt/jtd/infer";
 
 export interface OrderDetailsBreadcrumb {
-  aisle?: any;
-  department?: any;
-  dynamicGroup?: any;
-  productGroup?: any;
-  shelf?: any;
+  aisle?: unknown;
+  department?: unknown;
+  dynamicGroup?: unknown;
+  productGroup?: unknown;
+  shelf?: unknown;
 }
 
 export interface OrderDetailsContextAdvancedSettingsResponse {
@@ -41,12 +41,12 @@ export interface OrderDetailsContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
-  cutOffTime?: any;
-  endTime?: any;
-  locker?: any;
-  selectedDate?: any;
-  selectedDateWithTZInfo?: any;
-  startTime?: any;
+  cutOffTime?: unknown;
+  endTime?: unknown;
+  locker?: unknown;
+  selectedDate?: unknown;
+  selectedDateWithTZInfo?: unknown;
+  startTime?: unknown;
 }
 
 export interface OrderDetailsContextShopperOneCardBalance {
@@ -55,7 +55,7 @@ export interface OrderDetailsContextShopperOneCardBalance {
   oneCardNumber: string;
   onecardPointsBalance: number;
   redeemableRewardVouchers: number;
-  continuitySpend?: any;
+  continuitySpend?: unknown;
 }
 
 export interface OrderDetailsContextShopper {
@@ -72,7 +72,7 @@ export interface OrderDetailsContextShopper {
   sessionGroups: number[];
   shopperIdHash: string;
   shopperScvId: string;
-  changingOrderId?: any;
+  changingOrderId?: unknown;
 }
 
 export interface OrderDetailsContext {
@@ -85,14 +85,14 @@ export interface OrderDetailsContext {
 }
 
 export interface OrderDetailsPartialFailures {
-  breadcrumbGenerationFailed?: any;
-  maxSupplyLimitFetchFailed?: any;
-  productGroupFetchFailed?: any;
-  productTagFetchFailed?: any;
-  purchaseUnitFetchFailed?: any;
-  shopperNotesFetchFailed?: any;
-  targetOfferFetchFailed?: any;
-  trolleyQuantityUpdateFailed?: any;
+  breadcrumbGenerationFailed?: unknown;
+  maxSupplyLimitFetchFailed?: unknown;
+  productGroupFetchFailed?: unknown;
+  productTagFetchFailed?: unknown;
+  purchaseUnitFetchFailed?: unknown;
+  shopperNotesFetchFailed?: unknown;
+  targetOfferFetchFailed?: unknown;
+  trolleyQuantityUpdateFailed?: unknown;
 }
 
 export interface OrderDetailsProductsItemImages {
@@ -111,17 +111,17 @@ export interface OrderDetailsProductsItemPrice {
   originalPrice: number;
   salePrice: number;
   savePrice: number;
-  discount?: any;
-  purchasingUnitPrice?: any;
-  total?: any;
+  discount?: unknown;
+  purchasingUnitPrice?: unknown;
+  total?: unknown;
 }
 
 export interface OrderDetailsProductsItemProductTag {
   tagType: string;
-  additionalTag?: any;
-  bonusPoints?: any;
-  multiBuy?: any;
-  targetedOffer?: any;
+  additionalTag?: unknown;
+  bonusPoints?: unknown;
+  multiBuy?: unknown;
+  targetedOffer?: unknown;
 }
 
 export interface OrderDetailsProductsItemQuantity {
@@ -129,8 +129,8 @@ export interface OrderDetailsProductsItemQuantity {
   max: number;
   min: number;
   value: number | null;
-  purchasingQuantityString?: any;
-  quantityInOrder?: any;
+  purchasingQuantityString?: unknown;
+  quantityInOrder?: unknown;
 }
 
 export interface OrderDetailsProductsItemSize {
@@ -159,9 +159,9 @@ export interface OrderDetailsProductsItem {
   type: string;
   unit: string;
   variety: string | null;
-  adId?: any;
-  eachUnitQuantity?: any;
-  priceUnitLabel?: any;
+  adId?: unknown;
+  eachUnitQuantity?: unknown;
+  priceUnitLabel?: unknown;
 }
 
 export interface OrderDetailsProducts {
@@ -187,7 +187,7 @@ export interface OrderDetails {
   products: OrderDetailsProducts;
   rootUrl: string;
   sortOptions: OrderDetailsSortOption[];
-  action?: any;
-  messages?: any;
-  targetedOfferDetails?: any;
+  action?: unknown;
+  messages?: unknown;
+  targetedOfferDetails?: unknown;
 }

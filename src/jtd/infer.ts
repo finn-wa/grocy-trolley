@@ -1,8 +1,6 @@
-import { SchemaEnv } from "ajv/dist/compile";
 import { JTDSchemaType } from "ajv/dist/jtd";
-import { execFile, execFileSync } from "child_process";
+import { execFileSync } from "child_process";
 import { existsSync } from "fs";
-import { Readable } from "stream";
 
 interface JTDRecordSchemaType {
   elements?: Partial<JTDRecordSchemaType>;
@@ -65,8 +63,7 @@ export function jtdInfer<T>(...inputObjects: T[]): JTDSchemaType<T> {
   }
   const input = inputObjects.map((obj) => JSON.stringify(obj)).join("\n");
   const jtd = execFileSync(jtdInferPath, { input, encoding: "utf-8" });
-  const jtdObj = JSON.parse(jtd);
-  console.log(jtdObj);
+  const jtdObj = JSON.parse(jtd) as Partial<JTDRecordSchemaType>;
   moveAnyTypePropertiesToOptional(jtdObj);
   return jtdObj as JTDSchemaType<T>;
 }
