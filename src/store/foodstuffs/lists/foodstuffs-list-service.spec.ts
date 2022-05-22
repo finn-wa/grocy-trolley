@@ -129,9 +129,11 @@ describe("FoodstuffsListService", () => {
       expectArrayOfLength(updated.products, itemsToAdd.length + 1);
     });
   });
-
-  describe("snapshot tests", () => {
-    function formatListForSnapshot(list: List): Partial<List> {
+  // TODO: replace with schema
+  /**
+ * 
+ describe("snapshot tests", () => {
+   function formatListForSnapshot(list: List): Partial<List> {
       return {
         ...list,
         listId: list.listId ? "uuid" : undefined,
@@ -163,7 +165,7 @@ describe("FoodstuffsListService", () => {
       const list = await listService.updateList({ listId, products: [refs.carrots, refs.milk] });
       expect(formatListForSnapshot(list as List)).toMatchSnapshot();
     });
-
+    
     test("deleteList", async () => {
       await listService.createListWithProducts("broccoli", [refs.milk]);
       const { listId } = await listService.createListWithProducts("tomato", [refs.bread]);
@@ -174,4 +176,5 @@ describe("FoodstuffsListService", () => {
       }).toMatchSnapshot();
     });
   });
+  */
 });

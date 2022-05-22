@@ -2,38 +2,49 @@ import { mkdir, writeFile } from "fs/promises";
 import { join } from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
+import dedent from "dedent";
 
-const generateTypecheckFile = (type: string, jtd: string): string => `
-import { compileSchema } from "@gt/jtd/ajv";
-import { JTDSchemaType } from "ajv/dist/core";
-import { ${type} } from ".";
+const generateTypecheckFile = (type: string, jtd: string): string => dedent`
+  import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
+  import { JTDSchemaType } from "ajv/dist/jtd";
+  import { ${type} } from ".";
 
-/**
- * This will cause a TypeScript compiler error if the Order type defined in
- * index.ts is modified in a way that makes it incompatible with the schema.
- */
-const schema: JTDSchemaType<${type}> = ${jtd};
-export default schema;
+  /**
+   * This will cause a TypeScript compiler error if the ${type} type defined in
+   * index.ts is modified in a way that makes it incompatible with the schema.
+   */
+  export const schema: JTDSchemaType<${type}> = ${jtd};
 
-export const ${type}Schema = compileSchema<${type}>(schema);
+  /**
+   * The key used to index the ${type} schema with ajv
+   */
+  export const key = "${type}";
+
+  /**
+   * Calls {@link ajv.getSchema} with the ${type} schema {@link key}. The schema is
+   * compiled on the first call to  {@link ajv.getSchema}.
+   *
+   * @returns A validate() function for ${type}
+   */
+  export const get${type}Schema = () => getRequiredSchema<${type}>(key);
+  
+  // Register schema with ajv instance
+  ajv.addSchema(schema, key);
 `;
 
-const generateSchemaSpecFile = (type: string): string => `
-import { describeSchema } from "@gt/jtd/test-utils";
-import samples from "./samples.json";
-import { ${type}Schema } from "./schema";
+const generateSchemaSpecFile = (type: string): string => dedent`
+  import { testSchemaWithSamples } from "@gt/jtd/test-utils";
+  import samples from "./samples.json";
+  import { get${type}Schema } from "./schema";
 
-/** Ensures the schema matches the samples */
-describeSchema("${type}Schema", ${type}Schema, samples);
+  describe('${type} Schema', () => {
+    const validate = get${type}Schema();
+    testSchemaWithSamples(validate, samples);
+  });
 `;
 
-export async function generateTypes(
-  methodName: string,
-  typeName: string,
-  sourceDir: string,
-  ...inputs: unknown[]
-) {
-  const typesDir = join(sourceDir, "types", methodName);
+export async function generateTypes(typeName: string, sourceDir: string, ...inputs: unknown[]) {
+  const typesDir = join(sourceDir, "types", typeName);
   await mkdir(typesDir, { recursive: true });
   const writeStaticFiles = Promise.all([
     // Save raw JSON files as samples
@@ -42,7 +53,7 @@ export async function generateTypes(
     writeFile(join(typesDir, "schema.spec.ts"), generateSchemaSpecFile(typeName)),
   ]);
   // Infer JTD and save as schema
-  const inferredJTD = JSON.stringify(jtdInfer<unknown>(...inputs));
+  const inferredJTD = JSON.stringify(jtdInfer<unknown>(typeName, ...inputs));
   return Promise.all([
     writeStaticFiles,
     // Generate code and save as index.ts

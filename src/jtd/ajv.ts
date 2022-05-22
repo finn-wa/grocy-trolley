@@ -1,21 +1,38 @@
-import Ajv, { JTDParser, SchemaObject, ValidateFunction } from "ajv/dist/jtd";
-import { BodyParser, jtdParser } from "../utils/rest";
+import { Logger, prettyPrint as pp } from "@gt/utils/logger";
+import Ajv, { ValidateFunction } from "ajv/dist/jtd";
 
 export const ajv = new Ajv();
 
-export interface CompiledSchema<T> {
-  readonly parse: JTDParser<T>;
-  readonly parseResponse: BodyParser<T>;
-  readonly serialise: (data: T) => string;
-  readonly validate: ValidateFunction<T>;
+/**
+ * Calls {@link ajv.getSchema} with the specified key. Ensures the returned
+ * {@link ValidateFunction} is truthy before returning it.
+ * @param key The key associated with the schema (used with {@link ajv.addSchema})
+ * @returns The validate() function for the schema
+ * @throws if the schema has not been registered
+ */
+export function getRequiredSchema<T>(key: string): ValidateFunction<T> {
+  const schema = ajv.getSchema<T>(key);
+  if (!schema) {
+    throw new Error(`Schema ${key} is not registered with ajv`);
+  }
+  return schema;
 }
 
-export function compileSchema<T>(schema: SchemaObject): CompiledSchema<T> {
-  const parse = ajv.compileParser<T>(schema);
-  return {
-    parse,
-    parseResponse: jtdParser(parse),
-    validate: ajv.compile(schema),
-    serialise: ajv.compileSerializer(schema),
-  };
+/** Formats an error message for the validate function */
+export function validationErrorMsg<T>(validate: ValidateFunction<T>, data?: T): string {
+  return `Error validating JSON\n${data ? pp(data) : ""}\n${pp(validate.errors)}`;
+}
+
+export function throwIfInvalid<T>(validate: ValidateFunction<T>, data: T): T {
+  if (validate(data)) {
+    return data;
+  }
+  throw new Error(validationErrorMsg(validate, data));
+}
+
+export function warnIfInvalid<T>(logger: Logger, validate: ValidateFunction<T>, data: T): T {
+  if (!validate(data)) {
+    logger.warn(validationErrorMsg(validate, data));
+  }
+  return data;
 }
