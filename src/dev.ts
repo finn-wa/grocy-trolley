@@ -1,21 +1,15 @@
 /* eslint-disable */
 
 import { generateTypes } from "./jtd/generate-types";
-import { countdownServices } from "./store/countdown/services";
+import { FoodstuffsCartController } from "./store/foodstuffs/cart/foodstuffs-cart-controller";
+import { foodstuffsServices } from "./store/foodstuffs/services";
 
 export async function dev() {
-  const { userAgent, orderService, trolleyService } = await countdownServices();
-  // const orders = await orderService.getOrders();
-  // await generateTypes("Orders", "src/store/countdown/orders", orders);
+  const { userAgent } = await foodstuffsServices();
 
-  // const order = await cdTrolley.getOrder(24875327);
-  // await generateTypes("Order", "src/store/countdown/orders", order);
-
-  // const orders = await orderService.getOrders();
-  // await generateTypes("Orders", "src/store/countdown/orders", orders);
-
-  const trolley = await trolleyService.getTrolley();
-  await generateTypes("Trolley", "src/store/countdown/trolley", trolley);
+  const ctrl = new FoodstuffsCartController(userAgent);
+  const cart = await ctrl.getCart();
+  await generateTypes("Cart", "src/store/foodstuffs/cart", cart);
 }
 
 /* eslint-enable */

@@ -1,37 +1,22 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import prompts from "prompts";
-import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 
-export class FoodstuffsCartService extends FoodstuffsRestService {
+export class FoodstuffsCartService {
   protected readonly logger = new Logger(this.constructor.name);
 
-  constructor(userAgent: FoodstuffsUserAgent) {
-    super(userAgent);
-  }
+  constructor(private readonly controller: FoodstuffsCartController) {}
 
-  async getCart(): Promise<FoodstuffsCart> {
-    const headersBuilder = await this.authHeaders();
-    return this.getAndParse(this.buildUrl("Cart/Index"), {
-      headers: headersBuilder.acceptJson().build(),
-    });
-  }
+  getCart = () => this.controller.getCart();
 
   async clearCart(): Promise<{ success: true }> {
-    const headersBuilder = await this.authHeaders();
-    const response = await this.deleteAndParse<{ success: boolean }>(this.buildUrl("Cart/Clear"), {
-      headers: headersBuilder.acceptJson().build(),
-    });
-    if (!response.success) {
-      throw new Error(`Failed to clear cart: ${prettyPrint(response)}`);
-    }
-    return response as { success: true };
+    return this.controller.clearCart();
   }
 
   async addProductsToCart(products: CartProductRef[]): Promise<FoodstuffsCart> {
     try {
-      const cart = await this.postProducts(products);
+      const cart = await this.controller.postProducts(products);
       return cart;
     } catch (error) {
       this.logger.error(error);
@@ -45,7 +30,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
         () => iter.next().value as CartProductRef | undefined
       ).filter((p): p is CartProductRef => !!p);
       try {
-        await this.postProducts(chunk);
+        await this.controller.postProducts(chunk);
       } catch (error) {
         await this.addProductsToCartIndividually(chunk);
       }
@@ -57,7 +42,7 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
     for (const product of products) {
       this.logger.debug("Adding product " + product.productId);
       try {
-        await this.postProducts([product]);
+        await this.controller.postProducts([product]);
       } catch (error) {
         this.logger.error("Failed to add product to cart!\n" + prettyPrint(product));
         this.logger.error(error);
@@ -70,13 +55,5 @@ export class FoodstuffsCartService extends FoodstuffsRestService {
       }
     }
     return this.getCart();
-  }
-
-  private async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
-    const headersBuilder = await this.authHeaders();
-    return this.postAndParse(this.buildUrl("Cart/Index"), {
-      headers: headersBuilder.contentTypeJson().acceptJson().build(),
-      body: JSON.stringify({ products }),
-    });
   }
 }
