@@ -33,12 +33,12 @@ export interface TrolleyContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
-  cutOffTime?: any;
-  endTime?: any;
-  locker?: any;
-  selectedDate?: any;
-  selectedDateWithTZInfo?: any;
-  startTime?: any;
+  cutOffTime?: unknown;
+  endTime?: unknown;
+  locker?: unknown;
+  selectedDate?: unknown;
+  selectedDateWithTZInfo?: unknown;
+  startTime?: unknown;
 }
 
 export interface TrolleyContextShopperOneCardBalance {
@@ -47,7 +47,7 @@ export interface TrolleyContextShopperOneCardBalance {
   oneCardNumber: string;
   onecardPointsBalance: number;
   redeemableRewardVouchers: number;
-  continuitySpend?: any;
+  continuitySpend?: unknown;
 }
 
 export interface TrolleyContextShopper {
@@ -64,7 +64,7 @@ export interface TrolleyContextShopper {
   sessionGroups: number[];
   shopperIdHash: string;
   shopperScvId: string;
-  changingOrderId?: any;
+  changingOrderId?: unknown;
 }
 
 export interface TrolleyContext {
@@ -94,7 +94,7 @@ export interface TrolleyItemProductPrice {
   salePrice: number;
   savePrice: number;
   total: string | null;
-  purchasingUnitPrice?: any;
+  purchasingUnitPrice?: unknown;
 }
 
 export interface TrolleyItemProductProductTagMultiBuy {
@@ -106,9 +106,9 @@ export interface TrolleyItemProductProductTagMultiBuy {
 export interface TrolleyItemProductProductTag {
   multiBuy: TrolleyItemProductProductTagMultiBuy | null;
   tagType: string;
-  additionalTag?: any;
-  bonusPoints?: any;
-  targetedOffer?: any;
+  additionalTag?: unknown;
+  bonusPoints?: unknown;
+  targetedOffer?: unknown;
 }
 
 export interface TrolleyItemProductQuantity {
@@ -144,13 +144,13 @@ export interface TrolleyItemProduct {
   supportsBothEachAndKgPricing: boolean;
   type: string;
   unit: string;
-  adId?: any;
-  barcode?: any;
-  brand?: any;
+  adId?: unknown;
+  barcode?: unknown;
+  brand?: unknown;
   dasFacetsUrl?: string;
-  eachUnitQuantity?: any;
+  eachUnitQuantity?: unknown;
   shopperNotes?: string;
-  variety?: any;
+  variety?: unknown;
 }
 
 export interface TrolleyItem {
