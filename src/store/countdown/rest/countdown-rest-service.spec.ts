@@ -11,14 +11,8 @@ import { CountdownUserAgent } from "./countdown-user-agent";
 
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
+  // Make authHeaders public for tests
   authHeaders = () => super.authHeaders();
-
-  async getTrolley(): Promise<any> {
-    const builder = await this.authHeaders();
-    return this.getAndParse(this.buildUrl("/v1/trolleys/my"), {
-      headers: builder.acceptJson().build(),
-    });
-  }
 }
 
 describe("CountdownRestService", () => {
@@ -64,12 +58,5 @@ describe("CountdownRestService", () => {
     // These assertions are more to test whether the separate cache path is working
     const cacheFiles = await readdir(`${cacheDir}/${userAgent.storeName}`);
     expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
-  });
-
-  test("getTrolley", async () => {
-    const trolley = await service.getTrolley();
-    expect(trolley).toBeTruthy();
-    expect(trolley.isSuccessful).toBe(true);
-    expect(trolley).toMatchSnapshot();
   });
 });

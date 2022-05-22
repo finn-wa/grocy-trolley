@@ -1,13 +1,13 @@
-import { compileSchema } from "@gt/jtd/ajv";
+import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
 import { UNKNOWN } from "@gt/jtd/infer";
-import { JTDSchemaType } from "ajv/dist/core";
+import { JTDSchemaType } from "ajv/dist/jtd";
 import { Trolley } from ".";
 
 /**
- * This will cause a TypeScript compiler error if the Order type defined in
+ * This will cause a TypeScript compiler error if the Trolley type defined in
  * index.ts is modified in a way that makes it incompatible with the schema.
  */
-const schema: JTDSchemaType<Trolley> = {
+export const schema: JTDSchemaType<Trolley> = {
   properties: {
     context: {
       properties: {
@@ -23,7 +23,7 @@ const schema: JTDSchemaType<Trolley> = {
             bagFees: { type: "string" },
             deliveryFees: { type: "string" },
             eligibilityForDeliverySubscriptionDiscount: { type: "string" },
-            savings: { type: "string" },
+            savings: { type: "string", nullable: true },
             subtotal: { type: "string" },
             totalIncludingDeliveryFees: { type: "string" },
             totalItems: { type: "uint8" },
@@ -121,18 +121,17 @@ const schema: JTDSchemaType<Trolley> = {
                 productTag: {
                   nullable: true,
                   properties: {
-                    additionalTag: {
+                    multiBuy: {
                       nullable: true,
                       properties: {
-                        imagePath: { type: "string" },
-                        linkTarget: { type: "string" },
-                        name: { type: "string" },
+                        link: { type: "string" },
+                        quantity: { type: "uint8" },
+                        value: { type: "uint8" },
                       },
-                      optionalProperties: { altText: {}, link: {} },
                     },
                     tagType: { type: "string" },
                   },
-                  optionalProperties: { bonusPoints: {}, multiBuy: {}, targetedOffer: {} },
+                  optionalProperties: { additionalTag: {}, bonusPoints: {}, targetedOffer: {} },
                 },
                 quantity: {
                   properties: {
@@ -162,6 +161,7 @@ const schema: JTDSchemaType<Trolley> = {
               },
               optionalProperties: {
                 dasFacetsUrl: { type: "string" },
+                shopperNotes: { type: "string" },
                 adId: {},
                 barcode: {},
                 brand: {},
@@ -177,6 +177,19 @@ const schema: JTDSchemaType<Trolley> = {
     rootUrl: { type: "string" },
   },
 };
-export default schema;
 
-export const TrolleySchema = compileSchema<Trolley>(schema);
+/**
+ * The key used to index the Trolley schema with ajv
+ */
+export const key = "Trolley";
+
+/**
+ * Calls {@link ajv.getSchema} with the Trolley schema {@link key}. The schema is
+ * compiled on the first call to  {@link ajv.getSchema}.
+ *
+ * @returns A validate() function for Trolley
+ */
+export const getTrolleySchema = () => getRequiredSchema<Trolley>(key);
+
+// Register schema with ajv instance
+ajv.addSchema(schema, key);

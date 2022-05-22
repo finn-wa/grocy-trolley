@@ -65,22 +65,17 @@ describe("FoodstuffsCartService", () => {
     });
   });
 
-  describe("snapshot tests", () => {
-    /**
-     * Overwrites changeable properties with fixed values for the snapshot.
-     * @param cart Cart
-     * @returns Snapshot-ready cart
-     */
-    function cartSnapshot(cart: FoodstuffsCart): FoodstuffsCart {
-      return { ...cart, products: cart.products.map((product) => ({ ...product, price: 0 })) };
-    }
+  /**
+   * 
+   // TODO: Replace with schema
+   describe("snapshot tests", () => {
 
     test("getCart", async () => {
       await cartService.addProductsToCart([milk, carrots]);
       const cart = await cartService.getCart();
-      expect(cartSnapshot(cart)).toMatchSnapshot();
+      // expect(cartSnapshot(cart)).toMatchSnapshot();
     });
-
+    
     test("addProductsToCart", async () => {
       const cart = await cartService.addProductsToCart([milk, carrots]);
       expect(cartSnapshot(cart)).toMatchSnapshot();
@@ -91,4 +86,5 @@ describe("FoodstuffsCartService", () => {
       expect(await cartService.clearCart()).toEqual({ success: true });
     });
   });
+  */
 });

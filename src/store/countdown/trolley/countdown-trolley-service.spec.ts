@@ -1,9 +1,10 @@
-import { jtdInfer } from "@gt/jtd/infer";
+import { expectSchemaToValidate } from "@gt/jtd/test-utils";
 import { getBrowser } from "@gt/store/shared/rest/browser";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { CountdownUserAgent } from "../rest/countdown-user-agent";
 import { CountdownTrolleyService } from "./countdown-trolley-service";
+import { getTrolleySchema } from "./types/Trolley/schema";
 
 describe("CountdownTrolleyService", () => {
   let userAgent: CountdownUserAgent;
@@ -25,8 +26,6 @@ describe("CountdownTrolleyService", () => {
   });
 
   test("getTrolley", async () => {
-    const trolley = await service.getTrolley();
-    expect(trolley).toBeTruthy();
-    expect(trolley.isSuccessful).toBe(true);
+    expectSchemaToValidate(getTrolleySchema(), await service.getTrolley());
   });
 });

@@ -1,13 +1,13 @@
-import { compileSchema } from "@gt/jtd/ajv";
+import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
 import { UNKNOWN } from "@gt/jtd/infer";
-import { JTDSchemaType } from "ajv/dist/core";
+import { JTDSchemaType } from "ajv/dist/jtd";
 import { OrderDetails } from ".";
 
 /**
- * This will cause a TypeScript compiler error if the Order type defined in
+ * This will cause a TypeScript compiler error if the OrderDetails type defined in
  * index.ts is modified in a way that makes it incompatible with the schema.
  */
-const schema: JTDSchemaType<OrderDetails> = {
+export const schema: JTDSchemaType<OrderDetails> = {
   properties: {
     breadcrumb: {
       optionalProperties: {
@@ -140,13 +140,18 @@ const schema: JTDSchemaType<OrderDetails> = {
               },
               productTag: {
                 nullable: true,
-                properties: { tagType: { type: "string" } },
-                optionalProperties: {
-                  additionalTag: {},
-                  bonusPoints: {},
-                  multiBuy: {},
-                  targetedOffer: {},
+                properties: {
+                  multiBuy: {
+                    nullable: true,
+                    properties: {
+                      link: { type: "string" },
+                      quantity: { type: "uint8" },
+                      value: { type: "uint8" },
+                    },
+                  },
+                  tagType: { type: "string" },
                 },
+                optionalProperties: { additionalTag: {}, bonusPoints: {}, targetedOffer: {} },
               },
               quantity: {
                 properties: {
@@ -193,6 +198,19 @@ const schema: JTDSchemaType<OrderDetails> = {
   },
   optionalProperties: { action: {}, messages: {}, targetedOfferDetails: {} },
 };
-export default schema;
 
-export const OrderDetailsSchema = compileSchema<OrderDetails>(schema);
+/**
+ * The key used to index the OrderDetails schema with ajv
+ */
+export const key = "OrderDetails";
+
+/**
+ * Calls {@link ajv.getSchema} with the OrderDetails schema {@link key}. The schema is
+ * compiled on the first call to  {@link ajv.getSchema}.
+ *
+ * @returns A validate() function for OrderDetails
+ */
+export const getOrderDetailsSchema = () => getRequiredSchema<OrderDetails>(key);
+
+// Register schema with ajv instance
+ajv.addSchema(schema, key);

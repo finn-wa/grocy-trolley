@@ -12,7 +12,7 @@ export interface TrolleyContextBasketTotals {
   bagFees: string;
   deliveryFees: string;
   eligibilityForDeliverySubscriptionDiscount: string;
-  savings: string;
+  savings: string | null;
   subtotal: string;
   totalIncludingDeliveryFees: string;
   totalItems: number;
@@ -33,12 +33,12 @@ export interface TrolleyContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
-  cutOffTime?: unknown;
-  endTime?: unknown;
-  locker?: unknown;
-  selectedDate?: unknown;
-  selectedDateWithTZInfo?: unknown;
-  startTime?: unknown;
+  cutOffTime?: any;
+  endTime?: any;
+  locker?: any;
+  selectedDate?: any;
+  selectedDateWithTZInfo?: any;
+  startTime?: any;
 }
 
 export interface TrolleyContextShopperOneCardBalance {
@@ -47,7 +47,7 @@ export interface TrolleyContextShopperOneCardBalance {
   oneCardNumber: string;
   onecardPointsBalance: number;
   redeemableRewardVouchers: number;
-  continuitySpend?: unknown;
+  continuitySpend?: any;
 }
 
 export interface TrolleyContextShopper {
@@ -64,7 +64,7 @@ export interface TrolleyContextShopper {
   sessionGroups: number[];
   shopperIdHash: string;
   shopperScvId: string;
-  changingOrderId?: unknown;
+  changingOrderId?: any;
 }
 
 export interface TrolleyContext {
@@ -94,23 +94,21 @@ export interface TrolleyItemProductPrice {
   salePrice: number;
   savePrice: number;
   total: string | null;
-  purchasingUnitPrice?: unknown;
+  purchasingUnitPrice?: any;
 }
 
-export interface TrolleyItemProductProductTagAdditionalTag {
-  imagePath: string;
-  linkTarget: string;
-  name: string;
-  altText?: unknown;
-  link?: unknown;
+export interface TrolleyItemProductProductTagMultiBuy {
+  link: string;
+  quantity: number;
+  value: number;
 }
 
 export interface TrolleyItemProductProductTag {
-  additionalTag: TrolleyItemProductProductTagAdditionalTag | null;
+  multiBuy: TrolleyItemProductProductTagMultiBuy | null;
   tagType: string;
-  bonusPoints?: unknown;
-  multiBuy?: unknown;
-  targetedOffer?: unknown;
+  additionalTag?: any;
+  bonusPoints?: any;
+  targetedOffer?: any;
 }
 
 export interface TrolleyItemProductQuantity {
@@ -146,12 +144,13 @@ export interface TrolleyItemProduct {
   supportsBothEachAndKgPricing: boolean;
   type: string;
   unit: string;
-  adId?: unknown;
-  barcode?: unknown;
-  brand?: unknown;
+  adId?: any;
+  barcode?: any;
+  brand?: any;
   dasFacetsUrl?: string;
-  eachUnitQuantity?: unknown;
-  variety?: unknown;
+  eachUnitQuantity?: any;
+  shopperNotes?: string;
+  variety?: any;
 }
 
 export interface TrolleyItem {

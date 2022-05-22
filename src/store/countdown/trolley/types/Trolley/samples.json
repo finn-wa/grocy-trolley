@@ -8,6 +8,59 @@
         "products": [
           {
             "type": "Product",
+            "name": "Yoplait Vigueur Dairy Food 6pk Caramel Choc",
+            "barcode": null,
+            "variety": null,
+            "brand": null,
+            "slug": "yoplait-vigueur-dairy-food-6pk-caramel-choc",
+            "sku": "710710",
+            "unit": "Each",
+            "selectedPurchasingUnit": null,
+            "price": {
+              "originalPrice": 0,
+              "salePrice": 0,
+              "savePrice": 0,
+              "hasBonusPoints": false,
+              "isClubPrice": false,
+              "isSpecial": false,
+              "isNew": false,
+              "canShowOriginalPrice": true,
+              "discount": null,
+              "total": null,
+              "isTargetedOffer": false,
+              "averagePricePerSingleUnit": null,
+              "purchasingUnitPrice": null
+            },
+            "images": {
+              "small": "https://assets.woolworths.com.au/images/2010/710710.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
+              "big": "https://assets.woolworths.com.au/images/2010/710710.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
+            },
+            "quantity": {
+              "min": 1,
+              "max": 100,
+              "increment": 1,
+              "value": 1,
+              "quantityInOrder": 1,
+              "purchasingQuantityString": "1"
+            },
+            "eachUnitQuantity": null,
+            "averageWeightPerUnit": null,
+            "size": {
+              "cupPrice": 0,
+              "cupMeasure": "100g",
+              "packageType": "125g pottles",
+              "volumeSize": "750g"
+            },
+            "hasShopperNotes": false,
+            "productTag": null,
+            "subsAllowed": true,
+            "dasFacetsUrl": "/fridge-deli/yoghurt-desserts/multipacks-pouches-single-serve",
+            "supportsBothEachAndKgPricing": false,
+            "adId": null,
+            "priceUnitLabel": "ea"
+          },
+          {
+            "type": "Product",
             "name": "Sudafed Pe Cold Remedy Decongestant",
             "barcode": null,
             "variety": null,
@@ -55,59 +108,6 @@
             "productTag": null,
             "subsAllowed": true,
             "dasFacetsUrl": "/health-body/medical-first-aid/cough-cold",
-            "supportsBothEachAndKgPricing": false,
-            "adId": null,
-            "priceUnitLabel": "ea"
-          },
-          {
-            "type": "Product",
-            "name": "The Bakers Son Chilled Single Pie Vegan Mince & Cheese",
-            "barcode": null,
-            "variety": null,
-            "brand": null,
-            "slug": "the-bakers-son-chilled-single-pie-vegan-mince-cheese",
-            "sku": "86520",
-            "unit": "Each",
-            "selectedPurchasingUnit": null,
-            "price": {
-              "originalPrice": 0,
-              "salePrice": 0,
-              "savePrice": 0,
-              "hasBonusPoints": false,
-              "isClubPrice": false,
-              "isSpecial": false,
-              "isNew": false,
-              "canShowOriginalPrice": true,
-              "discount": null,
-              "total": null,
-              "isTargetedOffer": false,
-              "averagePricePerSingleUnit": null,
-              "purchasingUnitPrice": null
-            },
-            "images": {
-              "small": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
-              "big": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
-            },
-            "quantity": {
-              "min": 1,
-              "max": 100,
-              "increment": 1,
-              "value": 1,
-              "quantityInOrder": 1,
-              "purchasingQuantityString": "1"
-            },
-            "eachUnitQuantity": null,
-            "averageWeightPerUnit": null,
-            "size": {
-              "cupPrice": 0,
-              "cupMeasure": "100g",
-              "packageType": null,
-              "volumeSize": "200g"
-            },
-            "hasShopperNotes": false,
-            "productTag": null,
-            "subsAllowed": true,
-            "dasFacetsUrl": "/fridge-deli/prepared-meals-sides/garlic-other-bread",
             "supportsBothEachAndKgPricing": false,
             "adId": null,
             "priceUnitLabel": "ea"
@@ -177,8 +177,8 @@
             "unit": "Each",
             "selectedPurchasingUnit": null,
             "price": {
-              "originalPrice": 2.5,
-              "salePrice": 2.5,
+              "originalPrice": 3,
+              "salePrice": 3,
               "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
@@ -186,7 +186,7 @@
               "isNew": false,
               "canShowOriginalPrice": true,
               "discount": null,
-              "total": "$2.50",
+              "total": "$3.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -206,7 +206,7 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 0.38,
+              "cupPrice": 0.46,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "650g"
@@ -288,15 +288,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 5.1,
-              "salePrice": 4.2,
-              "savePrice": 0.9,
+              "salePrice": 5.1,
+              "savePrice": 0,
               "hasBonusPoints": false,
-              "isClubPrice": true,
-              "isSpecial": true,
+              "isClubPrice": false,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.90",
-              "total": "$4.20",
+              "discount": null,
+              "total": "$5.10",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -316,19 +316,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 0.42,
+              "cupPrice": 0.51,
               "cupMeasure": "100mL",
               "packageType": "carton",
               "volumeSize": "1L"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsClubPrice",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -352,15 +346,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 5,
-              "salePrice": 5,
-              "savePrice": 0,
+              "salePrice": 4,
+              "savePrice": 1,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": false,
+              "isSpecial": true,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": null,
-              "total": "$5.00",
+              "discount": "$1.00",
+              "total": "$4.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -380,13 +374,19 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 0.83,
+              "cupPrice": 0.67,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "600g"
             },
             "hasShopperNotes": false,
-            "productTag": null,
+            "productTag": {
+              "tagType": "IsSpecial",
+              "multiBuy": null,
+              "bonusPoints": null,
+              "additionalTag": null,
+              "targetedOffer": null
+            },
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -409,7 +409,7 @@
               "hasBonusPoints": false,
               "isClubPrice": false,
               "isSpecial": false,
-              "isNew": true,
+              "isNew": false,
               "canShowOriginalPrice": true,
               "discount": null,
               "total": "$6.00",
@@ -438,13 +438,7 @@
               "volumeSize": "200g"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsNew",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -462,15 +456,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 14,
-              "salePrice": 14,
-              "savePrice": 0,
+              "salePrice": 12,
+              "savePrice": 2,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": false,
+              "isSpecial": true,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": null,
-              "total": "$14.00",
+              "discount": "$2.00",
+              "total": "$12.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -490,10 +484,68 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 28,
+              "cupPrice": 24,
               "cupMeasure": "1kg",
               "packageType": null,
               "volumeSize": "500g"
+            },
+            "hasShopperNotes": false,
+            "productTag": {
+              "tagType": "IsSpecial",
+              "multiBuy": null,
+              "bonusPoints": null,
+              "additionalTag": null,
+              "targetedOffer": null
+            },
+            "subsAllowed": true,
+            "supportsBothEachAndKgPricing": false,
+            "adId": null,
+            "priceUnitLabel": "ea"
+          },
+          {
+            "type": "Product",
+            "name": "The Bakers Son Chilled Single Pie Vegan Mince & Cheese",
+            "barcode": null,
+            "variety": null,
+            "brand": null,
+            "slug": "the-bakers-son-chilled-single-pie-vegan-mince-cheese",
+            "sku": "86520",
+            "unit": "Each",
+            "selectedPurchasingUnit": null,
+            "price": {
+              "originalPrice": 5.9,
+              "salePrice": 5.9,
+              "savePrice": 0,
+              "hasBonusPoints": false,
+              "isClubPrice": false,
+              "isSpecial": false,
+              "isNew": false,
+              "canShowOriginalPrice": true,
+              "discount": null,
+              "total": "$5.90",
+              "isTargetedOffer": false,
+              "averagePricePerSingleUnit": null,
+              "purchasingUnitPrice": null
+            },
+            "images": {
+              "small": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
+              "big": "https://assets.woolworths.com.au/images/2010/86520.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
+            },
+            "quantity": {
+              "min": 1,
+              "max": 100,
+              "increment": 1,
+              "value": 1,
+              "quantityInOrder": 1,
+              "purchasingQuantityString": "1"
+            },
+            "eachUnitQuantity": null,
+            "averageWeightPerUnit": null,
+            "size": {
+              "cupPrice": 2.95,
+              "cupMeasure": "100g",
+              "packageType": null,
+              "volumeSize": "200g"
             },
             "hasShopperNotes": false,
             "productTag": null,
@@ -514,15 +566,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 4.99,
-              "salePrice": 4.49,
-              "savePrice": 0.5,
+              "salePrice": 4.99,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$1.00",
-              "total": "$8.98",
+              "discount": null,
+              "total": "$9.98",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -542,77 +594,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1.5,
+              "cupPrice": 1.66,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "300g"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
-            "subsAllowed": true,
-            "supportsBothEachAndKgPricing": false,
-            "adId": null,
-            "priceUnitLabel": "ea"
-          },
-          {
-            "type": "Product",
-            "name": "Yoplait Vigueur Dairy Food 6pk Caramel Choc",
-            "barcode": null,
-            "variety": null,
-            "brand": null,
-            "slug": "yoplait-vigueur-dairy-food-6pk-caramel-choc",
-            "sku": "710710",
-            "unit": "Each",
-            "selectedPurchasingUnit": null,
-            "price": {
-              "originalPrice": 5.1,
-              "salePrice": 4,
-              "savePrice": 1.1,
-              "hasBonusPoints": false,
-              "isClubPrice": false,
-              "isSpecial": true,
-              "isNew": false,
-              "canShowOriginalPrice": true,
-              "discount": "$1.10",
-              "total": "$4.00",
-              "isTargetedOffer": false,
-              "averagePricePerSingleUnit": null,
-              "purchasingUnitPrice": null
-            },
-            "images": {
-              "small": "https://assets.woolworths.com.au/images/2010/710710.jpg?impolicy=wowcdxwbjbx&w=65&h=65",
-              "big": "https://assets.woolworths.com.au/images/2010/710710.jpg?impolicy=wowcdxwbjbx&w=200&h=200"
-            },
-            "quantity": {
-              "min": 1,
-              "max": 100,
-              "increment": 1,
-              "value": 1,
-              "quantityInOrder": 1,
-              "purchasingQuantityString": "1"
-            },
-            "eachUnitQuantity": null,
-            "averageWeightPerUnit": null,
-            "size": {
-              "cupPrice": 0.53,
-              "cupMeasure": "100g",
-              "packageType": "125g pottles",
-              "volumeSize": "750g"
-            },
-            "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -694,15 +682,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 12,
-              "salePrice": 11,
-              "savePrice": 1,
+              "salePrice": 12,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$1.00",
-              "total": "$11.00",
+              "discount": null,
+              "total": "$12.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -722,19 +710,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1.22,
+              "cupPrice": 1.33,
               "cupMeasure": "100mL",
               "packageType": null,
               "volumeSize": "900mL"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -757,8 +739,8 @@
             "unit": "Kg",
             "selectedPurchasingUnit": "Kg",
             "price": {
-              "originalPrice": 3.5,
-              "salePrice": 3.5,
+              "originalPrice": 4.5,
+              "salePrice": 4.5,
               "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
@@ -766,9 +748,9 @@
               "isNew": false,
               "canShowOriginalPrice": true,
               "discount": null,
-              "total": "$2.10",
+              "total": "$2.70",
               "isTargetedOffer": false,
-              "averagePricePerSingleUnit": 0.53,
+              "averagePricePerSingleUnit": 0.68,
               "purchasingUnitPrice": null
             },
             "images": {
@@ -792,19 +774,7 @@
               "volumeSize": null
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "Other",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": {
-                "name": "F20 Fresh Deals Even",
-                "link": null,
-                "imagePath": "/Content/PromotionTags/Fresh-Deals-2.png",
-                "linkTarget": "_self",
-                "altText": null
-              },
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": true,
             "adId": null,
@@ -828,15 +798,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 8,
-              "salePrice": 6,
-              "savePrice": 2,
+              "salePrice": 8,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$2.00",
-              "total": "$6.00",
+              "discount": null,
+              "total": "$8.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -856,19 +826,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1.5,
+              "cupPrice": 2,
               "cupMeasure": "100mL",
               "packageType": null,
               "volumeSize": "400mL"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -990,15 +954,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 6.5,
-              "salePrice": 5.9,
-              "savePrice": 0.6,
+              "salePrice": 6.5,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.60",
-              "total": "$5.90",
+              "discount": null,
+              "total": "$6.50",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1018,19 +982,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 0.59,
+              "cupPrice": 0.65,
               "cupMeasure": "1ea",
               "packageType": null,
               "volumeSize": "10pk"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1106,15 +1064,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 4.99,
-              "salePrice": 4,
-              "savePrice": 0.99,
+              "salePrice": 4.99,
+              "savePrice": 0,
               "hasBonusPoints": false,
-              "isClubPrice": true,
-              "isSpecial": true,
+              "isClubPrice": false,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.99",
-              "total": "$4.00",
+              "discount": null,
+              "total": "$4.99",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1134,19 +1092,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 0.4,
+              "cupPrice": 0.5,
               "cupMeasure": "1ea",
               "packageType": null,
               "volumeSize": "10pk"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsClubPrice",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1154,11 +1106,11 @@
           },
           {
             "type": "Product",
-            "name": "Strepsils Lozenges Soothing Honey & Lemon",
+            "name": "Strepsils Sore Throat Relief Lozenges Honey & Lemon Flavour",
             "barcode": null,
             "variety": null,
             "brand": null,
-            "slug": "strepsils-lozenges-soothing-honey-lemon",
+            "slug": "strepsils-sore-throat-relief-lozenges-honey-lemon-flavour",
             "sku": "303925",
             "unit": "Each",
             "selectedPurchasingUnit": null,
@@ -1437,15 +1389,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 4,
-              "salePrice": 3,
-              "savePrice": 1,
+              "salePrice": 4,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$1.00",
-              "total": "$3.00",
+              "discount": null,
+              "total": "$4.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1465,19 +1417,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 2,
+              "cupPrice": 2.67,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "150g"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1495,15 +1441,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 4,
-              "salePrice": 3,
-              "savePrice": 1,
+              "salePrice": 4,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$2.00",
-              "total": "$6.00",
+              "discount": null,
+              "total": "$8.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1523,19 +1469,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 2,
+              "cupPrice": 2.67,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "150g"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1560,8 +1500,8 @@
               "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": null,
-              "total": "$5.60",
+              "discount": "$1.60",
+              "total": "$4.00",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1587,7 +1527,13 @@
               "volumeSize": "100g"
             },
             "hasShopperNotes": false,
-            "productTag": null,
+            "productTag": {
+              "tagType": "IsMultiBuy",
+              "multiBuy": { "quantity": 2, "value": 4, "link": "/shop/productgroup/158393" },
+              "bonusPoints": null,
+              "additionalTag": null,
+              "targetedOffer": null
+            },
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1819,15 +1765,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 3.3,
-              "salePrice": 3,
-              "savePrice": 0.3,
+              "salePrice": 3.3,
+              "savePrice": 0,
               "hasBonusPoints": false,
               "isClubPrice": false,
-              "isSpecial": true,
+              "isSpecial": false,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.30",
-              "total": "$3.00",
+              "discount": null,
+              "total": "$3.30",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1847,19 +1793,13 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1,
+              "cupPrice": 1.1,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "300g"
             },
             "hasShopperNotes": false,
-            "productTag": {
-              "tagType": "IsSpecial",
-              "multiBuy": null,
-              "bonusPoints": null,
-              "additionalTag": null,
-              "targetedOffer": null
-            },
+            "productTag": null,
             "subsAllowed": true,
             "supportsBothEachAndKgPricing": false,
             "adId": null,
@@ -1877,15 +1817,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 1.96,
-              "salePrice": 1.5,
-              "savePrice": 0.46,
+              "salePrice": 0.98,
+              "savePrice": 0.98,
               "hasBonusPoints": false,
               "isClubPrice": false,
               "isSpecial": true,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.46",
-              "total": "$1.50",
+              "discount": "$0.98",
+              "total": "$0.98",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1905,7 +1845,7 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1.02,
+              "cupPrice": 0.67,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "147g"
@@ -1935,15 +1875,15 @@
             "selectedPurchasingUnit": null,
             "price": {
               "originalPrice": 1.96,
-              "salePrice": 1.5,
-              "savePrice": 0.46,
+              "salePrice": 0.98,
+              "savePrice": 0.98,
               "hasBonusPoints": false,
               "isClubPrice": false,
               "isSpecial": true,
               "isNew": false,
               "canShowOriginalPrice": true,
-              "discount": "$0.46",
-              "total": "$1.50",
+              "discount": "$0.98",
+              "total": "$0.98",
               "isTargetedOffer": false,
               "averagePricePerSingleUnit": null,
               "purchasingUnitPrice": null
@@ -1963,7 +1903,7 @@
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
             "size": {
-              "cupPrice": 1.13,
+              "cupPrice": 0.74,
               "cupMeasure": "100g",
               "packageType": null,
               "volumeSize": "133g"
@@ -2026,9 +1966,10 @@
               "packageType": null,
               "volumeSize": "320g"
             },
-            "hasShopperNotes": false,
+            "hasShopperNotes": true,
             "productTag": null,
             "subsAllowed": true,
+            "shopperNotes": "...",
             "supportsBothEachAndKgPricing": false,
             "adId": null,
             "priceUnitLabel": "ea"
@@ -2099,8 +2040,8 @@
         "Optimizely",
         "ExpressDelivery",
         "PaperPackingSlipPreference",
-        "ShowThatACardIsLinkedToDeliverySaver",
-        "DeliverySaverBannerOnTrolleyPage"
+        "DeliverySaverBannerOnTrolleyPage",
+        "ShowNewIndicatorForPastOrders"
       ],
       "shoppingListItems": [
         "garlic",
@@ -2159,12 +2100,12 @@
         "robert harris nespresso"
       ],
       "basketTotals": {
-        "subtotal": "$199.54",
-        "savings": "$11.81",
+        "subtotal": "$206.69",
+        "savings": "$6.56",
         "totalItems": 36,
         "deliveryFees": "$0.00",
         "bagFees": "$1.00",
-        "totalIncludingDeliveryFees": "$199.54",
+        "totalIncludingDeliveryFees": "$206.69",
         "eligibilityForDeliverySubscriptionDiscount": "Eligible"
       },
       "advancedSettingsResponse": {
