@@ -2472,15 +2472,15 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.22.0:
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.22.0.tgz#e738a0c83f4be0984c953ab25d2bc77545187ecc"
+playwright-core@1.22.2:
+  version "1.22.2"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.22.2.tgz#ed2963d79d71c2a18d5a6fd25b60b9f0a344661a"
 
-playwright-firefox@^1.21.1:
-  version "1.22.0"
-  resolved "https://registry.yarnpkg.com/playwright-firefox/-/playwright-firefox-1.22.0.tgz#2294520fe4019dc54f1dfaff44741c44a6f1d790"
+playwright-firefox@^1.22.2:
+  version "1.22.2"
+  resolved "https://registry.yarnpkg.com/playwright-firefox/-/playwright-firefox-1.22.2.tgz#5afff09ba92b20a0e5c549b5a269394dbf3bdc11"
   dependencies:
-    playwright-core "1.22.0"
+    playwright-core "1.22.2"
 
 prelude-ls@^1.2.1:
   version "1.2.1"
