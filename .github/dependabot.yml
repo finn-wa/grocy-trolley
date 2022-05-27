@@ -7,3 +7,4 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dependabot/stage"
+    versioning-strategy: increase
