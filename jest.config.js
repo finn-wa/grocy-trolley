@@ -12,19 +12,8 @@ module.exports = {
   testTimeout: 60000,
   testEnvironment: "node",
   testMatch: ["<rootDir>/src/**/*.spec.ts"],
+  clearMocks: true,
   globals: {
     "ts-jest": { isolatedModules: true },
-    // Required to use Node 18 experimental built-in fetch
-    fetch,
-    FormData,
-    Blob,
-    WritableStreamDefaultWriter,
-    WritableStream,
-    ReadableStream,
-    Headers,
-    Request,
-    Response,
   },
-  testEnvironment: "./jest-env",
-  clearMocks: true,
 };
