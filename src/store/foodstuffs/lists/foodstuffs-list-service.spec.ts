@@ -1,6 +1,7 @@
+import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { FoodstuffsUserAgent, LoginDetails } from "../rest/foodstuffs-user-agent";
-import { getBrowser } from "../services";
+import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsListService } from "./foodstuffs-list-service";
 import { List, ListProductRef } from "./foodstuffs-list.model";
 
@@ -41,7 +42,11 @@ describe("FoodstuffsListService", () => {
   let listService: FoodstuffsListService;
   const refs = new ProductRefs();
 
-  initEnv({ envFilePath: ".test.env", envFilePathOptional: true, allowUndefined: true });
+  initEnv({
+    envFilePath: ".test.env",
+    envFilePathOptional: true,
+    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
+  });
   const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
@@ -124,9 +129,11 @@ describe("FoodstuffsListService", () => {
       expectArrayOfLength(updated.products, itemsToAdd.length + 1);
     });
   });
-
-  describe("snapshot tests", () => {
-    function formatListForSnapshot(list: List): Partial<List> {
+  // TODO: replace with schema
+  /**
+ * 
+ describe("snapshot tests", () => {
+   function formatListForSnapshot(list: List): Partial<List> {
       return {
         ...list,
         listId: list.listId ? "uuid" : undefined,
@@ -158,7 +165,7 @@ describe("FoodstuffsListService", () => {
       const list = await listService.updateList({ listId, products: [refs.carrots, refs.milk] });
       expect(formatListForSnapshot(list as List)).toMatchSnapshot();
     });
-
+    
     test("deleteList", async () => {
       await listService.createListWithProducts("broccoli", [refs.milk]);
       const { listId } = await listService.createListWithProducts("tomato", [refs.bread]);
@@ -169,4 +176,5 @@ describe("FoodstuffsListService", () => {
       }).toMatchSnapshot();
     });
   });
+  */
 });

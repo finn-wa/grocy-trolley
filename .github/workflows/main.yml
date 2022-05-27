@@ -12,6 +12,8 @@ on:
 env:
   CACHE_DIR: "node_modules/.cache/test"
   GT_LOG_LEVEL: "INFO"
+  PAKNSAVE_EMAIL: ${{ secrets.PAKNSAVE_EMAIL }}
+  PAKNSAVE_PASSWORD: ${{ secrets.PAKNSAVE_PASSWORD }}
 
 jobs:
   build:
@@ -37,9 +39,3 @@ jobs:
 
       - name: Lint
         run: yarn run lint
-
-      - name: Setup for tests
-        run: yarn playwright install-deps firefox
-
-      - name: Test
-        run: yarn run test

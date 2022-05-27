@@ -84,11 +84,10 @@ export class GrocyIdMapService extends GrocyRestService {
       const missing = missingProductGroups.join(", ");
       this.logger.warn(`Categories are missing from grocy: '${missing}'`);
       for (const pg of missingProductGroups) {
-        await this.postForJson(
-          this.buildUrl("objects/product_groups"),
-          this.authHeaders().acceptJson().contentTypeJson().build(),
-          { name: pg, description: "" }
-        );
+        await this.postAndParse(this.buildUrl("objects/product_groups"), {
+          headers: this.authHeaders().acceptJson().contentTypeJson().build(),
+          body: JSON.stringify({ name: pg, description: "" }),
+        });
       }
       productGroups = await this.getEntities<"ProductGroup">("product_groups");
     }
