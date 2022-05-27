@@ -6,5 +6,4 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-    target-branch: "dependabot/stage"
     versioning-strategy: increase
