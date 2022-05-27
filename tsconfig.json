@@ -8,8 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "build/out-ts",
     "strict": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "exclude": ["**/__snapshots"]
 }

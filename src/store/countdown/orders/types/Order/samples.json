@@ -1,0 +1,14 @@
+[
+  {
+    "orderId": 24875327,
+    "prefix": "CD",
+    "orderDate": "2022-05-08T20:39:09.103",
+    "method": "Delivery",
+    "total": 222.16,
+    "fulfilmentDate": "2022-05-09T18:00:00",
+    "fulfilmentTime": "06:00PM - 08:30PM",
+    "deliveryFee": 1,
+    "status": "Shipped / Collected",
+    "isEditable": false
+  }
+]

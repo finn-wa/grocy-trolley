@@ -1,13 +1,19 @@
+import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { FoodstuffsUserAgent, LoginDetails } from "../rest/foodstuffs-user-agent";
-import { getBrowser } from "../services";
+import { getBrowser } from "../../shared/rest/browser";
+import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";
-import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
+import { CartProductRef } from "./foodstuffs-cart.model";
 
 describe("FoodstuffsCartService", () => {
   let cartService: FoodstuffsCartService;
 
-  initEnv({ envFilePath: ".test.env", envFilePathOptional: true, allowUndefined: true });
+  initEnv({
+    envFilePath: ".test.env",
+    envFilePathOptional: true,
+    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
+  });
   const loginDetails: LoginDetails = getEnvAs({
     PAKNSAVE_EMAIL: "email",
     PAKNSAVE_PASSWORD: "password",
@@ -25,65 +31,36 @@ describe("FoodstuffsCartService", () => {
 
   beforeEach(async () => {
     const userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
-    cartService = new FoodstuffsCartService(userAgent);
+    cartService = new FoodstuffsCartService(new FoodstuffsCartController(userAgent));
     await cartService.clearCart();
   });
 
-  describe("unit tests", () => {
-    test("getCart", async () => {
-      const cart = await cartService.getCart();
-      expect(cart).toBeTruthy();
-      expect(cart).toHaveProperty("products");
-      expect(Array.isArray(cart.products)).toBe(true);
-    });
-
-    test("addProductsToCart", async () => {
-      const emptyCart = await cartService.getCart();
-      expect(emptyCart.products.length).toBe(0);
-
-      const products = [milk, carrots];
-      const fullCart = await cartService.addProductsToCart(products);
-
-      expect(fullCart.products.length).toEqual(2);
-      const productIdsOf = (products: CartProductRef[]) => products.map((p) => p.productId).sort();
-      expect(productIdsOf(fullCart.products)).toEqual(productIdsOf(products));
-    });
-
-    test("clearCart", async () => {
-      const fullCart = await cartService.addProductsToCart([milk, carrots]);
-      expect(fullCart.products.length).toBe(2);
-
-      const response = await cartService.clearCart();
-      expect(response.success).toBe(true);
-      const emptyCart = await cartService.getCart();
-      expect(emptyCart.products.length).toBe(0);
-    });
+  test("getCart", async () => {
+    const cart = await cartService.getCart();
+    expect(cart).toBeTruthy();
+    expect(cart).toHaveProperty("products");
+    expect(Array.isArray(cart.products)).toBe(true);
   });
 
-  describe("snapshot tests", () => {
-    /**
-     * Overwrites changeable properties with fixed values for the snapshot.
-     * @param cart Cart
-     * @returns Snapshot-ready cart
-     */
-    function cartSnapshot(cart: FoodstuffsCart): FoodstuffsCart {
-      return { ...cart, products: cart.products.map((product) => ({ ...product, price: 0 })) };
-    }
+  test("addProductsToCart", async () => {
+    const emptyCart = await cartService.getCart();
+    expect(emptyCart.products.length).toBe(0);
 
-    test("getCart", async () => {
-      await cartService.addProductsToCart([milk, carrots]);
-      const cart = await cartService.getCart();
-      expect(cartSnapshot(cart)).toMatchSnapshot();
-    });
+    const products = [milk, carrots];
+    const fullCart = await cartService.addProductsToCart(products);
 
-    test("addProductsToCart", async () => {
-      const cart = await cartService.addProductsToCart([milk, carrots]);
-      expect(cartSnapshot(cart)).toMatchSnapshot();
-    });
+    expect(fullCart.products.length).toEqual(2);
+    const productIdsOf = (products: CartProductRef[]) => products.map((p) => p.productId).sort();
+    expect(productIdsOf(fullCart.products)).toEqual(productIdsOf(products));
+  });
 
-    test("clearCart", async () => {
-      await cartService.addProductsToCart([milk, carrots]);
-      expect(await cartService.clearCart()).toEqual({ success: true });
-    });
+  test("clearCart", async () => {
+    const fullCart = await cartService.addProductsToCart([milk, carrots]);
+    expect(fullCart.products.length).toBe(2);
+
+    const response = await cartService.clearCart();
+    expect(response.success).toBe(true);
+    const emptyCart = await cartService.getCart();
+    expect(emptyCart.products.length).toBe(0);
   });
 });

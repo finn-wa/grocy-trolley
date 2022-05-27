@@ -20,10 +20,9 @@ export class GrocyStockService extends GrocyRestService {
     id: string | number,
     requestBody: StockActionRequestBody<T>
   ): Promise<StockLogEntry> {
-    return this.postForJson(
-      this.buildUrl(`stock/products/${id}/${action}`),
-      this.authHeaders().contentTypeJson().acceptJson().build(),
-      requestBody
-    );
+    return this.postAndParse(this.buildUrl(`stock/products/${id}/${action}`), {
+      headers: this.authHeaders().contentTypeJson().acceptJson().build(),
+      body: JSON.stringify(requestBody),
+    });
   }
 }

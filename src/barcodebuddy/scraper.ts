@@ -14,10 +14,10 @@ export class BarcodeBuddyService extends RestService {
   }
 
   async getBarcodes(): Promise<BarcodeBuddyBarcode[]> {
-    const pageText = await this.get(
-      this.buildUrl("index.php"),
-      headersBuilder().accept("text/html").build()
-    ).then((body) => this.extractText(body));
+    const pageText = await this.fetch(this.buildUrl("index.php"), {
+      method: "GET",
+      headers: headersBuilder().accept("text/html").build(),
+    }).then((res) => res.text());
     const page = parse(pageText);
     return page.querySelectorAll("table").flatMap((t) => this.parseBarcodes(t));
   }
