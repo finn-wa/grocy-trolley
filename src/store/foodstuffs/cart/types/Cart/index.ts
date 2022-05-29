@@ -47,6 +47,6 @@ export interface Cart {
   serviceFee: number;
   store: CartStore;
   subtotal: number;
-  unavailableProducts: any[];
+  unavailableProducts: CartProduct[];
   wasRepriced: boolean;
 }

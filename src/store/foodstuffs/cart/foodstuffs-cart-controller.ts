@@ -1,6 +1,9 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
+import { getCartSchema } from "./types/Cart/schema";
+import { ClearCartResponse } from "./types/ClearCartResponse";
+import { getClearCartResponseSchema } from "./types/ClearCartResponse/schema";
 
 /**
  * Contains REST methods for /CommonApi/Cart endpoints. FoodstuffsCartService
@@ -11,27 +14,35 @@ export class FoodstuffsCartController extends FoodstuffsRestService {
 
   async getCart(): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
-    return this.getAndParse(this.buildUrl("Cart/Index"), {
-      headers: headersBuilder.acceptJson().build(),
-    });
+    return this.getAndParse(
+      this.buildUrl("Cart/Index"),
+      { headers: headersBuilder.acceptJson().build() },
+      getCartSchema()
+    );
   }
 
-  async clearCart(): Promise<{ success: true }> {
+  async clearCart(): Promise<ClearCartResponse> {
     const headersBuilder = await this.authHeaders();
-    const response = await this.deleteAndParse<{ success: boolean }>(this.buildUrl("Cart/Clear"), {
-      headers: headersBuilder.acceptJson().build(),
-    });
+    const response = await this.deleteAndParse(
+      this.buildUrl("Cart/Clear"),
+      { headers: headersBuilder.acceptJson().build() },
+      getClearCartResponseSchema()
+    );
     if (!response.success) {
       throw new Error(`Failed to clear cart: ${prettyPrint(response)}`);
     }
-    return response as { success: true };
+    return response;
   }
 
   async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
-    return this.postAndParse(this.buildUrl("Cart/Index"), {
-      headers: headersBuilder.contentTypeJson().acceptJson().build(),
-      body: JSON.stringify({ products }),
-    });
+    return this.postAndParse(
+      this.buildUrl("Cart/Index"),
+      {
+        headers: headersBuilder.contentTypeJson().acceptJson().build(),
+        body: JSON.stringify({ products }),
+      },
+      getCartSchema()
+    );
   }
 }
