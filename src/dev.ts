@@ -8,8 +8,8 @@ export async function dev() {
   const { userAgent } = await foodstuffsServices();
 
   const ctrl = new FoodstuffsCartController(userAgent);
-  const cart = await ctrl.getCart();
-  await generateTypes("Cart", "src/store/foodstuffs/cart", cart);
+  const cart = await ctrl.clearCart();
+  await generateTypes("ClearCartResponse", "src/store/foodstuffs/cart", cart);
 }
 
 /* eslint-enable */

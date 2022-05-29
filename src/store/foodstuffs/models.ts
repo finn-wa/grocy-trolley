@@ -58,13 +58,16 @@ export interface FoodstuffsListProduct extends FoodstuffsLiveProduct {
 
 export interface FoodstuffsCartProduct extends FoodstuffsLiveProduct {
   badgeImageUrl: string;
-  brand: string;
+  brand?: string;
   catalogPrice: number;
   categoryName: FoodstuffsCategory;
   hasBadge: boolean;
   promoBadgeImageTitle: string;
   promotionCode: string;
   weightDisplayName: string;
+  originStatement?: string;
+  // Present when WEIGHT is in saleTypes
+  uom?: string;
 }
 
 export const FOODSTUFFS_CATEGORIES = [
@@ -79,7 +82,6 @@ export const FOODSTUFFS_CATEGORIES = [
   "Bulk & Loose Foods",
   "Meal Kits",
   "Ready to Heat",
-  "Dairy & Eggs",
   "Cheese",
   "Desserts",
   "Frozen Foods",

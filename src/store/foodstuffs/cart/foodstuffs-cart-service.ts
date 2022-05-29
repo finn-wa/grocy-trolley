@@ -10,9 +10,7 @@ export class FoodstuffsCartService {
 
   getCart = () => this.controller.getCart();
 
-  async clearCart(): Promise<{ success: true }> {
-    return this.controller.clearCart();
-  }
+  clearCart = () => this.controller.clearCart();
 
   async addProductsToCart(products: CartProductRef[]): Promise<FoodstuffsCart> {
     try {

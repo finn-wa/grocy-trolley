@@ -34,7 +34,7 @@ export abstract class FoodstuffsRestService extends StoreRestService {
     ],
   };
 
-  async isValid(headers: Headers): Promise<boolean> {
+  protected async isValid(headers: Headers): Promise<boolean> {
     try {
       const cart = await this.getAndParse(this.buildUrl("/Cart/Index"), {
         headers: new HeadersBuilder(headers).acceptJson().build(),
