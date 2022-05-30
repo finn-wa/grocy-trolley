@@ -1,6 +1,7 @@
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
 import prompts from "prompts";
+import { setTimeout } from "timers/promises";
 import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
@@ -148,7 +149,10 @@ export class FoodstuffsListService extends FoodstuffsRestService {
       .map(({ listId }) => this.buildUrl(`ShoppingLists/DeleteList/${listId}`));
     // Promise.all doesn't seem to work well
     const responses = [];
-    for (const url of deletionUrls) responses.push(await this.fetch(url, request));
+    for (const url of deletionUrls) {
+      responses.push(await this.fetch(url, request));
+      await setTimeout(250);
+    }
     return responses;
   }
 }

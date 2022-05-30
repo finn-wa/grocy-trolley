@@ -16,6 +16,7 @@ export class CountdownUserAgent extends StoreUserAgent {
     if (!this.loginDetails || (await this.isLoggedIn(shellRequest))) {
       return { page, headers: await this.getHeadersFromRequest(shellRequest) };
     }
+    await page.hover("global-nav-header");
     await page.waitForLoadState("networkidle");
     await page.type("#loginContainer input#loginID", this.loginDetails.email);
     await page.type("#loginContainer input#password", this.loginDetails.password);

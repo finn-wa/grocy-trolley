@@ -82,7 +82,7 @@ export interface DeliveryFee {
 
 export interface OneCardBalance {
   isOneCardInError: boolean;
-  onecardPointsBalance: number;
+  onecardPointsBalance: number | null;
   continuitySpend?: unknown;
   redeemableRewardVouchers: number;
   oneCardNumber: string;
