@@ -13,7 +13,7 @@
     "test": "jest",
     "typecheck": "tsc -w",
     "lint": "eslint src --cache --cache-location=build",
-    "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/openapi/taggun.d.ts",
+    "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/receipt-ocr/taggun/api.d.ts",
     "updateGrocyTypes": "openapi-typescript src/openapi/grocy.openapi.yaml --output ./src/openapi/grocy.d.ts"
   },
   "dependencies": {
