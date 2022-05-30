@@ -84,6 +84,7 @@ export interface definitions {
     /**
      * @description LIKELY or UNLIKELY
      * @example LIKELY
+     * @enum {string}
      */
     data?: "LIKELY" | "UNLIKELY";
     /** @example 10 */
@@ -140,7 +141,10 @@ export interface definitions {
     near?: string;
     /** @description Ignore this merchant name if detected on the receipt. Use this field to avoid detecting the customer name as the merchant name. */
     ignoreMerchantName?: string;
-    /** @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh */
+    /**
+     * @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh
+     * @enum {string}
+     */
     language?: "en" | "es" | "fr" | "jp" | "he" | "iw" | "et" | "lv" | "lt" | "fi" | "el" | "zh";
     /** @description Set true to return time if found on the receipt. Otherwise, the time is always set to 12:00:00.000. */
     extractTime?: boolean;
@@ -244,7 +248,10 @@ export interface definitions {
     near?: string;
     /** @description Ignore this merchant name if detected on the receipt. Use this field to avoid detecting the customer name as the merchant name. */
     ignoreMerchantName?: string;
-    /** @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh */
+    /**
+     * @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh
+     * @enum {string}
+     */
     language?: "en" | "es" | "fr" | "jp" | "he" | "iw" | "et" | "lv" | "lt" | "fi" | "el" | "zh";
     /** @description Set true to return time if found on the receipt. Otherwise, the time is always set to 12:00:00.000. */
     extractTime?: boolean;
@@ -280,7 +287,10 @@ export interface definitions {
     near?: string;
     /** @description Ignore this merchant name if detected on the receipt. Use this field to avoid detecting the customer name as the merchant name. */
     ignoreMerchantName?: string;
-    /** @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh */
+    /**
+     * @description Set language as a hint. Leave empty for auto detect. Supported languages: , en, es, fr, jp, he, iw, et, lv, lt, fi, el, zh
+     * @enum {string}
+     */
     language?: "en" | "es" | "fr" | "jp" | "he" | "iw" | "et" | "lv" | "lt" | "fi" | "el" | "zh";
     /** @description Set true to return time if found on the receipt. Otherwise, the time is always set to 12:00:00.000. */
     extractTime?: boolean;
@@ -708,6 +718,15 @@ export interface definitions {
     confidenceLevel?: number;
     regions?: definitions["regions"];
   };
+  expenseType: {
+    /** @example restaurant */
+    data?: string;
+    text?: string;
+    index?: number;
+    /** @example 0.7216666666666667 */
+    confidenceLevel?: number;
+    regions?: definitions["regions"];
+  };
   entities: {
     invoiceNumber?: definitions["invoiceNumber"];
     IBAN?: definitions["IBAN"];
@@ -726,6 +745,7 @@ export interface definitions {
     geoNames?: definitions["geoNames"];
     shoppingMallName?: definitions["shoppingMallName"];
     merchantVerification?: definitions["merchantVerification"];
+    expenseType?: definitions["expenseType"];
   };
   itemsCount: {
     /** @example 11 */

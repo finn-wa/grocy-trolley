@@ -5,7 +5,6 @@ import {
   SaleTypeString,
 } from "@gt/store/foodstuffs/models";
 import { JTDSchemaType } from "ajv/dist/jtd";
-import { Cart } from ".";
 import { FoodstuffsCart } from "../../foodstuffs-cart.model";
 
 const saleTypes: SaleTypeString[] = ["UNITS", "WEIGHT", "BOTH"];
