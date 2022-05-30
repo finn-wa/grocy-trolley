@@ -53,7 +53,7 @@ export interface OrderDetailsContextShopperOneCardBalance {
   isOneCardInError: boolean;
   oneCardCurrency: string;
   oneCardNumber: string;
-  onecardPointsBalance: number;
+  onecardPointsBalance: number | null;
   redeemableRewardVouchers: number;
   continuitySpend?: unknown;
 }

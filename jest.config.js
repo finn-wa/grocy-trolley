@@ -13,6 +13,18 @@ module.exports = {
   testEnvironment: "node",
   testMatch: ["<rootDir>/src/**/*.spec.ts"],
   clearMocks: true,
+  reporters: [
+    "default",
+    [
+      "./node_modules/jest-html-reporter",
+      {
+        pageTitle: "Test Report",
+        outputPath: "./temp/test-report.html",
+        includeFailureMsg: true,
+        includeConsoleLog: true,
+      },
+    ],
+  ],
   globals: {
     "ts-jest": { isolatedModules: true },
   },

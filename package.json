@@ -39,6 +39,7 @@
     "eslint-config-prettier": "8.5.0",
     "fast-glob": "3.2.11",
     "jest": "^28.1.0",
+    "jest-html-reporter": "^3.5.0",
     "openapi-typescript": "5.3.0",
     "ts-jest": "^28.0.3"
   },

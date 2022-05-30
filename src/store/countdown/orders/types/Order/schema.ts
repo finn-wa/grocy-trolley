@@ -8,7 +8,7 @@ import { Order } from ".";
  */
 export const schema: JTDSchemaType<Order> = {
   properties: {
-    deliveryFee: { type: "uint8" },
+    deliveryFee: { type: "uint16" },
     fulfilmentDate: { type: "string" },
     fulfilmentTime: { type: "string" },
     isEditable: { type: "boolean" },

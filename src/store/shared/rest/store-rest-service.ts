@@ -60,7 +60,7 @@ export abstract class StoreRestService extends RestService {
       if (this.headers.disallowed.includes(lowercaseName)) {
         headers.delete(name);
       } else if (!this.headers.allowed.includes(lowercaseName)) {
-        this.logger.warn(`Unrecognised header: ${name}`);
+        this.logger.warn(`Unrecognised header:\n${name}: ${headers.get(name)}`);
       }
     }
     return headers;

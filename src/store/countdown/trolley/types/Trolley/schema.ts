@@ -26,7 +26,7 @@ export const schema: JTDSchemaType<Trolley> = {
             savings: { type: "string", nullable: true },
             subtotal: { type: "string" },
             totalIncludingDeliveryFees: { type: "string" },
-            totalItems: { type: "uint8" },
+            totalItems: { type: "uint16" },
           },
         },
         enabledFeatures: { elements: { type: "string" } },
@@ -71,8 +71,8 @@ export const schema: JTDSchemaType<Trolley> = {
                 isOneCardInError: { type: "boolean" },
                 oneCardCurrency: { type: "string" },
                 oneCardNumber: { type: "string" },
-                onecardPointsBalance: { type: "uint16" },
-                redeemableRewardVouchers: { type: "uint8" },
+                onecardPointsBalance: { type: "uint16", nullable: true },
+                redeemableRewardVouchers: { type: "uint16" },
               },
               optionalProperties: { continuitySpend: {} },
             },
@@ -87,7 +87,7 @@ export const schema: JTDSchemaType<Trolley> = {
       },
     },
     isSuccessful: { type: "boolean" },
-    itemCount: { type: "uint8" },
+    itemCount: { type: "uint16" },
     items: {
       elements: {
         properties: {
@@ -125,8 +125,8 @@ export const schema: JTDSchemaType<Trolley> = {
                       nullable: true,
                       properties: {
                         link: { type: "string" },
-                        quantity: { type: "uint8" },
-                        value: { type: "uint8" },
+                        quantity: { type: "uint16" },
+                        value: { type: "uint16" },
                       },
                     },
                     tagType: { type: "string" },
@@ -136,7 +136,7 @@ export const schema: JTDSchemaType<Trolley> = {
                 quantity: {
                   properties: {
                     increment: { type: "float64" },
-                    max: { type: "uint8" },
+                    max: { type: "uint16" },
                     min: { type: "float64" },
                     purchasingQuantityString: { type: "string" },
                     quantityInOrder: { type: "float64" },

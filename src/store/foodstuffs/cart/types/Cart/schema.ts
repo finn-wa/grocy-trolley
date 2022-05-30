@@ -14,7 +14,7 @@ const categories = [...FOODSTUFFS_CATEGORIES];
 const productSchema: JTDSchemaType<FoodstuffsCartProduct> = {
   properties: {
     badgeImageUrl: { type: "string" },
-    catalogPrice: { type: "uint8" },
+    catalogPrice: { type: "uint16" },
     categoryName: { enum: categories },
     hasBadge: { type: "boolean" },
     imageUrl: { type: "string" },
@@ -24,13 +24,13 @@ const productSchema: JTDSchemaType<FoodstuffsCartProduct> = {
     productId: { type: "string" },
     promoBadgeImageTitle: { type: "string" },
     promotionCode: { type: "string" },
-    quantity: { type: "uint8" },
+    quantity: { type: "uint16" },
     restricted: { type: "boolean" },
     saleTypes: {
       elements: {
         properties: {
-          minUnit: { type: "uint8" },
-          stepSize: { type: "uint8" },
+          minUnit: { type: "uint16" },
+          stepSize: { type: "uint16" },
           type: { enum: saleTypes },
           unit: { type: "string" },
         },
@@ -54,14 +54,14 @@ const productSchema: JTDSchemaType<FoodstuffsCartProduct> = {
 export const schema: JTDSchemaType<FoodstuffsCart> = {
   properties: {
     allowSubstitutions: { type: "boolean" },
-    bagFee: { type: "uint8" },
-    orderNumber: { type: "uint8" },
+    bagFee: { type: "uint16" },
+    orderNumber: { type: "uint16" },
     products: {
       elements: productSchema,
     },
-    promoCodeDiscount: { type: "uint8" },
-    saving: { type: "uint8" },
-    serviceFee: { type: "uint8" },
+    promoCodeDiscount: { type: "uint16" },
+    saving: { type: "uint16" },
+    serviceFee: { type: "uint16" },
     store: {
       properties: {
         storeAddress: { type: "string" },
