@@ -1,6 +1,9 @@
+import { QuantityUnit } from "@gt/grocy";
+
 export interface ReceiptItem {
   name: string;
   amount: number;
+  unit?: QuantityUnit;
 }
 
 /**
