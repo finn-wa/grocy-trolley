@@ -1,4 +1,4 @@
-import { Browser, firefox } from "playwright-firefox";
+import { Browser, firefox } from "playwright";
 import { LogLevel, playwrightLogger } from "@gt/utils/logger";
 
 export let browser: Browser | null = null;

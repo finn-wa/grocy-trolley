@@ -1,6 +1,6 @@
 import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { Logger } from "@gt/utils/logger";
-import { BrowserContext, Page, Request as PlaywrightRequest } from "playwright-firefox";
+import { BrowserContext, Page, Request as PlaywrightRequest } from "playwright";
 import { COUNTDOWN_URL, Shell } from "../models";
 
 export class CountdownUserAgent extends StoreUserAgent {

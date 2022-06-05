@@ -3,7 +3,7 @@ import { getCacheDirForEmail } from "@gt/utils/cache";
 import { Logger } from "@gt/utils/logger";
 import { existsSync } from "fs";
 import path from "path";
-import { Browser, BrowserContext, Page, Request as PlaywrightRequest } from "playwright-firefox";
+import { Browser, BrowserContext, Page, Request as PlaywrightRequest } from "playwright";
 
 export abstract class StoreUserAgent {
   public abstract readonly storeName: string;

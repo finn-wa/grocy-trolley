@@ -1,7 +1,7 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { Logger } from "@gt/utils/logger";
-import { BrowserContext, Page } from "playwright-firefox";
+import { BrowserContext, Page } from "playwright";
 import { PAKNSAVE_URL } from "../models";
 
 /**
