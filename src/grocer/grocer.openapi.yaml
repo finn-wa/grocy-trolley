@@ -1,0 +1,750 @@
+openapi: 3.0.0
+info:
+  title: grocer.nz
+  contact: {}
+  version: "1.0"
+servers:
+  - url: https://search.grocer.nz/indexes/products
+    variables: {}
+  - url: https://api.grocer.nz
+    variables: {}
+paths:
+  /search:
+    post:
+      tags:
+        - Misc
+      summary: https://search.grocer.nz/indexes/products/search
+      operationId: https://search.grocer.nz/indexes/products/search
+      parameters:
+        - name: sec-ch-ua
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"'
+        - name: sec-ch-ua-mobile
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: ?0
+        - name: User-Agent
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36
+        - name: sec-ch-ua-platform
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: '"Windows"'
+        - name: Accept
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: "*/*"
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/httpssearch.grocer.nzindexesproductssearchrequest"
+            example:
+              attributesToRetrieve:
+                - id
+                - name
+                - brand
+                - unit
+                - size
+              limit: 20
+              offset: 0
+              filter:
+                - - stores = 8019102739295325
+                  - stores = 7831753237935622
+                  - stores = 3067760475684734
+              q: b
+        required: true
+      responses:
+        "200":
+          description: OK
+          headers:
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: nginx/1.14.2
+                  example: nginx/1.14.2
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: Sun, 05 Jun 2022 11:45:08 GMT
+                  example: Sun, 05 Jun 2022 11:45:08 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: chunked
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: keep-alive
+                  example: keep-alive
+            content-encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: gzip
+                  example: gzip
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/httpssearch.grocer.nzindexesproductssearch"
+              example:
+                hits:
+                  - name: Bananas Yellow
+                    brand: Fresh Produce
+                    size: null
+                    id: 219444701131828
+                    unit: kg
+                  - name: Paper Checkout Bag
+                    brand: TC Packaging
+                    size: 1ea
+                    id: 1389879550472777
+                    unit: ea
+                  - name: Broccoli Head
+                    brand: Fresh Produce
+                    size: null
+                    id: 1603458765664110
+                    unit: ea
+                  - name: Butter
+                    brand: Anchor
+                    size: 500g
+                    id: 2816187121792646
+                    unit: ea
+                  - name: White Toast Bread
+                    brand: Value
+                    size: 600g
+                    id: 1435534869432436
+                    unit: ea
+                  - name: Pure Butter
+                    brand: Pams
+                    size: 500g
+                    id: 8186159799674082
+                    unit: ea
+                  - name: Toast Bread White
+                    brand: Nature's Fresh
+                    size: 700g
+                    id: 8815458182678770
+                    unit: ea
+                  - name: Standard Blue Milk
+                    brand: Anchor
+                    size: 2l
+                    id: 2292105652509242
+                    unit: ea
+                  - name: Skinless Chicken Breast
+                    brand: null
+                    size: null
+                    id: 4134983479702412
+                    unit: kg
+                  - name: Supersoft White Toast Bread
+                    brand: Tip Top Super Soft
+                    size: 700g
+                    id: 1138579815085697
+                    unit: ea
+                  - name: Standard Blue Milk
+                    brand: Anchor
+                    size: 1l
+                    id: 7620851267465986
+                    unit: ea
+                  - name: Wheatmeal Toast Bread
+                    brand: Value
+                    size: 600g
+                    id: 7278874133975213
+                    unit: ea
+                  - name: Toast Bread Original
+                    brand: Molenberg
+                    size: 700g
+                    id: 6897328343758886
+                    unit: ea
+                  - name: Butter
+                    brand: Rolling Meadow
+                    size: 500g
+                    id: 4074745337390397
+                    unit: ea
+                  - name: White Toast Bread
+                    brand: Sunny Crust
+                    size: 600g
+                    id: 7362810186734916
+                    unit: ea
+                  - name: Traditional Loaf Dark Rye Batard
+                    brand: Instore Bakery
+                    size: null
+                    id: 7407372712723565
+                    unit: kg
+                  - name: Onions Brown
+                    brand: Fresh Produce
+                    size: null
+                    id: 1688964521482639
+                    unit: kg
+                  - name: Original Mixed Grain Toast Bread
+                    brand: Vogel's
+                    size: 750g
+                    id: 6878279929078870
+                    unit: ea
+                  - name: Blueberries
+                    brand: Pams
+                    size: 125g
+                    id: 5148796023855481
+                    unit: ea
+                  - name: Lettuce Buttercrunch Green
+                    brand: Fresh Produce
+                    size: null
+                    id: 2932552551409301
+                    unit: ea
+                nbHits: 11137
+                exhaustiveNbHits: false
+                query: b
+                limit: 20
+                offset: 0
+                processingTimeMs: 2
+      deprecated: false
+      servers:
+        - url: https://search.grocer.nz/indexes/products
+          variables: {}
+  /products:
+    get:
+      tags:
+        - Misc
+      summary: https://api.grocer.nz/products?productIds[]=7080379345836712&productIds[]=8722938454445504&productIds[]=7338902578315682&productIds[]=8186159799674082&storeIds[]=8019102739295325&storeIds[]=7831753237935622&storeIds[]=3067760475684734
+      operationId: https://api.grocer.nz/products?productIds[]=7080379345836712&productIds[]=8722938454445504&productIds[]=7338902578315682&productIds[]=8186159799674082&storeIds[]=8019102739295325&storeIds[]=7831753237935622&storeIds[]=3067760475684734
+      parameters:
+        - name: productIds[]
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+            example: 7080379345836712
+        - name: storeIds[]
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int64
+            example: 8019102739295325
+        - name: sec-ch-ua
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: '" Not A;Brand";v="99", "Chromium";v="102", "Google Chrome";v="102"'
+        - name: sec-ch-ua-mobile
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: ?0
+        - name: User-Agent
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36
+        - name: sec-ch-ua-platform
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: '"Windows"'
+        - name: Accept
+          in: header
+          description: ""
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: "*/*"
+      responses:
+        "200":
+          description: OK
+          headers:
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: Sun, 05 Jun 2022 11:47:31 GMT
+                  example: Sun, 05 Jun 2022 11:47:31 GMT
+            Transfer-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: chunked
+                  example: chunked
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: keep-alive
+                  example: keep-alive
+            vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: Origin, Accept-Encoding
+                  example: Origin, Accept-Encoding
+            access-control-allow-origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: "*"
+                  example: "*"
+            access-control-allow-credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: "true"
+                  example: "true"
+            cache-control:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: public, max-age=18748
+                  example: public, max-age=18748
+            Last-Modified:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: Sun, 05 Jun 2022 11:47:31 GMT
+                  example: Sun, 05 Jun 2022 11:47:31 GMT
+            CF-Cache-Status:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: DYNAMIC
+                  example: DYNAMIC
+            Expect-CT:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+                  example: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+            Report-To:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example:
+                      endpoints:
+                        - url: https://a.nel.cloudflare.com/report/v3?s=9hoxE5n6nGy0aCkyt1EitpnmzYdw5EzM%2BPdLIT%2FRTm1a4m9%2BmMUpTiLrXKDyKECk%2FbJocNI09mqLPk9nMSQShTjO9Cd3lnbIptgkziabBmeyBgDWTK9Zos9dB5Mdm8nD
+                      group: cf-nel
+                      max_age: 604800
+                  example:
+                    endpoints:
+                      - url: https://a.nel.cloudflare.com/report/v3?s=9hoxE5n6nGy0aCkyt1EitpnmzYdw5EzM%2BPdLIT%2FRTm1a4m9%2BmMUpTiLrXKDyKECk%2FbJocNI09mqLPk9nMSQShTjO9Cd3lnbIptgkziabBmeyBgDWTK9Zos9dB5Mdm8nD
+                    group: cf-nel
+                    max_age: 604800
+            NEL:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example:
+                      success_fraction: 0
+                      report_to: cf-nel
+                      max_age: 604800
+                  example:
+                    success_fraction: 0
+                    report_to: cf-nel
+                    max_age: 604800
+            Server:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: cloudflare
+                  example: cloudflare
+            CF-RAY:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: 7168ac894810ee9e-AKL
+                  example: 7168ac894810ee9e-AKL
+            Content-Encoding:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: br
+                  example: br
+            alt-svc:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    example: h3=":443"; ma=86400, h3-29=":443"; ma=86400
+                  example: h3=":443"; ma=86400, h3-29=":443"; ma=86400
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/httpsapi.grocer.nzproductsproductIds7080379345836712productIds8722938454445504productIds7338902578315682productIds8186159799674082storeIds8019102739295325storeIds7831753237935622storeIds3067760475684734"
+                description: ""
+      deprecated: false
+      servers:
+        - url: https://api.grocer.nz
+          variables: {}
+components:
+  schemas:
+    httpssearch.grocer.nzindexesproductssearchrequest:
+      title: httpssearch.grocer.nzindexesproductssearchrequest
+      required:
+        - attributesToRetrieve
+        - limit
+        - offset
+        - filter
+        - q
+      type: object
+      properties:
+        attributesToRetrieve:
+          type: array
+          items:
+            type: string
+          description: ""
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        filter:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        q:
+          type: string
+      example:
+        attributesToRetrieve:
+          - id
+          - name
+          - brand
+          - unit
+          - size
+        limit: 20
+        offset: 0
+        filter:
+          - - stores = 8019102739295325
+            - stores = 7831753237935622
+            - stores = 3067760475684734
+        q: b
+    httpssearch.grocer.nzindexesproductssearch:
+      title: httpssearch.grocer.nzindexesproductssearch
+      required:
+        - hits
+        - nbHits
+        - exhaustiveNbHits
+        - query
+        - limit
+        - offset
+        - processingTimeMs
+      type: object
+      properties:
+        hits:
+          type: array
+          items:
+            $ref: "#/components/schemas/Hit"
+          description: ""
+        nbHits:
+          type: integer
+          format: int32
+        exhaustiveNbHits:
+          type: boolean
+        query:
+          type: string
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        processingTimeMs:
+          type: integer
+          format: int32
+      example:
+        hits:
+          - name: Bananas Yellow
+            brand: Fresh Produce
+            size: null
+            id: 219444701131828
+            unit: kg
+          - name: Paper Checkout Bag
+            brand: TC Packaging
+            size: 1ea
+            id: 1389879550472777
+            unit: ea
+          - name: Broccoli Head
+            brand: Fresh Produce
+            size: null
+            id: 1603458765664110
+            unit: ea
+          - name: Butter
+            brand: Anchor
+            size: 500g
+            id: 2816187121792646
+            unit: ea
+          - name: White Toast Bread
+            brand: Value
+            size: 600g
+            id: 1435534869432436
+            unit: ea
+          - name: Pure Butter
+            brand: Pams
+            size: 500g
+            id: 8186159799674082
+            unit: ea
+          - name: Toast Bread White
+            brand: Nature's Fresh
+            size: 700g
+            id: 8815458182678770
+            unit: ea
+          - name: Standard Blue Milk
+            brand: Anchor
+            size: 2l
+            id: 2292105652509242
+            unit: ea
+          - name: Skinless Chicken Breast
+            brand: null
+            size: null
+            id: 4134983479702412
+            unit: kg
+          - name: Supersoft White Toast Bread
+            brand: Tip Top Super Soft
+            size: 700g
+            id: 1138579815085697
+            unit: ea
+          - name: Standard Blue Milk
+            brand: Anchor
+            size: 1l
+            id: 7620851267465986
+            unit: ea
+          - name: Wheatmeal Toast Bread
+            brand: Value
+            size: 600g
+            id: 7278874133975213
+            unit: ea
+          - name: Toast Bread Original
+            brand: Molenberg
+            size: 700g
+            id: 6897328343758886
+            unit: ea
+          - name: Butter
+            brand: Rolling Meadow
+            size: 500g
+            id: 4074745337390397
+            unit: ea
+          - name: White Toast Bread
+            brand: Sunny Crust
+            size: 600g
+            id: 7362810186734916
+            unit: ea
+          - name: Traditional Loaf Dark Rye Batard
+            brand: Instore Bakery
+            size: null
+            id: 7407372712723565
+            unit: kg
+          - name: Onions Brown
+            brand: Fresh Produce
+            size: null
+            id: 1688964521482639
+            unit: kg
+          - name: Original Mixed Grain Toast Bread
+            brand: Vogel's
+            size: 750g
+            id: 6878279929078870
+            unit: ea
+          - name: Blueberries
+            brand: Pams
+            size: 125g
+            id: 5148796023855481
+            unit: ea
+          - name: Lettuce Buttercrunch Green
+            brand: Fresh Produce
+            size: null
+            id: 2932552551409301
+            unit: ea
+        nbHits: 11137
+        exhaustiveNbHits: false
+        query: b
+        limit: 20
+        offset: 0
+        processingTimeMs: 2
+    Hit:
+      title: Hit
+      required:
+        - name
+        - brand
+        - size
+        - id
+        - unit
+      type: object
+      properties:
+        name:
+          type: string
+        brand:
+          type: string
+          nullable: true
+        size:
+          type: string
+          nullable: true
+        id:
+          type: integer
+          format: int64
+        unit:
+          type: string
+      example:
+        name: Bananas Yellow
+        brand: Fresh Produce
+        size: null
+        id: 219444701131828
+        unit: kg
+    httpsapi.grocer.nzproductsproductIds7080379345836712productIds8722938454445504productIds7338902578315682productIds8186159799674082storeIds8019102739295325storeIds7831753237935622storeIds3067760475684734:
+      title: httpsapi.grocer.nzproductsproductIds7080379345836712productIds8722938454445504productIds7338902578315682productIds8186159799674082storeIds8019102739295325storeIds7831753237935622storeIds3067760475684734
+      required:
+        - id
+        - name
+        - brand
+        - unit
+        - size
+        - prices
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        brand:
+          type: string
+        unit:
+          type: string
+        size:
+          type: string
+        prices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Price"
+          description: ""
+    Price:
+      title: Price
+      required:
+        - store_id
+        - store_name
+        - vendor_code
+        - original_price
+        - sale_price
+        - club_price
+        - multibuy_price
+        - multibuy_quantity
+        - multibuy_limit
+        - club_multibuy_price
+        - club_multibuy_quantity
+        - club_multibuy_limit
+      type: object
+      properties:
+        store_id:
+          type: integer
+          format: int64
+        store_name:
+          type: string
+        vendor_code:
+          type: string
+        original_price:
+          oneOf:
+            - type: string
+              nullable: true
+            - type: number
+            - nullable: true
+        sale_price:
+          oneOf:
+            - type: string
+              nullable: true
+            - type: number
+            - nullable: true
+        club_price:
+          type: string
+          nullable: true
+        multibuy_price:
+          type: string
+          nullable: true
+        multibuy_quantity:
+          type: string
+          nullable: true
+        multibuy_limit:
+          type: string
+          nullable: true
+        club_multibuy_price:
+          type: string
+          nullable: true
+        club_multibuy_quantity:
+          type: string
+          nullable: true
+        club_multibuy_limit:
+          type: string
+          nullable: true
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+  - httpBearer: []
+tags:
+  - name: Misc
+    description: ""
