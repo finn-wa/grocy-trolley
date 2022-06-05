@@ -38,7 +38,10 @@ export class TaggunReceiptScanner extends RestService implements ReceiptScanner 
     return taggunRes.text.text;
   }
 
-  async fetchReceiptData(filePath: string): Promise<ReceiptResponseOk | ReceiptResponseError> {
+  async fetchReceiptData(
+    filePath: string,
+    verbosity: "verbose" | "simple" = "verbose"
+  ): Promise<ReceiptResponseOk | ReceiptResponseError> {
     const imageData = await readFile(filePath, { encoding: "base64" });
     const body: ReceiptData = {
       image: imageData,
@@ -50,7 +53,7 @@ export class TaggunReceiptScanner extends RestService implements ReceiptScanner 
       extractTime: false,
       incognito: false,
     };
-    return this.postAndParse(this.buildUrl("api/receipt/v1/verbose/encoded"), {
+    return this.postAndParse(this.buildUrl(`api/receipt/v1/${verbosity}/encoded`), {
       headers: headersBuilder()
         .acceptJson()
         .contentTypeJson()

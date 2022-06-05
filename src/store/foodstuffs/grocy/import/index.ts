@@ -8,6 +8,7 @@ import { FoodstuffsListImporter } from "./list-importer";
 import { FoodstuffsOrderImporter } from "./order-importer";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 import { FoodstuffsReceiptImporter } from "./receipt-importer";
+import { FoodstuffsReceiptItemiser } from "./foodstuffs-receipt-itemiser";
 
 export {
   FoodstuffsBarcodeImporter,
@@ -43,6 +44,7 @@ export function foodstuffsImporters(
       listImporter,
       // new OcrReceiptScanner()
       new TaggunReceiptScanner(),
+      new FoodstuffsReceiptItemiser(),
       grocy.productService
     ),
   };
