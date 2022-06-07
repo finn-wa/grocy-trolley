@@ -181,7 +181,7 @@ export const schema: JTDSchemaType<Trolley> = {
 /**
  * The key used to index the Trolley schema with ajv
  */
-export const key = "Trolley";
+export const key = "src/store/countdown/trolley/Trolley";
 
 /**
  * Calls {@link ajv.getSchema} with the Trolley schema {@link key}. The schema is

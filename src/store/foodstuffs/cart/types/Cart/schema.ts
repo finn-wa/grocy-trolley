@@ -78,7 +78,7 @@ export const schema: JTDSchemaType<FoodstuffsCart> = {
 /**
  * The key used to index the Cart schema with ajv
  */
-export const key = "FoodstuffsCart";
+export const key = "src/store/foodstuffs/cart/FoodstuffsCart";
 
 /**
  * Calls {@link ajv.getSchema} with the Cart schema {@link key}. The schema is
