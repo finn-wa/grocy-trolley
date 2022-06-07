@@ -1,19 +1,16 @@
 /* eslint-disable */
 
-import { setupGrocer } from "./grocer/grocer-generate-types";
+import { GrocerApiService } from "./grocer/api/grocer-api-service";
 import { generateTypes } from "./jtd/generate-types";
-import { FoodstuffsCartController } from "./store/foodstuffs/cart/foodstuffs-cart-controller";
-import { foodstuffsServices } from "./store/foodstuffs/services";
 
 export async function dev() {
-  await setupGrocer();
+  await _generate();
 }
 
 async function _generate() {
-  const { userAgent } = await foodstuffsServices();
-  const ctrl = new FoodstuffsCartController(userAgent);
-  const cart = await ctrl.clearCart();
-  await generateTypes("ClearCartResponse", "src/store/foodstuffs/cart", cart);
+  const grocerApi = new GrocerApiService();
+  const orders = await grocerApi.getStores();
+  await generateTypes("Stores", "src/grocer/api", orders);
 }
 
 /* eslint-enable */

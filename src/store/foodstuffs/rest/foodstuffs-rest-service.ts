@@ -9,7 +9,6 @@ export abstract class FoodstuffsRestService extends StoreRestService {
     allowed: [
       "host",
       "user-agent",
-      "accept",
       "accept-language",
       "accept-encoding",
       "referer",

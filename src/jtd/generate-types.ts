@@ -4,7 +4,7 @@ import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 import dedent from "dedent";
 
-const generateTypecheckFile = (type: string, jtd: string): string => dedent`
+const generateTypecheckFile = (type: string, schemaKey: string, jtd: string): string => dedent`
   import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
   import { JTDSchemaType } from "ajv/dist/jtd";
   import { ${type} } from ".";
@@ -18,7 +18,7 @@ const generateTypecheckFile = (type: string, jtd: string): string => dedent`
   /**
    * The key used to index the ${type} schema with ajv
    */
-  export const key = "${type}";
+  export const key = "${schemaKey}";
 
   /**
    * Calls {@link ajv.getSchema} with the ${type} schema {@link key}. The schema is
@@ -37,7 +37,7 @@ const generateSchemaSpecFile = (type: string): string => dedent`
   import samples from "./samples.json";
   import { get${type}Schema } from "./schema";
 
-  describe('${type} Schema', () => {
+  describe("${type} Schema", () => {
     const validate = get${type}Schema();
     testSchemaWithSamples(validate, samples);
   });
@@ -46,19 +46,19 @@ const generateSchemaSpecFile = (type: string): string => dedent`
 export async function generateTypes(typeName: string, sourceDir: string, ...inputs: unknown[]) {
   const typesDir = join(sourceDir, "types", typeName);
   await mkdir(typesDir, { recursive: true });
-  const writeStaticFiles = Promise.all([
+  // Infer JTD and save as schema
+  const inferredJTD = JSON.stringify(jtdInfer<unknown>(typeName, ...inputs));
+  return Promise.all([
     // Save raw JSON files as samples
     writeFile(join(typesDir, "samples.json"), JSON.stringify(inputs)),
     // Write spec file
     writeFile(join(typesDir, "schema.spec.ts"), generateSchemaSpecFile(typeName)),
-  ]);
-  // Infer JTD and save as schema
-  const inferredJTD = JSON.stringify(jtdInfer<unknown>(typeName, ...inputs));
-  return Promise.all([
-    writeStaticFiles,
     // Generate code and save as index.ts
     jtdCodegen(typeName, inferredJTD, typesDir),
     // Write typecheck file
-    writeFile(join(typesDir, "schema.ts"), generateTypecheckFile(typeName, inferredJTD)),
+    writeFile(
+      join(typesDir, "schema.ts"),
+      generateTypecheckFile(typeName, `${sourceDir}/${typeName}`, inferredJTD)
+    ),
   ]);
 }

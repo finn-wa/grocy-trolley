@@ -24,7 +24,7 @@ export const schema: JTDSchemaType<Order> = {
 /**
  * The key used to index the Order schema with ajv
  */
-export const key = "Order";
+export const key = "src/store/countdown/orders/Order";
 
 /**
  * Calls {@link ajv.getSchema} with the Order schema key. The schema is compiled

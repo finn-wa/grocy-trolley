@@ -13,7 +13,7 @@ export abstract class StoreUserAgent {
   private headers?: Headers;
 
   /**
-   * Creates a new FoodstuffsUserAgent.
+   * Creates a new UserAgent.
    * @param browserLoader Cold promise that returns the Playwright Browser
    *    instance to use to perform requests.
    * @param loginDetails Optional login details. If provided, Playwright logs
@@ -75,15 +75,13 @@ export abstract class StoreUserAgent {
       return this.context;
     }
     const browser = await this.browserLoader();
-    if (this.loginDetails) {
-      const storageStatePath = this.getStorageStateFilePath();
-      if (existsSync(storageStatePath)) {
-        this.context = await browser.newContext({ storageState: storageStatePath });
-        return this.context;
-      }
+    const storageStatePath = this.getStorageStateFilePath();
+    if (existsSync(storageStatePath)) {
+      this.context = await browser.newContext({ storageState: storageStatePath });
+    } else {
       this.logger.info("No storageState found, creating new context");
+      this.context = await browser.newContext();
     }
-    this.context = await browser.newContext();
     return this.context;
   }
 
@@ -95,11 +93,8 @@ export abstract class StoreUserAgent {
   }
 
   private getStorageStateFilePath(): string {
-    if (!this.loginDetails) {
-      throw new Error("No storage state is saved when loginDetails is undefined");
-    }
     return path.join(
-      getCacheDirForEmail(this.loginDetails.email),
+      getCacheDirForEmail(this.loginDetails?.email),
       this.storeName,
       "playwright.json"
     );
