@@ -1,8 +1,8 @@
 import path from "path";
-import { getEnv } from "./environment";
+import { getEnvVar } from "./environment";
 
 export function getCacheDir(): string {
-  return getEnv().CACHE_DIR;
+  return getEnvVar("CACHE_DIR");
 }
 
 export function getCacheDirForEmail(email = "anon") {

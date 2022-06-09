@@ -1,4 +1,4 @@
-import { getEnv } from "@gt/utils/environment";
+import { getEnvVar } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
@@ -8,7 +8,7 @@ import { ReceiptScanner } from "..";
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {
   protected readonly baseUrl = this.validateBaseUrl("https://api.ocr.space");
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly apikey = getEnv().OCR_API_KEY;
+  private readonly apikey = getEnvVar("OCR_API_KEY");
 
   async scan(filepath: string): Promise<string> {
     const response = await this.fetchReceiptData(filepath);

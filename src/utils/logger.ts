@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import chalk from "chalk";
-import { getEnv } from "@gt/utils/environment";
+import { getEnvVar } from "@gt/utils/environment";
 import { Logger as PlaywrightLogger } from "playwright";
 // Unfortunately ESM Chalk 5 doesn't work with ts-jest
 // If it ever does, change this to an import when upgrading
@@ -27,7 +27,7 @@ export class Logger {
     if (logLevel) {
       this.level = logLevel;
     } else {
-      const level = getEnv().GT_LOG_LEVEL;
+      const level = getEnvVar("GT_LOG_LEVEL");
       if (!isLogLevel(level)) {
         throw new Error(`Invalid log level "${level}". Valid values: ${LOG_LEVELS.join()}`);
       }
