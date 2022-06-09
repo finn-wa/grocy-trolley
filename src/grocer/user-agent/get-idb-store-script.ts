@@ -40,7 +40,7 @@ export async function getIDBStoreAsObject<T extends Record<string, unknown>>(
 
   const db = await getIndexedDB();
   const keys = await objStoreRequest(db, (objStore) => objStore.getAllKeys());
-  const values = await objStoreRequest(db, (objStore) => objStore.getAll());
+  const values = await objStoreRequest<unknown[]>(db, (objStore) => objStore.getAll());
   // Zip keys and values together
   return keys.reduce((acc, key, i) => ({ ...acc, [key.toString()]: values[i] }), {} as T);
 }

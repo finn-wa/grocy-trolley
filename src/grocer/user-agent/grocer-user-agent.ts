@@ -33,7 +33,7 @@ export class GrocerUserAgent extends StoreUserAgent {
     const storeSelector = `.list-group-item:has-text("${storeName}")`;
     // Check whether store is already selected
     const isSelected = await page.locator(storeSelector).count();
-    if (!!isSelected) {
+    if (isSelected) {
       this.logger.debug(`Store ${storeName} is already selected`);
       return;
     }
