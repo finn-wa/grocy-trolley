@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { basename } from "path/posix";
 import { ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
-import { getEnv } from "@gt/utils/environment";
+import { getEnvVar } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
@@ -25,7 +25,7 @@ type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
 export class TaggunReceiptScanner extends RestService implements ReceiptScanner {
   protected readonly baseUrl = this.validateBaseUrl("https://api.taggun.io");
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly apiKey = getEnv().TAGGUN_API_KEY;
+  private readonly apiKey = getEnvVar("TAGGUN_API_KEY");
 
   async scan(filePath: string): Promise<string> {
     const taggunRes = await this.fetchReceiptData(filePath);

@@ -72,6 +72,13 @@ export function getEnv(): Env {
   return { ...(_env as Env) };
 }
 
+export function getEnvVar(envVar: EnvVar): string {
+  if (_env === null) {
+    initEnv();
+  }
+  return _env![envVar];
+}
+
 /**
  * A semi-pointless utility method. The same as doing:
  * ```js

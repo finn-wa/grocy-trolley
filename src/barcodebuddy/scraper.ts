@@ -1,4 +1,4 @@
-import { getEnv } from "@gt/utils/environment";
+import { getEnvVar } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
@@ -10,7 +10,7 @@ export class BarcodeBuddyService extends RestService {
 
   constructor() {
     super();
-    this.baseUrl = this.validateBaseUrl(getEnv().BARCODEBUDDY_URL);
+    this.baseUrl = this.validateBaseUrl(getEnvVar("BARCODEBUDDY_URL"));
   }
 
   async getBarcodes(): Promise<BarcodeBuddyBarcode[]> {
