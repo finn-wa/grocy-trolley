@@ -1,0 +1,369 @@
+[
+  {
+    "hits": [
+      {
+        "name": "Instant Noodles Multi Pack Hot Spicy",
+        "brand": "Indomie",
+        "size": "5pk",
+        "id": 220120069447451,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Cup Mi Goreng Hot Spicy",
+        "brand": "Indomie",
+        "size": "70g",
+        "id": 753755688354097,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Multi Pack Mi Goreng Bbq Chicken",
+        "brand": "Indomie",
+        "size": "10pk",
+        "id": 4153516208755525,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Cup Bbq Chicken Mi Goreng",
+        "brand": "Indomie",
+        "size": "75g",
+        "id": 4494498631425441,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Multi Pack Mi Goreng Bbq Chicken",
+        "brand": "Indomie",
+        "size": "5pk",
+        "id": 4880929865967774,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Multi Pack Mi Goreng",
+        "brand": "Indomie",
+        "size": "10pk",
+        "id": 8108319932861127,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Cup Mi Goreng",
+        "brand": "Indomie",
+        "size": "75g",
+        "id": 8536714473132200,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Multi Pack Mi Goreng Satay",
+        "brand": "Indomie",
+        "size": "5pk",
+        "id": 8651088357276586,
+        "unit": "ea"
+      },
+      {
+        "name": "Instant Noodles Multi Pack Mi Goreng",
+        "brand": "Indomie",
+        "size": "5pk",
+        "id": 8755049551427759,
+        "unit": "ea"
+      }
+    ],
+    "nbHits": 9,
+    "exhaustiveNbHits": false,
+    "query": "indomie",
+    "limit": 20,
+    "offset": 0,
+    "processingTimeMs": 1
+  },
+  {
+    "hits": [
+      {
+        "name": "Potatoes White Washed",
+        "brand": "Fresh Produce",
+        "size": null,
+        "id": 5973805597243985,
+        "unit": "kg"
+      },
+      {
+        "name": "Potatoes Agria Brushed",
+        "brand": "Fresh Produce",
+        "size": null,
+        "id": 5971659838287348,
+        "unit": "kg"
+      },
+      {
+        "name": "Washed Agria Potatoes",
+        "brand": "Pams",
+        "size": "2kg",
+        "id": 7705076066046835,
+        "unit": "ea"
+      },
+      {
+        "name": "Brushed Agria Potatoes",
+        "brand": "Pams",
+        "size": "3kg",
+        "id": 2374829149120014,
+        "unit": "ea"
+      },
+      {
+        "name": "Washed White Potatoes",
+        "brand": "Pams",
+        "size": "2.5kg",
+        "id": 424372870013323,
+        "unit": "ea"
+      },
+      {
+        "name": "Potatoes Perlas",
+        "brand": "Fresh Produce",
+        "size": "1.5kg",
+        "id": 5794351344316051,
+        "unit": "ea"
+      },
+      {
+        "name": "Washed Golden Gourmet Potatoes",
+        "brand": "Pams",
+        "size": "1.5kg",
+        "id": 4000872748671665,
+        "unit": "ea"
+      },
+      {
+        "name": "Washed Roasting & Mashing Potatoes",
+        "brand": "Pams",
+        "size": "2.5kg",
+        "id": 815749257519058,
+        "unit": "ea"
+      },
+      {
+        "name": "Potatoes Vivaldi Gold",
+        "brand": "Fresh Produce",
+        "size": "2kg",
+        "id": 5144739220852210,
+        "unit": "ea"
+      },
+      {
+        "name": "Washed Gourmet Potatoes",
+        "brand": "Pams",
+        "size": "1kg",
+        "id": 215358970020712,
+        "unit": "ea"
+      },
+      {
+        "name": "All Rounders Potatoes",
+        "brand": "Bhana Family Farms",
+        "size": "2.5kg",
+        "id": 1265800230018722,
+        "unit": "ea"
+      },
+      {
+        "name": "Washed Red Potatoes",
+        "brand": "Pams",
+        "size": "2.5kg",
+        "id": 5867818830109559,
+        "unit": "ea"
+      },
+      {
+        "name": "Potatoes Red Washed",
+        "brand": "Fresh Produce",
+        "size": null,
+        "id": 5020979362723439,
+        "unit": "kg"
+      },
+      {
+        "name": "Washed Gourmet Potatoes",
+        "brand": "Pams",
+        "size": "1.5kg",
+        "id": 4392349507191881,
+        "unit": "ea"
+      },
+      { "name": "Potatoes", "brand": null, "size": "10kg", "id": 7474085083395357, "unit": "ea" },
+      {
+        "name": "Washed White Potatoes",
+        "brand": "Pams",
+        "size": "4kg",
+        "id": 7997396173317905,
+        "unit": "ea"
+      },
+      {
+        "name": "Brushed Potatoes",
+        "brand": "Value",
+        "size": "3kg",
+        "id": 443913859401272,
+        "unit": "ea"
+      },
+      {
+        "name": "Low Carb Potatoes",
+        "brand": "Sunlite",
+        "size": "1kg",
+        "id": 1602565087753102,
+        "unit": "ea"
+      },
+      {
+        "name": "Roasting Potatoes",
+        "brand": "Pams",
+        "size": "5kg",
+        "id": 7645979028909437,
+        "unit": "ea"
+      },
+      {
+        "name": "Piccolos Bite Size Medley Potatoes",
+        "brand": "Fresh Produce",
+        "size": "700g",
+        "id": 4743509929682406,
+        "unit": "ea"
+      }
+    ],
+    "nbHits": 54,
+    "exhaustiveNbHits": false,
+    "query": "potatoes",
+    "limit": 20,
+    "offset": 0,
+    "processingTimeMs": 3
+  },
+  {
+    "hits": [
+      {
+        "name": "Double Chocolate Muffins",
+        "brand": null,
+        "size": "6pk",
+        "id": 5410992872519663,
+        "unit": "ea"
+      },
+      {
+        "name": "Blueberry Muffins",
+        "brand": null,
+        "size": "6pk",
+        "id": 3482734913216601,
+        "unit": "ea"
+      },
+      {
+        "name": "Texas Muffins",
+        "brand": null,
+        "size": "4pk",
+        "id": 6525127715957439,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffins Blueberry White Chocolate",
+        "brand": "Instore Bakery",
+        "size": "2pk",
+        "id": 4217689647981172,
+        "unit": "ea"
+      },
+      {
+        "name": "Double Chocolate Chip Muffins",
+        "brand": "Instore Bakery",
+        "size": "6pk",
+        "id": 3578207194538296,
+        "unit": "ea"
+      },
+      {
+        "name": "Strawberry Cream Cheese Texas Muffin",
+        "brand": null,
+        "size": "1ea",
+        "id": 443271530744887,
+        "unit": "ea"
+      },
+      {
+        "name": "Blueberry Texas Muffin",
+        "brand": null,
+        "size": "1pk",
+        "id": 3482679949148213,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffins Chocolate Delight",
+        "brand": "Instore Bakery Gourmet",
+        "size": "2pk",
+        "id": 3744403178859400,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Mix",
+        "brand": "Edmonds",
+        "size": "1.25kg",
+        "id": 1621470717365815,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Bar Choc Vanilla",
+        "brand": "Tasti Milkies",
+        "size": "10pk",
+        "id": 1932221123794046,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Bar Choc Caramel",
+        "brand": "Tasti Muffin Bakes",
+        "size": "6pk",
+        "id": 2534404658479557,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Pan Non Stick Texas 6 Cup",
+        "brand": "Chelsea Winter",
+        "size": null,
+        "id": 2622408326315728,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Bar Choc Fudge",
+        "brand": "Tasti Muffin Bakes",
+        "size": "6pk",
+        "id": 2814938020857852,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Pan 12 Cup",
+        "brand": "Ambry",
+        "size": null,
+        "id": 3845412623183019,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Split English 6 Pack 390g",
+        "brand": "Quality Bakers",
+        "size": "6pk",
+        "id": 4127407749832134,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Split Cheese 6 Pack",
+        "brand": "Quality Bakers",
+        "size": "6pk",
+        "id": 4588592969644844,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Bar Choc Strawberry",
+        "brand": "Tasti Milkies",
+        "size": "10pk",
+        "id": 5977149982109457,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffin Pan Non Stick",
+        "brand": "Chelsea Winter",
+        "size": "12 cup tray",
+        "id": 6023612063619322,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffins Raspberry White Chocolate",
+        "brand": "Instore Bakery",
+        "size": "6pk",
+        "id": 1141996383601308,
+        "unit": "ea"
+      },
+      {
+        "name": "Muffins Double Chocolate",
+        "brand": "Countdown",
+        "size": "1pk",
+        "id": 1664287068875637,
+        "unit": "ea"
+      }
+    ],
+    "nbHits": 38,
+    "exhaustiveNbHits": false,
+    "query": "muffin",
+    "limit": 20,
+    "offset": 0,
+    "processingTimeMs": 2
+  }
+]
