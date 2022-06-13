@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { Logger } from "@gt/utils/logger";
 import { Browser, BrowserContext, Page } from "playwright";
-import { getIDBStoreAsObject } from "./get-idb-store-script";
+import {
+  getStoreContents,
+  patchStoreContents,
+  putStoreContents,
+  StoreContents,
+} from "./grocer-indexed-db";
 import { GrocerStoreName, GROCER_STORE_BRANDS, GROCER_URL } from "../models";
 
 /**
- * Currently unused.
+ * User agent that performs actions on the grocer.nz page using Playwright.
  */
-export class GrocerUserAgent extends StoreUserAgent {
-  public readonly storeName = "grocer";
-  protected readonly logger = new Logger(this.constructor.name);
+export class GrocerUserAgent {
+  private page?: Page;
+  private readonly logger = new Logger(this.constructor.name);
 
-  constructor(browserLoader: () => Promise<Browser>) {
-    super(browserLoader);
-  }
-
-  async init(context: BrowserContext): Promise<{ page: Page; headers: Headers }> {
-    const page = await context.newPage();
-    throw new Error("method unimplemented");
-  }
+  /**
+   * Creates a new GrocerUserAgent.
+   * @param browserLoader Cold promise that returns the Playwright Browser
+   *    instance to use to perform requests.
+   */
+  constructor(protected readonly browserLoader: () => Promise<Browser>) {}
 
   /**
    * Adds store to selected stores (if it is not already selected).
@@ -26,9 +30,8 @@ export class GrocerUserAgent extends StoreUserAgent {
    * @param storeName Store name
    */
   async selectStore(page: Page, storeName: GrocerStoreName): Promise<void> {
-    const url = `${GROCER_URL}/stores`;
-    if (page.url() !== url) {
-      await page.goto(url);
+    if (!page.url().includes(`${GROCER_URL}/stores`)) {
+      await page.click('nav a[href="/stores"]');
     }
     const storeSelector = `.list-group-item:has-text("${storeName}")`;
     // Check whether store is already selected
@@ -56,13 +59,28 @@ export class GrocerUserAgent extends StoreUserAgent {
     throw new Error(`Could not find store ${storeName}`);
   }
 
-  async getKeyvalStore(): Promise<GrocerKeyvalStore> {
-    const page = await this.getLoginPage();
-    return page.evaluate(getIDBStoreAsObject as () => Promise<GrocerKeyvalStore>);
+  async getKeyvalStore(): Promise<StoreContents> {
+    return this.getPage().then((page) => getStoreContents(page));
   }
-}
 
-export interface GrocerKeyvalStore {
-  list: unknown[];
-  selectedStoreIds: number[];
+  async patchKeyvalStore(contents: Partial<StoreContents>): Promise<void> {
+    return this.getPage().then((page) => patchStoreContents(page, contents));
+  }
+
+  async putKeyvalStore(contents: StoreContents): Promise<void> {
+    return this.getPage().then((page) => putStoreContents(page, contents));
+  }
+
+  async resetKeyvalStore(): Promise<void> {
+    return this.putKeyvalStore({ list: [] });
+  }
+
+  private async getPage(): Promise<Page> {
+    if (!this.page) {
+      const browser = await this.browserLoader();
+      this.page = await browser.newPage();
+      await this.page.goto(GROCER_URL);
+    }
+    return this.page;
+  }
 }
