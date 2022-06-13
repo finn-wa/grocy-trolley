@@ -7,13 +7,18 @@ export let browser: Browser | null = null;
  * Returns a lazy-loaded shared browser instance.
  * @returns The browser instance
  */
-export async function getBrowser(): Promise<Browser> {
+export async function getBrowser({ headless } = { headless: true }): Promise<Browser> {
   if (browser && browser.isConnected()) {
     return browser;
   }
-  browser = await firefox.launch({
-    headless: false,
-    logger: playwrightLogger(LogLevel.WARN),
-  });
+  const logger = playwrightLogger(LogLevel.WARN);
+  browser = await firefox.launch({ headless, logger });
   return browser;
+}
+
+export async function closeBrowser(): Promise<void> {
+  if (browser) {
+    await browser.close();
+    browser = null;
+  }
 }

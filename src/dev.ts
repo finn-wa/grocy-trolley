@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { GrocerSearchService } from "./grocer/search/grocer-search-service";
+import { GrocerApiService } from "./grocer/api/grocer-api-service";
 import { generateTypes } from "./jtd/generate-types";
 
 export async function dev() {
@@ -8,15 +8,14 @@ export async function dev() {
 }
 
 async function _generate() {
-  const search = new GrocerSearchService();
-  const storeIds = [
-    6340712107624913, 7644797357623558, 4567002660615265, 1096672562035996, 3067760475684734,
-    6774892715230889,
-  ];
-  const indomie = await search.search("indomie", storeIds);
-  const potatoes = await search.search("potatoes", storeIds);
-  const muffin = await search.search("muffin", storeIds);
-  await generateTypes("ProductSearchResponse", "src/grocer/search", indomie, potatoes, muffin);
+  const grocerApi = new GrocerApiService();
+  const prices = await grocerApi.getProductPrices({
+    storeIds: [
+      6340712107624913, 7644797357623558, 4567002660615265, 1096672562035996, 3067760475684734,
+    ],
+    productIds: [632197881711860, 6343082287627326],
+  });
+  await generateTypes("ProductPrices", "src/grocer/api", prices);
 }
 
 /* eslint-enable */
