@@ -115,6 +115,7 @@ export class FoodstuffsReceiptImporter {
     const listId = await this.foodstuffs.listService.selectList();
     await this.foodstuffs.listService.addProductsToList(listId, Object.values(cartRefs));
     await this.listImporter.importList(listId);
+    this.logger.info("Adding receipt metadata to imported items...");
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(cartRefs)) {
       const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];

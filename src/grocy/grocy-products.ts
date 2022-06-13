@@ -64,7 +64,7 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   /**
-   * [UNTESTED] Patches a product.
+   * Patches a product.
    * @param id Grocy product ID
    * @param patch Values to update for the product
    * @returns The patch API responses
@@ -80,7 +80,8 @@ export class GrocyProductService extends GrocyRestService {
       const updatedUserfields = { ...existingUserfields, ...userfieldsPatch };
       responses.userfields = await this.updateProductUserfields(id, updatedUserfields);
     }
-    if (productPatch) {
+    // Spread operator returns an empty object if no other fields are present
+    if (Object.keys(productPatch).length > 0) {
       const existingProduct = await this.getEntity<"Product">("products", id);
       const update = { ...existingProduct, ...productPatch };
       responses.coreProduct = await this.updateEntity("products", id, update);
@@ -89,7 +90,7 @@ export class GrocyProductService extends GrocyRestService {
   }
 
   /**
-   * [UNTESTED] Updates a product.
+   * Updates a product.
    * @param id Grocy product ID
    * @param product New product
    * @returns The API responses for update operations
@@ -100,9 +101,7 @@ export class GrocyProductService extends GrocyRestService {
     if (userfields) {
       responses.userfields = await this.updateProductUserfields(id, userfields);
     }
-    if (coreProduct) {
-      responses.productPatch = await this.updateEntity("products", id, coreProduct);
-    }
+    responses.productPatch = await this.updateEntity("products", id, coreProduct);
     return responses;
   }
 
