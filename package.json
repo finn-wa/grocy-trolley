@@ -40,7 +40,7 @@
     "jest": "^28.1.1",
     "jest-html-reporter": "^3.5.0",
     "openapi-typescript": "5.4.0",
-    "ts-jest": "^28.0.4"
+    "ts-jest": "^28.0.5"
   },
   "version": "0.0.0",
   "packageManager": "yarn@3.2.0",
