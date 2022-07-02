@@ -1,6 +1,6 @@
-import { GrocyFalse, GrocyTrue } from "@gt/grocy/grocy-model";
+import { GrocyFalse, GrocyTrue } from "@gt/grocy/types/grocy-types";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyOrderRecordService } from "grocy";
+import { GrocyOrderRecordService } from "@gt/grocy/order-records/grocy-order-record-service";
 import { FoodstuffsOrderService } from "../../orders/foodstuffs-order-service";
 import { FoodstuffsCartImporter } from "./cart-importer";
 

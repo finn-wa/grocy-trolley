@@ -1,5 +1,6 @@
+import { Product } from "@gt/grocy/products/types/Product";
 import { Logger } from "@gt/utils/logger";
-import { GrocyServices, Product } from "grocy";
+import { GrocyServices } from "grocy";
 import prompts from "prompts";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, FoodstuffsCart, toCartProductRef } from "../../cart/foodstuffs-cart.model";
@@ -33,7 +34,7 @@ export class FoodstuffsCartImporter {
     if (!cart) {
       cart = await this.cartService.getCart();
     }
-    const existingProducts = await this.grocy.productService.getProducts();
+    const existingProducts = await this.grocy.productService.getAllProducts();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
       .map((product) => product.userfields.storeMetadata?.PNS?.productId);
@@ -54,7 +55,7 @@ export class FoodstuffsCartImporter {
         product.categoryName,
         parentProducts
       );
-      const payloads = this.converter.forImport(product, cart.store.storeId, parent);
+      const payloads = await this.converter.forImport(product, cart.store.storeId, parent);
       this.logger.info(`Importing product ${payloads.product.name}...`);
       const createdProduct = await this.grocy.productService.createProduct(
         payloads.product,
@@ -88,8 +89,8 @@ export class FoodstuffsCartImporter {
       }
       this.logger.info("Stocking product: " + grocyProduct.name);
       try {
-        const addStockRequest = this.converter.forAddStock(grocyProduct, cart.store.storeId);
-        await this.grocy.stockService.stock("add", grocyProduct.id, addStockRequest);
+        const addStockRequest = await this.converter.forAddStock(grocyProduct, cart.store.storeId);
+        await this.grocy.stockService.addStock(grocyProduct.id, addStockRequest);
       } catch (error) {
         this.logger.error("Error stocking product ", error);
       }
@@ -97,7 +98,7 @@ export class FoodstuffsCartImporter {
   }
 
   async getProductsByFoodstuffsId(): Promise<Record<string, Product>> {
-    const existingProducts = await this.grocy.productService.getProducts();
+    const existingProducts = await this.grocy.productService.getAllProducts();
     return Object.fromEntries(
       existingProducts
         .filter((p) => p.userfields?.storeMetadata?.PNS)

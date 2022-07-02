@@ -1,6 +1,7 @@
-import { GrocyTrue } from "@gt/grocy/grocy-model";
+import { ParentProduct } from "@gt/grocy/products/types";
+import { Product } from "@gt/grocy/products/types/Product";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyServices, ParentProduct, Product } from "grocy";
+import { GrocyServices } from "grocy";
 import prompts from "prompts";
 import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
 import { TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";
@@ -8,13 +9,13 @@ import { FoodstuffsCartProduct } from "../../models";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
 import { FoodstuffsServices } from "../../services";
 
-export class GrocyShoppingListExporter {
+export class FoodstuffsGrocyShoppingListExporter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly grocy: Pick<
+    protected readonly grocy: Pick<
       GrocyServices,
-      "productService" | "parentProductService" | "shoppingListService" | "idMaps"
+      "productService" | "parentProductService" | "shoppingListService" | "idLookupServices"
     >,
     private readonly foodstuffs: Pick<
       FoodstuffsServices,
@@ -27,20 +28,20 @@ export class GrocyShoppingListExporter {
     // We clean up before and intentionally leave dangling state for debugging
     await this.foodstuffs.listService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
 
-    const listItems = await this.grocy.shoppingListService.getShoppingListItems();
-    const products = await this.grocy.productService.getProducts();
+    const listItems = await this.grocy.shoppingListService.getAllShoppingListItems();
+    const products = await this.grocy.productService.getAllProducts();
     const parentProducts = await this.grocy.parentProductService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
 
     for (const item of listItems) {
       this.logger.debug(`Processing shopping list item: ${item.product_id}`);
-      const product = products.find((p) => p.id === item.product_id);
+      const product = products.find((p) => p.id == item.product_id);
       if (!product) {
         throw new Error(`Product with ID ${item.id} not found`);
       }
       this.logger.info(`Found product: ${product.name}`);
       const fsProducts = await this.getFoodstuffsProducts(product, parentProducts);
-      const unit = this.grocy.idMaps.quantityUnitNames[item.qu_id as number];
+      const unit = await this.grocy.idLookupServices.quantityUnits.getRequiredKey(item.qu_id);
       const quantity = unit === "ea" ? item.amount : 1;
       cartRefs.push(...fsProducts.map((product) => ({ ...product, quantity })));
     }
@@ -52,7 +53,7 @@ export class GrocyShoppingListExporter {
     product: Product,
     parentProducts: Record<string, ParentProduct>
   ): Promise<CartProductRef[]> {
-    if (product.userfields.isParent === GrocyTrue) {
+    if (product.userfields.isParent) {
       const parent = parentProducts[product.id];
       if (parent.children.length === 0) {
         this.logger.warn(

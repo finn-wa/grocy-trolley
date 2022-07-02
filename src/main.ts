@@ -1,4 +1,4 @@
-import { GrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/shopping-list-exporter";
+import { FoodstuffsGrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/foodstuffs-grocy-shopping-list-exporter";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
 import { initEnv } from "@gt/utils/environment";
@@ -111,7 +111,7 @@ async function stockFrom(choice: StockSource) {
 
 async function shop(): Promise<void> {
   const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const exporter = new GrocyShoppingListExporter(grocy, foodstuffs);
+  const exporter = new FoodstuffsGrocyShoppingListExporter(grocy, foodstuffs);
   return exporter.addShoppingListToCart();
 }
 

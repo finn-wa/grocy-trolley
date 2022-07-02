@@ -4,7 +4,7 @@
  */
 
 import { StoreBrand, UserObjectReference } from "..";
-import { GrocyBoolean } from "../grocy-model";
+import { GrocyBoolean } from "../types/grocy-types";
 
 export interface paths {
   "/system/info": {

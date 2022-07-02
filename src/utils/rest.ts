@@ -42,6 +42,22 @@ export abstract class RestService {
     return response;
   }
 
+  protected async get(url: string, init: Omit<RequestInit, "method">): Promise<Response> {
+    return this.fetch(url, { ...init, method: "GET" });
+  }
+
+  protected async post(url: string, init: Omit<RequestInit, "method">): Promise<Response> {
+    return this.fetch(url, { ...init, method: "POST" });
+  }
+
+  protected async put(url: string, init: Omit<RequestInit, "method">): Promise<Response> {
+    return this.fetch(url, { ...init, method: "PUT" });
+  }
+
+  protected async delete(url: string, init: Omit<RequestInit, "method">): Promise<Response> {
+    return this.fetch(url, { ...init, method: "DELETE" });
+  }
+
   protected async parseJson<T>(res: Response, validate?: ValidateFunction<T>): Promise<T> {
     const jsonString = await res.text();
     let body: T;

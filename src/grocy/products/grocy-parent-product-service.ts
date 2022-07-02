@@ -1,16 +1,17 @@
-import { GrocyIdMaps } from "grocy";
-import prompts from "prompts";
 import { Logger } from "@gt/utils/logger";
-import { toBoolean } from "./grocy-model";
-import { GrocyRestService } from "./grocy-rest-service";
-import { GrocyProductService, Product } from "./grocy-products";
-import { GrocyProductGroup } from "./grocy-config";
+import prompts from "prompts";
+import { GrocyProductGroup } from "../grocy-config";
+import { GrocyProductGroupIdLookupService } from "../id-lookup/grocy-product-group-id-lookup-service";
+import { GrocyProductService } from "./grocy-product-service";
+import { Product } from "./types/Product";
+import { GrocyRestService } from "../rest/grocy-rest-service";
+import { ParentProduct } from "./types";
 
 export class GrocyParentProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly idMaps: GrocyIdMaps,
+    private readonly productGroupIdService: GrocyProductGroupIdLookupService,
     private readonly productService: GrocyProductService
   ) {
     super();
@@ -18,13 +19,14 @@ export class GrocyParentProductService extends GrocyRestService {
 
   async getParentProducts(products?: Product[]): Promise<Record<string, ParentProduct>> {
     if (!products) {
-      products = await this.productService.getProducts();
+      products = await this.productService.getAllProducts();
     }
+    const productGroupNames = await this.productGroupIdService.getMapOfGrocyIdsToKeys();
     const parents: Record<string, ParentProduct> = Object.fromEntries(
       products
-        .filter((product) => toBoolean(product.userfields.isParent))
+        .filter((product) => product.userfields.isParent)
         .map((product) => {
-          const category = this.idMaps.productGroupNames[product.product_group_id];
+          const category = productGroupNames[product.product_group_id];
           const tags = product.name.replace("(Generic)", "").trim().split(" ");
           const parent = { product, category, tags, children: [] };
           return [product.id, parent];
@@ -66,11 +68,4 @@ export class GrocyParentProductService extends GrocyRestService {
     ]);
     return chosenParent.value as ParentProduct | undefined;
   }
-}
-
-export interface ParentProduct {
-  tags: string[];
-  category: GrocyProductGroup;
-  product: Product;
-  children: Product[];
 }
