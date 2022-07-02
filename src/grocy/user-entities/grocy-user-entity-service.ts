@@ -1,9 +1,14 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { StoreBrand } from "./grocy-config";
-import { CreatedObjectId, GrocyBoolean } from "./grocy-model";
-import { GrocyRestService } from "./grocy-rest-service";
+import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import {
+  UserEntity,
+  UserEntityName,
+  UserObjectReference,
+  UserObjects,
+  CreatedObjectResponse,
+} from "./types";
 
-export class GrocyUserEntityService extends GrocyRestService {
+export class GrocyUserEntityService extends GrocyEntityRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   /** Cached entities - not expected to change in the lifetime of the service. */
@@ -20,9 +25,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     if (!refresh && !!this.entities) {
       return this.entities;
     }
-    const entities: UserEntity[] = await this.getAndParse(this.buildUrl("objects/userentities"), {
-      headers: this.authHeaders().acceptJson().build(),
-    });
+    const entities: UserEntity[] = await this.getAllEntityObjects("userentities");
     this.entities = entities;
     return entities;
   }
@@ -42,7 +45,7 @@ export class GrocyUserEntityService extends GrocyRestService {
   }
 
   async getUserObjectReferences(): Promise<UserObjectReference[]> {
-    return this.getEntities<"UserObjectReference">("userobjects");
+    return this.getAllEntityObjects("userobjects");
   }
 
   async getUserObject<Name extends UserEntityName>(
@@ -68,14 +71,7 @@ export class GrocyUserEntityService extends GrocyRestService {
 
   async createUserObject(entityName: UserEntityName, obj: unknown): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const postResponse: CreatedObjectId = await this.postAndParse(
-      this.buildUrl("objects/userobjects"),
-      {
-        headers: this.authHeaders().acceptJson().contentTypeJson().build(),
-        body: JSON.stringify({ userentity_id: entityId }),
-      }
-    );
-    const objectId = postResponse.created_object_id;
+    const objectId = await this.postEntityObject("userobjects", { userentity_id: entityId });
     const response = await this.fetch(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       {
@@ -99,43 +95,3 @@ export class GrocyUserEntityService extends GrocyRestService {
     });
   }
 }
-
-export interface UserEntity {
-  id: string;
-  name: string;
-  caption: string;
-  description: string;
-  show_in_sidebar_menu: string;
-  icon_css_class: string;
-  row_created_timestamp: string;
-}
-
-export interface CreatedObjectResponse {
-  response: Response;
-  objectId: string;
-}
-
-/**
- * Returned from /api/objects/userobjects. Useful as a crossreference because
- * GET /objects/userentity-xxx is not exposed and user objects have to be
- * retrieved one at a time from /userfields/:entity/:objectId, which is fun.
- */
-export interface UserObjectReference {
-  userentity_id: string;
-  id: string;
-  row_created_timestamp: string;
-}
-
-export interface UserObjects extends Record<string, Record<string, string>> {
-  order: {
-    /** YYYY-MM-DD */
-    date: string;
-    brand: StoreBrand;
-    imported: GrocyBoolean;
-    orderId: string;
-    notes?: string;
-  };
-}
-
-export type UserEntityName = keyof UserObjects;
-export type OrderRecord = UserObjects["order"];

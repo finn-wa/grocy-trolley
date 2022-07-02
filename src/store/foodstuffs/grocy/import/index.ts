@@ -22,7 +22,10 @@ export function foodstuffsImporters(
   foodstuffs: FoodstuffsServices,
   grocy: GrocyServices
 ): FoodstuffsImporters {
-  const converter = new FoodstuffsToGrocyConverter(grocy.idMaps, foodstuffs.searchService);
+  const converter = new FoodstuffsToGrocyConverter(
+    grocy.idLookupServices,
+    foodstuffs.searchService
+  );
   const cartImporter = new FoodstuffsCartImporter(converter, foodstuffs.cartService, grocy);
   const listImporter = new FoodstuffsListImporter(converter, foodstuffs.listService, grocy);
   return {

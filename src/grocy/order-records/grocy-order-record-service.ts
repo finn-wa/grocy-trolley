@@ -1,8 +1,8 @@
 import { Logger } from "@gt/utils/logger";
-import { CreatedObjectResponse, OrderRecord } from ".";
-import { GrocyTrue } from "./grocy-model";
-import { GrocyRestService } from "./grocy-rest-service";
-import { GrocyUserEntityService } from "./grocy-user-entities";
+import { GrocyRestService } from "../rest/grocy-rest-service";
+import { GrocyTrue } from "../types/grocy-types";
+import { GrocyUserEntityService } from "../user-entities/grocy-user-entity-service";
+import { CreatedObjectResponse, OrderRecord } from "../user-entities/types";
 
 const ORDER = "order";
 

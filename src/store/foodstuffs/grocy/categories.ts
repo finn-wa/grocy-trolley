@@ -1,4 +1,4 @@
-import { GrocyLocation } from "@gt/grocy";
+import { GrocyLocation } from "@gt/grocy/grocy-config";
 import { FoodstuffsCategory } from "../models";
 
 export const CategoryLocations: Record<FoodstuffsCategory, GrocyLocation> = {

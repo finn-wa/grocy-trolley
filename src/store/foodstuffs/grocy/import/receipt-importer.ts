@@ -1,7 +1,7 @@
+import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { readFile, writeFile } from "fs/promises";
-import { GrocyProductService } from "grocy";
 import prompts from "prompts";
 import { ReceiptScanner } from "receipt-ocr";
 import { ListProductRef, toListProductRef } from "../../lists/foodstuffs-list.model";
@@ -72,7 +72,7 @@ export class FoodstuffsReceiptImporter {
     const notFound: ReceiptItem[] = [];
     const listRefs: Record<string, ListProductRef> = {};
     const existingProducts = await this.grocyProductService
-      .getProducts()
+      .getAllProducts()
       .then((products) => products.filter((p) => p.userfields.storeMetadata?.receiptNames?.length));
 
     for (const item of scannedItems) {

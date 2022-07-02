@@ -1,10 +1,11 @@
 import { Logger } from "@gt/utils/logger";
-import { GrocyServices, Product } from "grocy";
+import { GrocyServices } from "grocy";
 import prompts from "prompts";
 import { FoodstuffsListProduct } from "../../models";
 import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";
 import { List } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
+import { Product } from "@gt/grocy/products/types/Product";
 
 export class FoodstuffsListImporter {
   private readonly logger = new Logger(this.constructor.name);
@@ -30,7 +31,7 @@ export class FoodstuffsListImporter {
 
   async importList(id: string): Promise<void> {
     const list = await this.listService.getList(id);
-    const existingProducts = await this.grocy.productService.getProducts();
+    const existingProducts = await this.grocy.productService.getAllProducts();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
       .map((product) => product.userfields.storeMetadata?.PNS?.productId);
@@ -88,8 +89,8 @@ export class FoodstuffsListImporter {
       }
       this.logger.info("Stocking product: " + grocyProduct.name);
       try {
-        const addStockRequest = this.converter.forAddStock(grocyProduct);
-        await this.grocy.stockService.stock("add", grocyProduct.id, addStockRequest);
+        const addStockRequest = await this.converter.forAddStock(grocyProduct);
+        await this.grocy.stockService.addStock(grocyProduct.id, addStockRequest);
       } catch (error) {
         this.logger.error("Error stocking product ", error);
       }
@@ -97,7 +98,7 @@ export class FoodstuffsListImporter {
   }
 
   async getProductsByFoodstuffsId(): Promise<Record<string, Product>> {
-    const existingProducts = await this.grocy.productService.getProducts();
+    const existingProducts = await this.grocy.productService.getAllProducts();
     return Object.fromEntries(
       existingProducts
         .filter((p) => p.userfields?.storeMetadata?.PNS)

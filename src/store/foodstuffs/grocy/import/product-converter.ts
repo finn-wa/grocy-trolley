@@ -1,34 +1,30 @@
-import { GrocyIdMaps, QuantityUnitName } from "@gt/grocy/grocy-config";
-import { GrocyFalse, QuantityUnitConversion } from "@gt/grocy/grocy-model";
-import { StockActionRequestBody } from "@gt/grocy/grocy-stock";
+import { GrocyIdLookupServices } from "@gt/grocy";
+import { QuantityUnitName } from "@gt/grocy/grocy-config";
+import { ParentProduct } from "@gt/grocy/products/types";
+import { NewProduct, Product } from "@gt/grocy/products/types/Product";
+import { StockAddRequest } from "@gt/grocy/stock/types";
+import { QuantityUnitConversion } from "@gt/grocy/types/grocy-types";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { NewProduct, ParentProduct, Product } from "grocy";
+import { FoodstuffsCartProduct, FoodstuffsListProduct, FoodstuffsLiveProduct } from "../../models";
 import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
-import {
-  FoodstuffsCartProduct,
-  FoodstuffsCategory,
-  FoodstuffsListProduct,
-  FoodstuffsLiveProduct,
-  FOODSTUFFS_CATEGORIES,
-} from "../../models";
 import { CategoryLocations } from "../categories";
 
 export class FoodstuffsToGrocyConverter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly grocyIdMaps: GrocyIdMaps,
+    private readonly grocyIds: GrocyIdLookupServices,
     private readonly foodstuffsSearchService: FoodstuffsSearchService
   ) {}
 
-  forImport(
+  async forImport(
     product: FoodstuffsCartProduct,
     storeId: string,
     parent?: ParentProduct
-  ): NewProductPayloads {
+  ): Promise<NewProductPayloads> {
     const purchaseSaleType = this.getPurchaseSaleType(product);
-    let purchaseUnitId: number;
-    let stockUnitId: number;
+    let purchaseUnitId: string;
+    let stockUnitId: string;
     let stockQuantityFactor: number;
     let quantitySuffix: string;
     let quConversions: ConversionWithoutId[] = [];
@@ -41,21 +37,21 @@ export class FoodstuffsToGrocyConverter {
         product.weightDisplayName = "ea";
       }
       const displayUnit = this.getUnitFromString(product.weightDisplayName);
-      const displayUnitId = this.getUnitId(displayUnit);
+      const displayUnitId = await this.getUnitId(displayUnit);
       // Foodstuffs is inconsistent with capitalisation of units
       quantitySuffix =
         "(" + product.weightDisplayName.replace(new RegExp(displayUnit, "i"), displayUnit) + ")";
       if (displayUnit === "pk") {
         // For packs, we want to buy 1 pack and stock x items
         purchaseUnitId = displayUnitId;
-        stockUnitId = this.getUnitId("ea");
+        stockUnitId = await this.getUnitId("ea");
         stockQuantityFactor = this.getDisplayQuantityRequired(product.weightDisplayName);
       } else if (displayUnit === "ea") {
         purchaseUnitId = displayUnitId;
         stockUnitId = displayUnitId;
         stockQuantityFactor = 1;
       } else {
-        const eaUnitId = this.getUnitId("ea");
+        const eaUnitId = await this.getUnitId("ea");
         purchaseUnitId = eaUnitId;
         // Unfortunately, grocy tries to store everything as price per stock unit
         // So using grams as a stock unit rarely works (often price is listed as 0.01)
@@ -69,38 +65,39 @@ export class FoodstuffsToGrocyConverter {
           stockQuantityFactor = 1;
         }
         // Otherwise, store weight as a product quantity unit conversion override
-        quConversions = this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
+        quConversions = await this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
       }
     } else if (purchaseSaleType.type === "WEIGHT") {
-      const purchaseUnit = this.grocyIdMaps.matchQuantityUnit(purchaseSaleType.unit);
+      const purchaseUnit = this.grocyIds.quantityUnits.matchQuantityUnit(purchaseSaleType.unit);
       // weightDisplayName is often wrong for WEIGHT saleType
       quantitySuffix = `(${purchaseUnit})`;
-      purchaseUnitId = this.getUnitId(purchaseUnit);
+      purchaseUnitId = await this.getUnitId(purchaseUnit);
       stockUnitId = purchaseUnitId;
       stockQuantityFactor = 1;
     } else {
       throw new Error("Unexpected saleType: " + purchaseSaleType.type);
     }
     if (parent?.product?.qu_id_stock && parent.product.qu_id_stock !== stockUnitId) {
-      const parentStockUnit = this.grocyIdMaps.quantityUnitNames[parent.product.qu_id_stock];
-      const childStockUnit = this.grocyIdMaps.quantityUnitNames[stockUnitId];
+      const parentStockUnit = await this.grocyIds.quantityUnits.getKey(parent.product.qu_id_stock);
+      const childStockUnit = await this.grocyIds.quantityUnits.getKey(stockUnitId);
       this.logger.error(
         `Parent stock unit ${parentStockUnit} does not match ${childStockUnit}! Please fix in Grocy.`
       );
     }
 
+    const category = product.categoryName;
     const newProduct = {
       name: [product.brand, product.name, quantitySuffix].filter((x) => !!x).join(" "),
       parent_product_id: parent?.product.id,
       description: "",
-      location_id: this.categoryToLocationId(product.categoryName),
+      location_id: await this.grocyIds.locations.getRequiredGrocyId(CategoryLocations[category]),
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
       qu_factor_purchase_to_stock: stockQuantityFactor,
       quick_consume_amount: stockQuantityFactor,
-      product_group_id: this.categoryToProductGroupId(product.categoryName),
-      shopping_location_id: this.getShoppingLocationId(storeId),
-      userfields: { storeMetadata: JSON.stringify({ PNS: product }), isParent: GrocyFalse },
+      product_group_id: await this.grocyIds.productGroups.getGrocyId(category),
+      shopping_location_id: await this.grocyIds.shoppingLocations.getGrocyId(storeId),
+      userfields: { storeMetadata: { PNS: product }, isParent: false },
     };
     return { product: newProduct, quConversions };
   }
@@ -110,8 +107,8 @@ export class FoodstuffsToGrocyConverter {
     parent?: ParentProduct
   ): Promise<NewProductPayloads> {
     const purchaseSaleType = this.getPurchaseSaleType(product);
-    let purchaseUnitId: number;
-    let stockUnitId: number;
+    let purchaseUnitId: string;
+    let stockUnitId: string;
     let stockQuantityFactor: number;
     let quantitySuffix: string;
     let quConversions: ConversionWithoutId[] = [];
@@ -123,21 +120,21 @@ export class FoodstuffsToGrocyConverter {
     if (purchaseSaleType.type === "UNITS") {
       const weightDisplayName = searchProduct?.ProductWeightDisplayName ?? "ea";
       const displayUnit = this.getUnitFromString(weightDisplayName);
-      const displayUnitId = this.getUnitId(displayUnit);
+      const displayUnitId = await this.getUnitId(displayUnit);
       // Foodstuffs is inconsistent with capitalisation of units
       quantitySuffix =
         "(" + weightDisplayName.replace(new RegExp(displayUnit, "i"), displayUnit) + ")";
       if (displayUnit === "pk") {
         // For packs, we want to buy 1 pack and stock x items
         purchaseUnitId = displayUnitId;
-        stockUnitId = this.getUnitId("ea");
+        stockUnitId = await this.getUnitId("ea");
         stockQuantityFactor = this.getDisplayQuantityRequired(weightDisplayName);
       } else if (displayUnit === "ea") {
         purchaseUnitId = displayUnitId;
         stockUnitId = displayUnitId;
         stockQuantityFactor = 1;
       } else {
-        const eaUnitId = this.getUnitId("ea");
+        const eaUnitId = await this.getUnitId("ea");
         purchaseUnitId = eaUnitId;
         // Unfortunately, grocy tries to store everything as price per stock unit
         // So using grams as a stock unit rarely works (often price is listed as 0.01)
@@ -151,21 +148,21 @@ export class FoodstuffsToGrocyConverter {
           stockQuantityFactor = 1;
         }
         // Otherwise, store weight as a product quantity unit conversion override
-        quConversions = this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
+        quConversions = await this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
       }
     } else if (purchaseSaleType.type === "WEIGHT") {
-      const purchaseUnit = this.grocyIdMaps.matchQuantityUnit(purchaseSaleType.unit);
+      const purchaseUnit = this.grocyIds.quantityUnits.matchQuantityUnit(purchaseSaleType.unit);
       // weightDisplayName is often wrong for WEIGHT saleType
       quantitySuffix = `(${purchaseUnit})`;
-      purchaseUnitId = this.getUnitId(purchaseUnit);
+      purchaseUnitId = await this.getUnitId(purchaseUnit);
       stockUnitId = purchaseUnitId;
       stockQuantityFactor = 1;
     } else {
       throw new Error("Unexpected saleType: " + purchaseSaleType.type);
     }
     if (parent?.product?.qu_id_stock && parent.product.qu_id_stock !== stockUnitId) {
-      const parentStockUnit = this.grocyIdMaps.quantityUnitNames[parent.product.qu_id_stock];
-      const childStockUnit = this.grocyIdMaps.quantityUnitNames[stockUnitId];
+      const parentStockUnit = await this.grocyIds.quantityUnits.getKey(parent.product.qu_id_stock);
+      const childStockUnit = await this.grocyIds.quantityUnits.getKey(stockUnitId);
       this.logger.error(
         `Parent stock unit ${parentStockUnit} does not match ${childStockUnit}! Please fix in Grocy.`
       );
@@ -177,18 +174,20 @@ export class FoodstuffsToGrocyConverter {
         .join(" "),
       parent_product_id: parent?.product?.id,
       description: "",
-      location_id: this.categoryToLocationId(product.category),
+      location_id: await this.grocyIds.locations.getRequiredGrocyId(
+        CategoryLocations[product.category]
+      ),
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
       qu_factor_purchase_to_stock: stockQuantityFactor,
       quick_consume_amount: stockQuantityFactor,
-      product_group_id: this.categoryToProductGroupId(product.category),
-      userfields: { storeMetadata: JSON.stringify({ PNS: product }), isParent: GrocyFalse },
+      product_group_id: await this.grocyIds.productGroups.getGrocyId(product.category),
+      userfields: { storeMetadata: { PNS: product }, isParent: false },
     };
     return { product: newProduct, quConversions };
   }
 
-  forAddStock(product: Product, storeId = "paknsave-list"): StockActionRequestBody<"add"> {
+  async forAddStock(product: Product, storeId = "paknsave-list"): Promise<StockAddRequest> {
     const fsProduct = product.userfields.storeMetadata?.PNS;
     if (!fsProduct) {
       throw new Error(
@@ -199,22 +198,20 @@ export class FoodstuffsToGrocyConverter {
     const quantityFactor = product.qu_factor_purchase_to_stock;
     // Grocy takes price as price per unit, and for weight purchases quantityFactor is left at 1
     const priceFactor = saleType.type === "WEIGHT" ? fsProduct.quantity : quantityFactor;
+    const fsCategory = "category" in fsProduct ? fsProduct.category : fsProduct.categoryName;
     return {
       amount: fsProduct.quantity * quantityFactor,
       price: fsProduct.price / 100 / priceFactor,
       best_before_date: "2999-12-31",
-      shopping_location_id: this.getShoppingLocationId(storeId),
-      location_id: this.categoryToLocationId(
-        (fsProduct as FoodstuffsCartProduct).categoryName ??
-          (fsProduct as FoodstuffsListProduct).category
-      ),
+      shopping_location_id: await this.grocyIds.shoppingLocations.getRequiredGrocyId(storeId),
+      location_id: await this.grocyIds.locations.getRequiredGrocyId(CategoryLocations[fsCategory]),
     };
   }
 
-  private getProductQuantityUnitConversions(
+  private async getProductQuantityUnitConversions(
     displayUnit: "g" | "kg" | "mL" | "L",
     displayWeight: number
-  ): ConversionWithoutId[] {
+  ): Promise<ConversionWithoutId[]> {
     // Use larger units if small units will cause a loss in accuracy
     // e.g. factor for 950g product, ea -> g: 0.0011 (4 dp), comes out to 1 ea == 909g
     // but if you use kg: ea -> kg = 0.9500, comes out to 1 ea == 950g.
@@ -227,20 +224,14 @@ export class FoodstuffsToGrocyConverter {
         displayWeight /= 1000;
       }
     }
-    const eaUnitId = this.getUnitId("ea");
-    const displayUnitId = this.getUnitId(displayUnit);
+    const eaUnitId = await this.getUnitId("ea");
+    const displayUnitId = await this.getUnitId(displayUnit);
     return [
       {
         from_qu_id: eaUnitId,
         to_qu_id: displayUnitId,
         factor: displayWeight,
       },
-      // I believe this is now created automatically
-      // {
-      //   from_qu_id: displayUnitId,
-      //   to_qu_id: eaUnitId,
-      //   factor: 1 / displayWeight,
-      // },
     ];
   }
 
@@ -274,34 +265,12 @@ export class FoodstuffsToGrocyConverter {
     if (!unit) {
       throw new Error(`Failed to find unit in "${weightDisplayName}"`);
     }
-    return this.grocyIdMaps.matchQuantityUnit(unit[0]);
+    return this.grocyIds.quantityUnits.matchQuantityUnit(unit[0]);
   }
 
-  private getUnitId(unit: string): number {
-    const resolvedUnit = this.grocyIdMaps.matchQuantityUnit(unit);
-    return this.grocyIdMaps.quantityUnitIds[resolvedUnit];
-  }
-
-  private categoryToLocationId(fsCategory: FoodstuffsCategory): number {
-    if (!FOODSTUFFS_CATEGORIES.includes(fsCategory)) {
-      throw new Error("Unmapped FS category: " + fsCategory);
-    }
-    return this.grocyIdMaps.locationIds[CategoryLocations[fsCategory]];
-  }
-
-  private categoryToProductGroupId(fsCategory: FoodstuffsCategory): number {
-    if (!FOODSTUFFS_CATEGORIES.includes(fsCategory)) {
-      throw new Error("Unmapped FS category: " + fsCategory);
-    }
-    return this.grocyIdMaps.productGroupIds[fsCategory];
-  }
-
-  private getShoppingLocationId(storeId: string): number {
-    const shoppingLocationId = this.grocyIdMaps.shoppingLocationIds[storeId];
-    if (!shoppingLocationId) {
-      throw new Error("Unmapped store ID: " + storeId);
-    }
-    return shoppingLocationId;
+  private getUnitId(unit: string): Promise<string> {
+    const resolvedUnit = this.grocyIds.quantityUnits.matchQuantityUnit(unit);
+    return this.grocyIds.quantityUnits.getRequiredGrocyId(resolvedUnit);
   }
 }
 

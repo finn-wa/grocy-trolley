@@ -1,4 +1,4 @@
-import { QuantityUnit } from "@gt/grocy";
+import { QuantityUnit } from "@gt/grocy/grocy-config";
 
 export interface ReceiptItem {
   name: string;

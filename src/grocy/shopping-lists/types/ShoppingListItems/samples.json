@@ -1,0 +1,44 @@
+[
+  [
+    {
+      "id": "166",
+      "product_id": "463",
+      "note": "",
+      "amount": "5",
+      "row_created_timestamp": "2022-06-14 06:45:54",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "3"
+    },
+    {
+      "id": "167",
+      "product_id": "614",
+      "note": "",
+      "amount": "100",
+      "row_created_timestamp": "2022-06-14 06:46:33",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "3"
+    },
+    {
+      "id": "168",
+      "product_id": "469",
+      "note": "",
+      "amount": "2",
+      "row_created_timestamp": "2022-06-14 06:50:36",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "3"
+    },
+    {
+      "id": "169",
+      "product_id": "574",
+      "note": "",
+      "amount": "1",
+      "row_created_timestamp": "2022-06-14 06:50:45",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    }
+  ]
+]
