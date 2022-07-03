@@ -13,7 +13,7 @@ export const schema: JTDSchemaType<RawShoppingListItems> = {
       amount: { type: "string" },
       done: { type: "string" },
       id: { type: "string" },
-      note: { type: "string" },
+      note: { type: "string", nullable: true },
       product_id: { type: "string" },
       qu_id: { type: "string" },
       row_created_timestamp: { type: "string" },
