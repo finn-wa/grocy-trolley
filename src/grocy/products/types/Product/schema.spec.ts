@@ -1,4 +1,4 @@
-import { testSchemaWithSamples } from "@gt/jtd/test-utils";
+import { expectSchemaToValidate, testSchemaWithSamples } from "@gt/jtd/test-utils";
 import {
   parseProduct,
   parseProductUserfields,
@@ -8,11 +8,14 @@ import {
   RawProductUserfields,
 } from ".";
 import samples from "./samples.json";
-import { getRawProductSchema } from "./schema";
+import { getRawProductSchema, getRawProductsSchema } from "./schema";
 
-describe("RawProduct Schema", () => {
-  const validate = getRawProductSchema();
-  testSchemaWithSamples(validate, samples as RawProduct[]);
+const samplez = samples as RawProduct[];
+
+describe("Grocy Product Schema", () => {
+  testSchemaWithSamples(getRawProductSchema(), [samplez[0], samplez[samplez.length - 1]]);
+
+  test("RawProducts", () => expectSchemaToValidate(getRawProductsSchema(), samplez));
 
   test("parseProductUserfields for a parent product", () => {
     expect(parseProductUserfields({ isParent: "1", storeMetadata: null })).toEqual({
