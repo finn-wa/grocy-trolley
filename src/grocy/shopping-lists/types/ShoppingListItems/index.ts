@@ -3,7 +3,7 @@
 interface BaseShoppingListItem {
   done: string;
   id: string;
-  note: string;
+  note: string | null;
   product_id: string;
   qu_id: string;
   row_created_timestamp: string;
