@@ -193,6 +193,7 @@ export function parseProduct(raw: RawProduct): Product {
         "quick_consume_amount",
         "tare_weight",
       ],
+      optionalIds: ["shopping_location_id", "default_consume_location_id", "parent_product_id"],
     }
   );
 }

@@ -55,6 +55,16 @@ export function parseOptionalNumber(value?: string | null) {
   return parseIfDefined(value, parseNumber);
 }
 
+/**
+ * Some Grocy IDs are marked as required but may contain empty strings.
+ * This method converts empty strings to null.
+ * @param value The ID to parse
+ * @returns The ID or null if it was an empty string
+ */
+export function parseOptionalId(value: string): string | null {
+  return value === "" ? null : value;
+}
+
 type WithBooleans<T, BooleanKeys extends keyof T> = {
   [K in keyof T]: K extends BooleanKeys ? boolean : T[K];
 };
@@ -62,13 +72,17 @@ type WithNumbers<T, NumberKeys extends keyof T> = {
   [K in keyof T]: K extends NumberKeys ? number : T[K];
 };
 
+type WithOptionalIds<T, OptionalIdKeys extends keyof T> = {
+  [K in keyof T]: K extends OptionalIdKeys ? string | null : T[K];
+};
+
 /* eslint-disable */
-function updateEntries(
+function mapEntries(
   obj: Record<string, any>,
   keys: (string | number | symbol)[],
   valueMapper: (v: any) => any
 ) {
-  const mapped: any = {};
+  const mapped: any = { ...obj };
   keys
     .filter((key) => key in obj)
     .forEach((key) => {
@@ -82,25 +96,37 @@ export function withBooleans<T, BooleanKeys extends keyof T>(
   obj: T,
   keys: BooleanKeys[]
 ): WithBooleans<T, BooleanKeys> {
-  return updateEntries(obj, keys, parseOptionalBoolean) as WithBooleans<T, BooleanKeys>;
+  return mapEntries(obj, keys, parseOptionalBoolean) as WithBooleans<T, BooleanKeys>;
 }
 
 export function withNumbers<T, NumberKeys extends keyof T>(
   obj: T,
   keys: NumberKeys[]
 ): WithNumbers<T, NumberKeys> {
-  return updateEntries(obj, keys, parseOptionalNumber) as WithNumbers<T, NumberKeys>;
+  return mapEntries(obj, keys, parseOptionalNumber) as WithNumbers<T, NumberKeys>;
 }
 
-export function updateTypes<T, BooleanKeys extends keyof T, NumberKeys extends keyof T>(
+export function withOptionalIds<T, OptionalIdKeys extends keyof T>(
   obj: T,
-  {
-    booleans,
-    numbers,
-  }: {
-    booleans: BooleanKeys[];
-    numbers: NumberKeys[];
+  keys: OptionalIdKeys[]
+): WithOptionalIds<T, OptionalIdKeys> {
+  return mapEntries(obj, keys, parseOptionalId) as WithOptionalIds<T, OptionalIdKeys>;
+}
+
+export function updateTypes<
+  T,
+  BooleanKeys extends keyof T,
+  NumberKeys extends keyof T,
+  OptionalIdKeys extends keyof T
+>(
+  obj: T,
+  config: {
+    booleans?: BooleanKeys[];
+    numbers?: NumberKeys[];
+    optionalIds?: OptionalIdKeys[];
   }
 ) {
-  return withBooleans(withNumbers(obj, numbers), booleans);
+  const boolified = withBooleans(obj, config.booleans ?? []);
+  const numberified = withNumbers(boolified, config.numbers ?? []);
+  return withOptionalIds(numberified, config.optionalIds ?? []);
 }
