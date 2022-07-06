@@ -57,21 +57,34 @@ export class GrocyProductRestService extends GrocyEntityRestService {
     return this.deleteEntityObject("products", id);
   }
 
-  async createQuantityUnitConversion(conversion: QuantityUnitConversion): Promise<string> {
-    return this.postEntityObject("quantity_unit_conversions", conversion);
+  /**
+   * Creates a new quantity unit conversion.
+   * @param conversion the conversion to create
+   * @returns The created object ID or null if it already exists
+   */
+  async createQuantityUnitConversion(conversion: QuantityUnitConversion): Promise<string | null> {
+    try {
+      return this.postEntityObject("quantity_unit_conversions", conversion);
+    } catch (error) {
+      if (error instanceof Response) {
+        const response = error;
+        if (response.status === 400 && (await response.text()).includes("SQLSTATE[23000]")) {
+          return null; // the conversion already exists
+        }
+      }
+      throw error;
+    }
   }
 
   async putProduct(id: string, product: Omit<Product, "userfields">): Promise<Response> {
-    return this.fetch(this.buildUrl(`/objects/products/${id}`), {
-      method: "PUT",
+    return this.put(this.buildUrl(`/objects/products/${id}`), {
       headers: this.authHeaders().acceptJson().contentTypeJson().build(),
       body: JSON.stringify(product),
     });
   }
 
   async putProductUserfields(productId: string, userfields: ProductUserfields): Promise<Response> {
-    return this.fetch(this.buildUrl(`/userfields/products/${productId}`), {
-      method: "PUT",
+    return this.put(this.buildUrl(`/userfields/products/${productId}`), {
       headers: this.authHeaders().contentTypeJson().build(),
       body: JSON.stringify(serialiseProductUserfields(userfields)),
     });
