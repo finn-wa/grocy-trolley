@@ -37,7 +37,10 @@ export abstract class RestService {
     }
     const response = await fetch(url, init);
     if (!response.ok) {
-      throw new Error(`${response.status}: ${await response.text()}`);
+      this.logger.error(
+        `${response.status}: ${response.statusText}\n${await response.text().catch(() => "")}`
+      );
+      throw response.clone();
     }
     return response;
   }
