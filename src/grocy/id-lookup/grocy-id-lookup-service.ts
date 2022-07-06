@@ -7,7 +7,7 @@ import { GrocyEntity } from "../types/grocy-types";
  * Base class for ID lookup services that map known keys to grocy IDs (and vice versa).
  * Assumes keys and grocy IDs have a 1:1 mapping.
  */
-export abstract class GrocyIdLookupService<K extends string> {
+export abstract class GrocyIdLookupService<K extends string = string> {
   protected readonly entityService = new GrocyEntityRestService();
   private keysToGrocyIds: Record<K, string> | null = null;
   private grocyIdsToKeys: Record<string, K> | null = null;
