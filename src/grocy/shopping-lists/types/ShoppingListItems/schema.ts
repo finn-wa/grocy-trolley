@@ -10,7 +10,7 @@ import { RawShoppingListItem, RawShoppingListItems, ShoppingListItem } from ".";
 export const schema: JTDSchemaType<RawShoppingListItems> = {
   elements: {
     properties: {
-      amount: { type: "string" },
+      amount: { type: "float64" } as never, // JTD doesn't support "string | number" union types
       done: { type: "string" },
       id: { type: "string" },
       note: { type: "string", nullable: true },

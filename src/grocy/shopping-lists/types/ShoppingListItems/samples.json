@@ -1,44 +1,144 @@
 [
   [
     {
-      "id": "166",
-      "product_id": "463",
+      "id": "180",
+      "product_id": "459",
       "note": "",
-      "amount": "5",
-      "row_created_timestamp": "2022-06-14 06:45:54",
-      "shopping_list_id": "1",
-      "done": "0",
-      "qu_id": "3"
-    },
-    {
-      "id": "167",
-      "product_id": "614",
-      "note": "",
-      "amount": "100",
-      "row_created_timestamp": "2022-06-14 06:46:33",
-      "shopping_list_id": "1",
-      "done": "0",
-      "qu_id": "3"
-    },
-    {
-      "id": "168",
-      "product_id": "469",
-      "note": "",
-      "amount": "2",
-      "row_created_timestamp": "2022-06-14 06:50:36",
-      "shopping_list_id": "1",
-      "done": "0",
-      "qu_id": "3"
-    },
-    {
-      "id": "169",
-      "product_id": "574",
-      "note": "",
-      "amount": "1",
-      "row_created_timestamp": "2022-06-14 06:50:45",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-04 20:16:58",
       "shopping_list_id": "1",
       "done": "0",
       "qu_id": "2"
+    },
+    {
+      "id": "181",
+      "product_id": "203",
+      "note": null,
+      "amount": 1,
+      "row_created_timestamp": "2022-07-05 11:20:56",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "5"
+    },
+    {
+      "id": "182",
+      "product_id": "206",
+      "note": null,
+      "amount": 1,
+      "row_created_timestamp": "2022-07-05 11:20:56",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "187",
+      "product_id": "607",
+      "note": null,
+      "amount": 1,
+      "row_created_timestamp": "2022-07-05 11:20:56",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "189",
+      "product_id": "612",
+      "note": null,
+      "amount": 1,
+      "row_created_timestamp": "2022-07-05 11:20:56",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "190",
+      "product_id": "613",
+      "note": null,
+      "amount": 1,
+      "row_created_timestamp": "2022-07-05 11:20:56",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "195",
+      "product_id": "610",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 06:12:49",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "196",
+      "product_id": "779",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 06:13:01",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "197",
+      "product_id": "705",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 06:13:35",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "198",
+      "product_id": "526",
+      "note": "",
+      "amount": 2,
+      "row_created_timestamp": "2022-07-06 06:17:12",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "3"
+    },
+    {
+      "id": "199",
+      "product_id": "425",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 06:18:53",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "200",
+      "product_id": "647",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 06:19:26",
+      "shopping_list_id": "1",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "201",
+      "product_id": "649",
+      "note": "",
+      "amount": 1,
+      "row_created_timestamp": "2022-07-06 11:17:03",
+      "shopping_list_id": "2",
+      "done": "0",
+      "qu_id": "2"
+    },
+    {
+      "id": "202",
+      "product_id": "756",
+      "note": "",
+      "amount": 0.5,
+      "row_created_timestamp": "2022-07-06 11:17:29",
+      "shopping_list_id": "2",
+      "done": "0",
+      "qu_id": "6"
     }
   ]
 ]

@@ -6,7 +6,7 @@ export function expectSchemaToValidate<T>(validator: ValidateFunction<T>, data: 
 }
 
 export function testSchemaWithSamples<T>(validator: ValidateFunction<T>, samples: T[]) {
-  return test.each(samples)("should validate sample %#", (sample) => {
-    expectSchemaToValidate(validator, sample);
+  samples.forEach((sample, i) => {
+    test(`should validate sample ${i}`, () => expectSchemaToValidate(validator, sample));
   });
 }

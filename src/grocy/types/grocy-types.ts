@@ -48,7 +48,7 @@ export function parseOptionalBoolean(value?: string | null): boolean | null | un
 }
 
 export function parseNumber(value: string): number {
-  return value.includes(".") ? parseFloat(value) : parseInt(value);
+  return Number(value);
 }
 
 export function parseOptionalNumber(value?: string | null) {
@@ -65,12 +65,21 @@ export function parseOptionalId(value: string): string | null {
   return value === "" ? null : value;
 }
 
-type WithBooleans<T, BooleanKeys extends keyof T> = {
-  [K in keyof T]: K extends BooleanKeys ? boolean : T[K];
+// sorry in advance, got carried away with conditional types
+// prettier-ignore
+type WithValuesOfType<T, KeysToCast extends keyof T, ValueType> = {
+  [K in keyof T]: K extends KeysToCast
+    ? undefined extends T[K]
+      ? null extends T[K]
+        ? ValueType | undefined | null
+        : ValueType
+      : null extends T[K]
+        ? ValueType | null
+        : ValueType
+    : T[K];
 };
-type WithNumbers<T, NumberKeys extends keyof T> = {
-  [K in keyof T]: K extends NumberKeys ? number : T[K];
-};
+type WithBooleans<T, K extends keyof T> = WithValuesOfType<T, K, boolean>;
+type WithNumbers<T, K extends keyof T> = WithValuesOfType<T, K, number>;
 
 type WithOptionalIds<T, OptionalIdKeys extends keyof T> = {
   [K in keyof T]: K extends OptionalIdKeys ? string | null : T[K];
