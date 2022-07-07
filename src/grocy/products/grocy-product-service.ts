@@ -51,14 +51,14 @@ export class GrocyProductService {
       userfieldsResponse = await this.rest.putProductUserfields(id, userfields);
     }
     if (!quConversions || quConversions.length === 0) {
-      return { id, userfieldsResponse, quConversionIds: [] };
+      return { id, userfieldsResponse };
     }
-    const quConversionIds: string[] = await Promise.all(
+    await Promise.all(
       quConversions.map((conversion) =>
         this.rest.createQuantityUnitConversion({ ...conversion, product_id: id })
       )
     );
-    return { id, userfieldsResponse, quConversionIds };
+    return { id, userfieldsResponse };
   }
 
   /**
@@ -109,5 +109,4 @@ interface ProductUpdateResponses {
 export interface CreatedProductResponse {
   id: string;
   userfieldsResponse?: Response;
-  quConversionIds: string[];
 }
