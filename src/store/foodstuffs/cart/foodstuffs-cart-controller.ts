@@ -15,7 +15,7 @@ export class FoodstuffsCartController extends FoodstuffsRestService {
   async getCart(): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
     return this.getAndParse(
-      this.buildUrl("Cart/Index"),
+      this.buildUrl("/Cart/Index"),
       { headers: headersBuilder.acceptJson().build() },
       getCartSchema()
     );
@@ -24,7 +24,7 @@ export class FoodstuffsCartController extends FoodstuffsRestService {
   async clearCart(): Promise<ClearCartResponse> {
     const headersBuilder = await this.authHeaders();
     const response = await this.deleteAndParse(
-      this.buildUrl("Cart/Clear"),
+      this.buildUrl("/Cart/Clear"),
       { headers: headersBuilder.acceptJson().build() },
       getClearCartResponseSchema()
     );
@@ -37,7 +37,7 @@ export class FoodstuffsCartController extends FoodstuffsRestService {
   async postProducts(products: CartProductRef[]): Promise<FoodstuffsCart> {
     const headersBuilder = await this.authHeaders();
     return this.postAndParse(
-      this.buildUrl("Cart/Index"),
+      this.buildUrl("/Cart/Index"),
       {
         headers: headersBuilder.contentTypeJson().acceptJson().build(),
         body: JSON.stringify({ products }),

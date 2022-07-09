@@ -1,10 +1,16 @@
-import { throwIfInvalid, warnIfInvalid } from "@gt/jtd/ajv";
+import { warnIfInvalid } from "@gt/jtd/ajv";
 import { ValidateFunction } from "ajv/dist/types";
 import { URL, URLSearchParams } from "url";
 import { headersToRaw } from "./headers";
 import { Logger, prettyPrint } from "./logger";
 
 export type BodyParser<T> = (res: Response) => Promise<T>;
+
+export class RequestError extends Error {
+  constructor(message: string, public readonly response: Response) {
+    super(message);
+  }
+}
 
 export abstract class RestService {
   protected abstract readonly baseUrl: string;
@@ -37,10 +43,9 @@ export abstract class RestService {
     }
     const response = await fetch(url, init);
     if (!response.ok) {
-      this.logger.error(
-        `${response.status}: ${response.statusText}\n${await response.text().catch(() => "")}`
-      );
-      throw response.clone();
+      const message = `${response.status}: ${response.statusText}`;
+      this.logger.error(message);
+      throw new RequestError(message, response);
     }
     return response;
   }

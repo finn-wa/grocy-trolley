@@ -2,6 +2,7 @@ import { BarcodeBuddyBarcode, BarcodeBuddyService } from "@gt/barcodebuddy/scrap
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { OpenFoodFactsNZService, OpenFoodFactsWorldService } from "@gt/openfoodfacts/openfoodfacts";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { RequestError } from "@gt/utils/rest";
 import prompts from "prompts";
 import { CartProductRef } from "../../cart/foodstuffs-cart.model";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
@@ -27,8 +28,10 @@ export class FoodstuffsBarcodeImporter {
     const notFound: BarcodeBuddyBarcode[] = [];
     for (const barcode of barcodes) {
       this.logger.info("Searching " + prettyPrint(barcode));
-      const product = await this.search(barcode).catch((error) => {
-        this.logger.error(error);
+      const product = await this.search(barcode).catch(async (error) => {
+        if (error instanceof RequestError) {
+          this.logger.error(await error.response.text());
+        }
         return null;
       });
       if (product === null) {

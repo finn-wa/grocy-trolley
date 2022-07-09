@@ -1,6 +1,6 @@
 import { HeadersBuilder, headersFromRaw, headersToRaw } from "@gt/utils/headers";
 import { prettyPrint } from "@gt/utils/logger";
-import { RestService } from "@gt/utils/rest";
+import { RequestError, RestService } from "@gt/utils/rest";
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
 import { getCacheDirForEmail } from "../../../utils/cache";
@@ -48,7 +48,9 @@ export abstract class StoreRestService extends RestService {
       return (await this.isValid(headers)) ? headers : null;
     } catch (error) {
       this.logger.info("No valid cached headers found");
-      this.logger.debug(error);
+      if (error instanceof RequestError) {
+        this.logger.debug(await error.response.text());
+      }
       return null;
     }
   }

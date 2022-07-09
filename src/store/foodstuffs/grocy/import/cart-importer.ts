@@ -1,5 +1,6 @@
 import { Product } from "@gt/grocy/products/types/Product";
 import { Logger } from "@gt/utils/logger";
+import { RequestError } from "@gt/utils/rest";
 import { GrocyServices } from "grocy";
 import prompts from "prompts";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
@@ -92,7 +93,10 @@ export class FoodstuffsCartImporter {
         const addStockRequest = await this.converter.forAddStock(grocyProduct, cart.store.storeId);
         await this.grocy.stockService.addStock(grocyProduct.id, addStockRequest);
       } catch (error) {
-        this.logger.error("Error stocking product ", error);
+        this.logger.error("Error stocking product");
+        if (error instanceof RequestError) {
+          this.logger.error(await error.response.text());
+        }
       }
     }
   }
