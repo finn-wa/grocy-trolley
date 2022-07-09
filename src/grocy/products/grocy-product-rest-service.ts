@@ -12,6 +12,7 @@ import {
 } from "./types/Product";
 import { getRawProductSchema, getRawProductsSchema } from "./types/Product/schema";
 import { products } from "./grocy-product-service";
+import { RequestError } from "@gt/utils/rest";
 
 /**
  * Contains methods for plain REST operations on Grocy Product entities and
@@ -66,8 +67,8 @@ export class GrocyProductRestService extends GrocyEntityRestService {
     try {
       return this.postEntityObject("quantity_unit_conversions", conversion);
     } catch (error) {
-      if (error instanceof Response) {
-        const response = error;
+      if (error instanceof RequestError) {
+        const response = error.response;
         if (response.status === 400 && (await response.text()).includes("SQLSTATE[23000]")) {
           return null; // the conversion already exists
         }

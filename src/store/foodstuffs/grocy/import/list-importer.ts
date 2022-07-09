@@ -6,6 +6,7 @@ import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";
 import { List } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 import { Product } from "@gt/grocy/products/types/Product";
+import { RequestError } from "@gt/utils/rest";
 
 export class FoodstuffsListImporter {
   private readonly logger = new Logger(this.constructor.name);
@@ -92,7 +93,10 @@ export class FoodstuffsListImporter {
         const addStockRequest = await this.converter.forAddStock(grocyProduct);
         await this.grocy.stockService.addStock(grocyProduct.id, addStockRequest);
       } catch (error) {
-        this.logger.error("Error stocking product ", error);
+        this.logger.error("Error stocking product");
+        if (error instanceof RequestError) {
+          this.logger.error(await error.response.text());
+        }
       }
     }
   }

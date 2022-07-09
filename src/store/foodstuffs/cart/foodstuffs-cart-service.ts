@@ -1,4 +1,5 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { RequestError } from "@gt/utils/rest";
 import prompts from "prompts";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
@@ -17,8 +18,10 @@ export class FoodstuffsCartService {
       const cart = await this.controller.postProducts(products);
       return cart;
     } catch (error) {
-      this.logger.error(error);
       this.logger.error("Failed to add products to cart. Falling back to chunks.");
+      if (error instanceof RequestError) {
+        this.logger.debug(await error.response.text());
+      }
     }
     const iter = products[Symbol.iterator]();
     let chunk: CartProductRef[];
@@ -43,7 +46,9 @@ export class FoodstuffsCartService {
         await this.controller.postProducts([product]);
       } catch (error) {
         this.logger.error("Failed to add product to cart!\n" + prettyPrint(product));
-        this.logger.error(error);
+        if (error instanceof RequestError) {
+          this.logger.debug(await error.response.text());
+        }
         const response = await prompts([
           { name: "resume", type: "confirm", message: "Resume adding products?" },
         ]);
