@@ -1,13 +1,15 @@
 export const GROCER_URL = "https://grocer.nz";
-export const GROCER_STORE_BRANDS = [
+export const GROCER_VENDORS = [
   "Countdown",
+  "Fresh Choice",
   "New World",
   "PAK'nSAVE",
+  "Super Value",
   "The Warehouse",
 ] as const;
-export type GrocerStoreBrand = typeof GROCER_STORE_BRANDS[number];
+export type GrocerVendor = typeof GROCER_VENDORS[number];
 
 type UnfranchisedStores = "The Warehouse";
 export type GrocerStoreName =
-  | `${Exclude<GrocerStoreBrand, UnfranchisedStores>} ${string}`
+  | `${Exclude<GrocerVendor, UnfranchisedStores>} ${string}`
   | UnfranchisedStores;

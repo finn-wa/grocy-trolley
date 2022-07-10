@@ -1,13 +1,14 @@
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
-import { getStoresSchema } from "./types/Stores/schema";
+import { Store } from "../stores/types/Stores";
+import { getStoresSchema } from "../stores/types/Stores/schema";
 
 export class GrocerApiService extends RestService {
   protected readonly baseUrl = "https://api.grocer.nz";
   protected readonly logger = new Logger(this.constructor.name);
 
-  async getStores() {
+  async getStores(): Promise<Store[]> {
     return this.getAndParse(this.buildUrl("/stores"), {}, getStoresSchema());
   }
 

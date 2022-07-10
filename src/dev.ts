@@ -1,19 +1,24 @@
 /* eslint-disable */
 
-import { GrocerApiService } from "./grocer/api/grocer-api-service";
-import { grocyServices } from "./grocy";
+import prompts from "prompts";
+import { GrocerSearchService } from "./grocer/search/grocer-search-service";
+import { GrocerStoreService } from "./grocer/stores/grocer-store-service";
 import { GrocyShoppingLocationService } from "./grocy/shopping-locations/grocy-shopping-location-service";
 import { generateTypes } from "./jtd/generate-types";
-import { foodstuffsImporters } from "./store/foodstuffs/grocy/import";
-import { foodstuffsServices } from "./store/foodstuffs/services";
 
 export async function dev() {
-  return _generate();
-  const foodstuffs = await foodstuffsServices();
-  const { receiptImporter } = foodstuffsImporters(foodstuffs, await grocyServices());
-  await receiptImporter.importReceiptListRefs({
-    "Kelloggs Coco Pops Chex 500g": { productId: "5017640-EA-000", quantity: 1, saleType: "UNITS" },
+  const storeService = new GrocerStoreService();
+  const stores = await storeService.promptForStores();
+  const search = new GrocerSearchService();
+  const { query } = await prompts({
+    type: "text",
+    name: "query",
+    message: "Search for a product",
   });
+  await search.searchAndSelectProduct(
+    query as string,
+    stores.map((store) => store.id)
+  );
 }
 
 async function _generate() {
