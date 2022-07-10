@@ -6,13 +6,17 @@ import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 import { Argument, Option, program } from "commander";
 import { grocyServices } from "grocy";
 import { exit } from "process";
-import prompts from "prompts";
+import prompts, { PromptType } from "prompts";
 import { dev } from "./dev";
+import { ifPrevEquals } from "./utils/prompts";
 
+type GrocyTrolleyCommand = "import" | "shop" | "stock" | "exit";
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 type ImportSource = typeof IMPORT_SOURCES[number];
 const STOCK_SOURCES = ["list"];
 type StockSource = typeof STOCK_SOURCES[number];
+const SHOP_CHOICES = ["pns", "grocer"] as const;
+type ShopChoice = typeof SHOP_CHOICES[number];
 
 async function commandPrompt() {
   const choices = await prompts([
@@ -28,9 +32,9 @@ async function commandPrompt() {
       ],
     },
     {
+      type: ifPrevEquals("import"),
       name: "importSource",
       message: "Select an import source",
-      type: (prev) => (prev === "import" ? "select" : null),
       choices: [
         { title: "Foodstuffs cart", value: "cart" },
         { title: "Foodstuffs orders", value: "order" },
@@ -41,21 +45,32 @@ async function commandPrompt() {
       ],
     },
     {
+      type: ifPrevEquals("stock"),
       name: "stockSource",
       message: "Select a stock source",
-      type: (prev) => (prev === "stock" ? "select" : null),
       choices: [
         { title: "Foodstuffs cart", value: "cart" },
         { title: "Foodstuffs list", value: "list" },
         { title: "Exit", value: "exit" },
       ],
     },
+    {
+      type: ifPrevEquals("shop"),
+      name: "shopChoice",
+      message: "Select a shopping list export destination",
+      choices: [
+        { title: "PAK'nSAVE", value: "pns" },
+        { title: "Grocer", value: "grocer" },
+        { title: "Exit", value: "exit" },
+      ],
+    },
   ]);
-  const command = choices["command"] as "import" | "shop" | "stock" | "exit";
+  const command = choices["command"] as GrocyTrolleyCommand;
   if (
     command === "exit" ||
     choices["importSource"] === "exit" ||
-    choices["stockSource"] === "exit"
+    choices["stockSource"] === "exit" ||
+    choices["shopChoice"] === "exit"
   ) {
     return;
   }
@@ -66,7 +81,7 @@ async function commandPrompt() {
     return stockFrom(choices["stockSource"] as StockSource);
   }
   if (command === "shop") {
-    return shop();
+    return shop(choices["shopChoice"] as ShopChoice);
   }
   throw new Error("Unexpected prompt command: " + (command as string));
 }
@@ -109,7 +124,7 @@ async function stockFrom(choice: StockSource) {
   }
 }
 
-async function shop(): Promise<void> {
+async function shop(choice: ShopChoice): Promise<void> {
   const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const exporter = new FoodstuffsGrocyShoppingListExporter(grocy, foodstuffs);
   return exporter.addShoppingListToCart();

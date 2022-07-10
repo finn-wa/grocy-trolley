@@ -1,14 +1,22 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { Logger } from "@gt/utils/logger";
-import { Browser, BrowserContext, Page } from "playwright";
+import { ifPrevEquals, ifPrevWasNot } from "@gt/utils/prompts";
+import { Browser, firefox, Page } from "playwright";
+import prompts from "prompts";
+import { GrocerApiService } from "../api/grocer-api-service";
+import {
+  GrocerVendorCode,
+  GROCER_VENDOR_CODES,
+  GROCER_VENDOR_CODE_MAP,
+  Store,
+} from "../stores/types/Stores";
+import { GrocerStoreName, GROCER_VENDORS, GROCER_URL } from "../models";
 import {
   getStoreContents,
   patchStoreContents,
   putStoreContents,
   StoreContents,
 } from "./grocer-indexed-db";
-import { GrocerStoreName, GROCER_STORE_BRANDS, GROCER_URL } from "../models";
 
 /**
  * User agent that performs actions on the grocer.nz page using Playwright.
@@ -22,14 +30,19 @@ export class GrocerUserAgent {
    * @param browserLoader Cold promise that returns the Playwright Browser
    *    instance to use to perform requests.
    */
-  constructor(protected readonly browserLoader: () => Promise<Browser>) {}
+  constructor(
+    protected readonly browserLoader: () => Promise<Browser> = async () =>
+      firefox.launch({ headless: true }),
+    private readonly grocer: GrocerApiService = new GrocerApiService()
+  ) {}
 
   /**
    * Adds store to selected stores (if it is not already selected).
    * @param page Playwright page
    * @param storeName Store name
    */
-  async selectStore(page: Page, storeName: GrocerStoreName): Promise<void> {
+  async selectStore(storeName: GrocerStoreName): Promise<void> {
+    const page = await this.getPage();
     if (!page.url().includes(`${GROCER_URL}/stores`)) {
       await page.click('nav a[href="/stores"]');
     }
@@ -45,7 +58,7 @@ export class GrocerUserAgent {
     const brandTabs = page.locator(brandTabSelector);
     // Home tab contains the list of selected stores
     const count = await brandTabs.count();
-    if (count < GROCER_STORE_BRANDS.length + 1) {
+    if (count < GROCER_VENDORS.length + 1) {
       throw new Error(`Selector ${brandTabSelector} only returned ${count} brand tabs`);
     }
     for (let n = 1; n < count; n++) {

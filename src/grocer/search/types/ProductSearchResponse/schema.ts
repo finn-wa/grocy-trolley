@@ -8,7 +8,6 @@ import { ProductSearchResponse } from ".";
  */
 export const schema: JTDSchemaType<ProductSearchResponse> = {
   properties: {
-    exhaustiveNbHits: { type: "boolean" },
     hits: {
       elements: {
         properties: {
@@ -20,11 +19,11 @@ export const schema: JTDSchemaType<ProductSearchResponse> = {
         },
       },
     },
+    estimatedTotalHits: { type: "uint16" },
+    query: { type: "string" },
     limit: { type: "uint16" },
-    nbHits: { type: "uint16" },
     offset: { type: "uint16" },
     processingTimeMs: { type: "uint16" },
-    query: { type: "string" },
   },
 };
 
