@@ -1,5 +1,6 @@
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
+import { ifPrevEquals } from "@gt/utils/prompts";
 import prompts from "prompts";
 import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
 import { FoodstuffsSearchAgent } from "./foodstuffs-search-agent";
@@ -61,6 +62,9 @@ export class FoodstuffsSearchService {
     );
   }
 
+  /**
+   * For a better implementation, see {@link GrocerSearchService#promptForNextAction}
+   */
   private async getSearchPromptResponse(
     results: ProductSearchResult[]
   ): Promise<SearchPromptResponse> {
@@ -75,7 +79,7 @@ export class FoodstuffsSearchService {
       ]);
     }
     if (results.length === 1) {
-      return Promise.resolve({ productChoice: results[0] });
+      return { productChoice: results[0] };
     }
     return prompts([
       {
@@ -92,9 +96,9 @@ export class FoodstuffsSearchService {
         ],
       },
       {
+        type: ifPrevEquals("searchAgain"),
         message: "Enter a new search query",
         name: "query",
-        type: (prev) => (prev === "searchAgain" ? "text" : null),
       },
     ]);
   }

@@ -9,10 +9,9 @@ export interface ProductSearchResponseHit {
 }
 
 export interface ProductSearchResponse {
-  exhaustiveNbHits: boolean;
+  estimatedTotalHits: number;
   hits: ProductSearchResponseHit[];
   limit: number;
-  nbHits: number;
   offset: number;
   processingTimeMs: number;
   query: string;

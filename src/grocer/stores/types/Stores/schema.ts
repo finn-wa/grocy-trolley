@@ -11,7 +11,7 @@ export const schema: JTDSchemaType<Stores> = {
     properties: {
       id: { type: "float64" },
       name: { type: "string" },
-      vendor_code: { enum: ["cd", "nw", "pns", "tw"] },
+      vendor_code: { enum: ["cd", "fc", "nw", "pns", "tw", "sv"] },
     },
   },
 };
