@@ -1,16 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Logger } from "@gt/utils/logger";
-import { ifPrevEquals, ifPrevWasNot } from "@gt/utils/prompts";
 import { Browser, firefox, Page } from "playwright";
-import prompts from "prompts";
 import { GrocerApiService } from "../api/grocer-api-service";
-import {
-  GrocerVendorCode,
-  GROCER_VENDOR_CODES,
-  GROCER_VENDOR_CODE_MAP,
-  Store,
-} from "../stores/types/Stores";
-import { GrocerStoreName, GROCER_VENDORS, GROCER_URL } from "../models";
+import { GrocerStoreName, GROCER_URL, GROCER_VENDORS } from "../models";
 import {
   getStoreContents,
   patchStoreContents,
