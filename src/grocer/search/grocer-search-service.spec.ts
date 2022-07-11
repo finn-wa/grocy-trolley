@@ -1,6 +1,6 @@
 import { GrocerSearchService } from "./grocer-search-service";
 
-describe("GrocerSearchServices", () => {
+describe("GrocerSearchService", () => {
   let service: GrocerSearchService;
   const storeIds = [
     7827283001481225, 7644797357623558, 7831753237935622, 6388691745451615, 1029985494883640,
