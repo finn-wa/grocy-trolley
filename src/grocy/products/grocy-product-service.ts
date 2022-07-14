@@ -2,6 +2,8 @@ import { ConversionWithoutId } from "@gt/store/foodstuffs/grocy/import/product-c
 import { Logger } from "@gt/utils/logger";
 import { GrocyProductRestService } from "./grocy-product-rest-service";
 import { NewProduct, Product } from "./types/Product";
+import { parseProductBarcode, ProductBarcode, RawProductBarcode } from "./types/ProductBarcodes";
+import { getProductBarcodesSchema } from "./types/ProductBarcodes/schema";
 
 export const products = "products";
 
@@ -98,6 +100,36 @@ export class GrocyProductService {
     }
     responses.productPatch = await this.rest.putProduct(id, coreProduct);
     return responses;
+  }
+
+  /**
+   * Gets all barcodes (for all products).
+   * @returns an array of product barcodes
+   */
+  async getProductBarcodes(): Promise<ProductBarcode[]> {
+    const rawBarcodes = await this.rest.getAllEntityObjects(
+      "product_barcodes",
+      getProductBarcodesSchema()
+    );
+    return rawBarcodes.map(parseProductBarcode);
+  }
+
+  /**
+   * Adds a barcode to a product.
+   * @param productId Grocy product ID
+   * @param barcode the barcode number
+   * @returns the created object ID for the barcode
+   */
+  async addProductBarcode(productId: string, barcode: string) {
+    const body: Omit<RawProductBarcode, "id" | "row_created_timestamp" | "last_price"> = {
+      amount: "",
+      barcode,
+      note: "",
+      product_id: productId,
+      qu_id: "",
+      shopping_location_id: "",
+    };
+    return this.rest.postEntityObject("product_barcodes", body);
   }
 }
 

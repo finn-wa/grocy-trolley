@@ -21,4 +21,9 @@ export class GrocyShoppingListService extends GrocyRestService {
     );
     return rawShoppingListItems.map(parseShoppingListItem);
   }
+
+  async getShoppingList(id: string): Promise<ShoppingListItem[]> {
+    const items = await this.getAllShoppingListItems();
+    return items.filter((item) => item.shopping_list_id === id);
+  }
 }

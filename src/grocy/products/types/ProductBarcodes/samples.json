@@ -1,0 +1,226 @@
+[
+  [
+    {
+      "id": "1",
+      "product_id": "489",
+      "barcode": "9414831801032",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-26 00:17:47",
+      "note": ""
+    },
+    {
+      "id": "2",
+      "product_id": "481",
+      "barcode": "9421017554248",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-30 20:25:57",
+      "note": ""
+    },
+    {
+      "id": "3",
+      "product_id": "600",
+      "barcode": "9421905756013",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-30 20:26:11",
+      "note": ""
+    },
+    {
+      "id": "4",
+      "product_id": "406",
+      "barcode": "9415403000112",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-01 01:41:43",
+      "note": ""
+    },
+    {
+      "id": "5",
+      "product_id": "472",
+      "barcode": "9421900246052",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-01 01:42:16",
+      "note": ""
+    },
+    {
+      "id": "6",
+      "product_id": "518",
+      "barcode": "9415077104697",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-06 21:04:53",
+      "note": ""
+    },
+    {
+      "id": "7",
+      "product_id": "692",
+      "barcode": "9400553008927",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-08 00:48:56",
+      "note": ""
+    },
+    {
+      "id": "8",
+      "product_id": "533",
+      "barcode": "9415077098668",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-06-12 00:30:15",
+      "note": ""
+    }
+  ],
+  [
+    {
+      "id": "1",
+      "product_id": "489",
+      "barcode": "9414831801032",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-26 00:17:47",
+      "note": ""
+    },
+    {
+      "id": "2",
+      "product_id": "481",
+      "barcode": "9421017554248",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-30 20:25:57",
+      "note": ""
+    },
+    {
+      "id": "3",
+      "product_id": "600",
+      "barcode": "9421905756013",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-03-30 20:26:11",
+      "note": ""
+    },
+    {
+      "id": "4",
+      "product_id": "406",
+      "barcode": "9415403000112",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-01 01:41:43",
+      "note": ""
+    },
+    {
+      "id": "5",
+      "product_id": "472",
+      "barcode": "9421900246052",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-01 01:42:16",
+      "note": ""
+    },
+    {
+      "id": "6",
+      "product_id": "518",
+      "barcode": "9415077104697",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-06 21:04:53",
+      "note": ""
+    },
+    {
+      "id": "7",
+      "product_id": "692",
+      "barcode": "9400553008927",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-04-08 00:48:56",
+      "note": ""
+    },
+    {
+      "id": "8",
+      "product_id": "533",
+      "barcode": "9415077098668",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": "",
+      "row_created_timestamp": "2022-06-12 00:30:15",
+      "note": ""
+    },
+    {
+      "id": "9",
+      "product_id": "371",
+      "barcode": "4583635956044278",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": null,
+      "row_created_timestamp": "2022-07-11 11:54:08",
+      "note": ""
+    },
+    {
+      "id": "10",
+      "product_id": "372",
+      "barcode": "6847448139153510",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": null,
+      "row_created_timestamp": "2022-07-11 12:04:51",
+      "note": ""
+    },
+    {
+      "id": "11",
+      "product_id": "373",
+      "barcode": "3885142916237945",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": null,
+      "row_created_timestamp": "2022-07-11 12:05:10",
+      "note": ""
+    },
+    {
+      "id": "12",
+      "product_id": "374",
+      "barcode": "8650171151779333",
+      "qu_id": "",
+      "amount": "",
+      "shopping_location_id": "",
+      "last_price": null,
+      "row_created_timestamp": "2022-07-11 12:05:12",
+      "note": ""
+    }
+  ]
+]
