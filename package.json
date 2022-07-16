@@ -34,6 +34,8 @@
     "@types/prompts": "^2.0.14",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
     "esbuild": "^0.14.49",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
@@ -50,19 +52,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "jasmine": {
-    "spec_dir": "out",
-    "spec_files": [
-      "**/*[sS]pec.js"
-    ],
-    "helpers": [
-      "helpers/**/*.js"
-    ],
-    "env": {
-      "stopSpecOnExpectationFailure": false,
-      "random": true
     }
   }
 }
