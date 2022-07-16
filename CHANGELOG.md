@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/finn-wa/grocy-trolley/compare/v2.6.0...v2.7.0) (2022-07-16)
+
+
+### Features
+
+* add novel and highly optimised getEnvVar function 😎 ([e4290f1](https://github.com/finn-wa/grocy-trolley/commit/e4290f107757808906636b01cc8e9bf388e8870d))
+* set up grocer user agent for export feature ([#90](https://github.com/finn-wa/grocy-trolley/issues/90)) ([dd34021](https://github.com/finn-wa/grocy-trolley/commit/dd34021e35b160ddffda44fdeae7371025974bea))
+
+
+### Bug Fixes
+
+* fix grocer search service, add schema ([b5802fb](https://github.com/finn-wa/grocy-trolley/commit/b5802fba74911d077370fb0ed64c785f7ef506b7))
+* fix lint issues and upgrade packages ([7b9a804](https://github.com/finn-wa/grocy-trolley/commit/7b9a80469b07a939c2687ad2115aaeb537ac8935))
+* unsure why I went down the playwright road for that ([7b54883](https://github.com/finn-wa/grocy-trolley/commit/7b54883732ec78ad3d49f2401d2a70a03ae73870))
+
 ## [2.6.0](https://github.com/finn-wa/grocy-trolley/compare/v2.5.0...v2.6.0) (2022-07-16)
 
 
