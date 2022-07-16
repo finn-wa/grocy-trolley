@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/finn-wa/grocy-trolley/compare/v1.5.0...v2.0.0) (2022-07-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* CLI now has top-level commands with positional arguments
+
+### Features
+
+* add shopping list exporter and clean up commander flow ([2444c2d](https://github.com/finn-wa/grocy-trolley/commit/2444c2d853f288d847cf12c801d828f1b5827a55))
+* automatically add unit conversions to products ([a2b31d6](https://github.com/finn-wa/grocy-trolley/commit/a2b31d6cd931533e85ae9a6baf83348b536aeb4c))
+* show prices of child products, add colours ([a429814](https://github.com/finn-wa/grocy-trolley/commit/a429814891d81a92becd123af60406faf04feffc))
+
+
+### Bug Fixes
+
+* clear dangling lists ([b9b2e04](https://github.com/finn-wa/grocy-trolley/commit/b9b2e040b40dc8ca1e9a21c0229ffe92cdf7ecbd))
+* update metadata on import of existing product ([cafc9a1](https://github.com/finn-wa/grocy-trolley/commit/cafc9a1fdb8c4848ec7807738b13a08db2b54d1b))
+
 ## [1.5.0](https://github.com/finn-wa/grocy-trolley/compare/v1.4.0...v1.5.0) (2022-07-16)
 
 
