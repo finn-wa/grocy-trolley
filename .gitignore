@@ -1,4 +1,18 @@
-env.json
-out
+.env
+.test.env
+build
 node_modules
 temp
+src/resources/cache/*
+!src/resources/cache/info.txt
+.cache
+bin
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
