@@ -1,8 +1,15 @@
+import { toDateString } from "@gt/utils/date";
 import { Logger } from "@gt/utils/logger";
+import chalk from "chalk";
+import prompts from "prompts";
 import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
 import { getShoppingListSchema, getShoppingListsSchema } from "./types/ShoppingList/schema";
 import { ShoppingListItem } from "./types/ShoppingListItems";
+import {
+  getShoppingListItemsSchema,
+  parseShoppingListItem,
+} from "./types/ShoppingListItems/schema";
 
 export class GrocyShoppingListService extends GrocyEntityRestService {
   protected logger = new Logger(this.constructor.name);
@@ -31,10 +38,31 @@ export class GrocyShoppingListService extends GrocyEntityRestService {
    * @returns an array of shopping list items
    */
   async getShoppingListItems(id?: string): Promise<ShoppingListItem[]> {
-    const items = await this.getShoppingListItems();
+    const rawItems = await this.getAllEntityObjects("shopping_list", getShoppingListItemsSchema());
+    const items = rawItems.map(parseShoppingListItem);
     if (id) {
       return items.filter((item) => item.shopping_list_id === id);
     }
     return items;
+  }
+
+  async selectShoppingList(): Promise<string | null> {
+    const lists = await this.getAllShoppingLists();
+    if (lists.length === 0) {
+      return null;
+    }
+    const choice = await prompts({
+      type: "select",
+      name: "listId",
+      message: "Select a shopping list",
+      choices: [
+        ...lists.map((list) => ({
+          title: `${chalk.gray(toDateString(list.row_created_timestamp))} - ${list.name}`,
+          value: list.id,
+        })),
+        { title: "Exit", value: null },
+      ],
+    });
+    return choice.listId as string | null;
   }
 }

@@ -20,8 +20,7 @@ async function generate() {
 }
 
 export async function dev() {
-  return generate();
-  console.log(await new GrocyShoppingListService().getAllShoppingLists());
+  console.log(await new GrocyShoppingListService().selectShoppingList());
   return;
   // return generate();
   const storeService = new GrocerStoreService();
