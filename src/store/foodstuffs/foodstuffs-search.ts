@@ -13,9 +13,7 @@ export async function searchFoodstuffs(
   );
 }
 
-export async function searchPakNSave(
-  query: string
-): Promise<ProductSearchResponse> {
+export async function searchPakNSave(query: string): Promise<ProductSearchResponse> {
   return searchFoodstuffs(PAKNSAVE_URL, query);
 }
 

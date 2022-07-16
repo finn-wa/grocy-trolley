@@ -32,6 +32,15 @@
     "jasmine-ts": "^0.4.0",
     "openapi-typescript": "5.1.1"
   },
+  "packageManager": "yarn@3.2.0",
+  "engines": {
+    "node": "^18"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "jasmine": {
     "spec_dir": "out",
     "spec_files": [
@@ -44,5 +53,5 @@
       "stopSpecOnExpectationFailure": false,
       "random": true
     }
-  }
+  },
 }

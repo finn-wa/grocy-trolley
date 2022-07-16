@@ -1,9 +1,5 @@
 import { Env, EnvParser } from "@grocy-trolley/env";
-import {
-  GrocyOrderRecordService,
-  GrocyUserEntityService,
-  OrderRecord,
-} from ".";
+import { GrocyOrderRecordService, GrocyUserEntityService, OrderRecord } from ".";
 
 xdescribe("GrocyOrderRecordService", () => {
   const envParser = new EnvParser("env.json");
@@ -11,15 +7,8 @@ xdescribe("GrocyOrderRecordService", () => {
 
   beforeEach(() => {
     const { GROCY_API_KEY, GROCY_URL } = envParser.env;
-    const userEntityService = new GrocyUserEntityService(
-      GROCY_API_KEY,
-      GROCY_URL
-    );
-    service = new GrocyOrderRecordService(
-      GROCY_API_KEY,
-      GROCY_URL,
-      userEntityService
-    );
+    const userEntityService = new GrocyUserEntityService(GROCY_API_KEY, GROCY_URL);
+    service = new GrocyOrderRecordService(GROCY_API_KEY, GROCY_URL, userEntityService);
   });
 
   it("should get order records", async () => {

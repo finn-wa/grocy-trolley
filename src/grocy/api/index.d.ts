@@ -2552,12 +2552,7 @@ export interface components {
       name?: string;
       description?: string;
       /** @enum {string} */
-      period_type?:
-        | "manually"
-        | "dynamic-regular"
-        | "daily"
-        | "weekly"
-        | "monthly";
+      period_type?: "manually" | "dynamic-regular" | "daily" | "weekly" | "monthly";
       period_config?: string;
       period_days?: number;
       track_date_only?: boolean;
@@ -2886,11 +2881,7 @@ export interface components {
       | "meal_plan"
       | "meal_plan_sections";
     /** @enum {string} */
-    StockTransactionType:
-      | "purchase"
-      | "consume"
-      | "inventory-correction"
-      | "product-opened";
+    StockTransactionType: "purchase" | "consume" | "inventory-correction" | "product-opened";
     /** @enum {string} */
     FileGroups:
       | "equipmentmanuals"
