@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "name": "Shopping list",
+    "description": "<ul><li>frozen stir fry veges<br /></li><li>liquid smoke</li><li>chipotle sauce</li></ul>",
+    "row_created_timestamp": "2022-01-15 13:37:30"
+  },
+  {
+    "id": "2",
+    "name": "Test",
+    "description": null,
+    "row_created_timestamp": "2022-03-22 12:31:38"
+  },
+  {
+    "id": "4",
+    "name": "shopping",
+    "description": null,
+    "row_created_timestamp": "2022-07-12 12:52:30"
+  }
+]

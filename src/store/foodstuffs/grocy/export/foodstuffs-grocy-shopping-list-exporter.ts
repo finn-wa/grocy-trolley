@@ -28,7 +28,7 @@ export class FoodstuffsGrocyShoppingListExporter {
     // We clean up before and intentionally leave dangling state for debugging
     await this.foodstuffs.listService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
 
-    const listItems = await this.grocy.shoppingListService.getAllShoppingListItems();
+    const listItems = await this.grocy.shoppingListService.getShoppingListItems();
     const products = await this.grocy.productService.getAllProducts();
     const parentProducts = await this.grocy.parentProductService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
