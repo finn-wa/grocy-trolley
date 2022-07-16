@@ -1,7 +1,7 @@
 {
   "name": "grocy-trolley",
   "description": "Links Grocy to PAK'n'SAVE online shopping",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "node ./out/main.js",
