@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/finn-wa/grocy-trolley/compare/v2.5.0...v2.6.0) (2022-07-16)
+
+
+### Features
+
+* add schema to FoodstuffsCart stuff ([4aa65e0](https://github.com/finn-wa/grocy-trolley/commit/4aa65e0b20a942d75829d6b73e553c2e78d76602))
+* some stuff for countdown receipt import ([74c8f17](https://github.com/finn-wa/grocy-trolley/commit/74c8f17290bb2d660eeade213513490f103944aa))
+
+
+### Bug Fixes
+
+* update taggun types ([acd79e2](https://github.com/finn-wa/grocy-trolley/commit/acd79e2e6beb0aba1ecc70ccba7ac1f1c7185563))
+
 ## [2.5.0](https://github.com/finn-wa/grocy-trolley/compare/v2.4.0...v2.5.0) (2022-07-16)
 
 
