@@ -1,6 +1,5 @@
 import { getEnvVar } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
-import { ifPrevEquals } from "@gt/utils/prompts";
 import { RestService } from "@gt/utils/rest";
 import prompts from "prompts";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
@@ -100,7 +99,7 @@ export class GrocerSearchService extends RestService {
         ],
       },
       {
-        type: ifPrevEquals("searchAgain", "text"),
+        type: (prev: { action: string }) => (prev.action === "searchAgain" ? "text" : null),
         message: "Enter a new search query, or leave blank to skip",
         name: "query",
         initial: response.query,
