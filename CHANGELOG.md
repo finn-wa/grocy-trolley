@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 - fixes for schemas and types ([9290299](https://github.com/finn-wa/grocy-trolley/commit/92902994e66e8693035bd033387fda2ccc354f80))
 - improve error handling in rest service ([5ad8c67](https://github.com/finn-wa/grocy-trolley/commit/5ad8c67d33007c21b548578a230422a66ed5671b))
 
-## [2.7.0](https://github.com/finn-wa/grocy-trolley/compare/v2.6.0...v2.7.0) (2022-07-16)
+## [2.7.0](https://github.com/finn-wa/grocy-trolley/compare/v2.6.0...v2.7.0) (2022-06-13)
 
 ### Features
 
@@ -31,7 +31,7 @@ All notable changes to this project will be documented in this file. See [standa
 - fix lint issues and upgrade packages ([7b9a804](https://github.com/finn-wa/grocy-trolley/commit/7b9a80469b07a939c2687ad2115aaeb537ac8935))
 - unsure why I went down the playwright road for that ([7b54883](https://github.com/finn-wa/grocy-trolley/commit/7b54883732ec78ad3d49f2401d2a70a03ae73870))
 
-## [2.6.0](https://github.com/finn-wa/grocy-trolley/compare/v2.5.0...v2.6.0) (2022-07-16)
+## [2.6.0](https://github.com/finn-wa/grocy-trolley/compare/v2.5.0...v2.6.0) (2022-06-06)
 
 ### Features
 
@@ -42,7 +42,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 - update taggun types ([acd79e2](https://github.com/finn-wa/grocy-trolley/commit/acd79e2e6beb0aba1ecc70ccba7ac1f1c7185563))
 
-## [2.5.0](https://github.com/finn-wa/grocy-trolley/compare/v2.4.0...v2.5.0) (2022-07-16)
+## [2.5.0](https://github.com/finn-wa/grocy-trolley/compare/v2.4.0...v2.5.0) (2022-05-22)
 
 ### Features
 
@@ -56,14 +56,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 - fix jtd-infer bug ([6e8d427](https://github.com/finn-wa/grocy-trolley/commit/6e8d4270baee5cc48410e7751d638f66257f0061))
 
-## [2.4.0](https://github.com/finn-wa/grocy-trolley/compare/v2.3.0...v2.4.0) (2022-07-16)
+## [2.4.0](https://github.com/finn-wa/grocy-trolley/compare/v2.3.0...v2.4.0) (2022-05-11)
 
 ### Features
 
 - allow undefined env vars ([841300c](https://github.com/finn-wa/grocy-trolley/commit/841300cfdfc5a4beda7301c523080b3b86b23714))
 - specify required vars ([d5a2739](https://github.com/finn-wa/grocy-trolley/commit/d5a2739add20d0372f66afe6288642eb84b64d1d))
 
-## [2.3.0](https://github.com/finn-wa/grocy-trolley/compare/v2.2.0...v2.3.0) (2022-07-16)
+## [2.3.0](https://github.com/finn-wa/grocy-trolley/compare/v2.2.0...v2.3.0) (2022-05-09)
 
 ### Features
 
@@ -78,7 +78,7 @@ All notable changes to this project will be documented in this file. See [standa
 - fix longstanding list bug (closes [#53](https://github.com/finn-wa/grocy-trolley/issues/53)) and add unit tests for list service ([c91b017](https://github.com/finn-wa/grocy-trolley/commit/c91b01706dba8bf90e36b1dfa5e130527e1a2ac8))
 - handle discrepancy between list and cart products in metadata (closes [#43](https://github.com/finn-wa/grocy-trolley/issues/43)) ([6532f89](https://github.com/finn-wa/grocy-trolley/commit/6532f896729178eea950b872789561829ef11eac))
 
-## [2.2.0](https://github.com/finn-wa/grocy-trolley/compare/v2.1.1...v2.2.0) (2022-07-16)
+## [2.2.0](https://github.com/finn-wa/grocy-trolley/compare/v2.1.1...v2.2.0) (2022-05-02)
 
 ### Features
 
@@ -96,15 +96,15 @@ All notable changes to this project will be documented in this file. See [standa
 - use playwright ([7881774](https://github.com/finn-wa/grocy-trolley/commit/7881774d10c142a4de1e1f68960dd01a8ff423e3))
 - use playwright to perform fetch requests in a browser context to circumvent Cloudflare ([7ed2b35](https://github.com/finn-wa/grocy-trolley/commit/7ed2b3567a2efafed2ea9e5281f68821d5cb0d54))
 
-### [2.1.1](https://github.com/finn-wa/grocy-trolley/compare/v2.1.0...v2.1.1) (2022-07-16)
+### [2.1.1](https://github.com/finn-wa/grocy-trolley/compare/v2.1.0...v2.1.1) (2022-04-03)
 
-## [2.1.0](https://github.com/finn-wa/grocy-trolley/compare/v2.0.0...v2.1.0) (2022-07-16)
+## [2.1.0](https://github.com/finn-wa/grocy-trolley/compare/v2.0.0...v2.1.0) (2022-04-01)
 
 ### Features
 
 - improve ProductService, make ParentProductService ([c6cf520](https://github.com/finn-wa/grocy-trolley/commit/c6cf520626a56717dbce36de18316865ef409564))
 
-## [2.0.0](https://github.com/finn-wa/grocy-trolley/compare/v1.5.0...v2.0.0) (2022-07-16)
+## [2.0.0](https://github.com/finn-wa/grocy-trolley/compare/v1.5.0...v2.0.0) (2022-03-26)
 
 ### ⚠ BREAKING CHANGES
 
@@ -121,7 +121,7 @@ All notable changes to this project will be documented in this file. See [standa
 - clear dangling lists ([b9b2e04](https://github.com/finn-wa/grocy-trolley/commit/b9b2e040b40dc8ca1e9a21c0229ffe92cdf7ecbd))
 - update metadata on import of existing product ([cafc9a1](https://github.com/finn-wa/grocy-trolley/commit/cafc9a1fdb8c4848ec7807738b13a08db2b54d1b))
 
-## [1.5.0](https://github.com/finn-wa/grocy-trolley/compare/v1.4.0...v1.5.0) (2022-07-16)
+## [1.5.0](https://github.com/finn-wa/grocy-trolley/compare/v1.4.0...v1.5.0) (2022-03-18)
 
 ### Features
 
@@ -135,7 +135,7 @@ All notable changes to this project will be documented in this file. See [standa
 - add cache dir to git to avoid ENOENT ([168af54](https://github.com/finn-wa/grocy-trolley/commit/168af54f2ab3486c1f44600b604eff4b22b39a62))
 - restrict parent product search to products in the same category ([b097cef](https://github.com/finn-wa/grocy-trolley/commit/b097cefd020fb4125940eda15731ccf22dd03436))
 
-## [1.4.0](https://github.com/finn-wa/grocy-trolley/compare/v1.3.0...v1.4.0) (2022-07-16)
+## [1.4.0](https://github.com/finn-wa/grocy-trolley/compare/v1.3.0...v1.4.0) (2022-03-08)
 
 ### Features
 
@@ -147,7 +147,7 @@ All notable changes to this project will be documented in this file. See [standa
 - bug fixes ([867081b](https://github.com/finn-wa/grocy-trolley/commit/867081b0dc474d8d7e14e83b4908912c1bb9002f))
 - separate importers, fix taggun ([5e78fd5](https://github.com/finn-wa/grocy-trolley/commit/5e78fd5a3246dd4fd0f877c81ca40eebc46a925d))
 
-## [1.3.0](https://github.com/finn-wa/grocy-trolley/compare/v1.2.0...v1.3.0) (2022-07-16)
+## [1.3.0](https://github.com/finn-wa/grocy-trolley/compare/v1.2.0...v1.3.0) (2022-03-06)
 
 ### Features
 
@@ -159,23 +159,25 @@ All notable changes to this project will be documented in this file. See [standa
 
 - stock and unit fixes, parent product resolution ([f8832e2](https://github.com/finn-wa/grocy-trolley/commit/f8832e2132998a9b479d65dd09be18088cf75127))
 
-## [1.2.0](https://github.com/finn-wa/grocy-trolley/compare/v1.1.0...v1.2.0) (2022-07-16)
+## [1.2.0](https://github.com/finn-wa/grocy-trolley/compare/v1.1.0...v1.2.0) (2022-02-26)
 
 ### Features
 
 - adding to stock works :O ([5578346](https://github.com/finn-wa/grocy-trolley/commit/55783463aaa1871043b152dddffa82ee73735e53))
 - prompts & interactive list import ([3d8c3e3](https://github.com/finn-wa/grocy-trolley/commit/3d8c3e3a1ded6ac5e26780eceb7de7faef52c3d4))
 
-## [1.1.0](https://github.com/finn-wa/grocy-trolley/compare/v1.0.0...v1.1.0) (2022-07-16)
+## [1.1.0](https://github.com/finn-wa/grocy-trolley/compare/v1.0.0...v1.1.0) (2022-02-17)
 
 ### Features
 
 - importing past orders works ([d11f89b](https://github.com/finn-wa/grocy-trolley/commit/d11f89ba7a63947916af7c62692d9085f3c79d34))
 
-## [1.0.0](https://github.com/finn-wa/grocy-trolley/compare/v0.0.2...v1.0.0) (2022-07-16)
+## [1.0.0](https://github.com/finn-wa/grocy-trolley/compare/v0.0.2...v1.0.0) (2022-02-17)
 
 ### Features
 
 - importing from cart ([ea674a9](https://github.com/finn-wa/grocy-trolley/commit/ea674a9a8256f9a162fe48463ef88572c21223ba))
 
-### 0.0.2 (2022-07-16)
+### 0.0.0 (2022-01-25)
+
+Initial commit.
