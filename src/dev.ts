@@ -3,15 +3,26 @@
 import { GrocerSearchService } from "./grocer/search/grocer-search-service";
 import { GrocerStoreService } from "./grocer/stores/grocer-store-service";
 import { grocyServices } from "./grocy";
+import { GrocyShoppingListService } from "./grocy/shopping-lists/grocy-shopping-list-service";
 import { generateTypes } from "./jtd/generate-types";
 
 async function generate() {
   const grocy = await grocyServices();
-  const barcodes = await grocy.productService.getProductBarcodes();
-  await generateTypes("ProductBarcodes", "src/grocy/products", barcodes);
+  const lists = await grocy.shoppingListService.getAllShoppingLists();
+  await generateTypes(
+    {
+      typeName: "ShoppingList",
+      sourceDir: "src/grocy/shopping-lists",
+      generateArrayType: true,
+    },
+    ...lists
+  );
 }
 
 export async function dev() {
+  return generate();
+  console.log(await new GrocyShoppingListService().getAllShoppingLists());
+  return;
   // return generate();
   const storeService = new GrocerStoreService();
   const stores = await storeService.promptForStores();
