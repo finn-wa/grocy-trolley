@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/finn-wa/grocy-trolley/compare/v1.2.0...v1.3.0) (2022-07-16)
+
+
+### Features
+
+* add barcodebuddy crawler ([480423e](https://github.com/finn-wa/grocy-trolley/commit/480423ee3daf91eef8dec0ad7dd4f7b2f2fedd59))
+* add trace loglevel ([f78e7b2](https://github.com/finn-wa/grocy-trolley/commit/f78e7b2f924210ccd2c34d79fa8ac36cb566227a))
+* barcode buddy imports ([0a0dff3](https://github.com/finn-wa/grocy-trolley/commit/0a0dff3c9c5e64174c7ddd7883f337828fb42902))
+
+
+### Bug Fixes
+
+* stock and unit fixes, parent product resolution ([f8832e2](https://github.com/finn-wa/grocy-trolley/commit/f8832e2132998a9b479d65dd09be18088cf75127))
+
 ## [1.2.0](https://github.com/finn-wa/grocy-trolley/compare/v1.1.0...v1.2.0) (2022-07-16)
 
 
