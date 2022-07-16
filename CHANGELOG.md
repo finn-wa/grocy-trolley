@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://github.com/finn-wa/grocy-trolley/compare/v2.7.0...v2.8.0) (2022-07-16)
+
+
+### Features
+
+* add grocy product barcode api ([0d48fdb](https://github.com/finn-wa/grocy-trolley/commit/0d48fdb843708bd8107f826d4b8ba8e15e3f0cfe))
+* interactive grocer product/store search ([cb32037](https://github.com/finn-wa/grocy-trolley/commit/cb32037cbba0c1a329433ca1833d851dbb6060bf))
+
+
+### Bug Fixes
+
+* catch duplicate unit quanitity conversion error (closes [#100](https://github.com/finn-wa/grocy-trolley/issues/100)) ([dbfb0c0](https://github.com/finn-wa/grocy-trolley/commit/dbfb0c088d237d94069bdeed3a0b037235fbdd56))
+* fix Grocy patchProduct bug (closes [#67](https://github.com/finn-wa/grocy-trolley/issues/67)) ([39c6603](https://github.com/finn-wa/grocy-trolley/commit/39c6603618fc7f6ce349194ed8080659b94cf893))
+* fix shopping list type (note can be nullable) ([68b73fa](https://github.com/finn-wa/grocy-trolley/commit/68b73fac514a573a7efa514ae984e0c64e3de8d6))
+* fix up product parsing ([66b5196](https://github.com/finn-wa/grocy-trolley/commit/66b5196b050b3ec6f4e5f2054ede2a09b3d79297))
+* fixes for schemas and types ([9290299](https://github.com/finn-wa/grocy-trolley/commit/92902994e66e8693035bd033387fda2ccc354f80))
+* improve error handling in rest service ([5ad8c67](https://github.com/finn-wa/grocy-trolley/commit/5ad8c67d33007c21b548578a230422a66ed5671b))
+
 ## [2.7.0](https://github.com/finn-wa/grocy-trolley/compare/v2.6.0...v2.7.0) (2022-07-16)
 
 
