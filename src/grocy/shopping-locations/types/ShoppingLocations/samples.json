@@ -1,1 +1,39 @@
-[[{"id":"1","name":"PAK'nSAVE Royal Oak","description":"","row_created_timestamp":"2022-01-19 02:49:55","userfields":{"brand":"PAK'n'SAVE","storeId":"e1925ea7-01bc-4358-ae7c-c6502da5ab12"}},{"id":"2","name":"Fruit & Vege Royal Oak","description":"Fresh produce & a lot of Asian (mainly Thai) products","row_created_timestamp":"2022-03-10 01:34:48","userfields":{"brand":"Independent","storeId":"favro"}},{"id":"3","name":"PAK'nSAVE Sylvia Park","description":"","row_created_timestamp":"2022-03-22 10:12:05","userfields":{"brand":"PAK'n'SAVE","storeId":"c0f80e87-16be-4488-9553-da437e8c6c2a"}},{"id":"4","name":"PAK'nSAVE List","description":"","row_created_timestamp":"2022-04-03 11:50:48","userfields":{"brand":"PAK'n'SAVE","storeId":"paknsave-list"}},{"id":"5","name":"Reduced To Clear Onehunga","description":"","row_created_timestamp":"2022-04-05 03:52:14","userfields":{"brand":"Independent","storeId":"rtco"}}]]
+[
+  [
+    {
+      "id": "1",
+      "name": "PAK'nSAVE Royal Oak",
+      "description": "",
+      "row_created_timestamp": "2022-01-19 02:49:55",
+      "userfields": { "brand": "PAK'n'SAVE", "storeId": "e1925ea7-01bc-4358-ae7c-c6502da5ab12" }
+    },
+    {
+      "id": "2",
+      "name": "Fruit & Vege Royal Oak",
+      "description": "Fresh produce & a lot of Asian (mainly Thai) products",
+      "row_created_timestamp": "2022-03-10 01:34:48",
+      "userfields": { "brand": "Independent", "storeId": "favro" }
+    },
+    {
+      "id": "3",
+      "name": "PAK'nSAVE Sylvia Park",
+      "description": "",
+      "row_created_timestamp": "2022-03-22 10:12:05",
+      "userfields": { "brand": "PAK'n'SAVE", "storeId": "c0f80e87-16be-4488-9553-da437e8c6c2a" }
+    },
+    {
+      "id": "4",
+      "name": "PAK'nSAVE List",
+      "description": "",
+      "row_created_timestamp": "2022-04-03 11:50:48",
+      "userfields": { "brand": "PAK'n'SAVE", "storeId": "paknsave-list" }
+    },
+    {
+      "id": "5",
+      "name": "Reduced To Clear Onehunga",
+      "description": "",
+      "row_created_timestamp": "2022-04-05 03:52:14",
+      "userfields": { "brand": "Independent", "storeId": "rtco" }
+    }
+  ]
+]
