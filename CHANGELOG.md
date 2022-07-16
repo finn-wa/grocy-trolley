@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/finn-wa/grocy-trolley/compare/v2.2.0...v2.3.0) (2022-07-16)
+
+
+### Features
+
+* add input-file option for import receipt command ([6fe19c4](https://github.com/finn-wa/grocy-trolley/commit/6fe19c45fad18eb14c45b50d36388c6ce318746d))
+* add stock command to CLI and add cart as a stock source ([800a85c](https://github.com/finn-wa/grocy-trolley/commit/800a85c2529f1e8c864e2aea0daebbfb6fac9e2a))
+* prompt-based search ([a6d5a49](https://github.com/finn-wa/grocy-trolley/commit/a6d5a49dfd7b605a2450cf35184c78c2889f2fe1))
+
+
+### Bug Fixes
+
+* fix bug, add lint script ([1e34819](https://github.com/finn-wa/grocy-trolley/commit/1e34819fc76caea9d53221dd040cf9cb07b2ab62))
+* fix ESLint issues ([23b86c8](https://github.com/finn-wa/grocy-trolley/commit/23b86c81b1a67093e8012f1aa94abe458c8402c1))
+* fix longstanding list bug (closes [#53](https://github.com/finn-wa/grocy-trolley/issues/53)) and add unit tests for list service ([c91b017](https://github.com/finn-wa/grocy-trolley/commit/c91b01706dba8bf90e36b1dfa5e130527e1a2ac8))
+* handle discrepancy between list and cart products in metadata (closes [#43](https://github.com/finn-wa/grocy-trolley/issues/43)) ([6532f89](https://github.com/finn-wa/grocy-trolley/commit/6532f896729178eea950b872789561829ef11eac))
+
 ## [2.2.0](https://github.com/finn-wa/grocy-trolley/compare/v2.1.1...v2.2.0) (2022-07-16)
 
 
