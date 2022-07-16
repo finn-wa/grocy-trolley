@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/finn-wa/grocy-trolley/compare/v2.8.0...v2.9.0) (2022-07-16)
+
+### Features
+
+- expand GrocyShoppingListService API ([fa6d8d0](https://github.com/finn-wa/grocy-trolley/commit/fa6d8d0042762fed0a90ba4f377f09ed18645778))
+- interactive select shopping list method ([09a3851](https://github.com/finn-wa/grocy-trolley/commit/09a3851d489c69191b87e9b88ac352d72030bb71))
+- schema generation - generate second schema for T[] alongside T ([c5e2c90](https://github.com/finn-wa/grocy-trolley/commit/c5e2c9012cc4cf883f8be7808b61b4cebb204b89))
+
+### Bug Fixes
+
+- grocer search and select - amend query case was not triggering ([bd6f692](https://github.com/finn-wa/grocy-trolley/commit/bd6f692792bfb47f280f4fe6535299765a45bd0c))
+- roll back @prompts/types to the version that allowed any type of value ([9916145](https://github.com/finn-wa/grocy-trolley/commit/9916145dd3fd6b27799690c7773ea883e5611dc8))
+
 ## [2.8.0](https://github.com/finn-wa/grocy-trolley/compare/v2.7.0...v2.8.0) (2022-07-16)
 
 ### Features
