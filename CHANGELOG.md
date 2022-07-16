@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/finn-wa/grocy-trolley/compare/v1.0.0...v1.1.0) (2022-07-16)
+
+
+### Features
+
+* importing past orders works ([d11f89b](https://github.com/finn-wa/grocy-trolley/commit/d11f89ba7a63947916af7c62692d9085f3c79d34))
+
 ## [1.0.0](https://github.com/finn-wa/grocy-trolley/compare/v0.0.2...v1.0.0) (2022-07-16)
 
 
