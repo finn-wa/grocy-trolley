@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/finn-wa/grocy-trolley/compare/v2.1.1...v2.2.0) (2022-07-16)
+
+
+### Features
+
+* allow search service to search without credentials ([b2e4dc7](https://github.com/finn-wa/grocy-trolley/commit/b2e4dc75b893e52aaae12833576f07d7bf0590bf))
+* extend launch options, add test file for cart ([14089b6](https://github.com/finn-wa/grocy-trolley/commit/14089b652d0218cccb3bbf1ed58061bc92871475))
+* fun with types in env.ts, search without credentials, allow multiselect for shop (partially addresses [#10](https://github.com/finn-wa/grocy-trolley/issues/10)) ([a693ef8](https://github.com/finn-wa/grocy-trolley/commit/a693ef8f46f8fc766004b038be8956b7d0acfbfd))
+* general clean up, allow env path override ([ef7236a](https://github.com/finn-wa/grocy-trolley/commit/ef7236a7f1fe64b31402596fa77d737670156da1))
+* import from list mainly working ([8fdb5e5](https://github.com/finn-wa/grocy-trolley/commit/8fdb5e52d7ba369739f5f765ebab9a50790eaf2a))
+
+
+### Bug Fixes
+
+* fix blocked requests by saving client headers (closes [#40](https://github.com/finn-wa/grocy-trolley/issues/40)) ([6f44128](https://github.com/finn-wa/grocy-trolley/commit/6f4412861fd0265cf467371e9fc53dcba64a9dbe))
+* fix typecheck task ([49075a5](https://github.com/finn-wa/grocy-trolley/commit/49075a53319762f902c45bb3664b445009d5bc06))
+* only use anon search agent for shopping list exporter ([7fd65f9](https://github.com/finn-wa/grocy-trolley/commit/7fd65f98acbfaf917088c902aa2f1bcd3a597d7d))
+* use playwright ([7881774](https://github.com/finn-wa/grocy-trolley/commit/7881774d10c142a4de1e1f68960dd01a8ff423e3))
+* use playwright to perform fetch requests in a browser context to circumvent Cloudflare ([7ed2b35](https://github.com/finn-wa/grocy-trolley/commit/7ed2b3567a2efafed2ea9e5281f68821d5cb0d54))
+
 ### [2.1.1](https://github.com/finn-wa/grocy-trolley/compare/v2.1.0...v2.1.1) (2022-07-16)
 
 ## [2.1.0](https://github.com/finn-wa/grocy-trolley/compare/v2.0.0...v2.1.0) (2022-07-16)
