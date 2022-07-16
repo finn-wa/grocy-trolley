@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/finn-wa/grocy-trolley/compare/v1.3.0...v1.4.0) (2022-07-16)
+
+
+### Features
+
+* add OCR receipt scanner ([55f0bfe](https://github.com/finn-wa/grocy-trolley/commit/55f0bfe4628bfa2b4241323aab09f39e444acfed))
+* receipt import working ([d8405bf](https://github.com/finn-wa/grocy-trolley/commit/d8405bff9479258f069726b65fb15babb323bcba))
+
+
+### Bug Fixes
+
+* bug fixes ([867081b](https://github.com/finn-wa/grocy-trolley/commit/867081b0dc474d8d7e14e83b4908912c1bb9002f))
+* separate importers, fix taggun ([5e78fd5](https://github.com/finn-wa/grocy-trolley/commit/5e78fd5a3246dd4fd0f877c81ca40eebc46a925d))
+
 ## [1.3.0](https://github.com/finn-wa/grocy-trolley/compare/v1.2.0...v1.3.0) (2022-07-16)
 
 
