@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/finn-wa/grocy-trolley/compare/v2.4.0...v2.5.0) (2022-07-16)
+
+
+### Features
+
+* add countdown rest service ([03acb1c](https://github.com/finn-wa/grocy-trolley/commit/03acb1c8f65ad0d3ab6090205dd5c4a48a1004c5))
+* add JSON Type Def generators and some countdown services ([0b6336f](https://github.com/finn-wa/grocy-trolley/commit/0b6336fa03f9c45bedc8093a722da37970006c18))
+* improve generator and typechecks ([031f597](https://github.com/finn-wa/grocy-trolley/commit/031f597dafc82886c4c4b1da6ecb6ecd57fc7085))
+* reconfigure rest service for ajv integration ([5f831e2](https://github.com/finn-wa/grocy-trolley/commit/5f831e2a72a68482b6d69274c9db73680d55be7e))
+* Some snapshot stuff... might use JSON TypeDef instead ([720aafd](https://github.com/finn-wa/grocy-trolley/commit/720aafd7630e5c2aaa6d04f98a01d3260085cbe2))
+
+
+### Bug Fixes
+
+* fix jtd-infer bug ([6e8d427](https://github.com/finn-wa/grocy-trolley/commit/6e8d4270baee5cc48410e7751d638f66257f0061))
+
 ## [2.4.0](https://github.com/finn-wa/grocy-trolley/compare/v2.3.0...v2.4.0) (2022-07-16)
 
 
