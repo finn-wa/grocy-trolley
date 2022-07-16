@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/finn-wa/grocy-trolley/compare/v1.1.0...v1.2.0) (2022-07-16)
+
+
+### Features
+
+* adding to stock works :O ([5578346](https://github.com/finn-wa/grocy-trolley/commit/55783463aaa1871043b152dddffa82ee73735e53))
+* prompts & interactive list import ([3d8c3e3](https://github.com/finn-wa/grocy-trolley/commit/3d8c3e3a1ded6ac5e26780eceb7de7faef52c3d4))
+
 ## [1.1.0](https://github.com/finn-wa/grocy-trolley/compare/v1.0.0...v1.1.0) (2022-07-16)
 
 
