@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/finn-wa/grocy-trolley/compare/v1.4.0...v1.5.0) (2022-07-16)
+
+
+### Features
+
+* add CLI options ([b3d1304](https://github.com/finn-wa/grocy-trolley/commit/b3d130465e9eec4f289f1395f93a86312314ce43))
+* add log message for adding stock ([5d038a5](https://github.com/finn-wa/grocy-trolley/commit/5d038a5f199eae16fed36de9a743ed5fec353ab2))
+* find children of parent products ([bbb787d](https://github.com/finn-wa/grocy-trolley/commit/bbb787d1c536fe7d1c7f8dd70406308cdf068976))
+
+
+### Bug Fixes
+
+* add .nvmrc and fix typecheck problems ([0ddf01d](https://github.com/finn-wa/grocy-trolley/commit/0ddf01d507ba37c41f943bccf890e1b668cc2df6))
+* add cache dir to git to avoid ENOENT ([168af54](https://github.com/finn-wa/grocy-trolley/commit/168af54f2ab3486c1f44600b604eff4b22b39a62))
+* restrict parent product search to products in the same category ([b097cef](https://github.com/finn-wa/grocy-trolley/commit/b097cefd020fb4125940eda15731ccf22dd03436))
+
 ## [1.4.0](https://github.com/finn-wa/grocy-trolley/compare/v1.3.0...v1.4.0) (2022-07-16)
 
 
