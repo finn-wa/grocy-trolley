@@ -96,6 +96,8 @@ export class FoodstuffsListImporter {
         this.logger.error("Error stocking product");
         if (error instanceof RequestError) {
           this.logger.error(await error.response.text());
+        } else {
+          this.logger.error(error);
         }
       }
     }

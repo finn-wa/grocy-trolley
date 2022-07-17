@@ -45,7 +45,6 @@ export class FoodstuffsCartImporter {
     );
     if (productsToImport.length === 0) {
       this.logger.info("All products have already been imported");
-      return;
     }
     const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
     const newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
@@ -96,6 +95,8 @@ export class FoodstuffsCartImporter {
         this.logger.error("Error stocking product");
         if (error instanceof RequestError) {
           this.logger.error(await error.response.text());
+        } else {
+          this.logger.error(error);
         }
       }
     }
