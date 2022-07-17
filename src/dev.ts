@@ -9,7 +9,7 @@ import { generateTypes } from "./jtd/generate-types";
 
 async function generate() {
   const grocy = await grocyServices();
-  const lists = await grocy.shoppingListService.getAllShoppingLists();
+  const lists = await grocy.shoppingListService.getShoppingLists();
   await generateTypes(
     {
       typeName: "ShoppingList",
@@ -21,11 +21,14 @@ async function generate() {
 }
 
 export async function dev() {
+  const grocy = await grocyServices();
   const grocer = new GrocerShoppingListService(
-    await grocyServices(),
+    grocy,
     new GrocerSearchService(),
     new GrocerStoreService()
   );
+  const list = await grocy.shoppingListService.selectShoppingList();
+  grocy.shoppingListService.getShoppingListItems();
   await grocer.importGrocyShoppingList();
 }
 

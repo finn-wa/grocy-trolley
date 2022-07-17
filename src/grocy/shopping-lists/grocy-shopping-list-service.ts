@@ -2,7 +2,8 @@ import { toDateString } from "@gt/utils/date";
 import { Logger } from "@gt/utils/logger";
 import chalk from "chalk";
 import prompts from "prompts";
-import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
+import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
 import { getShoppingListSchema, getShoppingListsSchema } from "./types/ShoppingList/schema";
 import { ShoppingListItem } from "./types/ShoppingListItems";
@@ -11,16 +12,26 @@ import {
   parseShoppingListItem,
 } from "./types/ShoppingListItems/schema";
 
-export class GrocyShoppingListService extends GrocyEntityRestService {
+export class GrocyShoppingListService extends GrocyRestService {
   protected logger = new Logger(this.constructor.name);
+  private readonly listService = new GrocySingleEntityService(
+    "shopping_lists",
+    getShoppingListSchema,
+    getShoppingListsSchema
+  );
+  private readonly itemService = new GrocySingleEntityService(
+    "shopping_list",
+    () => undefined,
+    getShoppingListItemsSchema
+  );
 
   async getShoppingList(id: string): Promise<ShoppingListDetail> {
-    const list = await this.getEntityObject("shopping_lists", id, getShoppingListSchema());
+    const list = await this.listService.getEntityObject(id);
     return { ...list, items: await this.getShoppingListItems(id) };
   }
 
-  async getAllShoppingLists(): Promise<ShoppingList[]> {
-    return this.getAllEntityObjects("shopping_lists", getShoppingListsSchema());
+  async getShoppingLists(): Promise<ShoppingList[]> {
+    return this.listService.getAllEntityObjects();
   }
 
   /**
@@ -29,7 +40,7 @@ export class GrocyShoppingListService extends GrocyEntityRestService {
    * @returns created object ID
    */
   async createShoppingList(name: string): Promise<string> {
-    return this.postEntityObject("shopping_lists", { name });
+    return this.listService.postEntityObject({ name });
   }
 
   /**
@@ -38,16 +49,20 @@ export class GrocyShoppingListService extends GrocyEntityRestService {
    * @returns an array of shopping list items
    */
   async getShoppingListItems(id?: string): Promise<ShoppingListItem[]> {
-    const rawItems = await this.getAllEntityObjects("shopping_list", getShoppingListItemsSchema());
-    const items = rawItems.map(parseShoppingListItem);
+    const params: Record<string, string> = {};
     if (id) {
-      return items.filter((item) => item.shopping_list_id === id);
+      params["query[]"] = `shopping_list_id=${id}`;
     }
-    return items;
+    const rawItems = await this.getAndParse(
+      this.buildUrl("/objects/shopping_list", params),
+      { headers: this.authHeaders().acceptJson().build() },
+      getShoppingListItemsSchema()
+    );
+    return rawItems.map(parseShoppingListItem);
   }
 
   async selectShoppingList(): Promise<string | null> {
-    const lists = await this.getAllShoppingLists();
+    const lists = await this.getShoppingLists();
     if (lists.length === 0) {
       return null;
     }

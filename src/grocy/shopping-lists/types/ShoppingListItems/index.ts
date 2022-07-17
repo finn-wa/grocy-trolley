@@ -14,8 +14,6 @@ export interface RawShoppingListItem extends BaseShoppingListItem {
   amount: string | number;
 }
 
-export type RawShoppingListItems = RawShoppingListItem[];
-
 export interface ShoppingListItem extends BaseShoppingListItem {
   amount: number;
 }

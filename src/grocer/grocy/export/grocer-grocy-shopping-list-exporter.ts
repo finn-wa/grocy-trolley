@@ -1,7 +1,6 @@
 import { GrocerSearchService } from "@gt/grocer/search/grocer-search-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
 import { GrocyServices } from "@gt/grocy";
-import { ShoppingListItem } from "@gt/grocy/shopping-lists/types/ShoppingListItems";
 import { Logger } from "@gt/utils/logger";
 
 export class GrocerShoppingListService {
@@ -40,6 +39,8 @@ export class GrocerShoppingListService {
         continue;
       }
       const product = await this.grocy.productService.getProduct(item.product_id);
+      console.log(product.barcode);
+      // this is always true because barcode isn't returned for get requests
       if (!product.barcode) {
         console.log(`No barcode found for "${product.name}", searching grocer`);
         const grocerProduct = await this.searchService.searchAndSelectProduct(
@@ -49,9 +50,9 @@ export class GrocerShoppingListService {
         if (grocerProduct === null) {
           return;
         }
-        this.logger.debug(`Adding barcode ${grocerProduct.id} }to grocy product...`);
-        // not working
+        this.logger.debug(`Adding barcode ${grocerProduct.id} to grocy product...`);
         await this.grocy.productService.addProductBarcode(product.id, grocerProduct.id.toString());
+        // }
       }
     }
   }
