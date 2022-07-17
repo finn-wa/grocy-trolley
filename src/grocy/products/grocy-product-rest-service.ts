@@ -25,8 +25,8 @@ export class GrocyProductRestService extends GrocyEntityService {
    * Gets all products.
    * @returns An array of products
    */
-  async getAllProducts(): Promise<Product[]> {
-    const rawProducts = await this.getAllEntityObjects(products, getRawProductsSchema());
+  async getProducts(): Promise<Product[]> {
+    const rawProducts = await this.getEntityObjects(products, getRawProductsSchema());
     return rawProducts.map(parseProduct);
   }
 

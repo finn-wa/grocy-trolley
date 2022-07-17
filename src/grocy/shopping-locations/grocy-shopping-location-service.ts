@@ -5,7 +5,7 @@ export class GrocyShoppingLocationService {
   private readonly rest = new GrocySingleEntityService<ShoppingLocation>("shopping_locations");
 
   async getShoppingLocations(): Promise<ShoppingLocation[]> {
-    return this.rest.getAllEntityObjects();
+    return this.rest.getEntityObjects();
   }
 
   async getShoppingLocation(id: string): Promise<ShoppingLocation> {

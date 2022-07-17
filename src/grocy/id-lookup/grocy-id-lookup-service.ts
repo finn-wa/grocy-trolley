@@ -24,7 +24,7 @@ export abstract class GrocyIdLookupService<K extends string = string> {
         ? (obj: T) => obj[keyGetter as keyof T] as unknown as string
         : (keyGetter as (obj: T) => string);
 
-    const entities = await this.entityService.getAllEntityObjects<T>(entity);
+    const entities = await this.entityService.getEntityObjects<T>(entity);
     if (requiredKeys) {
       const entityKeys = entities.map(_keyGetter);
       const missingKeys = requiredKeys.filter((key) => !entityKeys.includes(key));

@@ -26,7 +26,7 @@ export class GrocyUserEntityService extends GrocyRestService {
     if (!refresh && !!this.entities) {
       return this.entities;
     }
-    const entities: UserEntity[] = await this.entityService.getAllEntityObjects("userentities");
+    const entities: UserEntity[] = await this.entityService.getEntityObjects("userentities");
     this.entities = entities;
     return entities;
   }
@@ -46,7 +46,7 @@ export class GrocyUserEntityService extends GrocyRestService {
   }
 
   async getUserObjectReferences(): Promise<UserObjectReference[]> {
-    return this.entityService.getAllEntityObjects("userobjects");
+    return this.entityService.getEntityObjects("userobjects");
   }
 
   async getUserObject<Name extends UserEntityName>(

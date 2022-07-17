@@ -3,20 +3,40 @@ import { ValidateFunction } from "ajv";
 import { getCreatedObjectIdSchema, GrocyEntity } from "../types/grocy-types";
 import { GrocyRestService } from "./grocy-rest-service";
 
+/**
+ * A filter condition in the format `{{ field }}{{ condition }}{{ value }}` where
+ * - `{{ field }}` is a valid field name
+ * - `{{ condition }}` is a comparison operator, one of:
+ *    * `=` equal
+ *    * `!=` not equal
+ *    * `~` LIKE
+ *    * `!~` not LIKE
+ *    * `<` less
+ *    * `>` greater
+ *    * `<=` less or equal
+ *    * `>=` greater or equal
+ *    * `§` regular expression
+ * - `{{ value }}` is the value to search for
+ */
+export type GrocyEntityObjectFilter = string;
+
 export class GrocyEntityService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   /**
-   * Gets all grocy objects for a given entity.
+   * Gets all grocy objects for a given entity - optionally filtered.
    * @param entity The name of the entity
+   * @param filter a filter condition - see {@link GrocyEntityObjectFilter}
    * @returns An array containing all entity objects
    */
-  async getAllEntityObjects<T>(
+  async getEntityObjects<T>(
     entity: GrocyEntity,
-    validate?: ValidateFunction<T[]>
+    validate?: ValidateFunction<T[]>,
+    filter: GrocyEntityObjectFilter = ""
   ): Promise<T[]> {
+    if (filter.length > 0) filter = "?" + filter;
     return this.getAndParse(
-      this.buildUrl(`/objects/${entity}`),
+      this.buildUrl(`/objects/${entity}${filter}`),
       { headers: this.authHeaders().acceptJson().build() },
       validate
     );
@@ -97,8 +117,8 @@ export class GrocySingleEntityService<T = unknown> extends GrocyRestService {
     this.logger = new Logger(`GrocySingleEntityService[${this.entity}]`);
   }
 
-  getAllEntityObjects(): Promise<T[]> {
-    return this.entityService.getAllEntityObjects<T>(this.entity, this.validateArray());
+  getEntityObjects(filter: GrocyEntityObjectFilter = ""): Promise<T[]> {
+    return this.entityService.getEntityObjects<T>(this.entity, this.validateArray(), filter);
   }
 
   getEntityObject(id: string) {

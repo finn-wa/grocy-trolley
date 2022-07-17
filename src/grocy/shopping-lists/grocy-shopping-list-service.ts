@@ -31,7 +31,7 @@ export class GrocyShoppingListService extends GrocyRestService {
   }
 
   async getShoppingLists(): Promise<ShoppingList[]> {
-    return this.listService.getAllEntityObjects();
+    return this.listService.getEntityObjects();
   }
 
   /**
@@ -49,12 +49,8 @@ export class GrocyShoppingListService extends GrocyRestService {
    * @returns an array of shopping list items
    */
   async getShoppingListItems(id?: string): Promise<ShoppingListItem[]> {
-    const params = id ? `?query[]=shopping_list_id=${id}` : "";
-    const rawItems = await this.getAndParse(
-      this.buildUrl("/objects/shopping_list" + params),
-      { headers: this.authHeaders().acceptJson().build() },
-      getShoppingListItemsSchema()
-    );
+    const filter = id ? `query[]=shopping_list_id=${id}` : "";
+    const rawItems = await this.itemService.getEntityObjects(filter);
     return rawItems.map(parseShoppingListItem);
   }
 

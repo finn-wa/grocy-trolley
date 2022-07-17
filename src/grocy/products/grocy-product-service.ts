@@ -16,7 +16,7 @@ export class GrocyProductService {
    * @returns An array of products
    */
   getAllProducts(): Promise<Product[]> {
-    return this.rest.getAllProducts();
+    return this.rest.getProducts();
   }
   /**
    * Gets the specified product.
@@ -28,9 +28,9 @@ export class GrocyProductService {
   }
 
   /**
-   * Creates a product.
-   * @param product The product to create. Minus userfields and the ID.
-   * @returns The ID of the newly created product
+   * Deletes a product.
+   * @param id ID of product to delete
+   * @returns the API response
    */
   deleteProduct(id: string): Promise<Response> {
     return this.rest.deleteProduct(id);
@@ -103,13 +103,16 @@ export class GrocyProductService {
   }
 
   /**
-   * Gets all barcodes (for all products).
+   * Gets barcodes for all products, or for a specific product.
+   * @param productId grocy product ID (optional)
    * @returns an array of product barcodes
    */
-  async getProductBarcodes(): Promise<ProductBarcode[]> {
-    const rawBarcodes = await this.rest.getAllEntityObjects(
+  async getProductBarcodes(productId?: string): Promise<ProductBarcode[]> {
+    const filter = productId ? `query[]=product_id=${productId}` : "";
+    const rawBarcodes = await this.rest.getEntityObjects(
       "product_barcodes",
-      getProductBarcodesSchema()
+      getProductBarcodesSchema(),
+      filter
     );
     return rawBarcodes.map(parseProductBarcode);
   }
