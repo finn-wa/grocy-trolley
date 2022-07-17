@@ -27,9 +27,11 @@ export async function dev() {
     new GrocerSearchService(),
     new GrocerStoreService()
   );
-  const list = await grocy.shoppingListService.selectShoppingList();
-  grocy.shoppingListService.getShoppingListItems();
-  await grocer.importGrocyShoppingList();
+  const list = await grocy.shoppingListService.promptForShoppingList();
+  console.log(list);
+  const items = await grocy.shoppingListService.getShoppingListItems(list ?? undefined);
+  console.log(items);
+  // await grocer.importGrocyShoppingList();
 }
 
 /* eslint-enable */

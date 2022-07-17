@@ -49,19 +49,16 @@ export class GrocyShoppingListService extends GrocyRestService {
    * @returns an array of shopping list items
    */
   async getShoppingListItems(id?: string): Promise<ShoppingListItem[]> {
-    const params: Record<string, string> = {};
-    if (id) {
-      params["query[]"] = `shopping_list_id=${id}`;
-    }
+    const params = id ? `?query[]=shopping_list_id=${id}` : "";
     const rawItems = await this.getAndParse(
-      this.buildUrl("/objects/shopping_list", params),
+      this.buildUrl("/objects/shopping_list" + params),
       { headers: this.authHeaders().acceptJson().build() },
       getShoppingListItemsSchema()
     );
     return rawItems.map(parseShoppingListItem);
   }
 
-  async selectShoppingList(): Promise<string | null> {
+  async promptForShoppingList(): Promise<string | null> {
     const lists = await this.getShoppingLists();
     if (lists.length === 0) {
       return null;

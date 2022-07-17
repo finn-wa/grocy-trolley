@@ -22,7 +22,7 @@ export class GrocerShoppingListService {
 
   async importGrocyShoppingList(shoppingListId?: string, storeIds?: number[]) {
     if (!shoppingListId) {
-      const id = await this.grocy.shoppingListService.selectShoppingList();
+      const id = await this.grocy.shoppingListService.promptForShoppingList();
       if (id === null) {
         return;
       }
