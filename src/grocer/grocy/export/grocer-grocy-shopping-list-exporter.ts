@@ -1,5 +1,6 @@
 import { GrocerSearchService } from "@gt/grocer/search/grocer-search-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
+import { GrocerUserAgent } from "@gt/grocer/user-agent/grocer-user-agent";
 import { GrocyServices } from "@gt/grocy";
 import { Logger } from "@gt/utils/logger";
 
@@ -17,7 +18,8 @@ export class GrocerShoppingListService {
       "productService" | "parentProductService" | "shoppingListService"
     >,
     private readonly searchService: GrocerSearchService,
-    private readonly storeService: GrocerStoreService
+    private readonly storeService: GrocerStoreService,
+    private readonly agent: GrocerUserAgent
   ) {}
 
   async importGrocyShoppingList(shoppingListId?: string, storeIds?: number[]) {
@@ -34,12 +36,14 @@ export class GrocerShoppingListService {
       storeIds = stores.map((store) => store.id);
     }
     const parentProducts = await this.grocy.parentProductService.getParentProducts();
+    const barcodesToAdd: number[] = [];
     for (const item of shoppingList.items) {
       if (item.product_id in parentProducts) {
         continue;
       }
       const product = await this.grocy.productService.getProduct(item.product_id);
       const barcodes = await this.grocy.productService.getProductBarcodes(item.product_id);
+
       // this is always true because barcode isn't returned for get requests
       if (barcodes.length === 0) {
         console.log(`No barcode found for "${product.name}", searching grocer`);
@@ -48,12 +52,18 @@ export class GrocerShoppingListService {
           storeIds
         );
         if (grocerProduct === null) {
-          return;
+          continue;
         }
         this.logger.debug(`Adding barcode ${grocerProduct.id} to grocy product...`);
         await this.grocy.productService.addProductBarcode(product.id, grocerProduct.id.toString());
-        // }
+        barcodesToAdd.push(grocerProduct.id);
+      } else {
+        barcodesToAdd.push(Number(barcodes[0].barcode));
       }
     }
+    await this.agent.putKeyvalStore({
+      selectedStoreIds: storeIds,
+      list: barcodesToAdd.map((barcode) => ({ id: barcode, quantity: 1, isChecked: false })),
+    });
   }
 }

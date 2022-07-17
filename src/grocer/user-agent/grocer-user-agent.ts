@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { getBrowser } from "@gt/store/shared/rest/browser";
 import { Logger } from "@gt/utils/logger";
-import { Browser, firefox, Page } from "playwright";
-import { GrocerApiService } from "../api/grocer-api-service";
+import { Browser, Page } from "playwright";
 import { GrocerStoreName, GROCER_URL, GROCER_VENDORS } from "../models";
 import {
   getStoreContents,
@@ -22,11 +22,7 @@ export class GrocerUserAgent {
    * @param browserLoader Cold promise that returns the Playwright Browser
    *    instance to use to perform requests.
    */
-  constructor(
-    protected readonly browserLoader: () => Promise<Browser> = async () =>
-      firefox.launch({ headless: true }),
-    private readonly grocer: GrocerApiService = new GrocerApiService()
-  ) {}
+  constructor(protected readonly browserLoader: () => Promise<Browser> = getBrowser) {}
 
   /**
    * Adds store to selected stores (if it is not already selected).
