@@ -1,13 +1,14 @@
-import { Logger } from "@gt/utils/logger";
-import { AbstractGrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { ShoppingLocation } from "./types/ShoppingLocations";
-import { getShoppingLocationsSchema } from "./types/ShoppingLocations/schema";
 
-export class GrocyShoppingLocationService extends AbstractGrocyEntityRestService<ShoppingLocation> {
-  protected readonly entity = "shopping_locations";
-  protected readonly logger = new Logger(this.constructor.name);
+export class GrocyShoppingLocationService {
+  private readonly rest = new GrocySingleEntityService<ShoppingLocation>("shopping_locations");
 
-  getShoppingLocations() {
-    return this.getAllEntityObjects(getShoppingLocationsSchema());
+  async getShoppingLocations(): Promise<ShoppingLocation[]> {
+    return this.rest.getAllEntityObjects();
+  }
+
+  async getShoppingLocation(id: string): Promise<ShoppingLocation> {
+    return this.rest.getEntityObject(id);
   }
 }

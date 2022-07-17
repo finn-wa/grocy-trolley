@@ -1,6 +1,6 @@
 import { prettyPrint } from "@gt/utils/logger";
 import dedent from "dedent";
-import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import { GrocyEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyEntity } from "../types/grocy-types";
 
 /**
@@ -8,7 +8,7 @@ import { GrocyEntity } from "../types/grocy-types";
  * Assumes keys and grocy IDs have a 1:1 mapping.
  */
 export abstract class GrocyIdLookupService<K extends string = string> {
-  protected readonly entityService = new GrocyEntityRestService();
+  protected readonly entityService = new GrocyEntityService();
   private keysToGrocyIds: Record<K, string> | null = null;
   private grocyIdsToKeys: Record<string, K> | null = null;
 

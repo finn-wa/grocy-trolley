@@ -1,5 +1,5 @@
 import { Logger } from "@gt/utils/logger";
-import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import { GrocyEntityService } from "../rest/grocy-entity-rest-service";
 import { QuantityUnitConversion } from "../types/grocy-types";
 import {
   NewProduct,
@@ -18,7 +18,7 @@ import { RequestError } from "@gt/utils/rest";
  * Contains methods for plain REST operations on Grocy Product entities and
  * their userfields. See GrocyProductService for a higher-level Product API.
  */
-export class GrocyProductRestService extends GrocyEntityRestService {
+export class GrocyProductRestService extends GrocyEntityService {
   protected readonly logger = new Logger(this.constructor.name);
 
   /**

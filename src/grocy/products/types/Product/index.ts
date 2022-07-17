@@ -123,7 +123,7 @@ export interface NewProduct {
 
 export interface Product {
   active: boolean;
-  /** Can contain multiple barcodes separated by comma. Not returned for getProducts?  */
+  /** Can contain multiple barcodes separated by comma. Not returned for get requests but can be posted/putted */
   barcode?: string;
   calories: number | null;
   cumulate_min_stock_amount_of_sub_products: boolean;

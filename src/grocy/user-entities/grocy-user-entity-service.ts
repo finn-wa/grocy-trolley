@@ -1,16 +1,17 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyEntityRestService } from "../rest/grocy-entity-rest-service";
+import { GrocyEntityService } from "../rest/grocy-entity-rest-service";
+import { GrocyRestService } from "../rest/grocy-rest-service";
 import {
+  CreatedObjectResponse,
   UserEntity,
   UserEntityName,
   UserObjectReference,
   UserObjects,
-  CreatedObjectResponse,
 } from "./types";
 
-export class GrocyUserEntityService extends GrocyEntityRestService {
+export class GrocyUserEntityService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
-
+  private readonly entityService = new GrocyEntityService();
   /** Cached entities - not expected to change in the lifetime of the service. */
   private entities?: UserEntity[];
 
@@ -25,7 +26,7 @@ export class GrocyUserEntityService extends GrocyEntityRestService {
     if (!refresh && !!this.entities) {
       return this.entities;
     }
-    const entities: UserEntity[] = await this.getAllEntityObjects("userentities");
+    const entities: UserEntity[] = await this.entityService.getAllEntityObjects("userentities");
     this.entities = entities;
     return entities;
   }
@@ -45,7 +46,7 @@ export class GrocyUserEntityService extends GrocyEntityRestService {
   }
 
   async getUserObjectReferences(): Promise<UserObjectReference[]> {
-    return this.getAllEntityObjects("userobjects");
+    return this.entityService.getAllEntityObjects("userobjects");
   }
 
   async getUserObject<Name extends UserEntityName>(
@@ -71,7 +72,9 @@ export class GrocyUserEntityService extends GrocyEntityRestService {
 
   async createUserObject(entityName: UserEntityName, obj: unknown): Promise<CreatedObjectResponse> {
     const entityId = await this.getUserEntityId(entityName);
-    const objectId = await this.postEntityObject("userobjects", { userentity_id: entityId });
+    const objectId = await this.entityService.postEntityObject("userobjects", {
+      userentity_id: entityId,
+    });
     const response = await this.fetch(
       this.buildUrl(`userfields/userentity-${entityName}/${objectId}`),
       {

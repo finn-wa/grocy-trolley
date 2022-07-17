@@ -3,7 +3,7 @@ import { ValidateFunction } from "ajv";
 import { getCreatedObjectIdSchema, GrocyEntity } from "../types/grocy-types";
 import { GrocyRestService } from "./grocy-rest-service";
 
-export class GrocyEntityRestService extends GrocyRestService {
+export class GrocyEntityService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   /**
@@ -84,27 +84,36 @@ export class GrocyEntityRestService extends GrocyRestService {
   }
 }
 
-export abstract class AbstractGrocyEntityRestService<T = unknown> extends GrocyRestService {
-  private readonly entityService = new GrocyEntityRestService();
-  protected abstract readonly entity: GrocyEntity;
+export class GrocySingleEntityService<T = unknown> extends GrocyRestService {
+  private readonly entityService = new GrocyEntityService();
+  protected readonly logger: Logger;
 
-  protected getAllEntityObjects(validate?: ValidateFunction<T[]>): Promise<T[]> {
-    return this.entityService.getAllEntityObjects<T>(this.entity, validate);
+  constructor(
+    readonly entity: GrocyEntity,
+    private readonly validate: () => ValidateFunction<T> | undefined = () => undefined,
+    private readonly validateArray: () => ValidateFunction<T[]> | undefined = () => undefined
+  ) {
+    super();
+    this.logger = new Logger(`GrocySingleEntityService[${this.entity}]`);
   }
 
-  protected getEntityObject(id: string, validate?: ValidateFunction<T>) {
-    return this.entityService.getEntityObject<T>(this.entity, id, validate);
+  getAllEntityObjects(): Promise<T[]> {
+    return this.entityService.getAllEntityObjects<T>(this.entity, this.validateArray());
   }
 
-  protected putEntityObject(id: string, obj: T): Promise<Response> {
+  getEntityObject(id: string) {
+    return this.entityService.getEntityObject<T>(this.entity, id, this.validate());
+  }
+
+  putEntityObject(id: string, obj: T): Promise<Response> {
     return this.entityService.putEntityObject(this.entity, id, obj);
   }
 
-  protected postEntityObject(obj: T): Promise<string> {
+  postEntityObject(obj: Partial<T>): Promise<string> {
     return this.entityService.postEntityObject(this.entity, obj);
   }
 
-  protected deleteEntityObject(id: string): Promise<Response> {
+  deleteEntityObject(id: string): Promise<Response> {
     return this.entityService.deleteEntityObject(this.entity, id);
   }
 }
