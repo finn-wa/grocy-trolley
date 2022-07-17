@@ -39,9 +39,9 @@ export class GrocerShoppingListService {
         continue;
       }
       const product = await this.grocy.productService.getProduct(item.product_id);
-      console.log(product.barcode);
+      const barcodes = await this.grocy.productService.getProductBarcodes(item.product_id);
       // this is always true because barcode isn't returned for get requests
-      if (!product.barcode) {
+      if (barcodes.length === 0) {
         console.log(`No barcode found for "${product.name}", searching grocer`);
         const grocerProduct = await this.searchService.searchAndSelectProduct(
           product.name,

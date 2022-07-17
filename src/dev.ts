@@ -27,12 +27,12 @@ export async function dev() {
     new GrocerSearchService(),
     new GrocerStoreService()
   );
-  console.log(await grocy.productService.getProductBarcodes("374"));
-  const list = await grocy.shoppingListService.promptForShoppingList();
-  console.log(list);
-  const items = await grocy.shoppingListService.getShoppingListItems(list ?? undefined);
-  console.log(items);
-  // await grocer.importGrocyShoppingList();
+  // console.log(await grocy.productService.getProductBarcodes("374"));
+  // const list = await grocy.shoppingListService.promptForShoppingList();
+  // console.log(list);
+  // const items = await grocy.shoppingListService.getShoppingListItems(list ?? undefined);
+  // console.log(items);
+  await grocer.importGrocyShoppingList();
 }
 
 /* eslint-enable */
