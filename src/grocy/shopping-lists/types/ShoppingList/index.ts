@@ -7,6 +7,7 @@ export interface ShoppingList {
   id: string;
   name: string;
   row_created_timestamp: string;
+  userfields?: Record<string, string> | null;
 }
 
 export type ShoppingListDetail = ShoppingList & { items: ShoppingListItem[] };

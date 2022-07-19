@@ -50,7 +50,7 @@ export class FoodstuffsCartImporter {
     const newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
-      const parent = await this.grocy.parentProductService.findParent(
+      const parent = await this.grocy.parentProductService.promptForMatchingParent(
         product.name,
         product.categoryName,
         parentProducts

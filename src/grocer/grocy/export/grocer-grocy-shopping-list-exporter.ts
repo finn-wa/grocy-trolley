@@ -2,6 +2,11 @@ import { GrocerSearchService } from "@gt/grocer/search/grocer-search-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
 import { GrocerUserAgent } from "@gt/grocer/user-agent/grocer-user-agent";
 import { GrocyServices } from "@gt/grocy";
+import {
+  NewShoppingListItem,
+  ShoppingListItem,
+} from "@gt/grocy/shopping-lists/types/ShoppingListItems";
+import { cloneItemForList } from "@gt/grocy/shopping-lists/types/ShoppingListItems/schema";
 import { Logger } from "@gt/utils/logger";
 
 export class GrocerShoppingListService {
@@ -35,16 +40,14 @@ export class GrocerShoppingListService {
       const stores = await this.storeService.promptForStores();
       storeIds = stores.map((store) => store.id);
     }
-    const parentProducts = await this.grocy.parentProductService.getParentProducts();
     const barcodesToAdd: number[] = [];
-    for (const item of shoppingList.items) {
-      if (item.product_id in parentProducts) {
-        continue;
-      }
+    const resolvedItems = await this.resolveParentProducts(shoppingList.items);
+    const listName = `${shoppingList.name} - Grocer Export ${new Date().toISOString()}`;
+    this.logger.info(`Saving items to new list: ${listName}`);
+    await this.grocy.shoppingListService.createShoppingList(listName, resolvedItems);
+    for (const item of resolvedItems) {
       const product = await this.grocy.productService.getProduct(item.product_id);
       const barcodes = await this.grocy.productService.getProductBarcodes(item.product_id);
-
-      // this is always true because barcode isn't returned for get requests
       if (barcodes.length === 0) {
         console.log(`No barcode found for "${product.name}", searching grocer`);
         const grocerProduct = await this.searchService.searchAndSelectProduct(
@@ -65,5 +68,24 @@ export class GrocerShoppingListService {
       selectedStoreIds: storeIds,
       list: barcodesToAdd.map((barcode) => ({ id: barcode, quantity: 1, isChecked: false })),
     });
+  }
+
+  async resolveParentProducts(
+    shoppingListItems: ShoppingListItem[]
+  ): Promise<NewShoppingListItem[]> {
+    const parentProducts = await this.grocy.parentProductService.getParentProducts();
+    const resolvedItems: NewShoppingListItem[] = [];
+    for (const item of shoppingListItems) {
+      const parent = parentProducts[item.product_id];
+      if (!parent) {
+        resolvedItems.push(cloneItemForList(item, ""));
+      } else {
+        const child = await this.grocy.parentProductService.promptForChild(parent);
+        if (child) {
+          resolvedItems.push(cloneItemForList({ ...item, product_id: child.id }, ""));
+        }
+      }
+    }
+    return resolvedItems;
   }
 }

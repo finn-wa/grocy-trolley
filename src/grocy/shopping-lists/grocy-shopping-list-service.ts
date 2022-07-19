@@ -1,16 +1,20 @@
-import { toDateString } from "@gt/utils/date";
+import { grocyShortDate } from "@gt/utils/date";
 import { Logger } from "@gt/utils/logger";
+import { RequestError } from "@gt/utils/rest";
 import chalk from "chalk";
 import prompts from "prompts";
 import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
 import { getShoppingListSchema, getShoppingListsSchema } from "./types/ShoppingList/schema";
-import { ShoppingListItem } from "./types/ShoppingListItems";
+import { NewShoppingListItem, ShoppingListItem } from "./types/ShoppingListItems";
 import {
   getShoppingListItemsSchema,
   parseShoppingListItem,
 } from "./types/ShoppingListItems/schema";
+
+// todo: method that makes copy of list with resolved parent products
+// this can then be used across all exporters
 
 export class GrocyShoppingListService extends GrocyRestService {
   protected logger = new Logger(this.constructor.name);
@@ -21,7 +25,7 @@ export class GrocyShoppingListService extends GrocyRestService {
   );
   private readonly itemService = new GrocySingleEntityService(
     "shopping_list",
-    () => undefined,
+    undefined,
     getShoppingListItemsSchema
   );
 
@@ -39,8 +43,31 @@ export class GrocyShoppingListService extends GrocyRestService {
    * @param name Shopping list name
    * @returns created object ID
    */
-  async createShoppingList(name: string): Promise<string> {
-    return this.listService.postEntityObject({ name });
+  async createShoppingList(
+    name: string,
+    items: Omit<NewShoppingListItem, "shopping_list_id">[] = []
+  ): Promise<string | null> {
+    const id = await this.listService.postEntityObject({ name });
+    if (items.length > 0) {
+      // await Promise.all(
+      // items.map((item) => this.addShoppingListItem({ ...item, shopping_list_id: id }))
+      // );
+      for (const item of items) {
+        try {
+          await this.addShoppingListItem({ ...item, shopping_list_id: id });
+        } catch (error) {
+          if (error instanceof RequestError) {
+            this.logger.error(await error.response.text());
+          }
+          throw error;
+        }
+      }
+    }
+    return id;
+  }
+
+  async addShoppingListItem(item: NewShoppingListItem): Promise<string> {
+    return this.itemService.postEntityObject(item);
   }
 
   /**
@@ -65,7 +92,7 @@ export class GrocyShoppingListService extends GrocyRestService {
       message: "Select a shopping list",
       choices: [
         ...lists.map((list) => ({
-          title: `${chalk.gray(toDateString(list.row_created_timestamp))} - ${list.name}`,
+          title: `${chalk.gray(grocyShortDate(list.row_created_timestamp))} - ${list.name}`,
           value: list.id,
         })),
         { title: "Exit", value: null },

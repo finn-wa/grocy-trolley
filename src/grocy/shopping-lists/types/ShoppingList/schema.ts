@@ -13,6 +13,9 @@ export const schema: JTDSchemaType<ShoppingList> = {
     name: { type: "string" },
     row_created_timestamp: { type: "string" },
   },
+  optionalProperties: {
+    userfields: { nullable: true, values: { type: "string" } },
+  },
 };
 
 /**

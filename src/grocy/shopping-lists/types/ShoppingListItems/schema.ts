@@ -1,7 +1,7 @@
-import { withNumbers } from "@gt/grocy/types/grocy-types";
+import { withBooleans, withNumbers } from "@gt/grocy/types/grocy-types";
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
 import { JTDSchemaType } from "ajv/dist/jtd";
-import { RawShoppingListItem, ShoppingListItem } from ".";
+import { NewShoppingListItem, RawShoppingListItem, ShoppingListItem } from ".";
 
 /**
  * This will cause a TypeScript compiler error if the RawShoppingListItem type defined in
@@ -9,7 +9,7 @@ import { RawShoppingListItem, ShoppingListItem } from ".";
  */
 export const schema: JTDSchemaType<RawShoppingListItem> = {
   properties: {
-    amount: { type: "float64" } as never, // JTD doesn't support "string | number" union types
+    amount: { type: "string" } as never, // JTD doesn't support "string | number" union types
     done: { type: "string" },
     id: { type: "string" },
     note: { type: "string", nullable: true },
@@ -46,5 +46,15 @@ ajv.addSchema(schema, key);
 ajv.addSchema({ elements: schema }, arrayKey);
 
 export function parseShoppingListItem(raw: RawShoppingListItem): ShoppingListItem {
-  return withNumbers(raw, ["amount"]);
+  return withBooleans(withNumbers(raw, ["amount"]), ["done"]);
+}
+
+export function cloneItemForList(item: ShoppingListItem, listId: string): NewShoppingListItem {
+  return {
+    amount: item.amount.toString(),
+    product_id: item.product_id,
+    qu_id: item.qu_id,
+    shopping_list_id: listId,
+    note: item.note,
+  };
 }

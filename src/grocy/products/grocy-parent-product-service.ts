@@ -9,6 +9,7 @@ import { ParentProduct } from "./types";
 
 export class GrocyParentProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
+  private parentProducts: Record<string, ParentProduct> | null = null;
 
   constructor(
     private readonly productGroupIdService: GrocyProductGroupIdLookupService,
@@ -41,7 +42,20 @@ export class GrocyParentProductService extends GrocyRestService {
     return parents;
   }
 
-  async findParent(
+  async promptForChild(parent: ParentProduct): Promise<Product | null> {
+    const choice = await prompts({
+      message: "Select child product for " + parent.product.name,
+      name: "value",
+      type: "select",
+      choices: [
+        ...parent.children.map((child) => ({ title: child.name, value: child })),
+        { title: "Exit", value: null },
+      ],
+    });
+    return choice.value as Product | null;
+  }
+
+  async promptForMatchingParent(
     name: string,
     category: GrocyProductGroup,
     parents: ParentProduct[]
