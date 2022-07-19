@@ -7,3 +7,5 @@ updates:
     schedule:
       interval: "weekly"
     versioning-strategy: increase
+    ignore:
+      - update-types: ["version-update:semver-patch"]
