@@ -75,16 +75,16 @@ async function commandPrompt() {
   ) {
     return;
   }
-  if (command === "import") {
-    return importFrom(choices["importSource"] as ImportSource);
+  switch (command) {
+    case "import":
+      return importFrom(choices["importSource"] as ImportSource);
+    case "stock":
+      return stockFrom(choices["stockSource"] as StockSource);
+    case "shop":
+      return shop(choices["shopChoice"] as ShopChoice);
+    default:
+      throw new Error("Unexpected prompt command: " + (command as string));
   }
-  if (command === "stock") {
-    return stockFrom(choices["stockSource"] as StockSource);
-  }
-  if (command === "shop") {
-    return shop(choices["shopChoice"] as ShopChoice);
-  }
-  throw new Error("Unexpected prompt command: " + (command as string));
 }
 
 async function importFrom(choice: ImportSource, opts: { inputFile?: string } = {}) {
@@ -98,19 +98,15 @@ async function importFrom(choice: ImportSource, opts: { inputFile?: string } = {
       ]);
       inputFilePath = filepathRes.path as string;
     }
-    return importers.receiptImporter.importReceipt(inputFilePath);
-  }
-  if (choice === "cart") {
-    return importers.cartImporter.importProductsFromCart();
-  }
-  if (choice === "list") {
-    return importers.listImporter.selectAndImportList();
-  }
-  if (choice === "order") {
-    return importers.orderImporter.importLatestOrders();
-  }
-  if (choice === "barcodes") {
-    return importers.barcodeImporter.importFromBarcodeBuddy();
+    await importers.receiptImporter.importReceipt(inputFilePath);
+  } else if (choice === "cart") {
+    await importers.cartImporter.importProductsFromCart();
+  } else if (choice === "list") {
+    await importers.listImporter.selectAndImportList();
+  } else if (choice === "order") {
+    await importers.orderImporter.importLatestOrders();
+  } else if (choice === "barcodes") {
+    await importers.barcodeImporter.importFromBarcodeBuddy();
   }
 }
 
