@@ -12,7 +12,14 @@ export function getCacheDirForEmail(email = "anon") {
 }
 
 export class CacheService<T extends Record<string, unknown>> {
-  constructor(readonly cacheDir: string) {}
+  private readonly cacheDir: string;
+
+  constructor(
+    /** Cache directory relative to the app's cache dir, e.g. "grocer/stores" */
+    readonly relativeCacheDir: string
+  ) {
+    this.cacheDir = path.join(getCacheDir(), relativeCacheDir);
+  }
 
   async get(key: keyof T): Promise<T[typeof key] | null> {
     const str = await this.read(key as string);

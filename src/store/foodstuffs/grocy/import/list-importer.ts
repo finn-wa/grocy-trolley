@@ -40,7 +40,6 @@ export class FoodstuffsListImporter {
     const productsToImport = list.products.filter((p) => !existingProductIds.includes(p.productId));
     if (productsToImport.length === 0) {
       this.logger.info("All products have already been imported");
-      return;
     }
     const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
     const newProducts: { id: string; product: FoodstuffsListProduct }[] = [];

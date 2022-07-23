@@ -10,9 +10,7 @@ import {
 } from "./types/Stores";
 
 export class GrocerStoreService {
-  private readonly cache: CacheService<{ stores: Store[] }> = new CacheService(
-    path.join(getCacheDir(), "grocer", this.constructor.name)
-  );
+  private readonly cache = new CacheService<{ stores: Store[] }>("grocer");
 
   constructor(private readonly api = new GrocerApiService()) {}
 
