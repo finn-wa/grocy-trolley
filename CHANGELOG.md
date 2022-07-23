@@ -2,19 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.10.0](https://github.com/finn-wa/grocy-trolley/compare/v2.9.0...v2.10.0) (2022-07-19)
-
+## [2.11.0](https://github.com/finn-wa/grocy-trolley/compare/v2.10.0...v2.11.0) (2022-07-23)
 
 ### Features
 
-* add parent product support to grocy list -> grocer ([d6a0cd6](https://github.com/finn-wa/grocy-trolley/commit/d6a0cd6393c549f322093c7acf6ab042a3928f65))
-* apply filter to GET all grocy entity objects request ([827d679](https://github.com/finn-wa/grocy-trolley/commit/827d67934549b9d580ffdb6c1b81002036a76213))
-* import list from grocy to grocer works (bar parent products) ([0fdedec](https://github.com/finn-wa/grocy-trolley/commit/0fdedec7fe5444b29ff8dd0e59be6ad8fd3e867d))
-
+- add schema validation for grocer API responses ([f04c360](https://github.com/finn-wa/grocy-trolley/commit/f04c360ea5bd0d1e00b1c28f47defb18d7593033))
+- allow resuming receipt import after resolving items to foodstuffs products ([cd0f678](https://github.com/finn-wa/grocy-trolley/commit/cd0f6785c6548ab181d1daff8d7456f632f41150))
+- make cache service responsible for getting root cache dir ([6d95aed](https://github.com/finn-wa/grocy-trolley/commit/6d95aed723fa01a90fbdb67165e17e8113a21fc2))
+- top-level catch for better error logging (relates to [#14](https://github.com/finn-wa/grocy-trolley/issues/14)) ([cf8c5a5](https://github.com/finn-wa/grocy-trolley/commit/cf8c5a5ad3202659b1e3700c9b5462bf5dae5683))
 
 ### Bug Fixes
 
-* print error on stock, allow stocking when all products have been imported ([dde3718](https://github.com/finn-wa/grocy-trolley/commit/dde3718449254758713ccfc0fa71a0b94d72b2b0))
+- types in main.ts ([12b3e63](https://github.com/finn-wa/grocy-trolley/commit/12b3e63dc621dec39a04dc13ed349e898e7cbdd7))
+
+## [2.10.0](https://github.com/finn-wa/grocy-trolley/compare/v2.9.0...v2.10.0) (2022-07-19)
+
+### Features
+
+- add parent product support to grocy list -> grocer ([d6a0cd6](https://github.com/finn-wa/grocy-trolley/commit/d6a0cd6393c549f322093c7acf6ab042a3928f65))
+- apply filter to GET all grocy entity objects request ([827d679](https://github.com/finn-wa/grocy-trolley/commit/827d67934549b9d580ffdb6c1b81002036a76213))
+- import list from grocy to grocer works (bar parent products) ([0fdedec](https://github.com/finn-wa/grocy-trolley/commit/0fdedec7fe5444b29ff8dd0e59be6ad8fd3e867d))
+
+### Bug Fixes
+
+- print error on stock, allow stocking when all products have been imported ([dde3718](https://github.com/finn-wa/grocy-trolley/commit/dde3718449254758713ccfc0fa71a0b94d72b2b0))
 
 ## [2.9.0](https://github.com/finn-wa/grocy-trolley/compare/v2.8.0...v2.9.0) (2022-07-16)
 
