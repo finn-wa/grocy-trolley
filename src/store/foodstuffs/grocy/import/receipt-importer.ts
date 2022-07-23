@@ -1,7 +1,9 @@
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
+import { CacheService, getCacheDir } from "@gt/utils/cache";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { readFile, writeFile } from "fs/promises";
+import dedent from "dedent";
+import path, { basename } from "path";
 import prompts from "prompts";
 import { ReceiptScanner } from "receipt-ocr";
 import { ListProductRef, toListProductRef } from "../../lists/foodstuffs-list.model";
@@ -12,6 +14,12 @@ import { FoodstuffsListImporter } from "./list-importer";
 
 export class FoodstuffsReceiptImporter {
   private readonly logger = new Logger(this.constructor.name);
+  private readonly scanCache = new CacheService<Record<string, ReceiptItem[]>>(
+    "foodstuffs-receipt-importer/scanned"
+  );
+  private readonly resolvedItemCache = new CacheService<Record<string, ResolvedProductRefs>>(
+    "foodstuffs-receipt-importer/resolved"
+  );
 
   constructor(
     private readonly foodstuffs: Pick<FoodstuffsServices, "listService" | "searchService">,
@@ -21,54 +29,94 @@ export class FoodstuffsReceiptImporter {
     private readonly grocyProductService: GrocyProductService
   ) {}
 
-  async importReceipt(filepath: string): Promise<void> {
-    const scannedItemsPath = filepath.replace(/\.[\w]+$/, ".json");
-    let scannedItems: ReceiptItem[] = [];
-    const cachedScannedItems = await this.getCachedScannedItems(scannedItemsPath);
+  /**
+   * Import receipt items to a grocy list. Scans the receipt, resolves the items
+   * to FoodstuffsProducts, adds the products to a list, then imports the list.
+   *
+   * @param filepath Path to a receipt image
+   * @returns object indicating whether import was successful or not
+   */
+  async importReceipt(filepath: string): Promise<{ success: boolean }> {
+    // check for in-progress import in cache
+    const cacheKey = this.getCacheKey(filepath);
+    const cachedResolvedItems = await this.resolvedItemCache.get(cacheKey);
+    if (cachedResolvedItems) {
+      console.log("Found cached resolved items");
+      const response = await this.promptImportReceiptListRefs(cachedResolvedItems, cacheKey);
+      if (response.success) {
+        return response;
+      }
+      // user did not want to import cached resolved items, continue to scan receipt
+    }
+    const scannedItems = await this.promptScanReceipt(filepath);
+    if (!scannedItems || scannedItems.length === 0) {
+      return { success: false };
+    }
+    const resolvedItems = await this.resolveScannedItems(scannedItems, cacheKey);
+    return this.promptImportReceiptListRefs(resolvedItems, cacheKey);
+  }
+
+  /**
+   * Gets scanned items from cache (if user confirms) or scans the receipt.
+   * @param receiptFilepath Path to a receipt image
+   * @returns an array of receipt items, or null if the user cancelled.
+   */
+  async promptScanReceipt(receiptFilepath: string): Promise<ReceiptItem[] | null> {
+    const cacheKey = this.getCacheKey(receiptFilepath);
+    const cacheFilepath = path.join(
+      getCacheDir(),
+      this.scanCache.relativeCacheDir,
+      cacheKey + ".json"
+    );
+    const cachedScannedItems = await this.scanCache.get(cacheKey);
     if (cachedScannedItems !== null) {
       const confirm = await prompts([
         {
           name: "useCache",
-          message: `Use cached items found at "${filepath}"?`,
+          message: dedent`
+            Use cached scanned items? Amend file as needed before continuing: ${cacheFilepath}
+            ${prettyPrint(cachedScannedItems)}`,
           type: "confirm",
         },
       ]);
       if (confirm.useCache) {
-        scannedItems = cachedScannedItems;
+        return this.scanCache.get(cacheKey);
       }
     }
-    if (scannedItems.length === 0) {
-      const text = await this.scanner.scan(filepath);
-      scannedItems = await this.itemiser.itemise(text);
-      await writeFile(scannedItemsPath, prettyPrint(scannedItems));
-      console.log(`Wrote items to ${scannedItemsPath}`);
+    const text = await this.scanner.scan(receiptFilepath);
+    const scannedItems = await this.itemiser.itemise(text);
+    await this.scanCache.set(cacheKey, scannedItems);
+    const response = await prompts({
+      message: `Import these items? Amend file as needed before continuing: ${cacheFilepath}`,
+      name: "continue",
+      type: "confirm",
+    });
+    if (response.continue) {
+      return this.scanCache.get(cacheKey);
     }
-
-    console.log(prettyPrint(scannedItems));
-    const confirm = await prompts([
-      { name: "import", message: "Import items? Change file as needed", type: "confirm" },
-    ]);
-    if (confirm.import) {
-      const updatedItems = await this.getCachedScannedItems(scannedItemsPath);
-      if (updatedItems === null) {
-        throw new Error("Error reading file " + scannedItemsPath);
-      }
-      await this.importScannedItems(updatedItems);
-    }
+    return null;
   }
 
-  private async getCachedScannedItems(filepath: string): Promise<ReceiptItem[] | null> {
-    let itemsString;
-    try {
-      itemsString = await readFile(filepath, { encoding: "utf-8" });
-    } catch (error) {
-      this.logger.debug("No cached scanned items found at " + filepath);
-      return null;
-    }
-    return JSON.parse(itemsString) as ReceiptItem[];
+  /**
+   * Converts a filepath to a cache key for that file.
+   * @param receiptFilepath Path to a receipt image
+   * @returns A key to use for caching scanned/resolved items
+   */
+  private getCacheKey(receiptFilepath: string): string {
+    const receiptBasename = basename(receiptFilepath);
+    return receiptBasename.substring(0, receiptBasename.lastIndexOf("."));
   }
 
-  async importScannedItems(scannedItems: ReceiptItem[]) {
+  /**
+   * Resolves scanned receipt items to Foodstuffs products.
+   * @param scannedItems An array of scanned items
+   * @param cacheKey Optional key to use for caching resolved items
+   * @returns resolved foodstuffs products
+   */
+  async resolveScannedItems(
+    scannedItems: ReceiptItem[],
+    cacheKey?: string
+  ): Promise<ResolvedProductRefs> {
     const notFound: ReceiptItem[] = [];
     const listRefs: Record<string, ListProductRef> = {};
     const existingProducts = await this.grocyProductService
@@ -93,31 +141,58 @@ export class FoodstuffsReceiptImporter {
         listRefs[item.name] = resultToListRef(searchRes);
       }
     }
-    this.logger.info("Failed to find:\n" + prettyPrint(notFound));
-    this.logger.info("Found:\n" + prettyPrint(listRefs));
-    const importProducts = await prompts([
-      {
-        message: "Import products?",
-        name: "value",
-        type: "confirm",
-      },
-    ]);
-    if (importProducts.value) {
-      return this.importReceiptListRefs(listRefs);
+    const resolvedItems = { listRefs, notFound };
+    if (cacheKey) {
+      await this.resolvedItemCache.set(cacheKey, resolvedItems);
     }
+    return resolvedItems;
   }
 
   /**
-   * Imports resolved receipt items.
-   * @param cartRefs map of receipt item name to cart ref
+   * Confirms with user whether to import a list of resolved items, and if so,
+   * calls importReceiptListRefs.
+   * @param items Resolved items to import
+   * @param newListName Name of list to create and add resolved items to. If not
+   *    provided, the user will be prompted to enter a name.
+   * @returns Object indicating whether import was successful or not
    */
-  async importReceiptListRefs(cartRefs: Record<string, ListProductRef>) {
-    const listId = await this.foodstuffs.listService.selectList();
-    await this.foodstuffs.listService.addProductsToList(listId, Object.values(cartRefs));
+  async promptImportReceiptListRefs(
+    items: ResolvedProductRefs,
+    newListName?: string
+  ): Promise<{ success: boolean }> {
+    const { listRefs, notFound } = items;
+    if (notFound.length > 0) {
+      this.logger.info("Failed to find:\n" + prettyPrint(notFound));
+    }
+    this.logger.info("Found:\n" + prettyPrint(listRefs));
+    const importProducts = await prompts([
+      {
+        message: "Import resolved products?",
+        name: "confirm",
+        type: "confirm",
+      },
+    ]);
+    if (!importProducts.confirm) {
+      return { success: false };
+    }
+    const { listId } = newListName
+      ? await this.foodstuffs.listService.createList(newListName)
+      : await this.foodstuffs.listService.createListWithNamePrompt();
+    await this.importReceiptListRefs(listRefs, listId);
+    return { success: true };
+  }
+
+  /**
+   * Imports resolved receipt items by adding them to a list and invoking the list importer.
+   * @param listRefs map of receipt item name to list ref
+   * @param listId ID of list to use for import
+   */
+  async importReceiptListRefs(listRefs: Record<string, ListProductRef>, listId: string) {
+    await this.foodstuffs.listService.addProductsToList(listId, Object.values(listRefs));
     await this.listImporter.importList(listId);
     this.logger.info("Adding receipt metadata to imported items...");
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
-    for (const [name, ref] of Object.entries(cartRefs)) {
+    for (const [name, ref] of Object.entries(listRefs)) {
       const product = productsByPnsId[ref.productId.replaceAll("_", "-").replace(/(PNS|NW)$/, "")];
       if (!product) {
         this.logger.error(`No product found for ${ref.productId} / ${name}`);
@@ -137,4 +212,9 @@ export class FoodstuffsReceiptImporter {
       await this.grocyProductService.patchProduct(product.id, { userfields: updatedUserfields });
     }
   }
+}
+
+interface ResolvedProductRefs {
+  readonly listRefs: Record<string, ListProductRef>;
+  readonly notFound: ReceiptItem[];
 }
