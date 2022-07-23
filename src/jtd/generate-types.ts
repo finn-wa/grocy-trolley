@@ -3,6 +3,8 @@ import { join } from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 import dedent from "dedent";
+import { format } from "prettier";
+import { prettyPrint } from "@gt/utils/logger";
 
 function generateSchemaFile(
   type: string,
@@ -77,6 +79,11 @@ const generateSchemaSpecFile = (type: string): string => dedent`
   });
 `;
 
+function writeFormattedFile(filepath: string, content: string): Promise<void> {
+  const formattedContent = format(content, { filepath });
+  return writeFile(filepath, formattedContent, "utf-8");
+}
+
 export async function generateTypes(
   {
     typeName,
@@ -95,7 +102,7 @@ export async function generateTypes(
   const inferredJTD = JSON.stringify(jtdInfer<unknown>(typeName, ...inputs));
   return Promise.all([
     // Save raw JSON files as samples
-    writeFile(join(typesDir, "samples.json"), JSON.stringify(inputs)),
+    writeFile(join(typesDir, "samples.json"), prettyPrint(inputs)),
     // Write spec file
     writeFile(join(typesDir, "schema.spec.ts"), generateSchemaSpecFile(typeName)),
     // Generate code and save as index.ts

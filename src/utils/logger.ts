@@ -2,12 +2,13 @@
 import chalk from "chalk";
 import { getEnvVar } from "@gt/utils/environment";
 import { Logger as PlaywrightLogger } from "playwright";
+import { format } from "prettier";
 // Unfortunately ESM Chalk 5 doesn't work with ts-jest
 // If it ever does, change this to an import when upgrading
 type ChalkInstance = chalk.ChalkFunction;
 
 export function prettyPrint(obj: any) {
-  return JSON.stringify(obj, undefined, 2);
+  return format(JSON.stringify(obj), { parser: "json" });
 }
 
 export enum LogLevel {
