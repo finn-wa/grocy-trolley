@@ -1,6 +1,6 @@
 import { BarcodeBuddyBarcode, BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
-import { OpenFoodFactsNZService, OpenFoodFactsWorldService } from "@gt/openfoodfacts/openfoodfacts";
+import { OpenFoodFactsService } from "@gt/openfoodfacts/openfoodfacts";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
 import prompts from "prompts";
@@ -12,8 +12,8 @@ import { FoodstuffsCartImporter } from "./cart-importer";
 
 export class FoodstuffsBarcodeImporter {
   private readonly logger = new Logger(this.constructor.name);
-  private readonly nzOffService = new OpenFoodFactsNZService();
-  private readonly worldOffService = new OpenFoodFactsWorldService();
+  private readonly nzOffService = new OpenFoodFactsService("nz");
+  private readonly worldOffService = new OpenFoodFactsService("world");
 
   constructor(
     private readonly cartImporter: FoodstuffsCartImporter,

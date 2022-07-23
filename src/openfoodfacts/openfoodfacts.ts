@@ -17,8 +17,13 @@ interface ProductResponseBody {
   status_verbose: string;
 }
 
-abstract class OpenFoodFactsService extends RestService {
+export class OpenFoodFactsService extends RestService {
   protected readonly logger = new Logger(this.constructor.name);
+
+  constructor(readonly region: "world" | "nz") {
+    super(`https://${region}.openfoodfacts.org/api/v0/product`);
+    this.validateBaseUrl(this.baseUrl);
+  }
 
   async getInfo(barcode: string): Promise<ProductResponseBody> {
     this.logger.info("Searching OFF for barcode " + barcode);
@@ -36,12 +41,4 @@ abstract class OpenFoodFactsService extends RestService {
     this.logger.info("Found product in OFF: " + product_name);
     return { ...body, product: { product_name, quantity, brands } };
   }
-}
-
-export class OpenFoodFactsNZService extends OpenFoodFactsService {
-  readonly baseUrl = this.validateBaseUrl("https://nz.openfoodfacts.org/api/v0/product");
-}
-
-export class OpenFoodFactsWorldService extends OpenFoodFactsService {
-  readonly baseUrl = this.validateBaseUrl("https://world.openfoodfacts.org/api/v0/product");
 }
