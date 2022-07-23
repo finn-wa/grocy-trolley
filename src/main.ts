@@ -6,9 +6,10 @@ import { Logger, LOG_LEVELS } from "@gt/utils/logger";
 import { Argument, Option, program } from "commander";
 import { grocyServices } from "grocy";
 import { exit } from "process";
-import prompts, { PromptType } from "prompts";
+import prompts from "prompts";
 import { dev } from "./dev";
 import { ifPrevEquals } from "./utils/prompts";
+import { RequestError } from "./utils/rest";
 
 type GrocyTrolleyCommand = "import" | "shop" | "stock" | "exit";
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
@@ -138,7 +139,7 @@ async function main(): Promise<unknown> {
   program
     .name("grocy-trolley")
     .description("Links Grocy to PAK'n'SAVE online shopping")
-    .version("0.0.1")
+    .version("2.10.0")
     .addOption(
       new Option("-l, --log-level <level>") //
         .choices(LOG_LEVELS)
@@ -184,7 +185,15 @@ async function main(): Promise<unknown> {
 main().then(
   () => exit(0),
   (err) => {
-    new Logger("main").error(err);
-    exit(1);
+    const logger = new Logger("main");
+    if (err instanceof RequestError) {
+      err.response.text().then(
+        (text) => logger.error(text),
+        () => exit(1)
+      );
+    } else {
+      logger.error(err);
+      exit(1);
+    }
   }
 );
