@@ -14,8 +14,7 @@ export class RequestError extends Error {
 
 export abstract class RestService {
   protected abstract readonly logger: Logger;
-
-  constructor(protected readonly baseUrl: string) {}
+  protected abstract readonly baseUrl: string;
 
   protected validateBaseUrl(baseUrl: string): string {
     if (baseUrl.endsWith("/")) {

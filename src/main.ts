@@ -134,8 +134,7 @@ interface CLIOptions {
 async function main(): Promise<unknown> {
   program
     .name("grocy-trolley")
-    .description("Links Grocy to PAK'n'SAVE online shopping")
-    .version("2.11.0")
+    .version(version)
     .addOption(
       new Option("-l, --log-level <level>") //
         .choices(LOG_LEVELS)

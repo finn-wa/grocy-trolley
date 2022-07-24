@@ -55,5 +55,16 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "standard-version": {
+    "scripts": {
+      "postchangelog": "prettier -w CHANGELOG.md"
+    },
+    "packageFiles": [
+      {
+        "filename": "package.json",
+        "type": "json"
+      }
+    ]
   }
 }
