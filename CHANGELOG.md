@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/finn-wa/grocy-trolley/compare/v2.11.0...v2.12.0) (2022-07-24)
+
+### Features
+
+- add sick logo to CLI ([32d40b7](https://github.com/finn-wa/grocy-trolley/commit/32d40b75502d123f6d6cfd2a1f1ba3338619afa0))
+- get version info in code ([8ad95b8](https://github.com/finn-wa/grocy-trolley/commit/8ad95b8365e2c002b61577b04caa7bfc64a38b96))
+- use prettier internally for formatting (closes [#120](https://github.com/finn-wa/grocy-trolley/issues/120)) ([d44d196](https://github.com/finn-wa/grocy-trolley/commit/d44d1964c0b68907f2787bb465c9ee9ec9bdcc0f))
+
 ## [2.11.0](https://github.com/finn-wa/grocy-trolley/compare/v2.10.0...v2.11.0) (2022-07-23)
 
 ### Features
