@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import prompts from "prompts";
-import { GrocyToGrocerConversionService } from "./grocer/grocy/grocy-to-grocer-list-converter";
+import { GrocyToGrocerConversionService } from "./grocer/grocy/grocy-to-grocer-conversion-service";
 import { GrocerSearchService } from "./grocer/search/grocer-search-service";
 import { GrocerStoreService } from "./grocer/stores/grocer-store-service";
 import { GrocerUserAgent } from "./grocer/user-agent/grocer-user-agent";
