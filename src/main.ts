@@ -1,4 +1,4 @@
-import { FoodstuffsGrocyShoppingListExporter } from "@gt/store/foodstuffs/grocy/export/foodstuffs-grocy-shopping-list-exporter";
+import { GrocyToFoodstuffsConversionService } from "@gt/store/foodstuffs/grocy/export/grocy-to-foodstuffs-conversion-service";
 import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
 import { initEnv } from "@gt/utils/environment";
@@ -126,8 +126,8 @@ async function stockFrom(choice: StockSource) {
 
 async function shop(choice: ShopChoice): Promise<void> {
   const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const exporter = new FoodstuffsGrocyShoppingListExporter(grocy, foodstuffs);
-  return exporter.addShoppingListToCart();
+  const exporter = new GrocyToFoodstuffsConversionService(grocy, foodstuffs);
+  return exporter.grocyListToFoodstuffsCart();
 }
 
 interface CLIOptions {

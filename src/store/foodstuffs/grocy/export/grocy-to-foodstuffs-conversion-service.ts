@@ -9,7 +9,7 @@ import { FoodstuffsCartProduct } from "../../models";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
 import { FoodstuffsServices } from "../../services";
 
-export class FoodstuffsGrocyShoppingListExporter {
+export class GrocyToFoodstuffsConversionService {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
@@ -23,7 +23,7 @@ export class FoodstuffsGrocyShoppingListExporter {
     >
   ) {}
 
-  async addShoppingListToCart() {
+  async grocyListToFoodstuffsCart() {
     await this.foodstuffs.cartService.clearCart();
     // We clean up before and intentionally leave dangling state for debugging
     await this.foodstuffs.listService.deleteLists(new RegExp(TEMP_LIST_PREFIX));

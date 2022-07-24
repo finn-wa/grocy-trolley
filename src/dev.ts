@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import prompts from "prompts";
-import { GrocerShoppingListService } from "./grocer/grocy/export/grocer-grocy-shopping-list-exporter";
+import { GrocyToGrocerConversionService } from "./grocer/grocy/grocy-to-grocer-list-converter";
 import { GrocerSearchService } from "./grocer/search/grocer-search-service";
 import { GrocerStoreService } from "./grocer/stores/grocer-store-service";
 import { GrocerUserAgent } from "./grocer/user-agent/grocer-user-agent";
@@ -25,17 +25,8 @@ async function generate() {
 }
 
 export async function dev() {
-  const search = new GrocerSearchService();
-  const store = new GrocerStoreService();
-  const stores = await store.promptForStores();
-  const result = await search.searchAndSelectProduct(
-    "stick",
-    stores.map((store) => store.id)
-  );
-  console.log(prettyPrint(result));
-  return;
   const grocy = await grocyServices();
-  const grocer = new GrocerShoppingListService(
+  const grocer = new GrocyToGrocerConversionService(
     grocy,
     new GrocerSearchService(),
     new GrocerStoreService(),
@@ -46,7 +37,7 @@ export async function dev() {
   // console.log(list);
   // const items = await grocy.shoppingListService.getShoppingListItems(list ?? undefined);
   // console.log(items);
-  await grocer.importGrocyShoppingList();
+  await grocer.grocyListToGrocerList();
   await prompts({ type: "confirm", message: "exit?", name: "value" });
 }
 

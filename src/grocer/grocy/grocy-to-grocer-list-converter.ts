@@ -9,7 +9,7 @@ import {
 import { cloneItemForList } from "@gt/grocy/shopping-lists/types/ShoppingListItems/schema";
 import { Logger } from "@gt/utils/logger";
 
-export class GrocerShoppingListService {
+export class GrocyToGrocerConversionService {
   private readonly logger = new Logger(this.constructor.name);
   // features
   // find barcodes of products - with updates to grocy
@@ -27,7 +27,7 @@ export class GrocerShoppingListService {
     private readonly agent: GrocerUserAgent
   ) {}
 
-  async importGrocyShoppingList(shoppingListId?: string, storeIds?: number[]) {
+  async grocyListToGrocerList(shoppingListId?: string, storeIds?: number[]) {
     if (!shoppingListId) {
       const id = await this.grocy.shoppingListService.promptForShoppingList();
       if (id === null) {
@@ -70,7 +70,7 @@ export class GrocerShoppingListService {
     });
   }
 
-  async resolveParentProducts(
+  private async resolveParentProducts(
     shoppingListItems: ShoppingListItem[]
   ): Promise<NewShoppingListItem[]> {
     const parentProducts = await this.grocy.parentProductService.getParentProducts();
