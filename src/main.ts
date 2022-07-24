@@ -135,7 +135,7 @@ interface CLIOptions {
   envFilePath: string;
 }
 async function main(): Promise<unknown> {
-  const logo = chalk.yellow;
+  const logo = chalk.cyan;
   program
     .name("grocy-trolley")
     .description(
@@ -143,8 +143,8 @@ async function main(): Promise<unknown> {
         logo("     ╔╗"),
         logo("    ╔╝╚╗"),
         logo("  ╔═╩╗╔╝"),
-        logo("  ║╔╗║║") + "    " + chalk.blue("Grocy Trolley ") + chalk.green(version),
-        logo("  ║╚╝║╚╗") + "   " + chalk.dim("Links Grocy to online supermarket shopping in NZ"),
+        logo("  ║╔╗║║") + "    " + chalk.white("Grocy Trolley ") + chalk.yellow(version),
+        logo("  ║╚╝║╚╗") + "   " + chalk.dim("Links Grocy & NZ supermarkets"),
         logo("  ╚═╗╠═╝"),
         logo("  ╔═╝║"),
         logo("  ╚══╝"),
