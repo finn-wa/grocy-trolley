@@ -1,7 +1,6 @@
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
-import { ifPrevEquals } from "@gt/utils/prompts";
-import prompts from "prompts";
+import { searchAndSelectResult } from "@gt/utils/search";
 import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
 import { FoodstuffsSearchAgent } from "./foodstuffs-search-agent";
 import { ProductSearchResult, SearchAgentType } from "./foodstuffs-search.model";
@@ -38,19 +37,11 @@ export class FoodstuffsSearchService {
     query: string,
     agentType: SearchAgentType = "USER"
   ): Promise<ProductSearchResult | null> {
-    for (let nextQuery: string | undefined = query; nextQuery; ) {
-      const results = await this.searchWithAgentType(nextQuery, agentType);
-      const response = await this.getSearchPromptResponse(results);
-      if (response.productChoice === "skip") {
-        return null;
-      }
-      if (response.productChoice && response.productChoice !== "searchAgain") {
-        return response.productChoice;
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      nextQuery = response.query as string | undefined;
-    }
-    return null;
+    return searchAndSelectResult(
+      (query) => this.searchWithAgentType(query, agentType),
+      (r) => `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
+      query
+    );
   }
 
   private async searchWithAgentType(
@@ -61,50 +52,4 @@ export class FoodstuffsSearchService {
       (results) => uniqueByProperty(results.flat(), "ProductId")
     );
   }
-
-  /**
-   * For a better implementation, see {@link GrocerSearchService#promptForNextAction}
-   */
-  private async getSearchPromptResponse(
-    results: ProductSearchResult[]
-  ): Promise<SearchPromptResponse> {
-    if (results.length === 0) {
-      console.log("No results found.");
-      return prompts([
-        {
-          message: "Enter a new search query",
-          name: "query",
-          type: "text",
-        },
-      ]);
-    }
-    if (results.length === 1) {
-      return { productChoice: results[0] };
-    }
-    return prompts([
-      {
-        message: "Select a product",
-        name: "productChoice",
-        type: "select",
-        choices: [
-          ...results.map((r) => ({
-            title: `${r.ProductBrand} ${r.ProductName} ${r.ProductWeightDisplayName}`,
-            value: r,
-          })),
-          { title: "Modify search query", value: "searchAgain" },
-          { title: "Skip", value: "skip" },
-        ],
-      },
-      {
-        type: ifPrevEquals("searchAgain"),
-        message: "Enter a new search query",
-        name: "query",
-      },
-    ]);
-  }
-}
-
-interface SearchPromptResponse {
-  query?: string;
-  productChoice?: ProductSearchResult | "searchAgain" | "skip";
 }

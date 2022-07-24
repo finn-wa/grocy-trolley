@@ -9,6 +9,7 @@ import { grocyServices } from "./grocy";
 import { GrocyShoppingListService } from "./grocy/shopping-lists/grocy-shopping-list-service";
 import { generateTypes } from "./jtd/generate-types";
 import { getBrowser } from "./store/shared/rest/browser";
+import { prettyPrint } from "./utils/logger";
 
 async function generate() {
   const grocy = await grocyServices();
@@ -24,6 +25,15 @@ async function generate() {
 }
 
 export async function dev() {
+  const search = new GrocerSearchService();
+  const store = new GrocerStoreService();
+  const stores = await store.promptForStores();
+  const result = await search.searchAndSelectProduct(
+    "stick",
+    stores.map((store) => store.id)
+  );
+  console.log(prettyPrint(result));
+  return;
   const grocy = await grocyServices();
   const grocer = new GrocerShoppingListService(
     grocy,

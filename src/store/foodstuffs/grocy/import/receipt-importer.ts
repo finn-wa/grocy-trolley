@@ -70,12 +70,12 @@ export class FoodstuffsReceiptImporter {
     );
     const cachedScannedItems = await this.scanCache.get(cacheKey);
     if (cachedScannedItems !== null) {
+      console.log(prettyPrint(cachedScannedItems));
       const confirm = await prompts([
         {
           name: "useCache",
           message: dedent`
-            Use cached scanned items? Amend file as needed before continuing: ${cacheFilepath}
-            ${prettyPrint(cachedScannedItems)}`,
+            Use cached scanned items? Amend file as needed before continuing:\n${cacheFilepath}`,
           type: "confirm",
         },
       ]);
@@ -86,8 +86,9 @@ export class FoodstuffsReceiptImporter {
     const text = await this.scanner.scan(receiptFilepath);
     const scannedItems = await this.itemiser.itemise(text);
     await this.scanCache.set(cacheKey, scannedItems);
+    console.log(prettyPrint(scannedItems));
     const response = await prompts({
-      message: `Import these items? Amend file as needed before continuing: ${cacheFilepath}`,
+      message: `Import these items? Amend file as needed before continuing:\n${cacheFilepath}`,
       name: "continue",
       type: "confirm",
     });

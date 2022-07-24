@@ -1,7 +1,7 @@
 import { getEnvVar } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
-import prompts from "prompts";
+import { searchAndSelectResult } from "@gt/utils/search";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
 import { getProductSearchResponseSchema } from "./types/ProductSearchResponse/schema";
 
@@ -56,75 +56,10 @@ export class GrocerSearchService extends RestService {
     query: string,
     storeIds: number[]
   ): Promise<ProductSearchResponseHit | null> {
-    for (let nextQuery = query; nextQuery && nextQuery.length > 0; ) {
-      const results = await this.search(nextQuery, storeIds);
-      const actionResponse = await this.promptForNextAction(results);
-      switch (actionResponse.action) {
-        case "select":
-          return actionResponse.hit;
-        case "searchAgain": {
-          nextQuery = actionResponse.query;
-          continue;
-        }
-        case "skip":
-        default:
-          return null;
-      }
-    }
-    return null;
-  }
-
-  private async promptForNextAction(
-    response: ProductSearchResponse
-  ): Promise<SearchAndSelectAction> {
-    const hits = response.hits;
-    if (hits.length === 1) {
-      return { action: "select", hit: hits[0] };
-    }
-    if (hits.length === 0) {
-      console.log("No results found.");
-    }
-    const nextActionResponse = await prompts([
-      {
-        message: "Select a product",
-        name: "nextAction",
-        type: "select",
-        choices: [
-          ...hits.map((hit) => ({
-            title: `${hit.brand} ${hit.name} ${hit.size}${hit.unit}`,
-            value: { action: "select", hit },
-          })),
-          { title: "Modify search query", value: { action: "searchAgain" } },
-          { title: "Skip", value: { action: "skip" } },
-        ],
-      },
-      {
-        type: (prev: { action: string }) => (prev.action === "searchAgain" ? "text" : null),
-        message: "Enter a new search query, or leave blank to skip",
-        name: "query",
-        initial: response.query,
-      },
-    ]);
-    const nextAction = nextActionResponse.nextAction as SearchAndSelectAction;
-    if (nextActionResponse.query && nextAction.action === "searchAgain") {
-      return { action: "searchAgain", query: nextActionResponse.query as string };
-    }
-    return nextAction;
+    return searchAndSelectResult(
+      (query) => this.search(query, storeIds).then((response) => response.hits),
+      (hit) => `${hit.brand} ${hit.name} ${hit.size}${hit.unit}`,
+      query
+    );
   }
 }
-
-interface SearchAgainAction {
-  readonly action: "searchAgain";
-  readonly query: string;
-}
-
-interface SkipAction {
-  readonly action: "skip";
-}
-
-interface SelectHitAction {
-  readonly action: "select";
-  readonly hit: ProductSearchResponseHit;
-}
-
-type SearchAndSelectAction = SearchAgainAction | SkipAction | SelectHitAction;
