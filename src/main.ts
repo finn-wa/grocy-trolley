@@ -3,13 +3,16 @@ import { foodstuffsImporters } from "@gt/store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "@gt/store/foodstuffs/services";
 import { initEnv } from "@gt/utils/environment";
 import { Logger, LOG_LEVELS } from "@gt/utils/logger";
+import chalk from "chalk";
 import { Argument, Option, program } from "commander";
 import { grocyServices } from "grocy";
+import { EOL } from "os";
 import { exit } from "process";
 import prompts from "prompts";
 import { dev } from "./dev";
 import { ifPrevEquals } from "./utils/prompts";
 import { RequestError } from "./utils/rest";
+import { version } from "./utils/version";
 
 type GrocyTrolleyCommand = "import" | "shop" | "stock" | "exit";
 const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
@@ -132,11 +135,24 @@ interface CLIOptions {
   envFilePath: string;
 }
 async function main(): Promise<unknown> {
+  const logo = chalk.yellow;
   program
     .name("grocy-trolley")
+    .description(
+      [
+        logo("     ╔╗"),
+        logo("    ╔╝╚╗"),
+        logo("  ╔═╩╗╔╝"),
+        logo("  ║╔╗║║") + "    " + chalk.blue("Grocy Trolley ") + chalk.green(version),
+        logo("  ║╚╝║╚╗") + "   " + chalk.dim("Links Grocy to online supermarket shopping in NZ"),
+        logo("  ╚═╗╠═╝"),
+        logo("  ╔═╝║"),
+        logo("  ╚══╝"),
+      ].join(EOL)
+    )
     .version(version)
     .addOption(
-      new Option("-l, --log-level <level>") //
+      new Option("-l, --log-level <level>")
         .choices(LOG_LEVELS)
         .default("DEBUG")
         .makeOptionMandatory()

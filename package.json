@@ -58,7 +58,7 @@
   },
   "standard-version": {
     "scripts": {
-      "postchangelog": "prettier -w CHANGELOG.md"
+      "postchangelog": "yarn prettier -w CHANGELOG.md"
     },
     "packageFiles": [
       {
