@@ -6,6 +6,7 @@ import { GrocyProductService } from "./grocy-product-service";
 import { Product } from "./types/Product";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ParentProduct } from "./types";
+import { GrocyTokens } from "..";
 
 export class GrocyParentProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -17,6 +18,10 @@ export class GrocyParentProductService extends GrocyRestService {
   ) {
     super();
   }
+  static readonly inject = [
+    GrocyTokens.idLookupServices.productGroups,
+    GrocyTokens.productService,
+  ] as const;
 
   async getParentProducts(products?: Product[]): Promise<Record<string, ParentProduct>> {
     if (!products) {

@@ -1,7 +1,8 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { StoreUserAgent } from "@gt/store/shared/rest/store-user-agent";
 import { Logger } from "@gt/utils/logger";
-import { BrowserContext, Page } from "playwright";
+import { Browser, BrowserContext, Page } from "playwright";
+import { AppTokens, FoodstuffsTokens } from "../../../injection-tokens";
 import { PAKNSAVE_URL } from "../models";
 
 /**
@@ -12,13 +13,19 @@ export class FoodstuffsUserAgent extends StoreUserAgent {
   public readonly storeName = "foodstuffs";
   protected readonly logger = new Logger(this.constructor.name);
 
+  constructor(browser: () => Promise<Browser>, loginDetails?: LoginDetails | null) {
+    super(browser, loginDetails);
+  }
+  static readonly inject = [AppTokens.browser, FoodstuffsTokens.loginDetails] as const;
+
   /**
-   * Creates a new agent with the same browser but new login details
-   * @param loginDetails Login details for the new agent, or null to omit them
+   * Creates a new agent with the same browser but new login details. If login details
+   * are not provided, the user agent will be unauthenticated.
+   * @param loginDetails Optional login details for the new agent
    * @returns the new agent
    */
-  clone(loginDetails: LoginDetails | null): FoodstuffsUserAgent {
-    return new FoodstuffsUserAgent(this.browserLoader, loginDetails ?? undefined);
+  clone(loginDetails?: LoginDetails): FoodstuffsUserAgent {
+    return new FoodstuffsUserAgent(this.browserLoader, loginDetails);
   }
 
   async init(context: BrowserContext): Promise<{ page: Page; headers: Headers }> {

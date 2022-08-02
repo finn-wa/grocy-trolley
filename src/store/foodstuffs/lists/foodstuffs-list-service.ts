@@ -18,9 +18,6 @@ export const TEMP_LIST_PREFIX = "[temporary]";
 export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
   protected readonly logger = new Logger(this.constructor.name);
-  constructor(userAgent: FoodstuffsUserAgent) {
-    super(userAgent);
-  }
 
   async createList(name: string): Promise<List> {
     const headersBuilder = await this.authHeaders();

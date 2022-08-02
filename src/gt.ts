@@ -1,4 +1,5 @@
 import prompts from "prompts";
+import { createInjector } from "typed-inject";
 import {
   ExportDestination,
   EXPORT_DESTINATIONS,
@@ -15,6 +16,9 @@ import { GrocyToFoodstuffsConversionService } from "./store/foodstuffs/grocy/exp
 import { foodstuffsImporters } from "./store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "./store/foodstuffs/services";
 import { getBrowser } from "./store/shared/rest/browser";
+
+const appInjector = createInjector().provideValue("browser", getBrowser);
+export type AppInjector = typeof appInjector;
 
 export async function importFrom(source?: ImportSource, options: ImportOptions = {}) {
   if (!source) {

@@ -5,8 +5,6 @@ import { NewProduct, Product } from "./types/Product";
 import { parseProductBarcode, ProductBarcode, RawProductBarcode } from "./types/ProductBarcodes";
 import { getProductBarcodesSchema } from "./types/ProductBarcodes/schema";
 
-export const products = "products";
-
 export class GrocyProductService {
   protected readonly logger = new Logger(this.constructor.name);
   private readonly rest = new GrocyProductRestService();

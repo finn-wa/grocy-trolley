@@ -1,3 +1,4 @@
+import { FoodstuffsTokens } from "@gt/injection-tokens";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
 import prompts from "prompts";
@@ -8,6 +9,7 @@ export class FoodstuffsCartService {
   protected readonly logger = new Logger(this.constructor.name);
 
   constructor(private readonly controller: FoodstuffsCartController) {}
+  static readonly inject = [FoodstuffsTokens.cartController];
 
   getCart = () => this.controller.getCart();
 

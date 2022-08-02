@@ -1,3 +1,5 @@
+import { GrocyTokens } from "@gt/injection-tokens";
+import { Injector } from "typed-inject";
 import { GrocyLocationIdLookupService } from "./id-lookup/grocy-location-id-lookup-service";
 import { GrocyProductGroupIdLookupService } from "./id-lookup/grocy-product-group-id-lookup-service";
 import { GrocyQuantityUnitIdLookupService } from "./id-lookup/grocy-quantity-unit-id-lookup-service";
@@ -57,4 +59,19 @@ export async function grocyServices(): Promise<GrocyServices> {
     stockService,
     shoppingListService,
   };
+}
+
+export function injectGrocyServices(injector: Injector) {
+  const idLookupTokens = GrocyTokens.idLookupServices;
+  return injector
+    .provideClass(idLookupTokens.locations, GrocyLocationIdLookupService)
+    .provideClass(idLookupTokens.quantityUnits, GrocyQuantityUnitIdLookupService)
+    .provideClass(idLookupTokens.productGroups, GrocyProductGroupIdLookupService)
+    .provideClass(idLookupTokens.shoppingLocations, GrocyShoppingLocationIdLookupService)
+    .provideClass(GrocyTokens.shoppingListService, GrocyShoppingListService)
+    .provideClass(GrocyTokens.stockService, GrocyStockService)
+    .provideClass(GrocyTokens.userEntityService, GrocyUserEntityService)
+    .provideClass(GrocyTokens.orderRecordService, GrocyOrderRecordService)
+    .provideClass(GrocyTokens.productService, GrocyProductService)
+    .provideClass(GrocyTokens.parentProductService, GrocyParentProductService);
 }

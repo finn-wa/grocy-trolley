@@ -4660,6 +4660,7 @@ __metadata:
     rxjs: ^7.5.6
     standard-version: ^9.5.0
     ts-jest: ^28.0.7
+    typed-inject: ^3.0.1
     typescript: "*4.7.4"
   languageName: unknown
   linkType: soft
@@ -7938,6 +7939,13 @@ __metadata:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: d61c4b2eba24009033ae4500d7d818a94fd6d1b481a8111612ee141400d5f1db46f199c014766b9fa9b31a6a7374d96fc748c6d688a78a3ce5a33123839becb7
+  languageName: node
+  linkType: hard
+
+"typed-inject@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "typed-inject@npm:3.0.1"
+  checksum: a400797a42951bc46a38873e9be40fe90fdba6ae3362e2d4da4972c4ec48e962ff167bc5f090ca42dc20bb3f6063cd07a80426df520c64dc9e94d1e89ff4779e
   languageName: node
   linkType: hard
 

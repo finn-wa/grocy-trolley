@@ -48,19 +48,14 @@ export class GrocyShoppingListService extends GrocyRestService {
     items: Omit<NewShoppingListItem, "shopping_list_id">[] = []
   ): Promise<string | null> {
     const id = await this.listService.postEntityObject({ name });
-    if (items.length > 0) {
-      // await Promise.all(
-      // items.map((item) => this.addShoppingListItem({ ...item, shopping_list_id: id }))
-      // );
-      for (const item of items) {
-        try {
-          await this.addShoppingListItem({ ...item, shopping_list_id: id });
-        } catch (error) {
-          if (error instanceof RequestError) {
-            this.logger.error(await error.response.text());
-          }
-          throw error;
+    for (const item of items) {
+      try {
+        await this.addShoppingListItem({ ...item, shopping_list_id: id });
+      } catch (error) {
+        if (error instanceof RequestError) {
+          this.logger.error(await error.response.text());
         }
+        throw error;
       }
     }
     return id;

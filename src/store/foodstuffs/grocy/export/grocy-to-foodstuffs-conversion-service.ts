@@ -1,7 +1,7 @@
 import { ParentProduct } from "@gt/grocy/products/types";
 import { Product } from "@gt/grocy/products/types/Product";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyServices } from "grocy";
+import { GrocyTokens } from "grocy";
 import prompts from "prompts";
 import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
 import { TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";

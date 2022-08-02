@@ -11,7 +11,6 @@ import {
   serialiseProductUserfields,
 } from "./types/Product";
 import { getRawProductSchema, getRawProductsSchema } from "./types/Product/schema";
-import { products } from "./grocy-product-service";
 import { RequestError } from "@gt/utils/rest";
 
 /**
@@ -26,7 +25,7 @@ export class GrocyProductRestService extends GrocyEntityService {
    * @returns An array of products
    */
   async getProducts(): Promise<Product[]> {
-    const rawProducts = await this.getEntityObjects(products, getRawProductsSchema());
+    const rawProducts = await this.getEntityObjects("products", getRawProductsSchema());
     return rawProducts.map(parseProduct);
   }
 
@@ -36,7 +35,7 @@ export class GrocyProductRestService extends GrocyEntityService {
    * @returns The product
    */
   async getProduct(id: string): Promise<Product> {
-    const rawProduct = await this.getEntityObject(products, id, getRawProductSchema());
+    const rawProduct = await this.getEntityObject("products", id, getRawProductSchema());
     return parseProduct(rawProduct);
   }
 
@@ -46,7 +45,7 @@ export class GrocyProductRestService extends GrocyEntityService {
    * @returns The ID of the newly created product
    */
   async postProduct(product: Omit<NewProduct, "userfields">): Promise<string> {
-    return this.postEntityObject(products, product);
+    return this.postEntityObject("products", product);
   }
 
   /**

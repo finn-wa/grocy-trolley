@@ -1,7 +1,7 @@
 import { Product } from "@gt/grocy/products/types/Product";
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import { GrocyServices } from "grocy";
+import { GrocyTokens } from "grocy";
 import prompts from "prompts";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, FoodstuffsCart, toCartProductRef } from "../../cart/foodstuffs-cart.model";

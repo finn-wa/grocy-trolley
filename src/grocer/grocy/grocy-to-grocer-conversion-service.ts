@@ -1,7 +1,7 @@
 import { GrocerSearchService } from "@gt/grocer/search/grocer-search-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
 import { GrocerUserAgent } from "@gt/grocer/user-agent/grocer-user-agent";
-import { GrocyServices } from "@gt/grocy";
+import { GrocyTokens } from "@gt/grocy";
 import {
   NewShoppingListItem,
   ShoppingListItem,

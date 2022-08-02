@@ -1,4 +1,5 @@
 import { Logger } from "@gt/utils/logger";
+import { GrocyTokens } from "..";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { GrocyTrue } from "../types/grocy-types";
 import { GrocyUserEntityService } from "../user-entities/grocy-user-entity-service";
@@ -12,6 +13,7 @@ export class GrocyOrderRecordService extends GrocyRestService {
   constructor(private readonly userEntityService: GrocyUserEntityService) {
     super();
   }
+  static readonly inject = [GrocyTokens.userEntityService] as const;
 
   async getOrderRecords(): Promise<OrderRecord[]> {
     return this.userEntityService.getObjectsForUserEntity(ORDER);

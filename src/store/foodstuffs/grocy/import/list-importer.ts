@@ -1,5 +1,5 @@
 import { Logger } from "@gt/utils/logger";
-import { GrocyServices } from "grocy";
+import { GrocyTokens } from "grocy";
 import prompts from "prompts";
 import { FoodstuffsListProduct } from "../../models";
 import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";

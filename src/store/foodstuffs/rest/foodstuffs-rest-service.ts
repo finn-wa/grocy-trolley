@@ -1,3 +1,4 @@
+import { FoodstuffsTokens } from "@gt/injection-tokens";
 import { StoreRestService } from "@gt/store/shared/rest/store-rest-service";
 import { HeadersBuilder } from "@gt/utils/headers";
 import { prettyPrint } from "@gt/utils/logger";
@@ -32,6 +33,8 @@ export abstract class FoodstuffsRestService extends StoreRestService {
       "te",
     ],
   };
+
+  static readonly inject = [FoodstuffsTokens.userAgent] as const;
 
   protected async isValid(headers: Headers): Promise<boolean> {
     try {

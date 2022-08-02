@@ -1,3 +1,4 @@
+import { FoodstuffsTokens } from "@gt/injection-tokens";
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
 import { searchAndSelectResult } from "@gt/utils/search";
@@ -19,13 +20,14 @@ export class FoodstuffsSearchService {
    */
   constructor(userAgent: FoodstuffsUserAgent) {
     const userSearchAgent = new FoodstuffsSearchAgent("FoodstuffsUserSearchAgent", userAgent);
-    const anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
+    const anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone());
     this.agents = {
       USER: [userSearchAgent],
       ANON: [anonAgent],
       BOTH: [userSearchAgent, anonAgent],
     };
   }
+  static readonly inject = [FoodstuffsTokens.userAgent] as const;
 
   /**
    * Search for and select a product using prompts.
