@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/finn-wa/grocy-trolley/compare/v2.12.0...v3.0.0) (2022-08-02)
+
+### ⚠ BREAKING CHANGES
+
+- Removed "stock" command (although "stock" is now an alias for "import").
+- Changed "--input-file" flag to "--file" for receipt import.
+
+### Features
+
+- merge "stock" command into "import" & add listId option ([8b790ec](https://github.com/finn-wa/grocy-trolley/commit/8b790ec346297237fd3ced8c8923f022f640bae7)), closes [#125](https://github.com/finn-wa/grocy-trolley/issues/125)
+- vital CLI logo improvements ([21ace43](https://github.com/finn-wa/grocy-trolley/commit/21ace43cce70ea82d7ce40d65e58a2fe97def9f4))
+
+### Bug Fixes
+
+- foodstuffs search exits when "modify search query" is chosen ([0d6e77e](https://github.com/finn-wa/grocy-trolley/commit/0d6e77eef3ddffbf0905824e2998a11f43332694))
+
 ## [2.12.0](https://github.com/finn-wa/grocy-trolley/compare/v2.11.0...v2.12.0) (2022-07-24)
 
 ### Features
