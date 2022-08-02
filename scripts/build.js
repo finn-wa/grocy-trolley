@@ -22,9 +22,8 @@ function getBuildOptions(args) {
     tsconfig: "./tsconfig.json",
     watch: args.watch,
     entryPoints: ["./src/main.ts"],
-    // Things require()d by Playwright
     external: ["playwright*"],
-    metafile: true,
+    metafile: args.analyse,
   };
   return buildOptions;
 }
@@ -38,8 +37,9 @@ function getBuildOptions(args) {
 async function build(options) {
   await fs.rm(options.outdir, { recursive: true, force: true });
   const result = await esbuild.build(options);
-  const text = await esbuild.analyzeMetafile(result.metafile);
-  console.log(text);
+  if (options.metafile) {
+    console.log(await esbuild.analyzeMetafile(result.metafile));
+  }
   return result;
 }
 
@@ -49,6 +49,7 @@ async function build(options) {
  * @property { 'dev' | 'test' | 'prod'} target build target
  * @property {boolean} watch rebuild on file change
  * @property {boolean} sourcemap produce sourcemaps for debugging
+ * @property {boolean} analyse print bundle analysis
  */
 program
   .addOption(
@@ -58,6 +59,7 @@ program
   )
   .option("-w, --watch", "rebuild on file changes", false)
   .option("-s, --sourcemap", "produce sourcemaps for debugging", false)
+  .option("-a, --analyse", "print bundle analysis", false)
   .parse();
 
 const buildOptions = getBuildOptions(program.opts());
