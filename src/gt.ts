@@ -1,15 +1,35 @@
 import prompts from "prompts";
-import { ImportSource, ShopChoice, StockSource } from "./cli/gt-cli-model";
+import {
+  ExportDestination,
+  EXPORT_DESTINATIONS,
+  ImportOptions,
+  ImportSource,
+  IMPORT_SOURCES,
+} from "./cli/gt-cli-model";
+import { GrocyToGrocerConversionService } from "./grocer/grocy/grocy-to-grocer-conversion-service";
+import { GrocerSearchService } from "./grocer/search/grocer-search-service";
+import { GrocerStoreService } from "./grocer/stores/grocer-store-service";
+import { GrocerUserAgent } from "./grocer/user-agent/grocer-user-agent";
 import { grocyServices } from "./grocy";
 import { GrocyToFoodstuffsConversionService } from "./store/foodstuffs/grocy/export/grocy-to-foodstuffs-conversion-service";
 import { foodstuffsImporters } from "./store/foodstuffs/grocy/import";
 import { foodstuffsServices } from "./store/foodstuffs/services";
+import { getBrowser } from "./store/shared/rest/browser";
 
-export async function importFrom(choice: ImportSource, opts: { inputFile?: string } = {}) {
+export async function importFrom(source?: ImportSource, options: ImportOptions = {}) {
+  if (!source) {
+    const response = await prompts({
+      message: "Select import source",
+      type: "select",
+      choices: IMPORT_SOURCES.map((src) => ({ title: src, value: src })),
+      name: "source",
+    });
+    source = response.source as ImportSource;
+  }
   const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
   const importers = foodstuffsImporters(foodstuffs, grocy);
-  if (choice === "receipt") {
-    let inputFilePath = opts.inputFile;
+  if (source === "receipt") {
+    let inputFilePath: string | undefined = options.file;
     if (!inputFilePath) {
       const filepathRes = await prompts([
         { name: "path", type: "text", message: "Enter filepath" },
@@ -17,30 +37,41 @@ export async function importFrom(choice: ImportSource, opts: { inputFile?: strin
       inputFilePath = filepathRes.path as string;
     }
     await importers.receiptImporter.importReceipt(inputFilePath);
-  } else if (choice === "cart") {
+  } else if (source === "cart") {
     await importers.cartImporter.importProductsFromCart();
-  } else if (choice === "list") {
-    await importers.listImporter.selectAndImportList();
-  } else if (choice === "order") {
+  } else if (source === "list") {
+    const listId = options.listId ?? (await foodstuffs.listService.selectList());
+    await importers.listImporter.importList(listId);
+  } else if (source === "order") {
     await importers.orderImporter.importLatestOrders();
-  } else if (choice === "barcodes") {
+  } else if (source === "barcodes") {
     await importers.barcodeImporter.importFromBarcodeBuddy();
   }
 }
 
-export async function stockFrom(choice: StockSource) {
-  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const importers = foodstuffsImporters(foodstuffs, grocy);
-  if (choice === "list") {
-    return importers.listImporter.selectAndStockList();
+export async function exportTo(destination?: ExportDestination): Promise<void> {
+  if (!destination) {
+    const response = await prompts({
+      message: "Select export destination",
+      type: "select",
+      choices: EXPORT_DESTINATIONS.map((src) => ({ title: src, value: src })),
+      name: "destination",
+    });
+    destination = response.destination as ExportDestination;
   }
-  if (choice === "cart") {
-    return importers.cartImporter.stockProductsFromCart();
+  const grocy = await grocyServices();
+  if (destination === "pns") {
+    const foodstuffs = await foodstuffsServices();
+    const exporter = new GrocyToFoodstuffsConversionService(grocy, foodstuffs);
+    return exporter.grocyListToFoodstuffsCart();
   }
-}
-
-export async function shop(choice: ShopChoice): Promise<void> {
-  const [foodstuffs, grocy] = await Promise.all([foodstuffsServices(), grocyServices()]);
-  const exporter = new GrocyToFoodstuffsConversionService(grocy, foodstuffs);
-  return exporter.grocyListToFoodstuffsCart();
+  if (destination === "grocer") {
+    const grocer = new GrocyToGrocerConversionService(
+      grocy,
+      new GrocerSearchService(),
+      new GrocerStoreService(),
+      new GrocerUserAgent(() => getBrowser({ headless: false }))
+    );
+    return grocer.grocyListToGrocerList();
+  }
 }

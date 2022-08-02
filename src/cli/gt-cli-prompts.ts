@@ -1,7 +1,7 @@
-import { importFrom, shop, stockFrom } from "@gt/gt";
+import { exportTo, importFrom } from "@gt/gt";
 import { ifPrevEquals } from "@gt/utils/prompts";
 import prompts from "prompts";
-import { GrocyTrolleyCommand, ImportSource, ShopChoice, StockSource } from "./gt-cli-model";
+import { ExportDestination, GrocyTrolleyCommand, ImportSource } from "./gt-cli-model";
 
 export async function promptGT() {
   const choices = await prompts([
@@ -11,8 +11,7 @@ export async function promptGT() {
       type: "select",
       choices: [
         { title: "Import products (import)", value: "import" },
-        { title: "Stock products (stock)", value: "stock" },
-        { title: "Export shopping list (shop)", value: "shop" },
+        { title: "Export shopping list (export)", value: "export" },
         { title: "Exit", value: "exit" },
       ],
     },
@@ -30,18 +29,8 @@ export async function promptGT() {
       ],
     },
     {
-      type: ifPrevEquals("stock"),
-      name: "stockSource",
-      message: "Select a stock source",
-      choices: [
-        { title: "Foodstuffs cart", value: "cart" },
-        { title: "Foodstuffs list", value: "list" },
-        { title: "Exit", value: "exit" },
-      ],
-    },
-    {
-      type: ifPrevEquals("shop"),
-      name: "shopChoice",
+      type: ifPrevEquals("export"),
+      name: "destination",
       message: "Select a shopping list export destination",
       choices: [
         { title: "PAK'nSAVE", value: "pns" },
@@ -54,18 +43,15 @@ export async function promptGT() {
   if (
     command === "exit" ||
     choices["importSource"] === "exit" ||
-    choices["stockSource"] === "exit" ||
-    choices["shopChoice"] === "exit"
+    choices["destination"] === "exit"
   ) {
     return;
   }
   switch (command) {
     case "import":
       return importFrom(choices["importSource"] as ImportSource);
-    case "stock":
-      return stockFrom(choices["stockSource"] as StockSource);
-    case "shop":
-      return shop(choices["shopChoice"] as ShopChoice);
+    case "export":
+      return exportTo(choices["destination"] as ExportDestination);
     default:
       throw new Error("Unexpected prompt command: " + (command as string));
   }

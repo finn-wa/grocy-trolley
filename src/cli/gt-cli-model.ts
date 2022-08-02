@@ -2,13 +2,18 @@ import { version } from "@gt/utils/version";
 import chalk from "chalk";
 import { EOL } from "os";
 
-export type GrocyTrolleyCommand = "import" | "shop" | "stock" | "exit";
+export type GrocyTrolleyCommand = "import" | "export" | "exit";
+
 export const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 export type ImportSource = typeof IMPORT_SOURCES[number];
-export const STOCK_SOURCES = ["list"];
-export type StockSource = typeof STOCK_SOURCES[number];
-export const SHOP_CHOICES = ["pns", "grocer"] as const;
-export type ShopChoice = typeof SHOP_CHOICES[number];
+export interface ImportOptions {
+  // stock?: boolean;
+  listId?: ImportSource;
+  file?: string;
+}
+
+export const EXPORT_DESTINATIONS = ["pns", "grocer"] as const;
+export type ExportDestination = typeof EXPORT_DESTINATIONS[number];
 
 export interface CLIOptions {
   logLevel: string;

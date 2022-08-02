@@ -1,15 +1,21 @@
 import { dev } from "@gt/dev";
-import { importFrom, shop, stockFrom } from "@gt/gt";
+import { exportTo, importFrom } from "@gt/gt";
 import { initEnv } from "@gt/utils/environment";
 import { LOG_LEVELS } from "@gt/utils/logger";
 import { version } from "@gt/utils/version";
-import chalk from "chalk";
-import { Argument, Option, program } from "commander";
-import { CLIOptions, gtLogo, ImportSource, IMPORT_SOURCES, StockSource } from "./gt-cli-model";
+import { Argument, Command, Option, program } from "commander";
+import {
+  CLIOptions,
+  ExportDestination,
+  EXPORT_DESTINATIONS,
+  gtLogo,
+  ImportOptions,
+  ImportSource,
+  IMPORT_SOURCES,
+} from "./gt-cli-model";
 import { promptGT } from "./gt-cli-prompts";
 
-export function runGT() {
-  const logo = chalk.cyan;
+export async function runGT() {
   program
     .name("grocy-trolley")
     .description(gtLogo)
@@ -24,34 +30,34 @@ export function runGT() {
     .hook("preAction", (command) => {
       const { logLevel, envFilePath } = command.opts<CLIOptions>();
       initEnv({ envFilePath, overrides: { GT_LOG_LEVEL: logLevel } });
-    });
-
-  program
-    .command("prompt", { isDefault: true, hidden: true })
-    .description("Start an interactive prompt-based version of the CLI")
-    .action(promptGT);
-
-  program
-    .command("import")
-    .description("Import products to Grocy")
-    .addArgument(new Argument("<source>", "Import source").choices(IMPORT_SOURCES))
-    .option("-i, --input-file [path]", "Path to receipt file")
-    .action((source, options) =>
-      importFrom(source as ImportSource, options as { inputFile?: string })
-    );
-
-  program
-    .command("stock")
-    .description("Stock products in Grocy")
-    .addArgument(new Argument("<source>", "Stock source").choices(IMPORT_SOURCES))
-    .action((source) => stockFrom(source as StockSource));
-
-  program
-    .command("shop")
-    .description("Export a shopping list from Grocy to Foodstuffs")
-    .action(shop);
-
-  program.command("dev", { hidden: true }).action(dev);
-
+    })
+    .addCommand(
+      new Command("prompt")
+        .description("Start an interactive prompt-based version of the CLI")
+        .action(promptGT),
+      { isDefault: true, hidden: true }
+    )
+    .addCommand(
+      new Command("import")
+        .alias("i")
+        .alias("stock")
+        .description("Import products to Grocy")
+        // .option("-s, --stock", "When true, imported products will be automatically stocked")
+        .addOption(new Option("-f, --file <path>", "Path to receipt file").conflicts("listId"))
+        .addOption(new Option("-i, --list-id <uuid>", "ID of list to import").conflicts("file"))
+        .addArgument(new Argument("[source]", "Import source").choices(IMPORT_SOURCES))
+        .action((source: ImportSource, options: ImportOptions) => importFrom(source, options))
+    )
+    .addCommand(
+      new Command("export")
+        .alias("e")
+        .alias("shop")
+        .description("Export a shopping list from Grocy to Foodstuffs or Grocer")
+        .addArgument(
+          new Argument("[destination]", "Export destination").choices(EXPORT_DESTINATIONS)
+        )
+        .action((destination: ExportDestination) => exportTo(destination))
+    )
+    .addCommand(new Command("dev").action(dev), { hidden: true });
   return program.parseAsync();
 }
