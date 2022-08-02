@@ -23,7 +23,8 @@ function getBuildOptions(args) {
     watch: args.watch,
     entryPoints: ["./src/main.ts"],
     // Things require()d by Playwright
-    external: ["electron/index.js", "ws", "./appIcon.png", "pixelmatch"],
+    external: ["playwright*"],
+    metafile: true,
   };
   return buildOptions;
 }
@@ -36,7 +37,10 @@ function getBuildOptions(args) {
  */
 async function build(options) {
   await fs.rm(options.outdir, { recursive: true, force: true });
-  return esbuild.build(options);
+  const result = await esbuild.build(options);
+  const text = await esbuild.analyzeMetafile(result.metafile);
+  console.log(text);
+  return result;
 }
 
 /**

@@ -3,7 +3,6 @@ import { join } from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 import dedent from "dedent";
-import { format } from "prettier";
 import { prettyPrint } from "@gt/utils/logger";
 
 function generateSchemaFile(
@@ -78,11 +77,6 @@ const generateSchemaSpecFile = (type: string): string => dedent`
     testSchemaWithSamples(validate, samples);
   });
 `;
-
-function writeFormattedFile(filepath: string, content: string): Promise<void> {
-  const formattedContent = format(content, { filepath });
-  return writeFile(filepath, formattedContent, "utf-8");
-}
 
 export async function generateTypes(
   {
