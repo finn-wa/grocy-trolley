@@ -3,7 +3,6 @@ import { config } from "dotenv";
 import { existsSync } from "fs";
 
 const EnvVars = [
-  "BARCODEBUDDY_URL",
   "CACHE_DIR",
   "COUNTDOWN_EMAIL",
   "COUNTDOWN_PASSWORD",

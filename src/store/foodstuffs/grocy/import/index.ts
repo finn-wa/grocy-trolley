@@ -1,4 +1,3 @@
-import { BarcodeBuddyService } from "@gt/barcodebuddy/scraper";
 import { GrocyServices } from "grocy";
 import { TaggunReceiptScanner } from "receipt-ocr";
 import { FoodstuffsServices } from "../../services";
@@ -36,12 +35,7 @@ export function foodstuffsImporters(
       foodstuffs.orderService,
       grocy.orderRecordService
     ),
-    barcodeImporter: new FoodstuffsBarcodeImporter(
-      cartImporter,
-      new BarcodeBuddyService(),
-      grocy.productService,
-      foodstuffs.searchService
-    ),
+    barcodeImporter: new FoodstuffsBarcodeImporter(cartImporter, grocy.productService),
     receiptImporter: new FoodstuffsReceiptImporter(
       foodstuffs,
       listImporter,

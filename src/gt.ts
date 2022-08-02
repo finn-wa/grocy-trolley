@@ -44,8 +44,6 @@ export async function importFrom(source?: ImportSource, options: ImportOptions =
     await importers.listImporter.importList(listId);
   } else if (source === "order") {
     await importers.orderImporter.importLatestOrders();
-  } else if (source === "barcodes") {
-    await importers.barcodeImporter.importFromBarcodeBuddy();
   }
 }
 
