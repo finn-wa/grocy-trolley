@@ -11,6 +11,11 @@ export function getCacheDirForEmail(email = "anon") {
   return path.join(getCacheDir(), email.replace(/\W+/g, "_"));
 }
 
+/**
+ * A cache service that acts like a file-backed record with get and set methods.
+ * @param T the shape of the store. Object keys will be converted to file names
+ *          and values will be stored as JSON.
+ */
 export class CacheService<T extends Record<string, unknown>> {
   private readonly cacheDir: string;
 

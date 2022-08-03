@@ -5,13 +5,17 @@ import { Logger, prettyPrint } from "@gt/utils/logger";
 import dedent from "dedent";
 import path, { basename } from "path";
 import prompts from "prompts";
-import { ReceiptScanner } from "receipt-ocr";
+import { ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
+import { inject, singleton } from "tsyringe";
+import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";
 import { ListProductRef, toListProductRef } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsCartProduct } from "../../models";
 import { resultToListRef } from "../../search/foodstuffs-search-agent";
-import { FoodstuffsServices } from "../../services";
+import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
+import { FoodstuffsReceiptItemiser } from "./foodstuffs-receipt-itemiser";
 import { FoodstuffsListImporter } from "./list-importer";
 
+@singleton()
 export class FoodstuffsReceiptImporter {
   private readonly logger = new Logger(this.constructor.name);
   private readonly scanCache = new CacheService<Record<string, ReceiptItem[]>>(
@@ -22,10 +26,11 @@ export class FoodstuffsReceiptImporter {
   );
 
   constructor(
-    private readonly foodstuffs: Pick<FoodstuffsServices, "listService" | "searchService">,
+    @inject("ReceiptScanner") private readonly scanner: ReceiptScanner,
+    private readonly itemiser: FoodstuffsReceiptItemiser,
+    private readonly foodstuffsListService: FoodstuffsListService,
+    private readonly foodstuffsSearchService: FoodstuffsSearchService,
     private readonly listImporter: FoodstuffsListImporter,
-    private readonly scanner: ReceiptScanner,
-    private readonly itemiser: ReceiptItemiser,
     private readonly grocyProductService: GrocyProductService
   ) {}
 
@@ -135,7 +140,7 @@ export class FoodstuffsReceiptImporter {
         );
         continue;
       }
-      const searchRes = await this.foodstuffs.searchService.searchAndSelectProduct(item.name);
+      const searchRes = await this.foodstuffsSearchService.searchAndSelectProduct(item.name);
       if (searchRes === null) {
         notFound.push(item);
       } else {
@@ -177,8 +182,8 @@ export class FoodstuffsReceiptImporter {
       return { success: false };
     }
     const { listId } = newListName
-      ? await this.foodstuffs.listService.createList(newListName)
-      : await this.foodstuffs.listService.createListWithNamePrompt();
+      ? await this.foodstuffsListService.createList(newListName)
+      : await this.foodstuffsListService.createListWithNamePrompt();
     await this.importReceiptListRefs(listRefs, listId);
     return { success: true };
   }
@@ -189,7 +194,7 @@ export class FoodstuffsReceiptImporter {
    * @param listId ID of list to use for import
    */
   async importReceiptListRefs(listRefs: Record<string, ListProductRef>, listId: string) {
-    await this.foodstuffs.listService.addProductsToList(listId, Object.values(listRefs));
+    await this.foodstuffsListService.addProductsToList(listId, Object.values(listRefs));
     await this.listImporter.importList(listId);
     this.logger.info("Adding receipt metadata to imported items...");
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();

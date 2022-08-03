@@ -1,36 +1,41 @@
+import { GrocyQuantityUnitIdLookupService } from "@gt/grocy/id-lookup/grocy-quantity-unit-id-lookup-service";
+import { GrocyParentProductService } from "@gt/grocy/products/grocy-parent-product-service";
+import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { ParentProduct } from "@gt/grocy/products/types";
 import { Product } from "@gt/grocy/products/types/Product";
+import { GrocyShoppingListService } from "@gt/grocy/shopping-lists/grocy-shopping-list-service";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyServices } from "grocy";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
+import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
-import { TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";
+import { FoodstuffsListService, TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";
 import { FoodstuffsCartProduct } from "../../models";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
-import { FoodstuffsServices } from "../../services";
+import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
 
+@singleton()
 export class GrocyToFoodstuffsConversionService {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    protected readonly grocy: Pick<
-      GrocyServices,
-      "productService" | "parentProductService" | "shoppingListService" | "idLookupServices"
-    >,
-    private readonly foodstuffs: Pick<
-      FoodstuffsServices,
-      "listService" | "cartService" | "searchService"
-    >
+    private readonly grocyProductService: GrocyProductService,
+    private readonly grocyParentProductService: GrocyParentProductService,
+    private readonly grocyShoppingListService: GrocyShoppingListService,
+    private readonly grocyQuantityUnitIds: GrocyQuantityUnitIdLookupService,
+    private readonly foodstuffsListService: FoodstuffsListService,
+    private readonly foodstuffsCartService: FoodstuffsCartService,
+    private readonly foodstuffsSearchService: FoodstuffsSearchService
   ) {}
 
   async grocyListToFoodstuffsCart() {
-    await this.foodstuffs.cartService.clearCart();
+    await this.foodstuffsCartService.clearCart();
     // We clean up before and intentionally leave dangling state for debugging
-    await this.foodstuffs.listService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
+    await this.foodstuffsListService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
 
-    const listItems = await this.grocy.shoppingListService.getShoppingListItems();
-    const products = await this.grocy.productService.getAllProducts();
-    const parentProducts = await this.grocy.parentProductService.getParentProducts(products);
+    const listItems = await this.grocyShoppingListService.getShoppingListItems();
+    const products = await this.grocyProductService.getAllProducts();
+    const parentProducts = await this.grocyParentProductService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
 
     for (const item of listItems) {
@@ -41,12 +46,12 @@ export class GrocyToFoodstuffsConversionService {
       }
       this.logger.info(`Found product: ${product.name}`);
       const fsProducts = await this.getFoodstuffsProducts(product, parentProducts);
-      const unit = await this.grocy.idLookupServices.quantityUnits.getRequiredKey(item.qu_id);
+      const unit = await this.grocyQuantityUnitIds.getRequiredKey(item.qu_id);
       const quantity = unit === "ea" ? item.amount : 1;
       cartRefs.push(...fsProducts.map((product) => ({ ...product, quantity })));
     }
     this.logger.info("Adding products to cart");
-    await this.foodstuffs.cartService.addProductsToCart(cartRefs);
+    await this.foodstuffsCartService.addProductsToCart(cartRefs);
   }
 
   private async getFoodstuffsProducts(
@@ -59,14 +64,14 @@ export class GrocyToFoodstuffsConversionService {
         this.logger.warn(
           `Parent product ${parent.product.id} / ${parent.product.name} does not have children`
         );
-        const result = await this.foodstuffs.searchService.searchAndSelectProduct(
+        const result = await this.foodstuffsSearchService.searchAndSelectProduct(
           product.name.replace("(Generic)", ""),
           "BOTH"
         );
         if (!result) return [];
         return [resultToCartRef(result)];
       }
-      const children = await this.foodstuffs.listService.refreshProductPrices(
+      const children = await this.foodstuffsListService.refreshProductPrices(
         parent.children
           .filter((child) => !!child.userfields?.storeMetadata?.PNS)
           .map((child) => child.userfields.storeMetadata?.PNS as FoodstuffsCartProduct)

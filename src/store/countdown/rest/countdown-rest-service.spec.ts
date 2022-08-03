@@ -7,7 +7,7 @@ import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import * as cacheUtils from "../../../utils/cache";
 import { CountdownRestService } from "./countdown-rest-service";
-import { CountdownUserAgent } from "./countdown-user-agent";
+import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
 
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -16,7 +16,7 @@ class TestRestService extends CountdownRestService {
 }
 
 describe("CountdownRestService", () => {
-  let userAgent: CountdownUserAgent;
+  let userAgent: CountdownAuthHeaderProvider;
   let service: TestRestService;
 
   initEnv({
@@ -34,7 +34,7 @@ describe("CountdownRestService", () => {
 
   beforeEach(async () => {
     await rm(cacheDir, { recursive: true, force: true });
-    userAgent = new CountdownUserAgent(getBrowser, loginDetails);
+    userAgent = new CountdownAuthHeaderProvider(getBrowser, loginDetails);
     service = new TestRestService(userAgent);
   });
 
@@ -45,18 +45,14 @@ describe("CountdownRestService", () => {
 
   test("authHeaders", async () => {
     expect(existsSync(cacheDir)).toBeFalsy();
-    const getHeadersSpy = jest.spyOn(userAgent, "getHeaders");
     const builder = await service.authHeaders();
-    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
-
     const rawHeaders = builder.raw();
     const newService = new TestRestService(userAgent);
     // should load from cache without using browser
     const cachedHeaders = (await newService.authHeaders()).raw();
     expect(cachedHeaders).toEqual(rawHeaders);
-    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
     // These assertions are more to test whether the separate cache path is working
-    const cacheFiles = await readdir(`${cacheDir}/${userAgent.storeName}`);
+    const cacheFiles = await readdir(`${cacheDir}/${userAgent.name}`);
     expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
   });
 });

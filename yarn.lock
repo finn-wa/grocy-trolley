@@ -5,6 +5,13 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@abraham/reflection@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@abraham/reflection@npm:0.10.0"
+  checksum: d50ca13ccc1305f288f39cf155a96483843746283c8233502c4d27ab999e36c16e1c0875095066c77d7436387b1ab561851f255926c55e5239751dd02d274288
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -12,6 +19,15 @@ __metadata:
     "@jridgewell/gen-mapping": ^0.1.0
     "@jridgewell/trace-mapping": ^0.3.9
   checksum: d74d170d06468913921d72430259424b7e4c826b5a7d39ff839a29d547efb97dc577caa8ba3fb5cf023624e9af9d09651afc3d4112a45e2050328abc9b3a2292
+  languageName: node
+  linkType: hard
+
+"@anatine/esbuild-decorators@npm:^0.2.19":
+  version: 0.2.19
+  resolution: "@anatine/esbuild-decorators@npm:0.2.19"
+  peerDependencies:
+    esbuild: ~0.14.29
+  checksum: c9480485973215341aabb37f569307cdb45a7def27af70c314260ea91a3bdbddce3ae3e102e7dcf6186d3a0be939bc52cf787342409cf0ae4111aea40dd962c2
   languageName: node
   linkType: hard
 
@@ -4561,6 +4577,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "grocy-trolley@workspace:."
   dependencies:
+    "@abraham/reflection": ^0.10.0
+    "@anatine/esbuild-decorators": ^0.2.19
     "@types/dedent": ^0.7.0
     "@types/jest": ^28.1.6
     "@types/node": ^18.0.6
@@ -4588,6 +4606,7 @@ __metadata:
     rxjs: ^7.5.6
     standard-version: ^9.5.0
     ts-jest: ^28.0.7
+    tsyringe: ^4.7.0
     typescript: "*4.7.4"
   languageName: unknown
   linkType: soft
@@ -7772,7 +7791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1, tslib@npm:^1.9.0":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.0, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -7794,6 +7813,15 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 1843f4c1b2e0f975e08c4c21caa4af4f7f65a12ac1b81b3b8489366826259323feb3fc7a243123453d2d1a02314205a7634e048d4a8009921da19f99755cdc48
+  languageName: node
+  linkType: hard
+
+"tsyringe@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "tsyringe@npm:4.7.0"
+  dependencies:
+    tslib: ^1.9.3
+  checksum: 6d84e0767538fabf60eafb926bd285d08d25847875b635f8a3ab8b3093c8814aca4f47072fbb51837bd431259dc2464572e5c28a838b833c9ef097d5b1a895b3
   languageName: node
   linkType: hard
 

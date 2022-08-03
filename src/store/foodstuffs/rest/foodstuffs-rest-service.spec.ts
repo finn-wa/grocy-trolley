@@ -6,8 +6,8 @@ import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import * as cacheUtils from "../../../utils/cache";
 import { getBrowser } from "../../shared/rest/browser";
+import { FoodstuffsAuthHeaderProvider } from "./foodstuffs-auth-header-provider";
 import { FoodstuffsRestService } from "./foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "./foodstuffs-user-agent";
 
 class TestRestService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -15,7 +15,7 @@ class TestRestService extends FoodstuffsRestService {
 }
 
 describe("FoodstuffsRestService", () => {
-  let userAgent: FoodstuffsUserAgent;
+  let authHeaderProvider: FoodstuffsAuthHeaderProvider;
   let service: TestRestService;
 
   initEnv({
@@ -33,8 +33,8 @@ describe("FoodstuffsRestService", () => {
 
   beforeEach(async () => {
     await rm(cacheDir, { recursive: true, force: true });
-    userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
-    service = new TestRestService(userAgent);
+    authHeaderProvider = new FoodstuffsAuthHeaderProvider(getBrowser, loginDetails);
+    service = new TestRestService(authHeaderProvider);
   });
 
   afterAll(async () => {
@@ -44,21 +44,17 @@ describe("FoodstuffsRestService", () => {
 
   test("authHeaders", async () => {
     expect(existsSync(cacheDir)).toBeFalsy();
-    const getHeadersSpy = jest.spyOn(userAgent, "getHeaders");
     const builder = await service.authHeaders();
-    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
-
     const rawHeaders = builder.raw();
     expect(rawHeaders.cookie).toHaveLength(1);
     expect(rawHeaders.cookie[0]).toMatch(/UserCookieV1/);
 
-    const newService = new TestRestService(userAgent);
+    const newService = new TestRestService(authHeaderProvider);
     // should load from cache without using browser
     const cachedHeaders = (await newService.authHeaders()).raw();
     expect(cachedHeaders).toEqual(rawHeaders);
-    expect(getHeadersSpy).toHaveBeenCalledTimes(1);
     // These assertions are more to test whether the separate cache path is working
-    const cacheFiles = await readdir(`${cacheDir}/${userAgent.storeName}`);
+    const cacheFiles = await readdir(`${cacheDir}/${authHeaderProvider.name}`);
     expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
   });
 });

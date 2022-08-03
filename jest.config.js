@@ -11,6 +11,7 @@ module.exports = {
   }),
   testTimeout: 60000,
   testEnvironment: "node",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   testMatch: ["<rootDir>/src/**/*.spec.ts"],
   clearMocks: true,
   reporters: [
@@ -26,6 +27,6 @@ module.exports = {
     ],
   ],
   globals: {
-    "ts-jest": { isolatedModules: true },
+    "ts-jest": { isolatedModules: true, tsconfig: tsconfig.compilerOptions },
   },
 };

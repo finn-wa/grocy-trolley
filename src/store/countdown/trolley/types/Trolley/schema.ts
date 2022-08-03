@@ -46,6 +46,7 @@ export const schema: JTDSchemaType<Trolley> = {
             isSlotToday: { type: "boolean" },
             method: { type: "string" },
             perishableCode: { type: "string" },
+            suburbId: { type: "uint16" },
           },
           optionalProperties: {
             cutOffTime: {},

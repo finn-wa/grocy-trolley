@@ -1,9 +1,11 @@
+import { GrocyOrderRecordService } from "@gt/grocy/order-records/grocy-order-record-service";
 import { GrocyFalse, GrocyTrue } from "@gt/grocy/types/grocy-types";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { GrocyOrderRecordService } from "@gt/grocy/order-records/grocy-order-record-service";
+import { singleton } from "tsyringe";
 import { FoodstuffsOrderService } from "../../orders/foodstuffs-order-service";
 import { FoodstuffsCartImporter } from "./cart-importer";
 
+@singleton()
 export class FoodstuffsOrderImporter {
   private readonly logger = new Logger(this.constructor.name);
 

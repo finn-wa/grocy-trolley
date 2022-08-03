@@ -2,9 +2,10 @@ import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
 import prompts from "prompts";
 import { setTimeout } from "timers/promises";
+import { singleton } from "tsyringe";
 import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import {
   formatListProductRef,
   List,
@@ -15,10 +16,11 @@ import {
 
 export const TEMP_LIST_PREFIX = "[temporary]";
 
+@singleton()
 export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
   protected readonly logger = new Logger(this.constructor.name);
-  constructor(userAgent: FoodstuffsUserAgent) {
+  constructor(userAgent: FoodstuffsAuthHeaderProvider) {
     super(userAgent);
   }
 

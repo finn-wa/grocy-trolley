@@ -1,6 +1,8 @@
+import { singleton } from "tsyringe";
 import { QuantityUnitName, QUANTITY_UNITS } from "../grocy-config";
 import { GrocyIdLookupService } from "./grocy-id-lookup-service";
 
+@singleton()
 export class GrocyQuantityUnitIdLookupService extends GrocyIdLookupService<QuantityUnitName> {
   private readonly quantityUnitIds = [...QUANTITY_UNITS];
   protected fetchMapOfKeysToGrocyIds = () =>

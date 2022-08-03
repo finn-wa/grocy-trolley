@@ -1,5 +1,5 @@
 import { dev } from "@gt/dev";
-import { exportTo, importFrom } from "@gt/gt";
+import { exportTo, importFrom } from "@gt/app";
 import { initEnv } from "@gt/utils/environment";
 import { LOG_LEVELS } from "@gt/utils/logger";
 import { version } from "@gt/utils/version";

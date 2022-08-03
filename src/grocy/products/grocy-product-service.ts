@@ -1,15 +1,18 @@
 import { ConversionWithoutId } from "@gt/store/foodstuffs/grocy/import/product-converter";
 import { Logger } from "@gt/utils/logger";
-import { GrocyProductRestService } from "./grocy-product-rest-service";
+import { singleton } from "tsyringe";
+import { GrocyProductController } from "./grocy-product-controller";
 import { NewProduct, Product } from "./types/Product";
 import { parseProductBarcode, ProductBarcode, RawProductBarcode } from "./types/ProductBarcodes";
 import { getProductBarcodesSchema } from "./types/ProductBarcodes/schema";
 
 export const products = "products";
 
+@singleton()
 export class GrocyProductService {
   protected readonly logger = new Logger(this.constructor.name);
-  private readonly rest = new GrocyProductRestService();
+
+  constructor(private readonly rest: GrocyProductController) {}
 
   /**
    * Gets all products.

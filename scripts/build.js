@@ -1,6 +1,7 @@
 const { program, Option } = require("commander");
 const esbuild = require("esbuild");
 const fs = require("fs/promises");
+const { esbuildDecorators } = require("@anatine/esbuild-decorators");
 
 /**
  * Produces build options from CLI args.
@@ -19,11 +20,11 @@ function getBuildOptions(args) {
     platform: "node",
     plugins: [],
     sourcemap: args.sourcemap ? "inline" : false,
-    tsconfig: "./tsconfig.json",
     watch: args.watch,
     entryPoints: ["./src/main.ts"],
     external: ["playwright*"],
     metafile: args.analyse,
+    plugins: [esbuildDecorators()],
   };
   return buildOptions;
 }

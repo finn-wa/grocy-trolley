@@ -1,6 +1,6 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsListService } from "./foodstuffs-list-service";
 import { List, ListProductRef } from "./foodstuffs-list.model";
@@ -57,7 +57,7 @@ describe("FoodstuffsListService", () => {
     expect(arr).toMatchObject<ArrayLike<unknown>>({ length });
 
   beforeEach(async () => {
-    const userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
+    const userAgent = new FoodstuffsAuthHeaderProvider(getBrowser, loginDetails);
     listService = new FoodstuffsListService(userAgent);
     await listService.deleteLists(/^(?!My Favourites)/);
   });

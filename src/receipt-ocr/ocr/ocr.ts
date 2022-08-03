@@ -3,7 +3,7 @@ import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import path from "path/posix";
-import { ReceiptScanner } from "..";
+import { ReceiptScanner } from "../receipts.model";
 
 export class OcrReceiptScanner extends RestService implements ReceiptScanner {
   protected readonly baseUrl = this.validateBaseUrl("https://api.ocr.space");

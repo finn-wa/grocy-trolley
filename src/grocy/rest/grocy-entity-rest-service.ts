@@ -1,5 +1,6 @@
 import { Logger } from "@gt/utils/logger";
 import { ValidateFunction } from "ajv";
+import { injectable, singleton } from "tsyringe";
 import { getCreatedObjectIdSchema, GrocyEntity } from "../types/grocy-types";
 import { GrocyRestService } from "./grocy-rest-service";
 
@@ -20,6 +21,7 @@ import { GrocyRestService } from "./grocy-rest-service";
  */
 export type GrocyEntityObjectFilter = string;
 
+@injectable()
 export class GrocyEntityService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 

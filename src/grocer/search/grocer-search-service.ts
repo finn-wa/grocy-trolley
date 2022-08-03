@@ -2,9 +2,11 @@ import { getEnvVar } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { searchAndSelectResult } from "@gt/utils/search";
+import { singleton } from "tsyringe";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
 import { getProductSearchResponseSchema } from "./types/ProductSearchResponse/schema";
 
+@singleton()
 export class GrocerSearchService extends RestService {
   protected baseUrl = "https://api.grocer.nz";
   protected logger = new Logger(this.constructor.name);

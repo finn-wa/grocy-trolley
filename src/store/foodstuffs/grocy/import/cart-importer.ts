@@ -1,23 +1,26 @@
+import { GrocyParentProductService } from "@gt/grocy/products/grocy-parent-product-service";
+import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { Product } from "@gt/grocy/products/types/Product";
+import { GrocyStockService } from "@gt/grocy/stock/grocy-stock-service";
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import { GrocyServices } from "grocy";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, FoodstuffsCart, toCartProductRef } from "../../cart/foodstuffs-cart.model";
 import { FoodstuffsBaseProduct, FoodstuffsCartProduct } from "../../models";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
+@singleton()
 export class FoodstuffsCartImporter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly converter: FoodstuffsToGrocyConverter,
     private readonly cartService: FoodstuffsCartService,
-    private readonly grocy: Pick<
-      GrocyServices,
-      "productService" | "parentProductService" | "stockService"
-    >
+    private readonly grocyProductService: GrocyProductService,
+    private readonly grocyParentProductService: GrocyParentProductService,
+    private readonly grocyStockService: GrocyStockService
   ) {}
 
   async importProducts(products: FoodstuffsBaseProduct[]) {
@@ -35,7 +38,7 @@ export class FoodstuffsCartImporter {
     if (!cart) {
       cart = await this.cartService.getCart();
     }
-    const existingProducts = await this.grocy.productService.getAllProducts();
+    const existingProducts = await this.grocyProductService.getAllProducts();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
       .map((product) => product.userfields.storeMetadata?.PNS?.productId);
@@ -46,18 +49,18 @@ export class FoodstuffsCartImporter {
     if (productsToImport.length === 0) {
       this.logger.info("All products have already been imported");
     }
-    const parentProducts = Object.values(await this.grocy.parentProductService.getParentProducts());
+    const parentProducts = Object.values(await this.grocyParentProductService.getParentProducts());
     const newProducts: { id: string; product: FoodstuffsCartProduct }[] = [];
 
     for (const product of productsToImport) {
-      const parent = await this.grocy.parentProductService.promptForMatchingParent(
+      const parent = await this.grocyParentProductService.promptForMatchingParent(
         product.name,
         product.categoryName,
         parentProducts
       );
       const payloads = await this.converter.forImport(product, cart.store.storeId, parent);
       this.logger.info(`Importing product ${payloads.product.name}...`);
-      const createdProduct = await this.grocy.productService.createProduct(
+      const createdProduct = await this.grocyProductService.createProduct(
         payloads.product,
         payloads.quConversions
       );
@@ -90,7 +93,7 @@ export class FoodstuffsCartImporter {
       this.logger.info("Stocking product: " + grocyProduct.name);
       try {
         const addStockRequest = await this.converter.forAddStock(grocyProduct, cart.store.storeId);
-        await this.grocy.stockService.addStock(grocyProduct.id, addStockRequest);
+        await this.grocyStockService.addStock(grocyProduct.id, addStockRequest);
       } catch (error) {
         this.logger.error("Error stocking product");
         if (error instanceof RequestError) {
@@ -103,7 +106,7 @@ export class FoodstuffsCartImporter {
   }
 
   async getProductsByFoodstuffsId(): Promise<Record<string, Product>> {
-    const existingProducts = await this.grocy.productService.getAllProducts();
+    const existingProducts = await this.grocyProductService.getAllProducts();
     return Object.fromEntries(
       existingProducts
         .filter((p) => p.userfields?.storeMetadata?.PNS)

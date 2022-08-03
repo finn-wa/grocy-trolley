@@ -1,9 +1,11 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 
+@singleton()
 export class FoodstuffsCartService {
   protected readonly logger = new Logger(this.constructor.name);
 

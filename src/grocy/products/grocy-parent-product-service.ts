@@ -1,12 +1,14 @@
 import { Logger } from "@gt/utils/logger";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
 import { GrocyProductGroup } from "../grocy-config";
 import { GrocyProductGroupIdLookupService } from "../id-lookup/grocy-product-group-id-lookup-service";
-import { GrocyProductService } from "./grocy-product-service";
-import { Product } from "./types/Product";
 import { GrocyRestService } from "../rest/grocy-rest-service";
+import { GrocyProductService } from "./grocy-product-service";
 import { ParentProduct } from "./types";
+import { Product } from "./types/Product";
 
+@singleton()
 export class GrocyParentProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
   private parentProducts: Record<string, ParentProduct> | null = null;
