@@ -1,7 +1,9 @@
 import { Logger } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { StockAction, StockActionRequestBody, StockAddRequest, StockLogEntry } from "./types";
 
+@singleton()
 export class GrocyStockService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 

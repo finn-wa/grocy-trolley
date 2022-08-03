@@ -2,20 +2,16 @@ import { Logger } from "@gt/utils/logger";
 import { setTimeout } from "timers/promises";
 import { CartProductRef } from "../cart/foodstuffs-cart.model";
 import { ListProductRef } from "../lists/foodstuffs-list.model";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
-import { ProductSearchResult, ProductSearchResponse } from "./foodstuffs-search.model";
+import { ProductSearchResponse, ProductSearchResult } from "./foodstuffs-search.model";
 
-/**
- * Service that uses a {@link FoodstuffsUserAgent} to interact with the
- * Foodstuffs Search API.
- */
 export class FoodstuffsSearchAgent extends FoodstuffsRestService {
   protected readonly logger;
   private readonly timeout = 1000;
   private lastSearchTime = 0;
 
-  constructor(name: string, userAgent: FoodstuffsUserAgent) {
+  constructor(name: string, userAgent: FoodstuffsAuthHeaderProvider) {
     super(userAgent);
     this.logger = new Logger(name);
   }

@@ -1,4 +1,4 @@
-import { exportTo, importFrom } from "@gt/gt";
+import { exportTo, importFrom } from "@gt/app";
 import { ifPrevEquals } from "@gt/utils/prompts";
 import prompts from "prompts";
 import { ExportDestination, GrocyTrolleyCommand, ImportSource } from "./gt-cli-model";
@@ -24,7 +24,6 @@ export async function promptGT() {
         { title: "Foodstuffs orders", value: "order" },
         { title: "Foodstuffs list", value: "list" },
         { title: "Foodstuffs receipt", value: "receipt" },
-        { title: "Barcode Buddy", value: "barcodes" },
         { title: "Exit", value: "exit" },
       ],
     },

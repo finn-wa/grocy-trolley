@@ -1,7 +1,10 @@
+import { AppTokens } from "@gt/app-tokens";
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
 import { searchAndSelectResult } from "@gt/utils/search";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { Browser } from "playwright";
+import { inject, singleton } from "tsyringe";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import { FoodstuffsSearchAgent } from "./foodstuffs-search-agent";
 import { ProductSearchResult, SearchAgentType } from "./foodstuffs-search.model";
 
@@ -9,6 +12,7 @@ import { ProductSearchResult, SearchAgentType } from "./foodstuffs-search.model"
  * Search service that supports searching with multiple {@link FoodstuffsSearchAgent}s
  * as well as interactive prompt-based search methods.
  */
+@singleton()
 export class FoodstuffsSearchService {
   protected readonly logger = new Logger(this.constructor.name);
   private readonly agents: Readonly<Record<SearchAgentType, FoodstuffsSearchAgent[]>>;
@@ -17,13 +21,22 @@ export class FoodstuffsSearchService {
    * Creates a new FoodstuffSearchService.
    * @param userAgent Authenticated user agent
    */
-  constructor(userAgent: FoodstuffsUserAgent) {
-    const userSearchAgent = new FoodstuffsSearchAgent("FoodstuffsUserSearchAgent", userAgent);
-    const anonAgent = new FoodstuffsSearchAgent("FoodstuffsAnonSearchAgent", userAgent.clone(null));
+  constructor(
+    authHeaderProvider: FoodstuffsAuthHeaderProvider,
+    @inject(AppTokens.browserLoader) browserLoader: () => Promise<Browser>
+  ) {
+    const userSearchAgent = new FoodstuffsSearchAgent(
+      "FoodstuffsUserSearchAgent",
+      authHeaderProvider
+    );
+    const anonSearchAgent = new FoodstuffsSearchAgent(
+      "FoodstuffsAnonSearchAgent",
+      new FoodstuffsAuthHeaderProvider(browserLoader)
+    );
     this.agents = {
       USER: [userSearchAgent],
-      ANON: [anonAgent],
-      BOTH: [userSearchAgent, anonAgent],
+      ANON: [anonSearchAgent],
+      BOTH: [userSearchAgent, anonSearchAgent],
     };
   }
 

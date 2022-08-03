@@ -1,8 +1,10 @@
 import { FOODSTUFFS_CATEGORIES } from "@gt/store/foodstuffs/models";
 import { Logger } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { GrocyProductGroup } from "../grocy-config";
 import { GrocyIdLookupService } from "./grocy-id-lookup-service";
 
+@singleton()
 export class GrocyProductGroupIdLookupService extends GrocyIdLookupService<GrocyProductGroup> {
   private readonly logger = new Logger(this.constructor.name);
   private readonly foodstuffsCategories = [...FOODSTUFFS_CATEGORIES];

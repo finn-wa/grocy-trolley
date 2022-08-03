@@ -1,12 +1,12 @@
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { OpenFoodFactsService } from "@gt/openfoodfacts/openfoodfacts";
-import { Logger } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { CartProductRef } from "../../cart/foodstuffs-cart.model";
 import { ProductSearchResult } from "../../search/foodstuffs-search.model";
 import { FoodstuffsCartImporter } from "./cart-importer";
 
+@singleton()
 export class FoodstuffsBarcodeImporter {
-  private readonly logger = new Logger(this.constructor.name);
   private readonly nzOffService = new OpenFoodFactsService("nz");
   private readonly worldOffService = new OpenFoodFactsService("world");
 

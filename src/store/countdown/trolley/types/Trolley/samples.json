@@ -2115,5 +2115,96 @@
       }
     },
     "messages": []
+  },
+  {
+    "itemCount": 0,
+    "items": [],
+    "isSuccessful": true,
+    "rootUrl": "http://shop.countdown.co.nz",
+    "context": {
+      "shopper": {
+        "firstName": "Count",
+        "isShopper": true,
+        "isLoggedIn": true,
+        "hasOnecard": false,
+        "oneCardBalance": {
+          "isOneCardInError": true,
+          "onecardPointsBalance": null,
+          "continuitySpend": null,
+          "redeemableRewardVouchers": 0,
+          "oneCardNumber": "",
+          "oneCardCurrency": "Food"
+        },
+        "shopperIdHash": "1801841f94089f01d33468e9d097f0839914c4f2753fc355398687cca595dc8b",
+        "shopperScvId": "55b9e5fd-5805-4069-967b-c73deefaea84",
+        "sessionGroups": [],
+        "orderCount": "0",
+        "isSupplyLimitOverrideShopper": false,
+        "isPriorityShopper": false,
+        "isChangingOrder": false,
+        "changingOrderId": null,
+        "hasActiveDeliverySubscription": false
+      },
+      "fulfilment": {
+        "address": "32 Raurenga Avenue, Royal Oak, Auckland 1023",
+        "selectedDate": null,
+        "selectedDateWithTZInfo": null,
+        "startTime": null,
+        "endTime": null,
+        "method": "Courier",
+        "cutOffTime": null,
+        "isSlotToday": false,
+        "isAddressInDeliveryZone": true,
+        "isDefaultDeliveryAddress": false,
+        "areaId": 592,
+        "suburbId": 111,
+        "fulfilmentStoreId": 9538,
+        "perishableCode": "P",
+        "locker": null,
+        "expressFulfilment": {
+          "isExpressSlot": false,
+          "isLastExpressHourWindow": false
+        }
+      },
+      "enabledFeatures": [
+        "HaveYouForgotten",
+        "ProjectShore",
+        "ManagedServiceBar",
+        "RecipesAddToTrolley",
+        "SavedRecipes",
+        "ProductStraps",
+        "DeliverySubscriptionSignUp",
+        "FirstTimeShopper",
+        "OrderConfirmation",
+        "NewDeliverySubscriptionPage",
+        "CancelOrder",
+        "CountryOfOriginInAccordion",
+        "PiesEnableEachUnitForKgProducts",
+        "ForgotPassword",
+        "LazyLoadProductStampImages",
+        "JQueryDeprecationLogging",
+        "Optimizely",
+        "ExpressDelivery",
+        "PaperPackingSlipPreference",
+        "ShowNewIndicatorForPastOrders",
+        "EnableDeliverySaverRetryPayment"
+      ],
+      "shoppingListItems": [],
+      "basketTotals": {
+        "subtotal": "$0.00",
+        "savings": null,
+        "totalItems": 0,
+        "deliveryFees": "$14.00",
+        "bagFees": "$1.00",
+        "totalIncludingDeliveryFees": "$14.00",
+        "eligibilityForDeliverySubscriptionDiscount": "NoSubscription"
+      },
+      "advancedSettingsResponse": {
+        "showHaveYouForgotten": true,
+        "itemLevelSubstitution": true,
+        "allowBannerRotation": true
+      }
+    },
+    "messages": []
   }
 ]

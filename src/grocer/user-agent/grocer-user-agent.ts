@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { getBrowser } from "@gt/store/shared/rest/browser";
 import { Logger } from "@gt/utils/logger";
 import { Browser, Page } from "playwright";
+import { inject, singleton } from "tsyringe";
 import { GrocerStoreName, GROCER_URL, GROCER_VENDORS } from "../models";
 import {
   getStoreContents,
@@ -13,6 +13,7 @@ import {
 /**
  * User agent that performs actions on the grocer.nz page using Playwright.
  */
+@singleton()
 export class GrocerUserAgent {
   private page?: Page;
   private readonly logger = new Logger(this.constructor.name);
@@ -22,7 +23,7 @@ export class GrocerUserAgent {
    * @param browserLoader Cold promise that returns the Playwright Browser
    *    instance to use to perform requests.
    */
-  constructor(protected readonly browserLoader: () => Promise<Browser> = getBrowser) {}
+  constructor(@inject("browserLoader") protected readonly browserLoader: () => Promise<Browser>) {}
 
   /**
    * Adds store to selected stores (if it is not already selected).

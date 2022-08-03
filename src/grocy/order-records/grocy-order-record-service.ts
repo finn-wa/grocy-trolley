@@ -1,4 +1,5 @@
 import { Logger } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { GrocyTrue } from "../types/grocy-types";
 import { GrocyUserEntityService } from "../user-entities/grocy-user-entity-service";
@@ -6,6 +7,7 @@ import { CreatedObjectResponse, OrderRecord } from "../user-entities/types";
 
 const ORDER = "order";
 
+@singleton()
 export class GrocyOrderRecordService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
 

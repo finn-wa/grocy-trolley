@@ -1,4 +1,5 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { GrocyEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import {
@@ -9,6 +10,7 @@ import {
   UserObjects,
 } from "./types";
 
+@singleton()
 export class GrocyUserEntityService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
   private readonly entityService = new GrocyEntityService();

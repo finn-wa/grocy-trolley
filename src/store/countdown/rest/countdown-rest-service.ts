@@ -1,51 +1,15 @@
-import { StoreRestService } from "@gt/store/shared/rest/store-rest-service";
+import { RestService } from "@gt/utils/rest";
 import { COUNTDOWN_URL } from "../models";
-import { CountdownUserAgent } from "./countdown-user-agent";
+import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
 
-export abstract class CountdownRestService extends StoreRestService {
+export abstract class CountdownRestService extends RestService {
   protected readonly baseUrl = this.validateBaseUrl(`${COUNTDOWN_URL}/api`);
-  protected readonly headers = {
-    allowed: [
-      "host",
-      "user-agent",
-      "accept",
-      "accept-language",
-      "accept-encoding",
-      "referer",
-      "dnt",
-      "cookie",
-      "sec-fetch-dest",
-      "sec-fetch-mode",
-      "sec-fetch-site",
-    ],
-    disallowed: [
-      "accept",
-      "content-type",
-      "x-newrelic-id",
-      "newrelic",
-      "traceparent",
-      "tracestate",
-      "__requestverificationtoken",
-      "connection",
-      "pragma",
-      "cache-control",
-      "te",
-    ],
-  };
 
-  constructor(protected readonly userAgent: CountdownUserAgent) {
-    super(userAgent);
+  constructor(protected readonly authHeaderProvider: CountdownAuthHeaderProvider) {
+    super();
   }
 
-  protected async isValid(headers: Headers): Promise<boolean> {
-    return true;
-    // TODO this is returning false negatives
-    /*
-    const builder = new HeadersBuilder(headers).acceptJson();
-    const response = await this.get(this.buildUrl("/v1/trolleys/my"), builder.build());
-    if (!response.ok) return false;
-    const body = await response.json();
-    return body.isSuccessful;
-    */
+  protected authHeaders() {
+    return this.authHeaderProvider.authHeaders();
   }
 }

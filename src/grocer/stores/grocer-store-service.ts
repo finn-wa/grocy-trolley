@@ -1,6 +1,6 @@
-import { CacheService, getCacheDir } from "@gt/utils/cache";
-import path from "path";
+import { CacheService } from "@gt/utils/cache";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
 import { GrocerApiService } from "../api/grocer-api-service";
 import {
   GrocerVendorCode,
@@ -9,10 +9,11 @@ import {
   Store,
 } from "./types/Stores";
 
+@singleton()
 export class GrocerStoreService {
   private readonly cache = new CacheService<{ stores: Store[] }>("grocer");
 
-  constructor(private readonly api = new GrocerApiService()) {}
+  constructor(private readonly api: GrocerApiService) {}
 
   getStores = () => this.api.getStores();
 

@@ -1,16 +1,18 @@
 import { Logger } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import {
   FoodstuffsOrder,
   FoodstuffsOrderDetails,
   FoodstuffsOrdersResponse,
 } from "./foodstuffs-order.model";
 
+@singleton()
 export class FoodstuffsOrderService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
-  constructor(userAgent: FoodstuffsUserAgent) {
+  constructor(userAgent: FoodstuffsAuthHeaderProvider) {
     super(userAgent);
   }
 

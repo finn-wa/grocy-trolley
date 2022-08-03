@@ -3,6 +3,7 @@ import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
 import chalk from "chalk";
 import prompts from "prompts";
+import { singleton } from "tsyringe";
 import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
@@ -16,6 +17,7 @@ import {
 // todo: method that makes copy of list with resolved parent products
 // this can then be used across all exporters
 
+@singleton()
 export class GrocyShoppingListService extends GrocyRestService {
   protected logger = new Logger(this.constructor.name);
   private readonly listService = new GrocySingleEntityService(

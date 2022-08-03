@@ -1,20 +1,28 @@
-import { GrocyIdLookupServices } from "@gt/grocy";
 import { QuantityUnitName } from "@gt/grocy/grocy-config";
+import { GrocyLocationIdLookupService } from "@gt/grocy/id-lookup/grocy-location-id-lookup-service";
+import { GrocyProductGroupIdLookupService } from "@gt/grocy/id-lookup/grocy-product-group-id-lookup-service";
+import { GrocyQuantityUnitIdLookupService } from "@gt/grocy/id-lookup/grocy-quantity-unit-id-lookup-service";
+import { GrocyShoppingLocationIdLookupService } from "@gt/grocy/id-lookup/grocy-shopping-location-id-lookup-service";
 import { ParentProduct } from "@gt/grocy/products/types";
 import { NewProduct, Product } from "@gt/grocy/products/types/Product";
 import { StockAddRequest } from "@gt/grocy/stock/types";
 import { QuantityUnitConversion } from "@gt/grocy/types/grocy-types";
 import { Logger, prettyPrint } from "@gt/utils/logger";
+import { singleton } from "tsyringe";
 import { FoodstuffsCartProduct, FoodstuffsListProduct, FoodstuffsLiveProduct } from "../../models";
 import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
 import { CategoryLocations } from "../categories";
 
+@singleton()
 export class FoodstuffsToGrocyConverter {
   private readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly grocyIds: GrocyIdLookupServices,
-    private readonly foodstuffsSearchService: FoodstuffsSearchService
+    private readonly foodstuffsSearchService: FoodstuffsSearchService,
+    private readonly grocyLocationIds: GrocyLocationIdLookupService,
+    private readonly grocyQuantityUnitIds: GrocyQuantityUnitIdLookupService,
+    private readonly grocyProductGroupIds: GrocyProductGroupIdLookupService,
+    private readonly grocyShoppingLocationIds: GrocyShoppingLocationIdLookupService
   ) {}
 
   async forImport(
@@ -68,7 +76,7 @@ export class FoodstuffsToGrocyConverter {
         quConversions = await this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
       }
     } else if (purchaseSaleType.type === "WEIGHT") {
-      const purchaseUnit = this.grocyIds.quantityUnits.matchQuantityUnit(purchaseSaleType.unit);
+      const purchaseUnit = this.grocyQuantityUnitIds.matchQuantityUnit(purchaseSaleType.unit);
       // weightDisplayName is often wrong for WEIGHT saleType
       quantitySuffix = `(${purchaseUnit})`;
       purchaseUnitId = await this.getUnitId(purchaseUnit);
@@ -78,8 +86,8 @@ export class FoodstuffsToGrocyConverter {
       throw new Error("Unexpected saleType: " + purchaseSaleType.type);
     }
     if (parent?.product?.qu_id_stock && parent.product.qu_id_stock !== stockUnitId) {
-      const parentStockUnit = await this.grocyIds.quantityUnits.getKey(parent.product.qu_id_stock);
-      const childStockUnit = await this.grocyIds.quantityUnits.getKey(stockUnitId);
+      const parentStockUnit = await this.grocyQuantityUnitIds.getKey(parent.product.qu_id_stock);
+      const childStockUnit = await this.grocyQuantityUnitIds.getKey(stockUnitId);
       this.logger.error(
         `Parent stock unit ${parentStockUnit} does not match ${childStockUnit}! Please fix in Grocy.`
       );
@@ -90,13 +98,13 @@ export class FoodstuffsToGrocyConverter {
       name: [product.brand, product.name, quantitySuffix].filter((x) => !!x).join(" "),
       parent_product_id: parent?.product.id,
       description: "",
-      location_id: await this.grocyIds.locations.getRequiredGrocyId(CategoryLocations[category]),
+      location_id: await this.grocyLocationIds.getRequiredGrocyId(CategoryLocations[category]),
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
       qu_factor_purchase_to_stock: stockQuantityFactor,
       quick_consume_amount: stockQuantityFactor,
-      product_group_id: await this.grocyIds.productGroups.getGrocyId(category),
-      shopping_location_id: await this.grocyIds.shoppingLocations.getGrocyId(storeId),
+      product_group_id: await this.grocyProductGroupIds.getGrocyId(category),
+      shopping_location_id: await this.grocyShoppingLocationIds.getGrocyId(storeId),
       userfields: { storeMetadata: { PNS: product }, isParent: false },
     };
     return { product: newProduct, quConversions };
@@ -151,7 +159,7 @@ export class FoodstuffsToGrocyConverter {
         quConversions = await this.getProductQuantityUnitConversions(displayUnit, displayQuantity);
       }
     } else if (purchaseSaleType.type === "WEIGHT") {
-      const purchaseUnit = this.grocyIds.quantityUnits.matchQuantityUnit(purchaseSaleType.unit);
+      const purchaseUnit = this.grocyQuantityUnitIds.matchQuantityUnit(purchaseSaleType.unit);
       // weightDisplayName is often wrong for WEIGHT saleType
       quantitySuffix = `(${purchaseUnit})`;
       purchaseUnitId = await this.getUnitId(purchaseUnit);
@@ -161,8 +169,8 @@ export class FoodstuffsToGrocyConverter {
       throw new Error("Unexpected saleType: " + purchaseSaleType.type);
     }
     if (parent?.product?.qu_id_stock && parent.product.qu_id_stock !== stockUnitId) {
-      const parentStockUnit = await this.grocyIds.quantityUnits.getKey(parent.product.qu_id_stock);
-      const childStockUnit = await this.grocyIds.quantityUnits.getKey(stockUnitId);
+      const parentStockUnit = await this.grocyQuantityUnitIds.getKey(parent.product.qu_id_stock);
+      const childStockUnit = await this.grocyQuantityUnitIds.getKey(stockUnitId);
       this.logger.error(
         `Parent stock unit ${parentStockUnit} does not match ${childStockUnit}! Please fix in Grocy.`
       );
@@ -174,14 +182,14 @@ export class FoodstuffsToGrocyConverter {
         .join(" "),
       parent_product_id: parent?.product?.id,
       description: "",
-      location_id: await this.grocyIds.locations.getRequiredGrocyId(
+      location_id: await this.grocyLocationIds.getRequiredGrocyId(
         CategoryLocations[product.category]
       ),
       qu_id_purchase: purchaseUnitId,
       qu_id_stock: stockUnitId,
       qu_factor_purchase_to_stock: stockQuantityFactor,
       quick_consume_amount: stockQuantityFactor,
-      product_group_id: await this.grocyIds.productGroups.getGrocyId(product.category),
+      product_group_id: await this.grocyProductGroupIds.getGrocyId(product.category),
       userfields: { storeMetadata: { PNS: product }, isParent: false },
     };
     return { product: newProduct, quConversions };
@@ -203,8 +211,8 @@ export class FoodstuffsToGrocyConverter {
       amount: fsProduct.quantity * quantityFactor,
       price: fsProduct.price / 100 / priceFactor,
       best_before_date: "2999-12-31",
-      shopping_location_id: await this.grocyIds.shoppingLocations.getRequiredGrocyId(storeId),
-      location_id: await this.grocyIds.locations.getRequiredGrocyId(CategoryLocations[fsCategory]),
+      shopping_location_id: await this.grocyShoppingLocationIds.getRequiredGrocyId(storeId),
+      location_id: await this.grocyLocationIds.getRequiredGrocyId(CategoryLocations[fsCategory]),
     };
   }
 
@@ -265,12 +273,12 @@ export class FoodstuffsToGrocyConverter {
     if (!unit) {
       throw new Error(`Failed to find unit in "${weightDisplayName}"`);
     }
-    return this.grocyIds.quantityUnits.matchQuantityUnit(unit[0]);
+    return this.grocyQuantityUnitIds.matchQuantityUnit(unit[0]);
   }
 
   private getUnitId(unit: string): Promise<string> {
-    const resolvedUnit = this.grocyIds.quantityUnits.matchQuantityUnit(unit);
-    return this.grocyIds.quantityUnits.getRequiredGrocyId(resolvedUnit);
+    const resolvedUnit = this.grocyQuantityUnitIds.matchQuantityUnit(unit);
+    return this.grocyQuantityUnitIds.getRequiredGrocyId(resolvedUnit);
   }
 }
 

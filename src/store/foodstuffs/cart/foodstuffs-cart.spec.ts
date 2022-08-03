@@ -2,7 +2,7 @@ import { expectSchemaToValidate } from "@gt/jtd/test-utils";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { getBrowser } from "../../shared/rest/browser";
-import { FoodstuffsUserAgent } from "../rest/foodstuffs-user-agent";
+import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";
 import { CartProductRef } from "./foodstuffs-cart.model";
@@ -34,7 +34,7 @@ describe("Foodstuffs Cart", () => {
   };
 
   beforeEach(async () => {
-    const userAgent = new FoodstuffsUserAgent(getBrowser, loginDetails);
+    const userAgent = new FoodstuffsAuthHeaderProvider(getBrowser, loginDetails);
     cartController = new FoodstuffsCartController(userAgent);
     cartService = new FoodstuffsCartService(cartController);
     await cartController.clearCart();
