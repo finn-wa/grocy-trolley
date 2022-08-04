@@ -41,20 +41,20 @@ export interface OrderDetailsContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
+  suburbId: number;
   cutOffTime?: unknown;
   endTime?: unknown;
   locker?: unknown;
   selectedDate?: unknown;
   selectedDateWithTZInfo?: unknown;
   startTime?: unknown;
-  suburbId: number;
 }
 
 export interface OrderDetailsContextShopperOneCardBalance {
   isOneCardInError: boolean;
   oneCardCurrency: string;
   oneCardNumber: string;
-  onecardPointsBalance: number | null;
+  onecardPointsBalance: number;
   redeemableRewardVouchers: number;
   continuitySpend?: unknown;
 }
@@ -117,6 +117,14 @@ export interface OrderDetailsProductsItemPrice {
   total?: unknown;
 }
 
+export interface OrderDetailsProductsItemProductTagAdditionalTag {
+  altText: string;
+  imagePath: string;
+  linkTarget: string;
+  name: string;
+  link?: unknown;
+}
+
 export interface OrderDetailsProductsItemProductTagMultiBuy {
   link: string;
   quantity: number;
@@ -124,9 +132,9 @@ export interface OrderDetailsProductsItemProductTagMultiBuy {
 }
 
 export interface OrderDetailsProductsItemProductTag {
+  additionalTag: OrderDetailsProductsItemProductTagAdditionalTag | null;
   multiBuy: OrderDetailsProductsItemProductTagMultiBuy | null;
   tagType: string;
-  additionalTag?: unknown;
   bonusPoints?: unknown;
   targetedOffer?: unknown;
 }
@@ -153,6 +161,7 @@ export interface OrderDetailsProductsItem {
   brand: string;
   hasShopperNotes: boolean;
   images: OrderDetailsProductsItemImages;
+  lastAvailableListPrice: number;
   name: string;
   price: OrderDetailsProductsItemPrice;
   productTag: OrderDetailsProductsItemProductTag | null;
@@ -161,12 +170,14 @@ export interface OrderDetailsProductsItem {
   size: OrderDetailsProductsItemSize;
   sku: string;
   slug: string;
+  stockLevel: number;
   subsAllowed: boolean;
   supportsBothEachAndKgPricing: boolean;
   type: string;
   unit: string;
   variety: string | null;
   adId?: unknown;
+  availabilityStatus?: unknown;
   eachUnitQuantity?: unknown;
   priceUnitLabel?: unknown;
 }

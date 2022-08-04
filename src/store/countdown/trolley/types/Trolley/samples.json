@@ -151,7 +151,12 @@
             },
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
-            "size": { "cupPrice": 0, "cupMeasure": null, "packageType": null, "volumeSize": null },
+            "size": {
+              "cupPrice": 0,
+              "cupMeasure": null,
+              "packageType": null,
+              "volumeSize": null
+            },
             "hasShopperNotes": false,
             "productTag": null,
             "subsAllowed": true,
@@ -1201,7 +1206,12 @@
             },
             "eachUnitQuantity": null,
             "averageWeightPerUnit": null,
-            "size": { "cupPrice": 0, "cupMeasure": null, "packageType": null, "volumeSize": "3g" },
+            "size": {
+              "cupPrice": 0,
+              "cupMeasure": null,
+              "packageType": null,
+              "volumeSize": "3g"
+            },
             "hasShopperNotes": false,
             "productTag": null,
             "subsAllowed": true,
@@ -1529,7 +1539,11 @@
             "hasShopperNotes": false,
             "productTag": {
               "tagType": "IsMultiBuy",
-              "multiBuy": { "quantity": 2, "value": 4, "link": "/shop/productgroup/158393" },
+              "multiBuy": {
+                "quantity": 2,
+                "value": 4,
+                "link": "/shop/productgroup/158393"
+              },
               "bonusPoints": null,
               "additionalTag": null,
               "targetedOffer": null
@@ -2018,7 +2032,10 @@
         "fulfilmentStoreId": 9538,
         "perishableCode": "P",
         "locker": null,
-        "expressFulfilment": { "isExpressSlot": false, "isLastExpressHourWindow": false }
+        "expressFulfilment": {
+          "isExpressSlot": false,
+          "isLastExpressHourWindow": false
+        }
       },
       "enabledFeatures": [
         "HaveYouForgotten",

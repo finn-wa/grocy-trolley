@@ -1,25 +1,48 @@
 import { getEnvVar } from "@gt/utils/environment";
+import { HeadersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { searchAndSelectResult } from "@gt/utils/search";
 import { singleton } from "tsyringe";
+import { GrocerStoreService } from "../stores/grocer-store-service";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
 import { getProductSearchResponseSchema } from "./types/ProductSearchResponse/schema";
 
 @singleton()
 export class GrocerSearchService extends RestService {
-  protected baseUrl = "https://api.grocer.nz";
-  protected logger = new Logger(this.constructor.name);
-  private readonly authHeader = getEnvVar("GROCER_SEARCH_AUTHORIZATION");
+  protected readonly baseUrl = "https://api.grocer.nz";
+  protected readonly logger = new Logger(this.constructor.name);
+
+  private readonly baseHeaders = {
+    host: "api.grocer.nz",
+    "accept-language": "en-US,en;q=0.5",
+    "accept-encoding": "gzip, deflate, br",
+    origin: "https://grocer.nz",
+    dnt: "1",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-site",
+    referer: "https://grocer.nz/",
+    authorization: getEnvVar("GROCER_SEARCH_AUTHORIZATION"),
+  };
+
+  constructor(private readonly storeService: GrocerStoreService) {
+    super();
+  }
 
   async search(
     query: string,
-    storeIds: number[],
+    storeIds?: number[],
     limit = 20,
     offset = 0
   ): Promise<ProductSearchResponse> {
+    if (!storeIds) {
+      const stores =
+        (await this.storeService.getCachedStores()) ?? (await this.storeService.promptForStores());
+      storeIds = stores.map((store) => store.id);
+    }
     const request = {
-      attributesToRetrieve: ["id", "name", "brand", "unit", "size"],
+      attributesToRetrieve: ["*"],
       filter: [storeIds.map((id) => `stores = ${id}`)],
       limit,
       offset,
@@ -28,20 +51,7 @@ export class GrocerSearchService extends RestService {
     return this.postAndParse(
       this.buildUrl("/search/indexes/products/search"),
       {
-        headers: {
-          host: "api.grocer.nz",
-          accept: "application/json",
-          "accept-language": "en-US,en;q=0.5",
-          "accept-encoding": "gzip, deflate, br",
-          "content-type": "application/json",
-          origin: "https://grocer.nz",
-          dnt: "1",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-site",
-          referer: "https://grocer.nz/",
-          authorization: this.authHeader,
-        },
+        headers: new HeadersBuilder(this.baseHeaders).contentTypeJson().acceptJson().build(),
         body: JSON.stringify(request),
       },
       getProductSearchResponseSchema()

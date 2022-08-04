@@ -1,5 +1,5 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
-import { CacheService, getCacheDirForEmail } from "@gt/utils/cache";
+import { CacheService, getCacheDir, sanitiseEmailForCache } from "@gt/utils/cache";
 import { HeadersBuilder, headersFromRaw, headersToRaw } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { existsSync } from "fs";
@@ -17,7 +17,6 @@ export abstract class AuthHeaderProvider {
   protected abstract readonly headersFilter: { allowed: string[]; disallowed: string[] };
   protected abstract readonly logger: Logger;
 
-  private readonly cacheDir: string;
   private readonly headersCache: CacheService<{ headers: Record<string, string[]> }>;
   private browserState: BrowserState | null = null;
   /** Authenticated headers to use for API requests */
@@ -36,8 +35,9 @@ export abstract class AuthHeaderProvider {
     protected readonly browserLoader: () => Promise<Browser>,
     protected readonly loginDetails?: LoginDetails | null
   ) {
-    this.cacheDir = path.join(getCacheDirForEmail(loginDetails?.email), name);
-    this.headersCache = new CacheService(this.cacheDir);
+    this.headersCache = new CacheService(
+      path.join(name, sanitiseEmailForCache(loginDetails?.email))
+    );
   }
 
   /**
@@ -107,7 +107,12 @@ export abstract class AuthHeaderProvider {
   }
 
   private getPlaywrightStoragePath(): string {
-    return path.join(this.cacheDir, "playwright.json");
+    return path.join(
+      getCacheDir(),
+      this.name,
+      sanitiseEmailForCache(this.loginDetails?.email),
+      "playwright.json"
+    );
   }
 
   /**

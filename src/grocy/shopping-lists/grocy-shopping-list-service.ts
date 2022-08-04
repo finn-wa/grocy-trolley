@@ -8,11 +8,12 @@ import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
 import { getShoppingListSchema, getShoppingListsSchema } from "./types/ShoppingList/schema";
-import { NewShoppingListItem, ShoppingListItem } from "./types/ShoppingListItems";
 import {
-  getShoppingListItemsSchema,
-  parseShoppingListItem,
-} from "./types/ShoppingListItems/schema";
+  NewShoppingListItem,
+  RawShoppingListItem,
+  ShoppingListItem,
+} from "./types/ShoppingListItems";
+import { parseShoppingListItem } from "./types/ShoppingListItems/schema";
 
 // todo: method that makes copy of list with resolved parent products
 // this can then be used across all exporters
@@ -25,11 +26,8 @@ export class GrocyShoppingListService extends GrocyRestService {
     getShoppingListSchema,
     getShoppingListsSchema
   );
-  private readonly itemService = new GrocySingleEntityService(
-    "shopping_list",
-    undefined,
-    getShoppingListItemsSchema
-  );
+  // JTD cannot validate this schema as "amount" and certain other fields are string | number
+  private readonly itemService = new GrocySingleEntityService<RawShoppingListItem>("shopping_list");
 
   async getShoppingList(id: string): Promise<ShoppingListDetail> {
     const list = await this.listService.getEntityObject(id);
@@ -50,19 +48,14 @@ export class GrocyShoppingListService extends GrocyRestService {
     items: Omit<NewShoppingListItem, "shopping_list_id">[] = []
   ): Promise<string | null> {
     const id = await this.listService.postEntityObject({ name });
-    if (items.length > 0) {
-      // await Promise.all(
-      // items.map((item) => this.addShoppingListItem({ ...item, shopping_list_id: id }))
-      // );
-      for (const item of items) {
-        try {
-          await this.addShoppingListItem({ ...item, shopping_list_id: id });
-        } catch (error) {
-          if (error instanceof RequestError) {
-            this.logger.error(await error.response.text());
-          }
-          throw error;
+    for (const item of items) {
+      try {
+        await this.addShoppingListItem({ ...item, shopping_list_id: id });
+      } catch (error) {
+        if (error instanceof RequestError) {
+          this.logger.error(await error.response.text());
         }
+        throw error;
       }
     }
     return id;

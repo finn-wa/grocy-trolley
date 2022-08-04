@@ -8,6 +8,7 @@ import { readdir, rm } from "fs/promises";
 import * as cacheUtils from "../../../utils/cache";
 import { CountdownRestService } from "./countdown-rest-service";
 import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
+import path from "path";
 
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -29,8 +30,9 @@ describe("CountdownRestService", () => {
     COUNTDOWN_PASSWORD: "password",
   });
   // Different cache dir for these tests to avoid clearing cache for other tests
-  const cacheDir = cacheUtils.getCacheDirForEmail(loginDetails.email) + "_rest-service-test";
-  (cacheUtils as any).getCacheDirForEmail = jest.fn((_email: string) => cacheDir);
+  const cacheEmailOverride = loginDetails.email + "_rest-service-test";
+  (cacheUtils as any).sanitiseEmailForCache = jest.fn((_email: string) => cacheEmailOverride);
+  const cacheDir = path.join(cacheUtils.getCacheDir(), "countdown", cacheEmailOverride);
 
   beforeEach(async () => {
     await rm(cacheDir, { recursive: true, force: true });
@@ -52,7 +54,7 @@ describe("CountdownRestService", () => {
     const cachedHeaders = (await newService.authHeaders()).raw();
     expect(cachedHeaders).toEqual(rawHeaders);
     // These assertions are more to test whether the separate cache path is working
-    const cacheFiles = await readdir(`${cacheDir}/${userAgent.name}`);
-    expect(cacheFiles).toMatchObject<ArrayLike<unknown>>({ length: 2 });
+    const cacheFiles = await readdir(cacheDir);
+    expect(cacheFiles).toEqual(["headers.json", "playwright.json"]);
   });
 });

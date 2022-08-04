@@ -70,4 +70,8 @@ export class GrocerStoreService {
     }
     return selectedStores;
   }
+
+  async getCachedStores(): Promise<Store[] | null> {
+    return this.cache.get("stores");
+  }
 }

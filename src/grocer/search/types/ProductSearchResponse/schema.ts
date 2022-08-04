@@ -1,6 +1,8 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
+import { generateTypes } from "@gt/jtd/generate-types";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { ProductSearchResponse } from ".";
+import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the ProductSearchResponse type defined in
@@ -11,10 +13,15 @@ export const schema: JTDSchemaType<ProductSearchResponse> = {
     hits: {
       elements: {
         properties: {
-          brand: { nullable: true, type: "string" },
+          brand: { type: "string", nullable: true },
+          category_1: { elements: { type: "string" } },
+          category_2: { elements: { type: "string" } },
+          category_3: { elements: { type: "string" } },
           id: { type: "float64" },
           name: { type: "string" },
-          size: { nullable: true, type: "string" },
+          popularity: { type: "uint16" },
+          size: { type: "string", nullable: true },
+          stores: { elements: { type: "float64" } },
           unit: { enum: ["ea", "kg"] },
         },
       },
@@ -40,5 +47,20 @@ export const key = "src/grocer/search/ProductSearchResponse";
  */
 export const getProductSearchResponseSchema = () => getRequiredSchema<ProductSearchResponse>(key);
 
-// Register schema with ajv instance
+// Register schema with ajv
 ajv.addSchema(schema, key);
+
+/**
+ * Development tool - regenerates this code based on samples.json, replacing the
+ * contents of this folder. Use when the schema changes.
+ */
+export async function regenerateProductSearchResponseSchema() {
+  return generateTypes(
+    {
+      typeName: "ProductSearchResponse",
+      sourceDir: "src/grocer/search",
+      generateArrayType: false,
+    },
+    ...samples
+  );
+}
