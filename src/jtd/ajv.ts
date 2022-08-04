@@ -2,6 +2,7 @@ import { Logger, prettyPrint as pp } from "@gt/utils/logger";
 import Ajv, { ValidateFunction } from "ajv/dist/jtd";
 
 export const ajv = new Ajv();
+ajv.addKeyword("typescriptType");
 
 /**
  * Calls {@link ajv.getSchema} with the specified key. Ensures the returned

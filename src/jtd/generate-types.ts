@@ -3,18 +3,20 @@ import { join } from "path";
 import { jtdCodegen } from "./codegen";
 import { jtdInfer } from "./infer";
 import dedent from "dedent";
-import { prettyPrint } from "@gt/utils/logger";
+import { Logger, prettyPrint } from "@gt/utils/logger";
 
 function generateSchemaFile(
   type: string,
-  schemaKey: string,
+  sourceDir: string,
   jtd: string,
   arrayType = false
 ): string {
   let out = dedent`
     import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
+    import { generateTypes } from "@gt/jtd/generate-types";
     import { JTDSchemaType } from "ajv/dist/jtd";
     import { ${type} } from ".";
+    import samples from "./samples.json";
 
     /**
      * This will cause a TypeScript compiler error if the ${type} type defined in
@@ -25,7 +27,7 @@ function generateSchemaFile(
     /**
      * The key used to index the ${type} schema with ajv
      */
-    export const key = "${schemaKey}";
+    export const key = "${sourceDir}/${type}";
   `;
   if (arrayType) {
     out += dedent`\n
@@ -64,6 +66,22 @@ function generateSchemaFile(
       ajv.addSchema({ elements: schema }, arrayKey);
     `;
   }
+  out += dedent`\n
+    /**
+     * Development tool - regenerates this code based on samples.json, replacing the
+     * contents of this folder. Use when the schema changes.
+     */
+    export async function regenerate${type}Schema() {
+      return generateTypes(
+        {
+          typeName: "${type}",
+          sourceDir: "${sourceDir}",
+          generateArrayType: ${arrayType},
+        },
+        ...samples
+      );
+    }
+  `;
   return out;
 }
 
@@ -90,11 +108,13 @@ export async function generateTypes(
   },
   ...inputs: unknown[]
 ) {
+  const logger = new Logger("GenerateTypes");
+  logger.info(`Generating ${typeName} schema...`);
   const typesDir = join(sourceDir, "types", typeName);
   await mkdir(typesDir, { recursive: true });
   // Infer JTD and save as schema
-  const inferredJTD = JSON.stringify(jtdInfer<unknown>(typeName, ...inputs));
-  return Promise.all([
+  const inferredJTD = JSON.stringify(jtdInfer<unknown>(...inputs));
+  await Promise.all([
     // Save raw JSON files as samples
     writeFile(join(typesDir, "samples.json"), prettyPrint(inputs)),
     // Write spec file
@@ -104,7 +124,8 @@ export async function generateTypes(
     // Write typecheck file
     writeFile(
       join(typesDir, "schema.ts"),
-      generateSchemaFile(typeName, `${sourceDir}/${typeName}`, inferredJTD, generateArrayType)
+      generateSchemaFile(typeName, sourceDir, inferredJTD, generateArrayType)
     ),
   ]);
+  logger.info(`Output schema files to ${sourceDir}/${typeName}`);
 }
