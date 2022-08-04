@@ -24,7 +24,7 @@
     "dedent": "^0.7.0",
     "dotenv": "^16.0.1",
     "json-stringify-pretty-compact": "3.0.0",
-    "playwright": "^1.24.0",
+    "playwright": "^1.24.2",
     "prompts": "^2.4.2",
     "rxjs": "^7.5.6",
     "tsyringe": "^4.7.0"
