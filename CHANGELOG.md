@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/finn-wa/grocy-trolley/compare/v2.12.0...v3.0.0) (2022-08-04)
+
+### ⚠ BREAKING CHANGES
+
+- Removed "stock" command (although "stock" is now an alias for "import").
+- Changed "--input-file" flag to "--file" for receipt import.
+- "import barcodes" now uses grocer instead of barcode buddy
+
+### Features
+
+- add --analyse flag to build script for printing bundle metadata ([168b2bb](https://github.com/finn-wa/grocy-trolley/commit/168b2bb7a5e8518aa2c62ccc3392b7fdab9c7a2d))
+- add GrocerApiService.getProductForBarcode, fix up grocer types ([9192b08](https://github.com/finn-wa/grocy-trolley/commit/9192b08cfadc557535f2cffff665b6502efb2264))
+- merge "stock" command into "import" & add listId option ([8b790ec](https://github.com/finn-wa/grocy-trolley/commit/8b790ec346297237fd3ced8c8923f022f640bae7)), closes [#125](https://github.com/finn-wa/grocy-trolley/issues/125)
+- output "unknown" instead of "any" when generating types with jtd-codegen (closes [#73](https://github.com/finn-wa/grocy-trolley/issues/73)) ([7a5028b](https://github.com/finn-wa/grocy-trolley/commit/7a5028b54051082151322e839e08a6f21de282cf))
+- reinstate foodstuffs barcode importer using grocer to resolve products ([d871cb4](https://github.com/finn-wa/grocy-trolley/commit/d871cb4662f253296c6e099b0403636e3a48dd47))
+- vital CLI logo improvements ([21ace43](https://github.com/finn-wa/grocy-trolley/commit/21ace43cce70ea82d7ce40d65e58a2fe97def9f4))
+
+### Bug Fixes
+
+- broken query params for grocer getProductPrices ([5d75438](https://github.com/finn-wa/grocy-trolley/commit/5d7543874e919ee571d441bf7e5f1f409a94fcdf))
+- foodstuffs search exits when "modify search query" is chosen ([0d6e77e](https://github.com/finn-wa/grocy-trolley/commit/0d6e77eef3ddffbf0905824e2998a11f43332694))
+
+### Other
+
+- adopt tsyringe dependency injection library
+
 ## [2.12.0](https://github.com/finn-wa/grocy-trolley/compare/v2.11.0...v2.12.0) (2022-07-24)
 
 ### Features
