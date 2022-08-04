@@ -1,0 +1,160 @@
+[
+  {
+    "id": 632197881711860,
+    "name": "Orient Gene H50GE Rapid COVID-19 Antigen Self Test Kit 5 Pk",
+    "brand": "Orient Gene",
+    "unit": "ea",
+    "size": "5pk",
+    "prices": [
+      {
+        "store_id": 6340712107624913,
+        "store_name": "Countdown Greenlane",
+        "vendor_code": "cd",
+        "original_price": null,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 7644797357623558,
+        "store_name": "Countdown Mt Eden",
+        "vendor_code": "cd",
+        "original_price": null,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 4567002660615265,
+        "store_name": "Countdown Onehunga",
+        "vendor_code": "cd",
+        "original_price": null,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 1096672562035996,
+        "store_name": "New World Stonefields",
+        "vendor_code": "nw",
+        "original_price": null,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 3067760475684734,
+        "store_name": "PAK'nSAVE Royal Oak",
+        "vendor_code": "pns",
+        "original_price": 32.99,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      }
+    ]
+  },
+  {
+    "id": 6343082287627326,
+    "name": "Fruit Juice Apple Orange",
+    "brand": "Fresh Up",
+    "unit": "ea",
+    "size": "1l",
+    "prices": [
+      {
+        "store_id": 6340712107624913,
+        "store_name": "Countdown Greenlane",
+        "vendor_code": "cd",
+        "original_price": 2.8,
+        "sale_price": 2.8,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 7644797357623558,
+        "store_name": "Countdown Mt Eden",
+        "vendor_code": "cd",
+        "original_price": 2.8,
+        "sale_price": 2.8,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 4567002660615265,
+        "store_name": "Countdown Onehunga",
+        "vendor_code": "cd",
+        "original_price": 2.8,
+        "sale_price": 2.8,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 1096672562035996,
+        "store_name": "New World Stonefields",
+        "vendor_code": "nw",
+        "original_price": 1.99,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": 5,
+        "multibuy_quantity": 3,
+        "multibuy_limit": 0,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      },
+      {
+        "store_id": 3067760475684734,
+        "store_name": "PAK'nSAVE Royal Oak",
+        "vendor_code": "pns",
+        "original_price": 1.89,
+        "sale_price": 1.89,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      }
+    ]
+  }
+]

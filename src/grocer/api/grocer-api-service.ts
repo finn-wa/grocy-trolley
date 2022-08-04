@@ -4,8 +4,10 @@ import { RestService } from "@gt/utils/rest";
 import { singleton } from "tsyringe";
 import { Store } from "../stores/types/Stores";
 import { getStoresSchema } from "../stores/types/Stores/schema";
-import { ProductPrice } from "./types/ProductPrices";
-import { getProductPricesSchema } from "./types/ProductPrices/schema";
+import { GrocerBarcodeProduct } from "./types/GrocerBarcodeProduct";
+import { getGrocerBarcodeProductSchema } from "./types/GrocerBarcodeProduct/schema";
+import { GrocerProduct } from "./types/GrocerProduct";
+import { getGrocerProductsSchema } from "./types/GrocerProduct/schema";
 
 @singleton()
 export class GrocerApiService extends RestService {
@@ -16,14 +18,25 @@ export class GrocerApiService extends RestService {
     return this.getAndParse(this.buildUrl("/stores"), {}, getStoresSchema());
   }
 
+  async getProductForBarcode(params: {
+    barcode: string;
+    stores: number[];
+  }): Promise<GrocerBarcodeProduct> {
+    return this.getAndParse(
+      this.buildGrocerUrl("/product", params),
+      { headers: headersBuilder().acceptJson().build() },
+      getGrocerBarcodeProductSchema()
+    );
+  }
+
   async getProductPrices(params: {
     productIds: number[];
     storeIds: number[];
-  }): Promise<ProductPrice[]> {
+  }): Promise<GrocerProduct[]> {
     return this.getAndParse(
       this.buildGrocerUrl("/products", params),
       { headers: headersBuilder().acceptJson().build() },
-      getProductPricesSchema()
+      getGrocerProductsSchema()
     );
   }
 
@@ -48,6 +61,6 @@ export class GrocerApiService extends RestService {
         ? value.map((element) => `${key}[]=${element}`)
         : [`${key}=${value}`];
     });
-    return "?" + queryParams.join("&");
+    return url + "?" + queryParams.join("&");
   }
 }
