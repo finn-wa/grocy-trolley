@@ -1,3 +1,4 @@
+import { Logger } from "@gt/utils/logger";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { execFileSync } from "child_process";
 import { existsSync } from "fs";
@@ -6,6 +7,7 @@ interface JTDRecordSchemaType {
   elements?: Partial<JTDRecordSchemaType>;
   properties: Record<string, Partial<JTDRecordSchemaType>>;
   optionalProperties?: Record<string, Partial<JTDRecordSchemaType>>;
+  metadata?: { typescriptType: string };
 }
 
 /**
@@ -18,6 +20,7 @@ interface JTDRecordSchemaType {
  * @returns JTD schema compatible with JTDSchemaType
  */
 function moveAnyTypePropertiesToOptional<T extends Partial<JTDRecordSchemaType>>(schema: T): void {
+  const logger = new Logger("InferTypes");
   if (schema.elements) {
     moveAnyTypePropertiesToOptional(schema.elements);
   }
@@ -28,13 +31,13 @@ function moveAnyTypePropertiesToOptional<T extends Partial<JTDRecordSchemaType>>
       ) => !!obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
     );
     if (toShift.length > 0) {
-      console.log("shifting: ", toShift);
+      logger.debug("shifting: ", toShift);
       if (!schema.optionalProperties) {
         schema.optionalProperties = {};
       }
       for (const [key] of toShift) {
         delete schema.properties[key];
-        schema.optionalProperties[key] = {};
+        schema.optionalProperties[key] = { metadata: { typescriptType: "unknown" } };
       }
     }
     if (Object.keys(schema.properties).length === 0) {
@@ -49,13 +52,12 @@ function moveAnyTypePropertiesToOptional<T extends Partial<JTDRecordSchemaType>>
 
 /**
  * Infers a Json Type Definition from sample JS objects.
- * @param ajvID $id to add to schema
  * @param inputObjects Sample objects to infer
  * @returns string containing the JTD
  * @see https://jsontypedef.com/docs/jtd-infer
  * @see https://github.com/jsontypedef/json-typedef-infer
  */
-export function jtdInfer<T>(ajvID: string, ...inputObjects: T[]): JTDSchemaType<T> {
+export function jtdInfer<T>(...inputObjects: T[]): JTDSchemaType<T> {
   const jtdInferPath = process.platform === "win32" ? "bin/jtd-infer.exe" : "bin/jtd-infer";
   if (!existsSync(jtdInferPath)) {
     throw new Error(
