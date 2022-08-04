@@ -20,17 +20,34 @@ export class GrocerApiService extends RestService {
     productIds: number[];
     storeIds: number[];
   }): Promise<ProductPrice[]> {
-    const url = new URL(`${this.baseUrl}/products`);
-    const paramsBuilder = new URLSearchParams();
-    Object.entries(params).forEach(([key, values]) => {
-      const paramKey = `${key}[]`;
-      values.forEach((value) => paramsBuilder.append(paramKey, value.toString()));
-    });
-    url.search = paramsBuilder.toString();
     return this.getAndParse(
-      url.toString(),
+      this.buildGrocerUrl("/products", params),
       { headers: headersBuilder().acceptJson().build() },
       getProductPricesSchema()
     );
+  }
+
+  /**
+   * Generates a grocer-compatible url for the given path and params.
+   * Grocer has an ungodly way of encoding query params, and URLSearchParams can't
+   * be used because it tries to URL-encode the square brackets.
+   * @param path relative to baseUrl
+   * @param params query parameters
+   * @returns a URL compatible with grocer API
+   */
+  protected buildGrocerUrl(
+    path: string,
+    params?: Record<string, string | number | (string | number)[]>
+  ): string {
+    const url = this.buildUrl(path);
+    if (!params || Object.keys(params).length === 0) {
+      return url;
+    }
+    const queryParams = Object.entries(params).flatMap(([key, value]) => {
+      return Array.isArray(value)
+        ? value.map((element) => `${key}[]=${element}`)
+        : [`${key}=${value}`];
+    });
+    return "?" + queryParams.join("&");
   }
 }
