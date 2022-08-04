@@ -7,8 +7,15 @@ export function getCacheDir(): string {
   return getEnvVar("CACHE_DIR");
 }
 
-export function getCacheDirForEmail(email = "anon") {
-  return path.join(getCacheDir(), email.replace(/\W+/g, "_"));
+export function sanitiseEmailForCache(email?: string): string {
+  if (!email) {
+    return "anon";
+  }
+  return email.replace(/\W+/g, "_");
+}
+
+export function getCacheDirForEmail(email?: string) {
+  return path.join(getCacheDir(), sanitiseEmailForCache(email));
 }
 
 /**

@@ -39,7 +39,7 @@ export interface TrolleyContextFulfilment {
   selectedDate?: unknown;
   selectedDateWithTZInfo?: unknown;
   startTime?: unknown;
-  suburbId: number;
+  suburbId?: number;
 }
 
 export interface TrolleyContextShopperOneCardBalance {

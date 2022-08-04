@@ -1,7 +1,9 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
+import { generateTypes } from "@gt/jtd/generate-types";
 import { UNKNOWN } from "@gt/jtd/infer";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { Trolley } from ".";
+import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the Trolley type defined in
@@ -23,10 +25,10 @@ export const schema: JTDSchemaType<Trolley> = {
             bagFees: { type: "string" },
             deliveryFees: { type: "string" },
             eligibilityForDeliverySubscriptionDiscount: { type: "string" },
-            savings: { type: "string", nullable: true },
+            savings: { nullable: true, type: "string" },
             subtotal: { type: "string" },
             totalIncludingDeliveryFees: { type: "string" },
-            totalItems: { type: "uint16" },
+            totalItems: { type: "uint8" },
           },
         },
         enabledFeatures: { elements: { type: "string" } },
@@ -46,15 +48,15 @@ export const schema: JTDSchemaType<Trolley> = {
             isSlotToday: { type: "boolean" },
             method: { type: "string" },
             perishableCode: { type: "string" },
-            suburbId: { type: "uint16" },
           },
           optionalProperties: {
-            cutOffTime: {},
-            endTime: {},
-            locker: {},
-            selectedDate: {},
-            selectedDateWithTZInfo: {},
-            startTime: {},
+            suburbId: { type: "uint8" },
+            cutOffTime: { metadata: { typescriptType: "unknown" } },
+            endTime: { metadata: { typescriptType: "unknown" } },
+            locker: { metadata: { typescriptType: "unknown" } },
+            selectedDate: { metadata: { typescriptType: "unknown" } },
+            selectedDateWithTZInfo: { metadata: { typescriptType: "unknown" } },
+            startTime: { metadata: { typescriptType: "unknown" } },
           },
         },
         shopper: {
@@ -72,23 +74,23 @@ export const schema: JTDSchemaType<Trolley> = {
                 isOneCardInError: { type: "boolean" },
                 oneCardCurrency: { type: "string" },
                 oneCardNumber: { type: "string" },
-                onecardPointsBalance: { type: "uint16", nullable: true },
-                redeemableRewardVouchers: { type: "uint16" },
+                onecardPointsBalance: { nullable: true, type: "uint16" },
+                redeemableRewardVouchers: { type: "uint8" },
               },
-              optionalProperties: { continuitySpend: {} },
+              optionalProperties: { continuitySpend: { metadata: { typescriptType: "unknown" } } },
             },
             orderCount: { type: "string" },
             sessionGroups: { elements: { type: "uint16" } },
             shopperIdHash: { type: "string" },
             shopperScvId: { type: "string" },
           },
-          optionalProperties: { changingOrderId: {} },
+          optionalProperties: { changingOrderId: { metadata: { typescriptType: "unknown" } } },
         },
         shoppingListItems: { elements: { type: "string" } },
       },
     },
     isSuccessful: { type: "boolean" },
-    itemCount: { type: "uint16" },
+    itemCount: { type: "uint8" },
     items: {
       elements: {
         properties: {
@@ -116,7 +118,9 @@ export const schema: JTDSchemaType<Trolley> = {
                     savePrice: { type: "float64" },
                     total: { nullable: true, type: "string" },
                   },
-                  optionalProperties: { purchasingUnitPrice: {} },
+                  optionalProperties: {
+                    purchasingUnitPrice: { metadata: { typescriptType: "unknown" } },
+                  },
                 },
                 priceUnitLabel: { type: "string" },
                 productTag: {
@@ -126,18 +130,22 @@ export const schema: JTDSchemaType<Trolley> = {
                       nullable: true,
                       properties: {
                         link: { type: "string" },
-                        quantity: { type: "uint16" },
-                        value: { type: "uint16" },
+                        quantity: { type: "uint8" },
+                        value: { type: "uint8" },
                       },
                     },
                     tagType: { type: "string" },
                   },
-                  optionalProperties: { additionalTag: {}, bonusPoints: {}, targetedOffer: {} },
+                  optionalProperties: {
+                    additionalTag: { metadata: { typescriptType: "unknown" } },
+                    bonusPoints: { metadata: { typescriptType: "unknown" } },
+                    targetedOffer: { metadata: { typescriptType: "unknown" } },
+                  },
                 },
                 quantity: {
                   properties: {
                     increment: { type: "float64" },
-                    max: { type: "uint16" },
+                    max: { type: "uint8" },
                     min: { type: "float64" },
                     purchasingQuantityString: { type: "string" },
                     quantityInOrder: { type: "float64" },
@@ -163,11 +171,11 @@ export const schema: JTDSchemaType<Trolley> = {
               optionalProperties: {
                 dasFacetsUrl: { type: "string" },
                 shopperNotes: { type: "string" },
-                adId: {},
-                barcode: {},
-                brand: {},
-                eachUnitQuantity: {},
-                variety: {},
+                adId: { metadata: { typescriptType: "unknown" } },
+                barcode: { metadata: { typescriptType: "unknown" } },
+                brand: { metadata: { typescriptType: "unknown" } },
+                eachUnitQuantity: { metadata: { typescriptType: "unknown" } },
+                variety: { metadata: { typescriptType: "unknown" } },
               },
             },
           },
@@ -192,5 +200,20 @@ export const key = "src/store/countdown/trolley/Trolley";
  */
 export const getTrolleySchema = () => getRequiredSchema<Trolley>(key);
 
-// Register schema with ajv instance
+// Register schema with ajv
 ajv.addSchema(schema, key);
+
+/**
+ * Development tool - regenerates this code based on samples.json, replacing the
+ * contents of this folder. Use when the schema changes.
+ */
+export async function regenerateTrolleySchema() {
+  return generateTypes(
+    {
+      typeName: "Trolley",
+      sourceDir: "src/store/countdown/trolley",
+      generateArrayType: false,
+    },
+    ...samples
+  );
+}
