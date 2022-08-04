@@ -4,12 +4,13 @@ import { EOL } from "os";
 
 export type GrocyTrolleyCommand = "import" | "export" | "exit";
 
-export const IMPORT_SOURCES = ["cart", "order", "list", "receipt"] as const;
+export const IMPORT_SOURCES = ["cart", "order", "list", "receipt", "barcodes"] as const;
 export type ImportSource = typeof IMPORT_SOURCES[number];
 export interface ImportOptions {
   // stock?: boolean;
   listId?: ImportSource;
   file?: string;
+  barcodes?: string;
 }
 
 export const EXPORT_DESTINATIONS = ["pns", "grocer"] as const;

@@ -24,6 +24,7 @@ export async function promptGT() {
         { title: "Foodstuffs orders", value: "order" },
         { title: "Foodstuffs list", value: "list" },
         { title: "Foodstuffs receipt", value: "receipt" },
+        { title: "Barcodes", value: "barcodes" },
         { title: "Exit", value: "exit" },
       ],
     },
@@ -48,7 +49,8 @@ export async function promptGT() {
   }
   switch (command) {
     case "import":
-      return importFrom(choices["importSource"] as ImportSource);
+      await importFrom(choices["importSource"] as ImportSource);
+      return; // return type needs to be consistent
     case "export":
       return exportTo(choices["destination"] as ExportDestination);
     default:

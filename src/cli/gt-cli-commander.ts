@@ -34,7 +34,7 @@ export async function runGT() {
     .addCommand(
       new Command("prompt")
         .description("Start an interactive prompt-based version of the CLI")
-        .action(promptGT),
+        .action(async () => await promptGT()),
       { isDefault: true, hidden: true }
     )
     .addCommand(
@@ -43,10 +43,22 @@ export async function runGT() {
         .alias("stock")
         .description("Import products to Grocy")
         // .option("-s, --stock", "When true, imported products will be automatically stocked")
-        .addOption(new Option("-f, --file <path>", "Path to receipt file").conflicts("listId"))
-        .addOption(new Option("-i, --list-id <uuid>", "ID of list to import").conflicts("file"))
+        .addOption(
+          new Option("-f, --file <path>", "Path to input file").conflicts(["listId", "barcodes"])
+        )
+        .addOption(
+          new Option("-i, --list-id <uuid>", "ID of list to import").conflicts(["file", "barcodes"])
+        )
+        .addOption(
+          new Option("-b, --barcodes <barcodes>", "List of barcodes to import").conflicts([
+            "file",
+            "listId",
+          ])
+        )
         .addArgument(new Argument("[source]", "Import source").choices(IMPORT_SOURCES))
-        .action((source: ImportSource, options: ImportOptions) => importFrom(source, options))
+        .action(async (source: ImportSource, options: ImportOptions) => {
+          await importFrom(source, options);
+        })
     )
     .addCommand(
       new Command("export")

@@ -15,6 +15,7 @@ import { GrocyToGrocerConversionService } from "./grocer/grocy/grocy-to-grocer-c
 import { TaggunReceiptScanner } from "./receipt-ocr/taggun/taggun-receipt-scanner";
 import { registerFoodstuffsDependencies } from "./store/foodstuffs/foodstuffs-di";
 import { GrocyToFoodstuffsConversionService } from "./store/foodstuffs/grocy/export/grocy-to-foodstuffs-conversion-service";
+import { FoodstuffsBarcodeImporter } from "./store/foodstuffs/grocy/import/foodstuffs-barcode-importer";
 import { FoodstuffsCartImporter } from "./store/foodstuffs/grocy/import/cart-importer";
 import { FoodstuffsListImporter } from "./store/foodstuffs/grocy/import/list-importer";
 import { FoodstuffsOrderImporter } from "./store/foodstuffs/grocy/import/order-importer";
@@ -43,7 +44,7 @@ export async function importFrom(source?: ImportSource, options: ImportOptions =
     });
     source = response.source as ImportSource;
   }
-  if (source === "receipt") {
+  if (source === "receipt" || source === "barcodes") {
     let inputFilePath: string | undefined = options.file;
     if (!inputFilePath) {
       const filepathRes = await prompts([
@@ -51,13 +52,21 @@ export async function importFrom(source?: ImportSource, options: ImportOptions =
       ]);
       inputFilePath = filepathRes.path as string;
     }
-    await container.resolve(FoodstuffsReceiptImporter).importReceipt(inputFilePath);
-  } else if (source === "cart") {
-    await container.resolve(FoodstuffsCartImporter).importProductsFromCart();
-  } else if (source === "list") {
-    await container.resolve(FoodstuffsListImporter).importList(options.listId);
-  } else if (source === "order") {
-    await container.resolve(FoodstuffsOrderImporter).importLatestOrders();
+    if (source === "receipt") {
+      return container.resolve(FoodstuffsReceiptImporter).importReceipt(inputFilePath);
+    }
+    if (source === "barcodes") {
+      return container.resolve(FoodstuffsBarcodeImporter).importBarcodesFromFile(inputFilePath);
+    }
+  }
+  if (source === "cart") {
+    return container.resolve(FoodstuffsCartImporter).importProductsFromCart();
+  }
+  if (source === "list") {
+    return container.resolve(FoodstuffsListImporter).importList(options.listId);
+  }
+  if (source === "order") {
+    return container.resolve(FoodstuffsOrderImporter).importLatestOrders();
   }
 }
 
