@@ -1,3 +1,4 @@
+import { container } from "tsyringe";
 import { GrocerSearchService } from "./grocer-search-service";
 
 describe("GrocerSearchService", () => {
@@ -7,7 +8,7 @@ describe("GrocerSearchService", () => {
     3067760475684734, 295545393078205,
   ];
   beforeEach(() => {
-    service = new GrocerSearchService();
+    service = container.resolve(GrocerSearchService);
   });
 
   test("search for apples", async () => {

@@ -19,7 +19,7 @@ export const schema: JTDSchemaType<ProductSearchResponse> = {
           category_3: { elements: { type: "string" } },
           id: { type: "float64" },
           name: { type: "string" },
-          popularity: { type: "uint16" },
+          popularity: { type: "float64" },
           size: { type: "string", nullable: true },
           stores: { elements: { type: "float64" } },
           unit: { enum: ["ea", "kg"] },

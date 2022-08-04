@@ -1,8 +1,8 @@
 import { registerAppDependencies } from "@gt/app";
-import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { initEnv } from "@gt/utils/environment";
 import { container } from "tsyringe";
-import { closeBrowser } from "../shared/rest/browser";
-import { CountdownTokens } from "./countdown-di";
+import { closeBrowser } from "../../shared/rest/browser";
+import { registerCountdownDependencies } from "../countdown-di";
 
 /**
  * Initialises the environment variables for Countdown tests.
@@ -22,8 +22,8 @@ export function beforeAllCountdownTests(envFilePath = ".test.env") {
  */
 export function countdownTestContainer() {
   registerAppDependencies(container);
-  const loginDetails = getEnvAs({ COUNTDOWN_EMAIL: "email", COUNTDOWN_PASSWORD: "password" });
-  return container.register(CountdownTokens.loginDetails, { useValue: loginDetails });
+  registerCountdownDependencies(container);
+  return container;
 }
 
 export async function afterAllCountdownTests() {

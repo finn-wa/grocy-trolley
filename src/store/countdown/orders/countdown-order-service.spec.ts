@@ -3,7 +3,7 @@ import {
   afterAllCountdownTests,
   beforeAllCountdownTests,
   countdownTestContainer,
-} from "../countdown-di-spec";
+} from "../test/countdown-test-utils";
 import { CountdownOrderService } from "./countdown-order-service";
 import { getOrderSchema } from "./types/Order/schema";
 import { getOrderDetailsSchema } from "./types/OrderDetails/schema";
