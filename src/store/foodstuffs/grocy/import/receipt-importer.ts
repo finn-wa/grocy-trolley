@@ -58,7 +58,8 @@ export class FoodstuffsReceiptImporter {
       return { success: false };
     }
     const resolvedItems = await this.resolveScannedItems(scannedItems, cacheKey);
-    return this.promptImportReceiptListRefs(resolvedItems, cacheKey);
+    const listName = cacheKey;
+    return this.promptImportReceiptListRefs(resolvedItems, listName);
   }
 
   /**

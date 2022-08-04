@@ -1,6 +1,7 @@
 import { GrocerApiService } from "@gt/grocer/api/grocer-api-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
 import { ReceiptItem } from "@gt/receipt-ocr/receipts.model";
+import { shortDate } from "@gt/utils/date";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { readFile } from "fs/promises";
 import { singleton } from "tsyringe";
@@ -36,7 +37,10 @@ export class FoodstuffsBarcodeImporter {
     this.logger.info(`Found ${items.length} items, failed to find: ${prettyPrint(notFound)}`);
     const cacheKey = "barcodes";
     const resolvedItems = await this.receiptImporter.resolveScannedItems(items, cacheKey);
-    return this.receiptImporter.promptImportReceiptListRefs(resolvedItems, cacheKey);
+    return this.receiptImporter.promptImportReceiptListRefs(
+      resolvedItems,
+      `${shortDate(new Date())} barcodes`
+    );
   }
 
   async importBarcodesFromFile(filePath: string) {
