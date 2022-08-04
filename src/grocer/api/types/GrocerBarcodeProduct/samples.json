@@ -1,0 +1,50 @@
+[
+  {
+    "id": 333337969734090,
+    "name": "Cheese Corntos",
+    "brand": "Double Decker",
+    "unit": "ea",
+    "size": "70g",
+    "barcode": "9557062500449",
+    "prices": [
+      {
+        "store_id": 1029985494883640,
+        "store_name": "PAK'nSAVE Mt Albert",
+        "vendor_code": "pns",
+        "original_price": 1.4,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      }
+    ]
+  },
+  {
+    "id": 4454733990056175,
+    "name": "Jelly Sweets Hippos Gelatine Free",
+    "brand": "Fruit Tella",
+    "unit": "ea",
+    "size": "120g",
+    "barcode": "8003440996645",
+    "prices": [
+      {
+        "store_id": 1029985494883640,
+        "store_name": "PAK'nSAVE Mt Albert",
+        "vendor_code": "pns",
+        "original_price": 3.29,
+        "sale_price": null,
+        "club_price": null,
+        "multibuy_price": null,
+        "multibuy_quantity": null,
+        "multibuy_limit": null,
+        "club_multibuy_price": null,
+        "club_multibuy_quantity": null,
+        "club_multibuy_limit": null
+      }
+    ]
+  }
+]

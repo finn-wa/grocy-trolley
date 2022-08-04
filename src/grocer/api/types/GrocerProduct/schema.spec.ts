@@ -1,8 +1,8 @@
 import { testSchemaWithSamples } from "@gt/jtd/test-utils";
 import samples from "./samples.json";
-import { getProductPricesSchema } from "./schema";
+import { getGrocerProductSchema } from "./schema";
 
-describe("ProductPrices Schema", () => {
-  const validate = getProductPricesSchema();
+describe("GrocerProduct Schema", () => {
+  const validate = getGrocerProductSchema();
   testSchemaWithSamples(validate, samples);
 });
