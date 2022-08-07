@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/finn-wa/grocy-trolley/compare/v3.0.0...v3.0.1) (2022-08-07)
+
+### Bug Fixes
+
+- barcode importer names every list "barcodes" ([f30b8e3](https://github.com/finn-wa/grocy-trolley/commit/f30b8e38595537fc3ce42959304a15382350ff20))
+- grocer export incorrectly assumed product ids were barcodes ([12fcb0f](https://github.com/finn-wa/grocy-trolley/commit/12fcb0fbc38f6781c695df1d7d6f8c2fa9e4b0d7))
+
 ## [3.0.0](https://github.com/finn-wa/grocy-trolley/compare/v2.12.0...v3.0.0) (2022-08-04)
 
 ### ⚠ BREAKING CHANGES

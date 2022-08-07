@@ -1,7 +1,7 @@
 {
   "name": "grocy-trolley",
   "description": "Links Grocy to NZ online grocery shopping",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "node ./build/out/main.js",
