@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@abraham/reflection": "^0.10.0",
+    "@slack/bolt": "^3.12.1",
     "ajv": "^8.11.0",
     "chalk": "^4.1.2",
     "commander": "^9.4.0",

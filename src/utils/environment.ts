@@ -13,6 +13,9 @@ const EnvVars = [
   "OCR_API_KEY",
   "PAKNSAVE_EMAIL",
   "PAKNSAVE_PASSWORD",
+  "SLACK_APP_TOKEN",
+  "SLACK_BOT_TOKEN",
+  "SLACK_SIGNING_SECRET",
   "TAGGUN_API_KEY",
 ] as const;
 type EnvVar = typeof EnvVars[number];
