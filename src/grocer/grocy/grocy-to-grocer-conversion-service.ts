@@ -10,16 +10,13 @@ import {
 } from "@gt/grocy/shopping-lists/types/ShoppingListItems";
 import { cloneItemForList } from "@gt/grocy/shopping-lists/types/ShoppingListItems/schema";
 import { Logger } from "@gt/utils/logger";
+import prompts from "prompts";
 import { singleton } from "tsyringe";
 
 @singleton()
 export class GrocyToGrocerConversionService {
   private readonly logger = new Logger(this.constructor.name);
-  // features
-  // find barcodes of products - with updates to grocy
-  // resolve child products of parents
-  // how to transfer to user browser though?
-  // generate script?
+  private readonly savedListTitle = "Grocer Export";
 
   constructor(
     private readonly grocyProductService: GrocyProductService,
@@ -43,34 +40,26 @@ export class GrocyToGrocerConversionService {
       const stores = await this.storeService.promptForStores();
       storeIds = stores.map((store) => store.id);
     }
-    const barcodesToAdd: number[] = [];
+    const grocerProductIds: number[] = [];
     const resolvedItems = await this.resolveParentProducts(shoppingList.items);
-    const listName = `${shoppingList.name} - Grocer Export ${new Date().toISOString()}`;
-    this.logger.info(`Saving items to new list: ${listName}`);
-    await this.grocyShoppingListService.createShoppingList(listName, resolvedItems);
+    // Save resolved products (unless we're exporting a previously resolved list)
+    if (!shoppingList.name.includes(this.savedListTitle)) {
+      const listName = `${shoppingList.name} - ${this.savedListTitle} ${new Date().toISOString()}`;
+      this.logger.info(`Saving items to new list: ${listName}`);
+      await this.grocyShoppingListService.createShoppingList(listName, resolvedItems);
+    }
     for (const item of resolvedItems) {
       const product = await this.grocyProductService.getProduct(item.product_id);
-      const barcodes = await this.grocyProductService.getProductBarcodes(item.product_id);
-      if (barcodes.length === 0) {
-        console.log(`No barcode found for "${product.name}", searching grocer`);
-        const grocerProduct = await this.searchService.searchAndSelectProduct(
-          product.name,
-          storeIds
-        );
-        if (grocerProduct === null) {
-          continue;
-        }
-        this.logger.debug(`Adding barcode ${grocerProduct.id} to grocy product...`);
-        await this.grocyProductService.addProductBarcode(product.id, grocerProduct.id.toString());
-        barcodesToAdd.push(grocerProduct.id);
-      } else {
-        barcodesToAdd.push(Number(barcodes[0].barcode));
+      const grocerProduct = await this.searchService.searchAndSelectProduct(product.name, storeIds);
+      if (grocerProduct !== null) {
+        grocerProductIds.push(grocerProduct.id);
       }
     }
     await this.agent.putKeyvalStore({
       selectedStoreIds: storeIds,
-      list: barcodesToAdd.map((barcode) => ({ id: barcode, quantity: 1, isChecked: false })),
+      list: grocerProductIds.map((barcode) => ({ id: barcode, quantity: 1, isChecked: false })),
     });
+    await prompts({ name: "confirm", type: "confirm", message: "Exit?" });
   }
 
   private async resolveParentProducts(

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { AppTokens } from "@gt/app-tokens";
 import { Logger } from "@gt/utils/logger";
 import { Browser, Page } from "playwright";
 import { inject, singleton } from "tsyringe";
@@ -23,11 +24,12 @@ export class GrocerUserAgent {
    * @param browserLoader Cold promise that returns the Playwright Browser
    *    instance to use to perform requests.
    */
-  constructor(@inject("browserLoader") protected readonly browserLoader: () => Promise<Browser>) {}
+  constructor(
+    @inject(AppTokens.browserLoader) protected readonly browserLoader: () => Promise<Browser>
+  ) {}
 
   /**
    * Adds store to selected stores (if it is not already selected).
-   * @param page Playwright page
    * @param storeName Store name
    */
   async selectStore(storeName: GrocerStoreName): Promise<void> {
