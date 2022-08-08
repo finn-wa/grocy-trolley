@@ -3,6 +3,7 @@ import chalk from "chalk";
 import stringify from "json-stringify-pretty-compact";
 import { getEnvVar } from "@gt/utils/environment";
 import { Logger as PlaywrightLogger } from "playwright";
+import { Logger as SlackLogger, LogLevel as SlackLogLevel } from "@slack/bolt";
 // Unfortunately ESM Chalk 5 doesn't work with ts-jest
 // If it ever does, change this to an import when upgrading
 type ChalkInstance = chalk.ChalkFunction;
@@ -118,4 +119,87 @@ export function playwrightLogger(levelOverride?: LogLevel): PlaywrightLogger {
     log: (name, severity, message, args, _options) =>
       logger.log(logLevel[severity], `${name}: ${message?.toString()}`, args),
   };
+}
+
+class SlackLoggerAdapter implements SlackLogger {
+  private logger: Logger;
+
+  constructor(logLevel?: LogLevel) {
+    this.logger = new Logger("@slack/bolt", logLevel);
+  }
+
+  /* eslint-disable @typescript-eslint/no-unsafe-argument */
+  debug(...msg: any[]): void {
+    this.log(LogLevel.TRACE, msg);
+  }
+  info(...msg: any[]): void {
+    this.log(LogLevel.INFO, msg);
+  }
+  warn(...msg: any[]): void {
+    this.log(LogLevel.WARN, msg);
+  }
+  error(...msg: any[]): void {
+    this.log(LogLevel.ERROR, msg);
+  }
+  /* eslint-enable @typescript-eslint/no-unsafe-argument */
+
+  private log(level: LogLevel, contents: any[]): void {
+    if (contents.length > 1) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const [message, ...params] = contents;
+      this.logger.log(level, message, params);
+    }
+    this.logger.log(level, contents, []);
+  }
+
+  setName(name: string): void {
+    this.logger = new Logger(name, this.logger.level);
+  }
+
+  setLevel(level: SlackLogLevel): void {
+    this.logger = new Logger(this.logger.name, this.fromSlackLogLevel(level));
+  }
+
+  getLevel(): SlackLogLevel {
+    return this.toSlackLogLevel(this.logger.level);
+  }
+
+  private fromSlackLogLevel(level: SlackLogLevel): LogLevel {
+    switch (level) {
+      case SlackLogLevel.DEBUG:
+        return LogLevel.TRACE;
+      case SlackLogLevel.INFO:
+        return LogLevel.INFO;
+      case SlackLogLevel.WARN:
+        return LogLevel.WARN;
+      case SlackLogLevel.ERROR:
+        return LogLevel.ERROR;
+      default:
+        throw new Error("Invalid Slack log level");
+    }
+  }
+
+  private toSlackLogLevel(level: LogLevel): SlackLogLevel {
+    switch (level) {
+      case LogLevel.TRACE:
+        return SlackLogLevel.DEBUG;
+      case LogLevel.DEBUG:
+      case LogLevel.INFO:
+        return SlackLogLevel.INFO;
+      case LogLevel.WARN:
+        return SlackLogLevel.WARN;
+      case LogLevel.ERROR:
+        return SlackLogLevel.ERROR;
+      default:
+        throw new Error("Invalid GT log level");
+    }
+  }
+}
+
+export function slackLogger(levelOverride?: LogLevel): {
+  logger: SlackLogger;
+  logLevel: SlackLogLevel;
+} {
+  const logger = new SlackLoggerAdapter(levelOverride);
+  return { logger, logLevel: logger.getLevel() };
 }
