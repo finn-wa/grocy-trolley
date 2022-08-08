@@ -47,9 +47,7 @@ export async function importFrom(source?: ImportSource, options: ImportOptions =
   if (source === "receipt" || source === "barcodes") {
     let inputFilePath: string | undefined = options.file;
     if (!inputFilePath) {
-      const filepathRes = await prompts([
-        { name: "path", type: "text", message: "Enter filepath" },
-      ]);
+      const filepathRes = await prompts({ name: "path", type: "text", message: "Enter filepath" });
       inputFilePath = filepathRes.path as string;
     }
     if (source === "receipt") {

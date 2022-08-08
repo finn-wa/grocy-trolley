@@ -32,13 +32,11 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   }
 
   async createListWithNamePrompt(): Promise<List> {
-    const input = await prompts([
-      {
-        name: "name",
-        message: "Enter a name for your new list:",
-        type: "text",
-      },
-    ]);
+    const input = await prompts({
+      name: "name",
+      message: "Enter a name for your new list:",
+      type: "text",
+    });
     return this.createList(input.name as string);
   }
 
@@ -58,17 +56,15 @@ export class FoodstuffsListService extends FoodstuffsRestService {
 
   async selectList(): Promise<string> {
     const lists = await this.getLists();
-    const response = await prompts([
-      {
-        name: "listId",
-        message: "Select list",
-        type: "select",
-        choices: [
-          { title: "Create new list", value: null },
-          ...lists.map((list) => ({ title: list.name, value: list.listId })),
-        ],
-      },
-    ]);
+    const response = await prompts({
+      name: "listId",
+      message: "Select list",
+      type: "select",
+      choices: [
+        { title: "Create new list", value: null },
+        ...lists.map((list) => ({ title: list.name, value: list.listId })),
+      ],
+    });
     if (response.listId !== null) {
       return response.listId as string;
     }

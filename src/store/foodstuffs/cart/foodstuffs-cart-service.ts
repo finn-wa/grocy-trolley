@@ -51,9 +51,11 @@ export class FoodstuffsCartService {
         if (error instanceof RequestError) {
           this.logger.debug(await error.response.text());
         }
-        const response = await prompts([
-          { name: "resume", type: "confirm", message: "Resume adding products?" },
-        ]);
+        const response = await prompts({
+          name: "resume",
+          type: "confirm",
+          message: "Resume adding products?",
+        });
         if (!response.resume) {
           throw error;
         }

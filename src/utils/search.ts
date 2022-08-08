@@ -26,33 +26,31 @@ async function promptForNextAction<T>(
   if (results.length === 0) {
     console.log("No results found.");
   }
-  const nextActionResponse = await prompts([
-    {
-      message: "Select a search result",
-      name: "nextAction",
-      type: "select",
-      choices: [
-        ...results.map((hit) => ({
-          title: stringifyResult(hit),
-          value: { action: "select", hit },
-        })),
-        { title: "Modify search query", value: { action: "searchAgain" } },
-        { title: "Exit search", value: { action: "exit" } },
-      ],
-    },
-    {
-      type: (prev: { action: string }) => (prev.action === "searchAgain" ? "text" : null),
-      message: "Enter a new search query, or leave blank to exit search",
-      name: "query",
-      initial: query,
-    },
-  ]);
+  const nextActionResponse = await prompts({
+    message: "Select a search result",
+    name: "nextAction",
+    type: "select",
+    choices: [
+      ...results.map((hit) => ({
+        title: stringifyResult(hit),
+        value: { action: "select", hit },
+      })),
+      { title: "Modify search query", value: { action: "searchAgain" } },
+      { title: "Exit search", value: { action: "exit" } },
+    ],
+  });
   const nextAction = nextActionResponse.nextAction as
     | SelectHitAction<T>
     | Omit<SearchAgainAction, "query">
     | ExitSearchAction;
   if (nextAction.action === "searchAgain") {
-    return { action: "searchAgain", query: ((nextActionResponse.query ?? "") as string).trim() };
+    const queryResponse = await prompts({
+      type: "text",
+      message: "Enter a new search query, or leave blank to exit search",
+      name: "query",
+      initial: query,
+    });
+    return { action: "searchAgain", query: queryResponse.query as string };
   }
   return nextAction;
 }

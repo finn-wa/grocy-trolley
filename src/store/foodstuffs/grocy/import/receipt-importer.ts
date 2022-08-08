@@ -77,14 +77,12 @@ export class FoodstuffsReceiptImporter {
     const cachedScannedItems = await this.scanCache.get(cacheKey);
     if (cachedScannedItems !== null) {
       console.log(prettyPrint(cachedScannedItems));
-      const confirm = await prompts([
-        {
-          name: "useCache",
-          message: dedent`
+      const confirm = await prompts({
+        name: "useCache",
+        message: dedent`
             Use cached scanned items? Amend file as needed before continuing:\n${cacheFilepath}`,
-          type: "confirm",
-        },
-      ]);
+        type: "confirm",
+      });
       if (confirm.useCache) {
         return this.scanCache.get(cacheKey);
       }
@@ -172,13 +170,11 @@ export class FoodstuffsReceiptImporter {
       this.logger.info("Failed to find:\n" + prettyPrint(notFound));
     }
     this.logger.info("Found:\n" + prettyPrint(listRefs));
-    const importProducts = await prompts([
-      {
-        message: "Import resolved products?",
-        name: "confirm",
-        type: "confirm",
-      },
-    ]);
+    const importProducts = await prompts({
+      message: "Import resolved products?",
+      name: "confirm",
+      type: "confirm",
+    });
     if (!importProducts.confirm) {
       return { success: false };
     }

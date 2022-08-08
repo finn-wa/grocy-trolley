@@ -68,20 +68,18 @@ export class GrocyParentProductService extends GrocyRestService {
     if (parentMatches.length === 0) {
       return undefined;
     }
-    const chosenParent = await prompts([
-      {
-        message: "Select parent product for " + name,
-        name: "value",
-        type: "select",
-        choices: [
-          { title: "None", value: undefined },
-          ...parentMatches.map((parent) => ({
-            title: parent.product.name,
-            value: parent,
-          })),
-        ],
-      },
-    ]);
+    const chosenParent = await prompts({
+      message: "Select parent product for " + name,
+      name: "value",
+      type: "select",
+      choices: [
+        { title: "None", value: undefined },
+        ...parentMatches.map((parent) => ({
+          title: parent.product.name,
+          value: parent,
+        })),
+      ],
+    });
     return chosenParent.value as ParentProduct | undefined;
   }
 }

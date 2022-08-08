@@ -83,14 +83,12 @@ export class GrocyToFoodstuffsConversionService {
         title: `$${child.price / 100} - ${child.brand} ${child.name} ${child.weightDisplayName}`,
         value: toCartProductRef(child),
       }));
-      const choice = await prompts([
-        {
-          name: "products",
-          type: "multiselect",
-          choices,
-          message: `Select a product for ${parent.product.name}`,
-        },
-      ]);
+      const choice = await prompts({
+        name: "products",
+        type: "multiselect",
+        choices,
+        message: `Select a product for ${parent.product.name}`,
+      });
       return choice.products as CartProductRef[];
     }
     const pnsProduct = product.userfields.storeMetadata?.PNS;
