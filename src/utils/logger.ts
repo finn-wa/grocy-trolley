@@ -35,6 +35,7 @@ export class Logger {
       }
       this.level = LogLevel[level];
     }
+    this.trace("Initialised logger");
   }
 
   private out(level: LogLevel, message: any, params: any[], colour: ChalkInstance) {
@@ -196,10 +197,6 @@ class SlackLoggerAdapter implements SlackLogger {
   }
 }
 
-export function slackLogger(levelOverride?: LogLevel): {
-  logger: SlackLogger;
-  logLevel: SlackLogLevel;
-} {
-  const logger = new SlackLoggerAdapter(levelOverride);
-  return { logger, logLevel: logger.getLevel() };
+export function slackLogger(levelOverride?: LogLevel): SlackLogger {
+  return new SlackLoggerAdapter(levelOverride);
 }

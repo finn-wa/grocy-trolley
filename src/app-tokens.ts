@@ -4,4 +4,6 @@
 export const AppTokens = {
   browserLoader: "BrowserLoader",
   receiptScanner: "ReceiptScanner",
+  slackUserId: "SlackUserId",
+  promptProvider: "PromptProvider",
 } as const;

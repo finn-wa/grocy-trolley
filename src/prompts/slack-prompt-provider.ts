@@ -1,21 +1,28 @@
-import { injectable } from "tsyringe";
+import { AppTokens } from "@gt/app-tokens";
+import { SlackPromptService } from "@gt/slack/slack-prompt-service";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { PromptProvider, SelectChoice } from "./prompt-provider";
-import { SlackSession } from "./slack-session";
 
-@injectable()
+@scoped(Lifecycle.ContainerScoped)
 export class SlackPromptProvider implements PromptProvider {
-  constructor(private readonly session: SlackSession) {}
+  constructor(
+    @inject(AppTokens.slackUserId) private readonly userId: string,
+    private readonly promptService: SlackPromptService
+  ) {}
 
-  async select<T>(message: string, choices: SelectChoice<T>[]): Promise<T | null> {
-    const values = choices.map((choice) => choice.value);
-    const choicesWithIndexValues = choices.map((choice, index) => ({
-      ...choice,
-      value: index.toString(),
-    }));
-    const selectedIndex = await this.session.select(message, choicesWithIndexValues);
-    if (selectedIndex === null) {
-      return null;
-    }
-    return values[parseInt(selectedIndex)];
+  select<T>(message: string, choices: SelectChoice<T>[]): Promise<T | null> {
+    return this.promptService.select(this.userId, message, choices);
+  }
+
+  multiSelect<T>(message: string, choices: SelectChoice<T>[]): Promise<T[] | null> {
+    return this.promptService.multiSelect(this.userId, message, choices);
+  }
+
+  confirm(message: string): Promise<boolean> {
+    return this.promptService.confirm(this.userId, message);
+  }
+
+  text(message: string): Promise<string | null> {
+    return this.promptService.text(this.userId, message);
   }
 }
