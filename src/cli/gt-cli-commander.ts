@@ -24,6 +24,7 @@ export async function runGT() {
       new Option("-l, --log-level <level>")
         .choices(LOG_LEVELS)
         .default("DEBUG")
+        .argParser((level) => level.toUpperCase())
         .makeOptionMandatory()
     )
     .option("-e, --env-file <path>", "Path to .env file", ".env")
