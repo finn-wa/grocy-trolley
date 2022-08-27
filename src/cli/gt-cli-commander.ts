@@ -1,9 +1,12 @@
+import { registerDefaultDependencies } from "@gt/app/di";
+import { GrocyTrolleyApp } from "@gt/app/gt-app";
 import { dev } from "@gt/dev";
-import { exportTo, importFrom } from "@gt/app";
+import { GrocyTrolleySlackBot } from "@gt/slack/gt-slack-bot";
 import { initEnv } from "@gt/utils/environment";
 import { LOG_LEVELS } from "@gt/utils/logger";
 import { version } from "@gt/utils/version";
 import { Argument, Command, Option, program } from "commander";
+import { container } from "tsyringe";
 import {
   CLIOptions,
   ExportDestination,
@@ -13,10 +16,10 @@ import {
   ImportSource,
   IMPORT_SOURCES,
 } from "./gt-cli-model";
-import { promptGT } from "./gt-cli-prompts";
 
 export async function runGT() {
-  program
+  registerDefaultDependencies(container);
+  return program
     .name("grocy-trolley")
     .description(gtLogo)
     .version(version)
@@ -35,7 +38,9 @@ export async function runGT() {
     .addCommand(
       new Command("prompt")
         .description("Start an interactive prompt-based version of the CLI")
-        .action(async () => await promptGT()),
+        .action(async () => {
+          await container.resolve(GrocyTrolleyApp).commandPrompt();
+        }),
       { isDefault: true, hidden: true }
     )
     .addCommand(
@@ -58,19 +63,26 @@ export async function runGT() {
         )
         .addArgument(new Argument("[source]", "Import source").choices(IMPORT_SOURCES))
         .action(async (source: ImportSource, options: ImportOptions) => {
-          await importFrom(source, options);
+          await container.resolve(GrocyTrolleyApp).importFrom(source, options);
         })
     )
     .addCommand(
       new Command("export")
         .alias("e")
         .alias("shop")
-        .description("Export a shopping list from Grocy to Foodstuffs or Grocer")
+        .description("Export a shopping list from Grocy")
         .addArgument(
           new Argument("[destination]", "Export destination").choices(EXPORT_DESTINATIONS)
         )
-        .action((destination: ExportDestination) => exportTo(destination))
+        .action(async (destination: ExportDestination) => {
+          await container.resolve(GrocyTrolleyApp).exportTo(destination);
+        })
     )
-    .addCommand(new Command("dev").action(dev), { hidden: true });
-  return program.parseAsync();
+    .addCommand(
+      new Command("slack").description("Starts the slack bot server").action(async () => {
+        await container.resolve(GrocyTrolleySlackBot).run();
+      })
+    )
+    .addCommand(new Command("dev").action(dev), { hidden: true })
+    .parseAsync();
 }

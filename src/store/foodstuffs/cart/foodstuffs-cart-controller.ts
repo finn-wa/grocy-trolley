@@ -1,7 +1,7 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { singleton } from "tsyringe";
-import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
+import { Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
+import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 import { getCartSchema } from "./types/Cart/schema";
 import { ClearCartResponse } from "./types/ClearCartResponse";
@@ -11,7 +11,7 @@ import { getClearCartResponseSchema } from "./types/ClearCartResponse/schema";
  * Contains REST methods for /CommonApi/Cart endpoints. FoodstuffsCartService
  * contains logic for interacting with these endpoints.
  */
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsCartController extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
 

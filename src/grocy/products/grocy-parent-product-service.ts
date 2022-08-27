@@ -1,6 +1,7 @@
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger } from "@gt/utils/logger";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocyProductGroup } from "../grocy-config";
 import { GrocyProductGroupIdLookupService } from "../id-lookup/grocy-product-group-id-lookup-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
@@ -8,14 +9,15 @@ import { GrocyProductService } from "./grocy-product-service";
 import { ParentProduct } from "./types";
 import { Product } from "./types/Product";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyParentProductService extends GrocyRestService {
   protected readonly logger = new Logger(this.constructor.name);
   private parentProducts: Record<string, ParentProduct> | null = null;
 
   constructor(
     private readonly productGroupIdService: GrocyProductGroupIdLookupService,
-    private readonly productService: GrocyProductService
+    private readonly productService: GrocyProductService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {
     super();
   }
@@ -44,42 +46,29 @@ export class GrocyParentProductService extends GrocyRestService {
     return parents;
   }
 
-  async promptForChild(parent: ParentProduct): Promise<Product | null> {
-    const choice = await prompts({
-      message: "Select child product for " + parent.product.name,
-      name: "value",
-      type: "select",
-      choices: [
-        ...parent.children.map((child) => ({ title: child.name, value: child })),
-        { title: "Exit", value: null },
-      ],
-    });
-    return choice.value as Product | null;
+  async multiselectChildProducts(parent: ParentProduct): Promise<Product[] | null> {
+    return this.prompt.multiselect("Select child products for " + parent.product.name, [
+      ...parent.children.map((child) => ({ title: child.name, value: child })),
+    ]);
   }
 
   async promptForMatchingParent(
     name: string,
     category: GrocyProductGroup,
     parents: ParentProduct[]
-  ): Promise<ParentProduct | undefined> {
+  ): Promise<ParentProduct | null> {
     const parentMatches = parents.filter(
       (parent) => parent.category === category && parent.tags.some((tag) => name.match(tag))
     );
     if (parentMatches.length === 0) {
-      return undefined;
+      return null;
     }
-    const chosenParent = await prompts({
-      message: "Select parent product for " + name,
-      name: "value",
-      type: "select",
-      choices: [
-        { title: "None", value: undefined },
-        ...parentMatches.map((parent) => ({
-          title: parent.product.name,
-          value: parent,
-        })),
-      ],
-    });
-    return chosenParent.value as ParentProduct | undefined;
+    return this.prompt.select("Select parent product for " + name, [
+      { title: "None", value: null },
+      ...parentMatches.map((parent) => ({
+        title: parent.product.name,
+        value: parent,
+      })),
+    ]);
   }
 }

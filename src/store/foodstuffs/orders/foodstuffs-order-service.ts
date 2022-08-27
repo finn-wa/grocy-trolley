@@ -1,14 +1,14 @@
 import { Logger } from "@gt/utils/logger";
-import { singleton } from "tsyringe";
-import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
+import { Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
+import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import {
   FoodstuffsOrder,
   FoodstuffsOrderDetails,
   FoodstuffsOrdersResponse,
 } from "./foodstuffs-order.model";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsOrderService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
 

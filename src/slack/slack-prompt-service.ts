@@ -2,22 +2,42 @@ import { SelectChoice } from "@gt/prompts/prompt-provider";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import {
   BasicElementAction,
+  BlockAction,
   ButtonAction,
+  KnownBlock,
   MultiStaticSelectAction,
   PlainTextInputAction,
   PlainTextOption,
   RadioButtonsAction,
   RespondArguments,
-  SlackAction,
+  SlackActionMiddlewareArgs,
 } from "@slack/bolt";
-import { filter, first, firstValueFrom, forkJoin, map, Observable, Subject, switchMap } from "rxjs";
+import {
+  filter,
+  first,
+  firstValueFrom,
+  forkJoin,
+  map,
+  mergeMap,
+  Observable,
+  share,
+  switchMap,
+  tap,
+} from "rxjs";
 import { singleton } from "tsyringe";
+import { SlackUserInteractionStore } from "./slack-app-store";
+import {
+  confirmButtons,
+  markdownSection,
+  textSection,
+  updatedConfirmButtons,
+} from "./slack-blocks";
 import { SlackBoltApp } from "./slack-bolt-app";
 
-interface ActionArgs<T extends BasicElementAction> {
-  body: SlackAction;
-  payload: T;
-}
+type ActionArgs<Payload extends BasicElementAction> = SlackActionMiddlewareArgs & {
+  body: BlockAction;
+  payload: Payload;
+};
 
 /**
  * A global-scoped singleton service that interacts with the Slack app to
@@ -28,91 +48,132 @@ interface ActionArgs<T extends BasicElementAction> {
 @singleton()
 export class SlackPromptService {
   private readonly logger = new Logger(this.constructor.name);
-
-  /** Action invocations */
-  private readonly action$ = {
-    select: new Subject<ActionArgs<RadioButtonsAction>>(),
-    confirm: new Subject<ActionArgs<ButtonAction>>(),
-    text: new Subject<ActionArgs<PlainTextInputAction>>(),
-    multiSelect: new Subject<ActionArgs<MultiStaticSelectAction>>(),
+  private readonly actionIds = {
+    select: "prompt:select",
+    confirm: "prompt:confirm",
+    text: "prompt:text",
+    multiselect: "prompt:multiselect",
   } as const;
 
-  constructor(private readonly slackApp: SlackBoltApp) {
-    this.slackApp.registerActionListener("prompt:select", async ({ body, payload }) => {
-      if (payload.type !== "radio_buttons") {
-        this.logger.error("Unexpected payload type: " + payload.type);
-        return;
-      }
-      this.action$.select.next({ body, payload });
-    });
+  /** Action invocations */
+  private readonly action$: {
+    select: Observable<ActionArgs<ButtonAction>>;
+    confirm: Observable<ActionArgs<ButtonAction>>;
+    text: Observable<ActionArgs<PlainTextInputAction>>;
+    multiSelect: Observable<ActionArgs<MultiStaticSelectAction>>;
+  };
 
-    this.slackApp.registerActionListener(/prompt:confirm:\w+/, async ({ body, payload }) => {
-      if (payload.type !== "button" || !("action_id" in payload)) {
-        this.logger.error("Unexpected payload " + prettyPrint(payload));
-        return;
-      }
-      this.action$.confirm.next({ body, payload });
-    });
+  constructor(
+    private readonly slackApp: SlackBoltApp,
+    private readonly interactionStore: SlackUserInteractionStore
+  ) {
+    const matchPrefix = (id: string) => new RegExp(id + "[\\w:-]*");
+    this.action$ = {
+      select: this.slackApp.registerAction(matchPrefix(this.actionIds.select)).pipe(
+        filter((args): args is ActionArgs<ButtonAction> =>
+          this.hasPayloadType(args.payload, "button")
+        ),
+        share()
+      ),
+      confirm: this.slackApp.registerAction(matchPrefix(this.actionIds.confirm)).pipe(
+        filter((args): args is ActionArgs<ButtonAction> =>
+          this.hasPayloadType(args.payload, "button")
+        ),
+        share()
+      ),
+      text: this.slackApp.registerAction(matchPrefix(this.actionIds.text)).pipe(
+        filter((args): args is ActionArgs<PlainTextInputAction> =>
+          this.hasPayloadType(args.payload, "plain_text_input")
+        ),
+        share()
+      ),
+      multiSelect: this.slackApp.registerAction(matchPrefix(this.actionIds.multiselect)).pipe(
+        filter((args): args is ActionArgs<MultiStaticSelectAction> =>
+          this.hasPayloadType(args.payload, "multi_static_select")
+        ),
+        share()
+      ),
+    };
+  }
 
-    this.slackApp.registerActionListener("prompt:text", async ({ body, payload }) => {
-      if (payload.type !== "plain_text_input") {
-        this.logger.error("Unexpected payload type: " + payload.type);
-        return;
-      }
-      this.action$.text.next({ body, payload });
-    });
+  private hasPayloadType<T extends SlackActionMiddlewareArgs["payload"]>(
+    payload: SlackActionMiddlewareArgs["payload"],
+    payloadType: T["type"]
+  ): payload is T {
+    if (payload.type !== payloadType) {
+      this.logger.error(
+        `Expected payload of type ${payload.type}, received: ${prettyPrint(payload)}`
+      );
+      return false;
+    }
+    return true;
+  }
 
-    this.slackApp.registerActionListener("prompt:multiSelect", async ({ body, payload }) => {
-      if (payload.type !== "multi_static_select") {
-        this.logger.error("Unexpected payload type: " + payload.type);
-        return;
-      }
-      this.action$.multiSelect.next({ body, payload });
-    });
+  async say(userId: string, message: string): Promise<void> {
+    await firstValueFrom(
+      this.interactionStore.store$.pipe(
+        map((store) => store[userId]),
+        first((state) => !!state),
+        switchMap((state) => state.say(message))
+      )
+    );
   }
 
   /**
    * Displays a select prompt to the specified user and returns their selected choice.
    *
    * @param userId the id of the user to prompt
-   * @param message the message to display above the chocies
+   * @param text the message to display above the chocies
    * @param choices the prompt choices to select from
    * @returns the user's selected choice, or null if they exited the prompt
    */
-  async select<T>(userId: string, message: string, choices: SelectChoice<T>[]): Promise<T | null> {
-    const values = choices.map((choice) => choice.value);
-    const choicesWithIndexValues = choices.map((choice, index) => ({
-      ...choice,
-      value: index.toString(),
-    }));
-    const response = await this.sendPrompt(
-      userId,
-      this.selectBlocks(message, choicesWithIndexValues),
-      this.action$.select
+  async select<T>(userId: string, text: string, choices: SelectChoice<T>[]): Promise<T | null> {
+    const options = choices.map((choice, index) =>
+      this.choiceToSlackOption({ ...choice, value: index.toString() })
     );
-    const selectedIndex = response.payload.selected_option?.value ?? null;
-    if (selectedIndex === null) {
-      return null;
-    }
-    return values[parseInt(selectedIndex)] ?? null;
+    const blockId = `${this.actionIds.select}:block`;
+    const actionId = `${this.actionIds.select}:interaction`;
+    const blocks: KnownBlock[] = [
+      textSection(text),
+      {
+        type: "actions",
+        elements: [{ type: "radio_buttons", options, action_id: actionId }],
+        block_id: blockId,
+      },
+      confirmButtons(this.actionIds.select),
+    ];
+    const message = this.buildMessage(text, blocks);
+    const { submitAction: selectAction } = await firstValueFrom(
+      forkJoin({
+        prompt: this.sendMessageToUser(userId, message),
+        // Wait for user to interact
+        submitAction: this.action$.select.pipe(first(({ body }) => body.user.id === userId)),
+      })
+    );
+    const selectedIndex = parseInt(
+      selectAction.body.state?.values[blockId][actionId]?.selected_option?.value as string
+    );
+    const selectedChoice = choices[selectedIndex];
+    const selectedChoiceText = String(selectedChoice?.title ?? "None");
+    await selectAction.respond(
+      this.buildMessageUpdate(`${text} (${selectedChoiceText})`, [
+        blocks[0],
+        markdownSection(
+          choices
+            .map((choice, index) => `${index === selectedIndex ? "🔘" : "⚪"} ${choice.title}`)
+            .join("\n\n")
+        ),
+        updatedConfirmButtons(selectAction.action.action_id),
+      ])
+    );
+    return selectedChoice?.value ?? null;
   }
 
-  private selectBlocks(message: string, choices: SelectChoice<string>[]): RespondArguments {
-    return {
-      text: message,
-      blocks: [
-        {
-          type: "actions",
-          elements: [
-            {
-              type: "radio_buttons",
-              options: choices.map(this.choiceToSlackOption),
-              action_id: "prompt:select",
-            },
-          ],
-        },
-      ],
-    };
+  private sendMessageToUser(userId: string, message: RespondArguments): Observable<unknown> {
+    return this.interactionStore.selectUser(userId).pipe(
+      first(),
+      switchMap(({ respond }) => respond(message))
+    );
   }
 
   private choiceToSlackOption(this: void, choice: SelectChoice<string>): PlainTextOption {
@@ -126,112 +187,142 @@ export class SlackPromptService {
    * Displays a multiselect prompt to the specified user and returns their selected choices
    * .
    * @param userId the id of the user to prompt
-   * @param message text to display above the prompt
+   * @param text to display above the prompt
    * @param choices the prompt choices to select from
    * @returns the user's selected choices
    */
-  async multiSelect<T>(userId: string, message: string, choices: SelectChoice<T>[]): Promise<T[]> {
+  async multiselect<T>(userId: string, text: string, choices: SelectChoice<T>[]): Promise<T[]> {
     const values = choices.map((choice) => choice.value);
     const choicesWithIndexValues = choices.map((choice, index) => ({
       ...choice,
       value: index.toString(),
     }));
-    const response = await this.sendPrompt(
+    const blocks = this.multiselectBlocks(text, choicesWithIndexValues);
+    const response = await this.sendPromptMessage(
       userId,
-      this.multiSelectBlocks(message, choicesWithIndexValues),
+      this.buildMessage(text, blocks),
       this.action$.multiSelect
     );
     return response.payload.selected_options.map((option) => values[parseInt(option.value)]);
   }
 
-  private multiSelectBlocks(message: string, choices: SelectChoice<string>[]): RespondArguments {
-    return {
-      text: message,
-      blocks: [
-        {
-          type: "input",
-          label: { text: message, type: "plain_text", emoji: true },
-          element: {
-            type: "multi_static_select",
-            placeholder: { type: "plain_text", text: "Select options", emoji: true },
-            options: choices.map(this.choiceToSlackOption),
-            action_id: "prompt:multiSelect",
-          },
+  private multiselectBlocks(text: string, choices: SelectChoice<string>[]): KnownBlock[] {
+    return [
+      {
+        type: "input",
+        label: { text, type: "plain_text", emoji: true },
+        element: {
+          type: "multi_static_select",
+          placeholder: { type: "plain_text", text: "Select options", emoji: true },
+          options: choices.map(this.choiceToSlackOption),
+          action_id: this.actionIds.multiselect,
         },
-      ],
-    };
+      },
+    ];
   }
 
   /**
    * Displays a confirmation prompt to the specified user and returns their response.
    *
    * @param userId the id of the user to prompt
-   * @param message the text to display above the prompt
+   * @param text the text to display above the prompt
    * @returns true if the user confirmed or false if they cancelled
    */
-  async confirm(userId: string, message: string): Promise<boolean> {
-    const response = await this.sendPrompt(
-      userId,
-      this.confirmBlocks(message),
-      this.action$.confirm
+  async confirm(userId: string, text: string): Promise<boolean> {
+    const blocks = [textSection(text), confirmButtons(this.actionIds.confirm)];
+    const message = this.buildMessage(text, blocks);
+    const { confirmAction } = await firstValueFrom(
+      forkJoin({
+        // Send the prompt to user
+        prompt: this.interactionStore.selectUser(userId).pipe(
+          first(),
+          mergeMap(({ respond }) => respond(message))
+        ),
+        // Wait for user to interact
+        confirmAction: this.action$.confirm.pipe(first(({ body }) => body.user.id === userId)),
+      })
     );
-    return response.payload.value === "true";
-  }
-
-  private confirmBlocks(message: string): RespondArguments {
-    return {
-      text: message,
-      blocks: [
-        {
-          type: "section",
-          text: { type: "plain_text", text: message, emoji: true },
-        },
-        {
-          type: "actions",
-          elements: [
-            {
-              type: "button",
-              text: { text: "Cancel", type: "plain_text", emoji: false },
-              value: "false",
-              action_id: "prompt:confirm:false",
-            },
-            {
-              type: "button",
-              text: { text: "Confirm", type: "plain_text", emoji: false },
-              style: "primary",
-              value: "true",
-              action_id: "prompt:confirm:true",
-            },
-          ],
-        },
-      ],
-    };
+    // Cancel action_id has a :cancel suffix
+    const confirmed = confirmAction.action.action_id === this.actionIds.confirm;
+    const confirmedText = confirmed ? "Confirm" : "Cancel";
+    await confirmAction.respond(
+      this.buildMessageUpdate(`${text} (${confirmedText})`, [
+        blocks[0],
+        updatedConfirmButtons(confirmAction.action.action_id),
+      ])
+    );
+    return confirmed;
   }
 
   /**
    *
    * @param userId the id of the user to prompt
-   * @param message to use as the label for the prompt
+   * @param label to use as the label for the prompt
    * @returns the user's inputted text
    */
-  async text(userId: string, message: string): Promise<string | null> {
-    const response = await this.sendPrompt(userId, this.textBlocks(message), this.action$.text);
-    return response.payload.value ?? null;
+  async text(userId: string, label: string, placeholder = "Enter text"): Promise<string | null> {
+    const blockId = `${this.actionIds.text}:block`;
+    const actionId = `${this.actionIds.text}:interaction`;
+    const blocks: KnownBlock[] = [
+      {
+        label: { text: label, type: "plain_text", emoji: false },
+        dispatch_action: true,
+        type: "input",
+        block_id: blockId,
+        element: {
+          type: "plain_text_input",
+          action_id: actionId,
+          placeholder: { type: "plain_text", text: placeholder, emoji: true },
+        },
+      },
+      confirmButtons(this.actionIds.text),
+    ];
+    const { submitAction } = await firstValueFrom(
+      forkJoin({
+        prompt: this.sendMessageToUser(userId, this.buildMessage(label, blocks)),
+        // Wait for user to interact
+        submitAction: this.action$.text.pipe(first(({ body }) => body.user.id === userId)),
+      })
+    );
+    const textInput = submitAction.body.state?.values[blockId][actionId]?.value ?? null;
+    await submitAction.respond(
+      this.buildMessageUpdate(`${label} (${textInput ?? "None"})`, [
+        markdownSection(`*${label}*\n> ${textInput ?? "None"}`),
+        updatedConfirmButtons(submitAction.action.action_id),
+      ])
+    );
+    return textInput;
   }
 
-  private textBlocks(message: string): RespondArguments {
-    return {
-      blocks: [
-        {
-          label: { text: message, type: "plain_text", emoji: true },
-          dispatch_action: true,
-          type: "input",
-          element: {
-            type: "plain_text_input",
-            action_id: "prompt:text",
-          },
+  private textBlocks(text: string, placeholder = "Enter text"): KnownBlock[] {
+    return [
+      {
+        label: { text: "Enter text", type: "plain_text", emoji: false },
+        dispatch_action: true,
+        type: "input",
+        element: {
+          type: "plain_text_input",
+          action_id: "prompt:text",
+          placeholder: { type: "plain_text", text: placeholder, emoji: true },
         },
-      ],
+      },
+    ];
+  }
+
+  private buildMessage(text: string, blocks: RespondArguments["blocks"]): RespondArguments {
+    return {
+      text,
+      blocks,
+      delete_original: false,
+      replace_original: false,
+    };
+  }
+
+  private buildMessageUpdate(text: string, blocks: RespondArguments["blocks"]): RespondArguments {
+    return {
+      text,
+      blocks,
+      replace_original: true,
     };
   }
 
@@ -241,31 +332,38 @@ export class SlackPromptService {
    * visible to the user.
    *
    * @param userId the user to send the message to
-   * @param message to send the user
+   * @param message message to send the user
    * @param actionStream observable that emits the corresponding action
    * @returns the user's response
    */
-  private sendPrompt<T extends BasicElementAction>(
+  private sendPromptMessage<T extends BasicElementAction>(
     userId: string,
     message: string | RespondArguments,
     actionStream: Observable<ActionArgs<T>>
   ): Promise<ActionArgs<T>> {
     return firstValueFrom(
-      this.slackApp.respond$.pipe(
-        filter(({ userId }) => userId === userId),
-        first(),
-        switchMap(({ respond }) =>
+      this.interactionStore.store$.pipe(
+        map((store) => store[userId]),
+        first((state) => !!state),
+        switchMap((state) =>
           forkJoin({
             // Send message to user using the latest "respond" function
-            message: respond(message),
+            message: state.respond(message),
             // Wait for user's reply
-            userResponse: actionStream.pipe(
-              filter((args) => args.body.user.id === userId),
-              first()
-            ),
+            userResponse: actionStream.pipe(first((args) => args.body.user.id === userId)),
           })
         ),
-        map(({ userResponse }) => userResponse)
+        map(({ userResponse }) => userResponse),
+        // we need a submit button on each prompt message that can be disabled after first submit
+        // otherwise many responses can be sent by yser
+        // for multiselect, a response for each select
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        tap(({ respond }) =>
+          respond({
+            text: "thanks",
+            replace_original: true,
+          })
+        )
       )
     );
   }

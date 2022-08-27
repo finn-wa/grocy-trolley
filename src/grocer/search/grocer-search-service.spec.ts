@@ -13,6 +13,6 @@ describe("GrocerSearchService", () => {
 
   test("search for apples", async () => {
     const response = await service.search("apples", storeIds);
-    expect(response.hits.length).toBeGreaterThan(0);
+    expect(response?.hits.length).toBeGreaterThan(0);
   });
 });

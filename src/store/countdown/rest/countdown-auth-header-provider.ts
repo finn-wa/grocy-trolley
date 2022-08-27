@@ -1,14 +1,14 @@
-import { AppTokens } from "@gt/app-tokens";
+import { AppTokens } from "@gt/app/di";
 import { AuthHeaderProvider } from "@gt/store/shared/rest/auth-header-provider";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { Logger } from "@gt/utils/logger";
 import { getHeadersFromRequest } from "@gt/utils/playwright";
 import { Browser, Page, Request as PlaywrightRequest } from "playwright";
-import { inject, singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { CountdownTokens } from "../countdown-di";
 import { COUNTDOWN_URL, Shell } from "../models";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class CountdownAuthHeaderProvider extends AuthHeaderProvider {
   protected readonly logger = new Logger(this.constructor.name);
   protected readonly headersFilter = {

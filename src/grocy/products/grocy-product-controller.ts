@@ -1,6 +1,6 @@
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { GrocyEntityService } from "../rest/grocy-entity-rest-service";
 import { QuantityUnitConversion } from "../types/grocy-types";
 import { products } from "./grocy-product-service";
@@ -19,7 +19,7 @@ import { getRawProductSchema, getRawProductsSchema } from "./types/Product/schem
  * Contains methods for plain REST operations on Grocy Product entities and
  * their userfields. See GrocyProductService for a higher-level Product API.
  */
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyProductController extends GrocyEntityService {
   protected readonly logger = new Logger(this.constructor.name);
 

@@ -1,17 +1,18 @@
+import { AppTokens } from "@gt/app/di";
 import { GrocyParentProductService } from "@gt/grocy/products/grocy-parent-product-service";
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { Product } from "@gt/grocy/products/types/Product";
 import { GrocyStockService } from "@gt/grocy/stock/grocy-stock-service";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, FoodstuffsCart, toCartProductRef } from "../../cart/foodstuffs-cart.model";
 import { FoodstuffsBaseProduct, FoodstuffsCartProduct } from "../../models";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsCartImporter {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -20,7 +21,8 @@ export class FoodstuffsCartImporter {
     private readonly cartService: FoodstuffsCartService,
     private readonly grocyProductService: GrocyProductService,
     private readonly grocyParentProductService: GrocyParentProductService,
-    private readonly grocyStockService: GrocyStockService
+    private readonly grocyStockService: GrocyStockService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {}
 
   async importProducts(products: FoodstuffsBaseProduct[]) {
@@ -66,12 +68,8 @@ export class FoodstuffsCartImporter {
       );
       newProducts.push({ id: createdProduct.id, product });
     }
-    const stock: { value: boolean } = await prompts({
-      name: "value",
-      message: "Stock imported products?",
-      type: "confirm",
-    });
-    if (stock.value) {
+    const stock = await this.prompt.confirm("Stock imported products?");
+    if (stock) {
       await this.stockProductsFromCart(cart);
     }
   }

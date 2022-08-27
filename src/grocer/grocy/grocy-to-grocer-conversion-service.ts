@@ -1,3 +1,4 @@
+import { AppTokens } from "@gt/app/di";
 import { GrocerSearchService } from "@gt/grocer/search/grocer-search-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
 import { GrocerUserAgent } from "@gt/grocer/user-agent/grocer-user-agent";
@@ -9,11 +10,11 @@ import {
   ShoppingListItem,
 } from "@gt/grocy/shopping-lists/types/ShoppingListItems";
 import { cloneItemForList } from "@gt/grocy/shopping-lists/types/ShoppingListItems/schema";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger } from "@gt/utils/logger";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyToGrocerConversionService {
   private readonly logger = new Logger(this.constructor.name);
   private readonly savedListTitle = "Grocer Export";
@@ -24,7 +25,8 @@ export class GrocyToGrocerConversionService {
     private readonly grocyShoppingListService: GrocyShoppingListService,
     private readonly searchService: GrocerSearchService,
     private readonly storeService: GrocerStoreService,
-    private readonly agent: GrocerUserAgent
+    private readonly agent: GrocerUserAgent,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {}
 
   async grocyListToGrocerList(shoppingListId?: string, storeIds?: number[]) {
@@ -38,6 +40,9 @@ export class GrocyToGrocerConversionService {
     const shoppingList = await this.grocyShoppingListService.getShoppingList(shoppingListId);
     if (!storeIds) {
       const stores = await this.storeService.promptForStores();
+      if (!stores) {
+        return;
+      }
       storeIds = stores.map((store) => store.id);
     }
     const grocerProductIds: number[] = [];
@@ -59,7 +64,7 @@ export class GrocyToGrocerConversionService {
       selectedStoreIds: storeIds,
       list: grocerProductIds.map((barcode) => ({ id: barcode, quantity: 1, isChecked: false })),
     });
-    await prompts({ name: "confirm", type: "confirm", message: "Exit?" });
+    await this.prompt.confirm("Exit?");
   }
 
   private async resolveParentProducts(
@@ -72,9 +77,11 @@ export class GrocyToGrocerConversionService {
       if (!parent) {
         resolvedItems.push(cloneItemForList(item, ""));
       } else {
-        const child = await this.grocyParentProductService.promptForChild(parent);
-        if (child) {
-          resolvedItems.push(cloneItemForList({ ...item, product_id: child.id }, ""));
+        const children = await this.grocyParentProductService.multiselectChildProducts(parent);
+        if (children) {
+          resolvedItems.push(
+            ...children.map((child) => cloneItemForList({ ...item, product_id: child.id }, ""))
+          );
         }
       }
     }

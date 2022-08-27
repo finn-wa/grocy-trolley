@@ -1,7 +1,7 @@
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { Store } from "../stores/types/Stores";
 import { getStoresSchema } from "../stores/types/Stores/schema";
 import { GrocerBarcodeProduct } from "./types/GrocerBarcodeProduct";
@@ -9,7 +9,7 @@ import { getGrocerBarcodeProductSchema } from "./types/GrocerBarcodeProduct/sche
 import { GrocerProduct } from "./types/GrocerProduct";
 import { getGrocerProductsSchema } from "./types/GrocerProduct/schema";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocerApiService extends RestService {
   protected readonly baseUrl = "https://api.grocer.nz";
   protected readonly logger = new Logger(this.constructor.name);

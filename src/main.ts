@@ -1,3 +1,6 @@
+// Enable reflection for tsyringe
+import "@abraham/reflection";
+
 import { Logger } from "@gt/utils/logger";
 import { exit } from "process";
 import { runGT } from "./cli/gt-cli-commander";

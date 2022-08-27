@@ -4,6 +4,7 @@ import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-pro
 import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsListService } from "./foodstuffs-list-service";
 import { List, ListProductRef } from "./foodstuffs-list.model";
+import { beforeAllFoodstuffsTests, foodstuffsTestContainer } from "../test/foodstuffs-test-utils";
 
 class ProductRefs {
   get milk(): ListProductRef {
@@ -42,23 +43,15 @@ describe("FoodstuffsListService", () => {
   let listService: FoodstuffsListService;
   const refs = new ProductRefs();
 
-  initEnv({
-    envFilePath: ".test.env",
-    envFilePathOptional: true,
-    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
-  });
-  const loginDetails: LoginDetails = getEnvAs({
-    PAKNSAVE_EMAIL: "email",
-    PAKNSAVE_PASSWORD: "password",
-  });
   const productIdsOf = (products: { productId: string }[]) =>
     products.map((p) => p.productId).sort();
   const expectArrayOfLength = (arr: ArrayLike<unknown>, length: number) =>
     expect(arr).toMatchObject<ArrayLike<unknown>>({ length });
 
+  beforeAll(() => beforeAllFoodstuffsTests());
+
   beforeEach(async () => {
-    const userAgent = new FoodstuffsAuthHeaderProvider(getBrowser, loginDetails);
-    listService = new FoodstuffsListService(userAgent);
+    listService = foodstuffsTestContainer().resolve(FoodstuffsListService);
     await listService.deleteLists(/^(?!My Favourites)/);
   });
 
