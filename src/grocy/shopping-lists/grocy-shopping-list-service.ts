@@ -1,9 +1,10 @@
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { grocyShortDate } from "@gt/utils/date";
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
 import chalk from "chalk";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { GrocyRestService } from "../rest/grocy-rest-service";
 import { ShoppingList, ShoppingListDetail } from "./types/ShoppingList";
@@ -18,7 +19,7 @@ import { parseShoppingListItem } from "./types/ShoppingListItems/schema";
 // todo: method that makes copy of list with resolved parent products
 // this can then be used across all exporters
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyShoppingListService extends GrocyRestService {
   protected logger = new Logger(this.constructor.name);
   private readonly listService = new GrocySingleEntityService(
@@ -28,6 +29,10 @@ export class GrocyShoppingListService extends GrocyRestService {
   );
   // JTD cannot validate this schema as "amount" and certain other fields are string | number
   private readonly itemService = new GrocySingleEntityService<RawShoppingListItem>("shopping_list");
+
+  constructor(@inject(AppTokens.promptProvider) private readonly prompt: PromptProvider) {
+    super();
+  }
 
   async getShoppingList(id: string): Promise<ShoppingListDetail> {
     const list = await this.listService.getEntityObject(id);
@@ -81,18 +86,12 @@ export class GrocyShoppingListService extends GrocyRestService {
     if (lists.length === 0) {
       return null;
     }
-    const choice = await prompts({
-      type: "select",
-      name: "listId",
-      message: "Select a shopping list",
-      choices: [
-        ...lists.map((list) => ({
-          title: `${chalk.gray(grocyShortDate(list.row_created_timestamp))} - ${list.name}`,
-          value: list.id,
-        })),
-        { title: "Exit", value: null },
-      ],
-    });
-    return choice.listId as string | null;
+    return this.prompt.select("Select a shopping list", [
+      ...lists.map((list) => ({
+        title: `${chalk.gray(grocyShortDate(list.row_created_timestamp))} - ${list.name}`,
+        value: list.id,
+      })),
+      { title: "Exit", value: null },
+    ]);
   }
 }

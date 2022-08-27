@@ -4,10 +4,10 @@ import { ReceiptItem } from "@gt/receipt-ocr/receipts.model";
 import { shortDate } from "@gt/utils/date";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { readFile } from "fs/promises";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsReceiptImporter } from "./receipt-importer";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsBarcodeImporter {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -19,6 +19,7 @@ export class FoodstuffsBarcodeImporter {
 
   async importBarcodes(barcodes: string[]) {
     const stores = await this.grocerStoreService.promptForStores();
+    if (!stores) return;
     const storeIds = stores.map((store) => store.id);
     const items: ReceiptItem[] = [];
     const notFound: string[] = [];

@@ -1,12 +1,13 @@
+import { AppTokens } from "@gt/app/di";
 import { GrocyQuantityUnitIdLookupService } from "@gt/grocy/id-lookup/grocy-quantity-unit-id-lookup-service";
 import { GrocyParentProductService } from "@gt/grocy/products/grocy-parent-product-service";
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { ParentProduct } from "@gt/grocy/products/types";
 import { Product } from "@gt/grocy/products/types/Product";
 import { GrocyShoppingListService } from "@gt/grocy/shopping-lists/grocy-shopping-list-service";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsCartService } from "../../cart/foodstuffs-cart-service";
 import { CartProductRef, toCartProductRef } from "../../cart/foodstuffs-cart.model";
 import { FoodstuffsListService, TEMP_LIST_PREFIX } from "../../lists/foodstuffs-list-service";
@@ -14,7 +15,7 @@ import { FoodstuffsCartProduct } from "../../models";
 import { resultToCartRef } from "../../search/foodstuffs-search-agent";
 import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyToFoodstuffsConversionService {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -25,7 +26,8 @@ export class GrocyToFoodstuffsConversionService {
     private readonly grocyQuantityUnitIds: GrocyQuantityUnitIdLookupService,
     private readonly foodstuffsListService: FoodstuffsListService,
     private readonly foodstuffsCartService: FoodstuffsCartService,
-    private readonly foodstuffsSearchService: FoodstuffsSearchService
+    private readonly foodstuffsSearchService: FoodstuffsSearchService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {}
 
   async grocyListToFoodstuffsCart() {
@@ -46,6 +48,7 @@ export class GrocyToFoodstuffsConversionService {
       }
       this.logger.info(`Found product: ${product.name}`);
       const fsProducts = await this.getFoodstuffsProducts(product, parentProducts);
+      if (!fsProducts) continue;
       const unit = await this.grocyQuantityUnitIds.getRequiredKey(item.qu_id);
       const quantity = unit === "ea" ? item.amount : 1;
       cartRefs.push(...fsProducts.map((product) => ({ ...product, quantity })));
@@ -57,7 +60,7 @@ export class GrocyToFoodstuffsConversionService {
   private async getFoodstuffsProducts(
     product: Product,
     parentProducts: Record<string, ParentProduct>
-  ): Promise<CartProductRef[]> {
+  ): Promise<CartProductRef[] | null> {
     if (product.userfields.isParent) {
       const parent = parentProducts[product.id];
       if (parent.children.length === 0) {
@@ -83,13 +86,7 @@ export class GrocyToFoodstuffsConversionService {
         title: `$${child.price / 100} - ${child.brand} ${child.name} ${child.weightDisplayName}`,
         value: toCartProductRef(child),
       }));
-      const choice = await prompts({
-        name: "products",
-        type: "multiselect",
-        choices,
-        message: `Select a product for ${parent.product.name}`,
-      });
-      return choice.products as CartProductRef[];
+      return this.prompt.multiselect(`Select a product for ${parent.product.name}`, choices);
     }
     const pnsProduct = product.userfields.storeMetadata?.PNS;
     if (!pnsProduct) {

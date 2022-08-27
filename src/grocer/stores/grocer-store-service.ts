@@ -1,6 +1,7 @@
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { CacheService } from "@gt/utils/cache";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocerApiService } from "../api/grocer-api-service";
 import {
   GrocerVendorCode,
@@ -9,62 +10,59 @@ import {
   Store,
 } from "./types/Stores";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocerStoreService {
   private readonly cache = new CacheService<{ stores: Store[] }>("grocer");
 
-  constructor(private readonly api: GrocerApiService) {}
+  constructor(
+    private readonly api: GrocerApiService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+  ) {}
 
   getStores = () => this.api.getStores();
 
-  async promptForVendor(): Promise<GrocerVendorCode> {
-    const response = await prompts({
-      type: "select",
-      name: "vendor",
-      message: "Select vendor",
-      choices: GROCER_VENDOR_CODES.map((code) => ({
+  async promptForVendor(): Promise<GrocerVendorCode | null> {
+    return this.prompt.select(
+      "Select vendor",
+      GROCER_VENDOR_CODES.map((code) => ({
         value: code,
         title: GROCER_VENDOR_CODE_MAP[code],
-      })),
-    });
-    return response.vendor as GrocerVendorCode;
+      }))
+    );
   }
 
-  async promptForStore(): Promise<Store> {
+  async promptForStore(): Promise<Store | null> {
     const stores = await this.getStores();
     const vendor = await this.promptForVendor();
-    const response = await prompts({
-      type: "select",
-      name: "store",
-      message: "Select store",
-      choices: () =>
-        stores
-          .filter((store) => store.vendor_code === vendor)
-          .map((store) => ({ value: store, title: store.name })),
-    });
-    return response.store as Store;
+    if (!vendor) {
+      return null;
+    }
+    return this.prompt.select(
+      "Select store",
+      stores
+        .filter((store) => store.vendor_code === vendor)
+        .map((store) => ({ value: store, title: store.name }))
+    );
   }
 
-  async promptForStores(): Promise<Store[]> {
+  async promptForStores(): Promise<Store[] | null> {
     const cachedStores = await this.cache.get("stores");
     if (cachedStores) {
-      const confirm = await prompts({
-        type: "confirm",
-        message: `Use stored stores?\n\n${cachedStores.map((s) => s.name).join("\n")}\n`,
-        name: "useCached",
-      });
-      if (confirm.useCached) {
+      const confirm = await this.prompt.confirm(
+        `Use stored stores?\n\n${cachedStores.map((s) => s.name).join("\n")}\n`
+      );
+      if (confirm) {
         return cachedStores;
       }
     }
     const stores = await this.api.getStores();
-    const response = await prompts({
-      type: "autocompleteMultiselect",
-      name: "stores",
-      message: "Select stores",
-      choices: () => stores.map((store) => ({ value: store, title: store.name })),
-    });
-    const selectedStores = response.stores as Store[];
+    const selectedStores = await this.prompt.multiselect(
+      "Select stores",
+      stores.map((store) => ({ value: store, title: store.name }))
+    );
+    if (!selectedStores) {
+      return null;
+    }
     if (selectedStores.length > 0) {
       await this.cache.set("stores", selectedStores);
     }

@@ -1,11 +1,12 @@
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { uniqueByProperty } from "@gt/utils/arrays";
 import { Logger } from "@gt/utils/logger";
-import prompts from "prompts";
 import { setTimeout } from "timers/promises";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsBaseProduct, PAKNSAVE_URL } from "../models";
-import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
+import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import {
   formatListProductRef,
   List,
@@ -16,11 +17,15 @@ import {
 
 export const TEMP_LIST_PREFIX = "[temporary]";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly baseUrl = this.validateBaseUrl(`${PAKNSAVE_URL}/CommonApi`);
   protected readonly logger = new Logger(this.constructor.name);
-  constructor(userAgent: FoodstuffsAuthHeaderProvider) {
+
+  constructor(
+    userAgent: FoodstuffsAuthHeaderProvider,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+  ) {
     super(userAgent);
   }
 
@@ -31,13 +36,10 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     });
   }
 
-  async createListWithNamePrompt(): Promise<List> {
-    const input = await prompts({
-      name: "name",
-      message: "Enter a name for your new list:",
-      type: "text",
-    });
-    return this.createList(input.name as string);
+  async createListWithNamePrompt(): Promise<List | null> {
+    const name = await this.prompt.text("Enter a name for your new list");
+    if (!name) return null;
+    return this.createList(name);
   }
 
   async getLists(): Promise<List[]> {
@@ -54,21 +56,20 @@ export class FoodstuffsListService extends FoodstuffsRestService {
     });
   }
 
-  async selectList(): Promise<string> {
+  /**
+   * Prompts to select or create a new list
+   * @returns the selected list's ID or null if the user cancelled the prompt
+   */
+  async promptSelectOrCreateList(): Promise<string | null> {
     const lists = await this.getLists();
-    const response = await prompts({
-      name: "listId",
-      message: "Select list",
-      type: "select",
-      choices: [
-        { title: "Create new list", value: null },
-        ...lists.map((list) => ({ title: list.name, value: list.listId })),
-      ],
-    });
-    if (response.listId !== null) {
-      return response.listId as string;
+    const listId = await this.prompt.select("Select list", [
+      { title: "Create new list", value: "createNewList" as const },
+      ...lists.map((list) => ({ title: list.name, value: list.listId })),
+    ]);
+    if (listId === "createNewList") {
+      return this.createListWithNamePrompt().then((list) => list?.listId ?? null);
     }
-    return this.createListWithNamePrompt().then((list) => list.listId);
+    return listId;
   }
 
   /**

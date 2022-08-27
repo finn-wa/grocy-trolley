@@ -1,8 +1,9 @@
 import { singleton } from "tsyringe";
 import { GrocyLocation, GROCY_LOCATIONS } from "../grocy-config";
 import { GrocyIdLookupService } from "./grocy-id-lookup-service";
+import { Lifecycle, scoped } from "tsyringe";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyLocationIdLookupService extends GrocyIdLookupService<GrocyLocation> {
   private readonly grocyLocations = [...GROCY_LOCATIONS];
 

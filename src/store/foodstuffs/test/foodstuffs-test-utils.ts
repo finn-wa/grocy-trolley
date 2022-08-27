@@ -1,4 +1,4 @@
-import { registerAppDependencies } from "@gt/app";
+import { registerDefaultDependencies } from "@gt/app/di";
 import { initEnv } from "@gt/utils/environment";
 import { container } from "tsyringe";
 import { closeBrowser } from "../../shared/rest/browser";
@@ -16,12 +16,12 @@ export function beforeAllFoodstuffsTests(envFilePath = ".test.env") {
   });
 }
 
-/**P
+/**
  * Initialises the dependency injection container for Foodstuffs tests.
  * @returns dependency container for chaining
  */
 export function foodstuffsTestContainer() {
-  registerAppDependencies(container);
+  registerDefaultDependencies(container);
   registerFoodstuffsDependencies(container);
   return container;
 }

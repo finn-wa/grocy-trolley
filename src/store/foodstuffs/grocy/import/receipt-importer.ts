@@ -1,12 +1,12 @@
+import { AppTokens } from "@gt/app/di";
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
-import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
+import { ReceiptItem, ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
 import { CacheService, getCacheDir } from "@gt/utils/cache";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import dedent from "dedent";
 import path, { basename } from "path";
-import prompts from "prompts";
-import { ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
-import { inject, singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";
 import { ListProductRef, toListProductRef } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsCartProduct } from "../../models";
@@ -15,7 +15,7 @@ import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service"
 import { FoodstuffsReceiptItemiser } from "./foodstuffs-receipt-itemiser";
 import { FoodstuffsListImporter } from "./list-importer";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsReceiptImporter {
   private readonly logger = new Logger(this.constructor.name);
   private readonly scanCache = new CacheService<Record<string, ReceiptItem[]>>(
@@ -31,7 +31,8 @@ export class FoodstuffsReceiptImporter {
     private readonly foodstuffsListService: FoodstuffsListService,
     private readonly foodstuffsSearchService: FoodstuffsSearchService,
     private readonly listImporter: FoodstuffsListImporter,
-    private readonly grocyProductService: GrocyProductService
+    private readonly grocyProductService: GrocyProductService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {}
 
   /**
@@ -77,26 +78,24 @@ export class FoodstuffsReceiptImporter {
     const cachedScannedItems = await this.scanCache.get(cacheKey);
     if (cachedScannedItems !== null) {
       console.log(prettyPrint(cachedScannedItems));
-      const confirm = await prompts({
-        name: "useCache",
-        message: dedent`
-            Use cached scanned items? Amend file as needed before continuing:\n${cacheFilepath}`,
-        type: "confirm",
-      });
-      if (confirm.useCache) {
+      const useCache = await this.prompt.confirm(
+        `Use cached scanned items? Amend file as needed before continuing:\n${cacheFilepath}`
+      );
+      if (useCache) {
         return this.scanCache.get(cacheKey);
       }
     }
     const text = await this.scanner.scan(receiptFilepath);
     const scannedItems = await this.itemiser.itemise(text);
     await this.scanCache.set(cacheKey, scannedItems);
-    console.log(prettyPrint(scannedItems));
-    const response = await prompts({
-      message: `Import these items? Amend file as needed before continuing:\n${cacheFilepath}`,
-      name: "continue",
-      type: "confirm",
-    });
-    if (response.continue) {
+    // TODO: figure out how to make this slack-compatible
+    const confirmImport = await this.prompt.confirm(dedent`
+      Import these items? Amend as needed before continuing:
+      ${cacheFilepath}
+      
+      ${prettyPrint(scannedItems)}
+    `);
+    if (confirmImport) {
       return this.scanCache.get(cacheKey);
     }
     return null;
@@ -170,18 +169,17 @@ export class FoodstuffsReceiptImporter {
       this.logger.info("Failed to find:\n" + prettyPrint(notFound));
     }
     this.logger.info("Found:\n" + prettyPrint(listRefs));
-    const importProducts = await prompts({
-      message: "Import resolved products?",
-      name: "confirm",
-      type: "confirm",
-    });
-    if (!importProducts.confirm) {
+    const importProducts = await this.prompt.confirm("Import resolved products?");
+    if (!importProducts) {
       return { success: false };
     }
-    const { listId } = newListName
+    const list = newListName
       ? await this.foodstuffsListService.createList(newListName)
       : await this.foodstuffsListService.createListWithNamePrompt();
-    await this.importReceiptListRefs(listRefs, listId);
+    if (!list) {
+      return { success: false };
+    }
+    await this.importReceiptListRefs(listRefs, list.listId);
     return { success: true };
   }
 

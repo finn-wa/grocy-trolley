@@ -1,15 +1,19 @@
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsCartService {
   protected readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly controller: FoodstuffsCartController) {}
+  constructor(
+    private readonly controller: FoodstuffsCartController,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+  ) {}
 
   getCart = () => this.controller.getCart();
 
@@ -51,12 +55,8 @@ export class FoodstuffsCartService {
         if (error instanceof RequestError) {
           this.logger.debug(await error.response.text());
         }
-        const response = await prompts({
-          name: "resume",
-          type: "confirm",
-          message: "Resume adding products?",
-        });
-        if (!response.resume) {
+        const resume = await this.prompt.confirm("Resume adding products?");
+        if (!resume) {
           throw error;
         }
       }

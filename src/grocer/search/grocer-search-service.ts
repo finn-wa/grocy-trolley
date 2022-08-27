@@ -2,13 +2,13 @@ import { getEnvVar } from "@gt/utils/environment";
 import { HeadersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
-import { searchAndSelectResult } from "@gt/utils/search";
-import { singleton } from "tsyringe";
+import { SearchUtils } from "@gt/utils/search";
+import { Lifecycle, scoped } from "tsyringe";
 import { GrocerStoreService } from "../stores/grocer-store-service";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
 import { getProductSearchResponseSchema } from "./types/ProductSearchResponse/schema";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocerSearchService extends RestService {
   protected readonly baseUrl = "https://api.grocer.nz";
   protected readonly logger = new Logger(this.constructor.name);
@@ -26,7 +26,10 @@ export class GrocerSearchService extends RestService {
     authorization: getEnvVar("GROCER_SEARCH_AUTHORIZATION"),
   };
 
-  constructor(private readonly storeService: GrocerStoreService) {
+  constructor(
+    private readonly storeService: GrocerStoreService,
+    private readonly searchUtils: SearchUtils
+  ) {
     super();
   }
 
@@ -35,10 +38,11 @@ export class GrocerSearchService extends RestService {
     storeIds?: number[],
     limit = 20,
     offset = 0
-  ): Promise<ProductSearchResponse> {
+  ): Promise<ProductSearchResponse | null> {
     if (!storeIds) {
       const stores =
         (await this.storeService.getCachedStores()) ?? (await this.storeService.promptForStores());
+      if (!stores) return null;
       storeIds = stores.map((store) => store.id);
     }
     const request = {
@@ -68,8 +72,8 @@ export class GrocerSearchService extends RestService {
     query: string,
     storeIds: number[]
   ): Promise<ProductSearchResponseHit | null> {
-    return searchAndSelectResult(
-      (query) => this.search(query, storeIds).then((response) => response.hits),
+    return this.searchUtils.searchAndSelectResult(
+      (query) => this.search(query, storeIds).then((response) => (response ? response.hits : [])),
       (hit) => `${hit.brand} ${hit.name} ${hit.size}${hit.unit}`,
       query
     );

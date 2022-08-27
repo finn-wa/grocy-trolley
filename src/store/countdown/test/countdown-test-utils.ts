@@ -1,4 +1,4 @@
-import { registerAppDependencies } from "@gt/app";
+import { registerDefaultDependencies } from "@gt/app/di";
 import { initEnv } from "@gt/utils/environment";
 import { container } from "tsyringe";
 import { closeBrowser } from "../../shared/rest/browser";
@@ -21,7 +21,7 @@ export function beforeAllCountdownTests(envFilePath = ".test.env") {
  * @returns dependency container for chaining
  */
 export function countdownTestContainer() {
-  registerAppDependencies(container);
+  registerDefaultDependencies(container);
   registerCountdownDependencies(container);
   return container;
 }

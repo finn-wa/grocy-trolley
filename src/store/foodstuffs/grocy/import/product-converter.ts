@@ -8,12 +8,12 @@ import { NewProduct, Product } from "@gt/grocy/products/types/Product";
 import { StockAddRequest } from "@gt/grocy/stock/types";
 import { QuantityUnitConversion } from "@gt/grocy/types/grocy-types";
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsCartProduct, FoodstuffsListProduct, FoodstuffsLiveProduct } from "../../models";
 import { FoodstuffsSearchService } from "../../search/foodstuffs-search-service";
 import { CategoryLocations } from "../categories";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsToGrocyConverter {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -28,7 +28,7 @@ export class FoodstuffsToGrocyConverter {
   async forImport(
     product: FoodstuffsCartProduct,
     storeId: string,
-    parent?: ParentProduct
+    parent?: ParentProduct | null
   ): Promise<NewProductPayloads> {
     const purchaseSaleType = this.getPurchaseSaleType(product);
     let purchaseUnitId: string;
@@ -112,7 +112,7 @@ export class FoodstuffsToGrocyConverter {
 
   async forImportListProduct(
     product: FoodstuffsListProduct,
-    parent?: ParentProduct
+    parent?: ParentProduct | null
   ): Promise<NewProductPayloads> {
     const purchaseSaleType = this.getPurchaseSaleType(product);
     let purchaseUnitId: string;

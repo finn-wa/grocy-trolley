@@ -1,15 +1,44 @@
+import { container, inject, injectable } from "tsyringe";
+import { AppTokens, registerDefaultDependencies } from "./app/di";
+import { PromptProvider } from "./prompts/prompt-provider";
+import { registerCountdownDependencies } from "./store/countdown/countdown-di";
+import { registerFoodstuffsDependencies } from "./store/foodstuffs/foodstuffs-di";
+import { Logger } from "./utils/logger";
+
 /* eslint-disable */
-import "@abraham/reflection";
-import { container } from "tsyringe";
-import { registerAppDependencies } from "./app";
-import { GrocyTrolleySlackBot } from "./slack/gt-slack-bot";
+@injectable()
+export class Dev {
+  private readonly logger = new Logger(this.constructor.name);
 
-export async function dev() {
-  registerAppDependencies(container);
+  constructor(@inject(AppTokens.promptProvider) readonly prompt: PromptProvider) {}
 
-  const slackApp = container.resolve(GrocyTrolleySlackBot);
+  async main() {
+    const confirm = await this.prompt.confirm("confirm");
+    this.logger.info(`confirm: ${confirm}`);
 
-  await slackApp.run();
+    // const multiselect = await this.prompt.multiselect("multiselect", [
+    //   { title: "Option 1", value: "1" },
+    //   { title: "Option 2", value: "2" },
+    //   { title: "Option 3", value: "3" },
+    // ]);
+    // this.logger.info(`multiselect: ${multiselect}`);
+
+    const select = await this.prompt.select("select", [
+      { title: "Option 1", value: "value1" },
+      { title: "Option 2", value: "value2" },
+      { title: "Option 3", value: "value3" },
+    ]);
+    this.logger.info(`select: ${select}`);
+
+    const text = await this.prompt.text("text");
+    this.logger.info(`text: ${text}`);
+  }
 }
 
+export async function dev() {
+  registerDefaultDependencies(container);
+  registerCountdownDependencies(container);
+  registerFoodstuffsDependencies(container);
+  await container.resolve(Dev).main();
+}
 /* eslint-enable */

@@ -1,5 +1,5 @@
 import { Logger } from "@gt/utils/logger";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { COUNTDOWN_URL } from "../models";
 import { CountdownAuthHeaderProvider } from "../rest/countdown-auth-header-provider";
 import { CountdownRestService } from "../rest/countdown-rest-service";
@@ -10,7 +10,7 @@ import { getOrderDetailsSchema } from "./types/OrderDetails/schema";
 import { Orders } from "./types/Orders";
 import { getOrdersSchema } from "./types/Orders/schema";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class CountdownOrderService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
   protected readonly baseUrl = this.validateBaseUrl(

@@ -1,8 +1,8 @@
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { GrocySingleEntityService } from "../rest/grocy-entity-rest-service";
 import { ShoppingLocation } from "./types/ShoppingLocations";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyShoppingLocationService {
   private readonly rest = new GrocySingleEntityService<ShoppingLocation>("shopping_locations");
 

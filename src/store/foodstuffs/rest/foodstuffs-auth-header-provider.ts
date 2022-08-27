@@ -1,4 +1,4 @@
-import { AppTokens } from "@gt/app-tokens";
+import { AppTokens } from "@gt/app/di";
 import { AuthHeaderProvider } from "@gt/store/shared/rest/auth-header-provider";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { HeadersBuilder } from "@gt/utils/headers";
@@ -6,7 +6,7 @@ import { Logger, prettyPrint } from "@gt/utils/logger";
 import { getHeadersFromRequest } from "@gt/utils/playwright";
 import { RestService } from "@gt/utils/rest";
 import { Browser, Page } from "playwright";
-import { inject, singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsTokens } from "../foodstuffs-di";
 import { PAKNSAVE_URL } from "../models";
 
@@ -14,7 +14,7 @@ import { PAKNSAVE_URL } from "../models";
  * Uses Playwright to perform Foodstuffs requests from a browser. Necessary
  * because Cloudflare now blocks requests that are not sent from a browser.
  */
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsAuthHeaderProvider extends AuthHeaderProvider {
   protected readonly logger = new Logger(this.constructor.name);
   protected readonly headersFilter = {

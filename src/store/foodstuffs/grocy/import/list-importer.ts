@@ -1,17 +1,18 @@
+import { AppTokens } from "@gt/app/di";
 import { GrocyParentProductService } from "@gt/grocy/products/grocy-parent-product-service";
 import { GrocyProductService } from "@gt/grocy/products/grocy-product-service";
 import { Product } from "@gt/grocy/products/types/Product";
 import { GrocyStockService } from "@gt/grocy/stock/grocy-stock-service";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger } from "@gt/utils/logger";
 import { RequestError } from "@gt/utils/rest";
-import prompts from "prompts";
-import { singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsListService } from "../../lists/foodstuffs-list-service";
 import { List } from "../../lists/foodstuffs-list.model";
 import { FoodstuffsListProduct } from "../../models";
 import { FoodstuffsToGrocyConverter } from "./product-converter";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsListImporter {
   private readonly logger = new Logger(this.constructor.name);
 
@@ -20,22 +21,15 @@ export class FoodstuffsListImporter {
     private readonly listService: FoodstuffsListService,
     private readonly grocyProductService: GrocyProductService,
     private readonly grocyParentProductService: GrocyParentProductService,
-    private readonly grocyStockService: GrocyStockService
+    private readonly grocyStockService: GrocyStockService,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {}
-
-  async selectAndImportList() {
-    const listId = await this.listService.selectList();
-    return this.importList(listId);
-  }
-
-  async selectAndStockList() {
-    const listId = await this.listService.selectList();
-    return this.stockProductsFromList(listId);
-  }
 
   async importList(id?: string): Promise<void> {
     if (!id) {
-      id = await this.listService.selectList();
+      const promptId = await this.listService.promptSelectOrCreateList();
+      if (!promptId) return;
+      id = promptId;
     }
     const list = await this.listService.getList(id);
     const existingProducts = await this.grocyProductService.getAllProducts();
@@ -64,12 +58,8 @@ export class FoodstuffsListImporter {
       );
       newProducts.push({ id: createdProduct.id, product });
     }
-    const stock: { value: boolean } = await prompts({
-      name: "value",
-      message: "Stock imported products?",
-      type: "confirm",
-    });
-    if (stock.value) {
+    const stock = await this.prompt.confirm("Stock imported products?");
+    if (stock) {
       await this.stockProductsFromList(list);
     }
   }

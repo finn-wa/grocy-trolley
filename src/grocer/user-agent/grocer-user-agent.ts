@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { AppTokens } from "@gt/app-tokens";
+import { AppTokens } from "@gt/app/di";
 import { Logger } from "@gt/utils/logger";
 import { Browser, Page } from "playwright";
-import { inject, singleton } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocerStoreName, GROCER_URL, GROCER_VENDORS } from "../models";
 import {
   getStoreContents,
@@ -14,7 +14,7 @@ import {
 /**
  * User agent that performs actions on the grocer.nz page using Playwright.
  */
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocerUserAgent {
   private page?: Page;
   private readonly logger = new Logger(this.constructor.name);

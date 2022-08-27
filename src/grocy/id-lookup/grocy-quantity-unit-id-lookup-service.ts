@@ -1,8 +1,8 @@
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 import { QuantityUnitName, QUANTITY_UNITS } from "../grocy-config";
 import { GrocyIdLookupService } from "./grocy-id-lookup-service";
 
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class GrocyQuantityUnitIdLookupService extends GrocyIdLookupService<QuantityUnitName> {
   private readonly quantityUnitIds = [...QUANTITY_UNITS];
   protected fetchMapOfKeysToGrocyIds = () =>

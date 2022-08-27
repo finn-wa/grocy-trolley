@@ -3,6 +3,7 @@ import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
+import { beforeAllFoodstuffsTests, foodstuffsTestContainer } from "../test/foodstuffs-test-utils";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";
 import { CartProductRef } from "./foodstuffs-cart.model";
@@ -12,16 +13,6 @@ import { getClearCartResponseSchema } from "./types/ClearCartResponse/schema";
 describe("Foodstuffs Cart", () => {
   let cartController: FoodstuffsCartController;
   let cartService: FoodstuffsCartService;
-
-  initEnv({
-    envFilePath: ".test.env",
-    envFilePathOptional: true,
-    requiredVars: ["PAKNSAVE_EMAIL", "PAKNSAVE_PASSWORD"],
-  });
-  const loginDetails: LoginDetails = getEnvAs({
-    PAKNSAVE_EMAIL: "email",
-    PAKNSAVE_PASSWORD: "password",
-  });
   const milk: CartProductRef = {
     productId: "5201479-EA-000",
     quantity: 1,
@@ -33,10 +24,12 @@ describe("Foodstuffs Cart", () => {
     sale_type: "WEIGHT",
   };
 
+  beforeAll(() => beforeAllFoodstuffsTests());
+
   beforeEach(async () => {
-    const userAgent = new FoodstuffsAuthHeaderProvider(getBrowser, loginDetails);
-    cartController = new FoodstuffsCartController(userAgent);
-    cartService = new FoodstuffsCartService(cartController);
+    const testContainer = foodstuffsTestContainer();
+    cartController = testContainer.resolve(FoodstuffsCartController);
+    cartService = testContainer.resolve(FoodstuffsCartService);
     await cartController.clearCart();
   });
 

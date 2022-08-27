@@ -1,11 +1,11 @@
 import { ReceiptItem, ReceiptItemiser } from "@gt/receipt-ocr/receipts.model";
 import { Logger } from "@gt/utils/logger";
-import { singleton } from "tsyringe";
+import { Lifecycle, scoped } from "tsyringe";
 
 /**
  * Itemises a PAK'n'SAVE/New World receipt.
  */
-@singleton()
+@scoped(Lifecycle.ContainerScoped)
 export class FoodstuffsReceiptItemiser implements ReceiptItemiser {
   private readonly logger = new Logger(this.constructor.name);
 
