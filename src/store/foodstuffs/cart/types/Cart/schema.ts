@@ -1,4 +1,5 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
+import { generateTypes } from "@gt/jtd/generate-types";
 import {
   FoodstuffsCartProduct,
   FOODSTUFFS_CATEGORIES,
@@ -6,6 +7,7 @@ import {
 } from "@gt/store/foodstuffs/models";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { FoodstuffsCart } from "../../foodstuffs-cart.model";
+import samples from "./samples.json";
 
 const saleTypes: SaleTypeString[] = ["UNITS", "WEIGHT", "BOTH"];
 const categories = [...FOODSTUFFS_CATEGORIES];
@@ -47,7 +49,7 @@ const productSchema: JTDSchemaType<FoodstuffsCartProduct> = {
 };
 
 /**
- * This will cause a TypeScript compiler error if the Cart type defined in
+ * This will cause a TypeScript compiler error if the FoodstuffsCart type defined in
  * index.ts is modified in a way that makes it incompatible with the schema.
  */
 export const schema: JTDSchemaType<FoodstuffsCart> = {
@@ -73,20 +75,48 @@ export const schema: JTDSchemaType<FoodstuffsCart> = {
     unavailableProducts: { elements: productSchema },
     wasRepriced: { type: "boolean" },
   },
+  optionalProperties: {
+    timeslot: {
+      properties: {
+        cutOffDate: { type: "timestamp" },
+        date: { type: "string" },
+        expired: { type: "boolean" },
+        isValid: { type: "boolean" },
+        slot: { type: "string" },
+        softCutOffDate: { type: "timestamp" },
+        type: { enum: ["COLLECT"] },
+      },
+    },
+  },
 };
 
 /**
- * The key used to index the Cart schema with ajv
+ * The key used to index the FoodstuffsCart schema with ajv
  */
 export const key = "src/store/foodstuffs/cart/FoodstuffsCart";
 
 /**
- * Calls {@link ajv.getSchema} with the Cart schema {@link key}. The schema is
+ * Calls {@link ajv.getSchema} with the FoodstuffsCart schema {@link key}. The schema is
  * compiled on the first call to  {@link ajv.getSchema}.
  *
- * @returns A validate() function for Cart
+ * @returns A validate() function for FoodstuffsCart
  */
 export const getCartSchema = () => getRequiredSchema<FoodstuffsCart>(key);
 
-// Register schema with ajv instance
+// Register schema with ajv
 ajv.addSchema(schema, key);
+
+/**
+ * Development tool - regenerates this code based on samples.json, replacing the
+ * contents of this folder. Use when the schema changes.
+ */
+export async function regenerateFoodstuffsCartSchema() {
+  return generateTypes(
+    {
+      typeName: "Cart",
+      sourceDir: "src/store/foodstuffs/cart/",
+      generateArrayType: false,
+    },
+    ...samples
+  );
+}
