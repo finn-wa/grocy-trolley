@@ -5,6 +5,14 @@ import {
   ProductsSnapshot,
   SaleTypeString,
 } from "../models";
+import { Timeslot } from "../orders/foodstuffs-order.model";
+
+export interface CartTimeslot extends Timeslot {
+  expired: boolean;
+  isValid: boolean;
+  softCutOffDate: string;
+  type: "COLLECT";
+}
 
 export interface FoodstuffsCart {
   products: FoodstuffsCartProduct[];
@@ -18,6 +26,7 @@ export interface FoodstuffsCart {
   orderNumber: number;
   allowSubstitutions: boolean;
   wasRepriced: boolean;
+  timeslot?: Timeslot;
 }
 
 export interface CartProductRef {
