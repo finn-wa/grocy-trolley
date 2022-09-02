@@ -35,12 +35,16 @@ export class GrocyToFoodstuffsConversionService {
     // We clean up before and intentionally leave dangling state for debugging
     await this.foodstuffsListService.deleteLists(new RegExp(TEMP_LIST_PREFIX));
 
-    const listItems = await this.grocyShoppingListService.getShoppingListItems();
+    const listId = await this.grocyShoppingListService.promptForShoppingList();
+    if (!listId) {
+      return;
+    }
+    const list = await this.grocyShoppingListService.getShoppingList(listId);
     const products = await this.grocyProductService.getAllProducts();
     const parentProducts = await this.grocyParentProductService.getParentProducts(products);
     const cartRefs: CartProductRef[] = [];
 
-    for (const item of listItems) {
+    for (const item of list.items) {
       this.logger.debug(`Processing shopping list item: ${item.product_id}`);
       const product = products.find((p) => p.id == item.product_id);
       if (!product) {
