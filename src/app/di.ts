@@ -1,15 +1,14 @@
 import { CLIPromptProvider } from "@gt/prompts/cli-prompt-provider";
 import { DependencyContainer } from "tsyringe";
-import { TaggunReceiptScanner } from "../receipt-ocr/taggun/taggun-receipt-scanner";
 import { browserFactory } from "../store/shared/rest/browser";
 
 /** App injection tokens */
 export const AppTokens = {
-  appContainer: "AppContainer",
+  /** A new child container that can be safely reconfigured */
+  childContainer: "ChildContainer",
   browserLoader: "BrowserLoader",
   promptProvider: "PromptProvider",
   receiptScanner: "ReceiptScanner",
-  slackUserId: "SlackUserId",
 } as const;
 
 /**
@@ -24,8 +23,7 @@ export const AppTokens = {
  */
 export function registerDefaultDependencies(dc: DependencyContainer) {
   return dc
-    .register(AppTokens.appContainer, { useFactory: () => dc.createChildContainer() })
+    .register(AppTokens.childContainer, { useFactory: () => dc.createChildContainer() })
     .register(AppTokens.browserLoader, { useValue: browserFactory({ headless: false }) })
-    .register(AppTokens.promptProvider, { useClass: CLIPromptProvider })
-    .registerSingleton(AppTokens.receiptScanner, TaggunReceiptScanner);
+    .register(AppTokens.promptProvider, { useClass: CLIPromptProvider });
 }

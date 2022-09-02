@@ -73,7 +73,7 @@ export class SearchUtils {
       return { action: "select", hit: results[0] };
     }
     if (results.length === 0) {
-      console.log("No results found.");
+      await this.prompt.say("No results found.");
     }
 
     const nextAction = await this.prompt.select<

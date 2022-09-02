@@ -25,14 +25,14 @@ import {
   tap,
 } from "rxjs";
 import { singleton } from "tsyringe";
-import { SlackUserInteractionStore } from "./slack-app-store";
+import { SlackUserInteractionStore } from "./slack-user-interaction-store";
 import {
   confirmButtons,
   markdownSection,
   textSection,
   updatedConfirmButtons,
 } from "./slack-blocks";
-import { SlackBoltApp } from "./slack-bolt-app";
+import { SlackAppService } from "./slack-app-service";
 
 type ActionArgs<Payload extends BasicElementAction> = SlackActionMiddlewareArgs & {
   body: BlockAction;
@@ -64,7 +64,7 @@ export class SlackPromptService {
   };
 
   constructor(
-    private readonly slackApp: SlackBoltApp,
+    private readonly slackApp: SlackAppService,
     private readonly interactionStore: SlackUserInteractionStore
   ) {
     const matchPrefix = (id: string) => new RegExp(id + "[\\w:-]*");
@@ -292,21 +292,6 @@ export class SlackPromptService {
       ])
     );
     return textInput;
-  }
-
-  private textBlocks(text: string, placeholder = "Enter text"): KnownBlock[] {
-    return [
-      {
-        label: { text: "Enter text", type: "plain_text", emoji: false },
-        dispatch_action: true,
-        type: "input",
-        element: {
-          type: "plain_text_input",
-          action_id: "prompt:text",
-          placeholder: { type: "plain_text", text: placeholder, emoji: true },
-        },
-      },
-    ];
   }
 
   private buildMessage(text: string, blocks: RespondArguments["blocks"]): RespondArguments {
