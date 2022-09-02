@@ -9,7 +9,7 @@ import { Lifecycle, scoped } from "tsyringe";
 export class FoodstuffsReceiptItemiser implements ReceiptItemiser {
   private readonly logger = new Logger(this.constructor.name);
 
-  itemise(text: string): Promise<ReceiptItem[]> {
+  async itemise(text: string): Promise<ReceiptItem[]> {
     const lineIterator = text
       .trim()
       .split("\n")
@@ -29,9 +29,7 @@ export class FoodstuffsReceiptItemiser implements ReceiptItemiser {
       const split = line.split("$");
       if (split.length === 1) {
         items.push(this.parseReceiptItemLine(line, lineIterator.next()));
-        continue;
-      }
-      if (split.length === 2) {
+      } else if (split.length === 2) {
         const name = split[0].trim();
         let amount = Number(split[1]);
         // Check if line represents a discount
@@ -40,10 +38,13 @@ export class FoodstuffsReceiptItemiser implements ReceiptItemiser {
         }
         // TODO: implement unit
         items.push({ name, amount });
+      } else {
+        this.logger.debug(
+          `Skipping line, weird split length (${split.length}):\n${split.join("\n")}`
+        );
       }
-      this.logger.debug(`Weird line split length: ["${split.join('", "')}"]`);
     }
-    return Promise.resolve(items);
+    return items;
   }
 
   private parseReceiptItemLine(
