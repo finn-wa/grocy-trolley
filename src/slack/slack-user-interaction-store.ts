@@ -7,7 +7,7 @@ import {
 } from "@slack/bolt";
 import { catchError, EMPTY, filter, map, Observable, ReplaySubject, tap } from "rxjs";
 import { singleton } from "tsyringe";
-import { SlackBoltApp } from "./slack-bolt-app";
+import { SlackAppService } from "./slack-app-service";
 
 export type UserInteractionState = {
   command?: SlackCommandMiddlewareArgs;
@@ -23,7 +23,7 @@ export class SlackUserInteractionStore {
   private readonly store: UserInteractionStore = {};
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly app: SlackBoltApp) {
+  constructor(app: SlackAppService) {
     app.event$
       .pipe(
         tap((event) => {

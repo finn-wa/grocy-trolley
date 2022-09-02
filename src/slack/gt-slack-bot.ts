@@ -4,10 +4,11 @@ import { ImportSource, IMPORT_SOURCES } from "@gt/cli/gt-cli-model";
 import { Dev } from "@gt/dev";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RespondFn } from "@slack/bolt";
-import { mergeMap, Subject, takeUntil, tap } from "rxjs";
-import { container, DependencyContainer, Disposable, singleton } from "tsyringe";
+import { mergeMap, Subject, takeUntil } from "rxjs";
+import { DependencyContainer, Disposable, inject, singleton } from "tsyringe";
 import { SlackPromptProvider } from "../prompts/slack-prompt-provider";
-import { SlackBoltApp } from "./slack-bolt-app";
+import { SlackBoltAppTokens } from "./slack-app-tokens";
+import { SlackAppService } from "./slack-app-service";
 import { SlackPromptService } from "./slack-prompt-service";
 
 /**
@@ -17,14 +18,15 @@ import { SlackPromptService } from "./slack-prompt-service";
 @singleton()
 export class GrocyTrolleySlackBot implements Disposable {
   private readonly logger = new Logger(this.constructor.name);
-  private readonly botContainer: DependencyContainer;
   private readonly dispose$ = new Subject<void>();
 
-  constructor(private readonly slackApp: SlackBoltApp) {
-    this.botContainer = container
-      .createChildContainer()
+  constructor(
+    private readonly slackApp: SlackAppService,
+    @inject(AppTokens.childContainer) private readonly botContainer: DependencyContainer
+  ) {
+    this.botContainer
       .register(AppTokens.promptProvider, { useClass: SlackPromptProvider })
-      .register(AppTokens.appContainer, {
+      .register(AppTokens.childContainer, {
         useFactory: () => this.botContainer.createChildContainer(),
       });
     // initialise eager singletons
@@ -87,8 +89,8 @@ export class GrocyTrolleySlackBot implements Disposable {
   ) {
     const sessionContainer = this.botContainer.createChildContainer();
     sessionContainer
-      .register(AppTokens.appContainer, { useValue: sessionContainer })
-      .register(AppTokens.slackUserId, { useValue: userId })
+      .register(AppTokens.childContainer, { useValue: sessionContainer })
+      .register(SlackBoltAppTokens.slackUserId, { useValue: userId })
       .registerSingleton(AppTokens.promptProvider, SlackPromptProvider);
     try {
       await fn(sessionContainer);

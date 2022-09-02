@@ -7,6 +7,7 @@ import {
 } from "@gt/cli/gt-cli-model";
 import { GrocyToGrocerConversionService } from "@gt/grocer/grocy/grocy-to-grocer-conversion-service";
 import { PromptProvider } from "@gt/prompts/prompt-provider";
+import { TaggunReceiptScanner } from "@gt/receipt-ocr/taggun/taggun-receipt-scanner";
 import { registerCountdownDependencies } from "@gt/store/countdown/countdown-di";
 import { registerFoodstuffsDependencies } from "@gt/store/foodstuffs/foodstuffs-di";
 import { GrocyToFoodstuffsConversionService } from "@gt/store/foodstuffs/grocy/export/grocy-to-foodstuffs-conversion-service";
@@ -19,14 +20,15 @@ import { DependencyContainer, inject, injectable } from "tsyringe";
 
 @injectable()
 export class GrocyTrolleyApp {
-  // need to be able to inject the prompt provider from the child container
-  // maybe SlackSession needs reintroducing, it could hold the user ID and the container
   constructor(
-    @inject(AppTokens.appContainer) private readonly appContainer: DependencyContainer,
+    @inject(AppTokens.childContainer) private readonly appContainer: DependencyContainer,
     @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
   ) {
     registerFoodstuffsDependencies(this.appContainer);
     registerCountdownDependencies(this.appContainer);
+    this.appContainer.register(AppTokens.receiptScanner, {
+      useClass: TaggunReceiptScanner,
+    });
   }
 
   async importFrom(source?: ImportSource, options: ImportOptions = {}) {

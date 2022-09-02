@@ -1,4 +1,5 @@
-import { ActionsBlock, SectionBlock } from "@slack/bolt";
+import { Logger, prettyPrint } from "@gt/utils/logger";
+import { ActionsBlock, SectionBlock, SlackActionMiddlewareArgs } from "@slack/bolt";
 
 export function textSection(text: string): SectionBlock {
   return {
@@ -30,7 +31,7 @@ export function confirmButtons(actionId: string): ActionsBlock {
         text: { text: "Confirm", type: "plain_text", emoji: false },
         style: "primary",
         value: "true",
-        action_id: actionId,
+        action_id: `${actionId}:confirm`,
       },
     ],
   };
@@ -45,4 +46,17 @@ export function updatedConfirmButtons(actionId: string): SectionBlock {
   return markdownSection(
     actionId.endsWith(":cancel") ? "[ *Cancel* ] [ ~Confirm~ ]" : "[ ~Cancel~ ] [ *Confirm* ]"
   );
+}
+
+export function hasPayloadType<T extends SlackActionMiddlewareArgs["payload"]>(
+  payload: SlackActionMiddlewareArgs["payload"],
+  payloadType: T["type"]
+): payload is T {
+  if (payload.type !== payloadType) {
+    new Logger("HasPayloadType").debug(
+      `Expected payload of type ${payload.type}, received: ${prettyPrint(payload)}`
+    );
+    return false;
+  }
+  return true;
 }

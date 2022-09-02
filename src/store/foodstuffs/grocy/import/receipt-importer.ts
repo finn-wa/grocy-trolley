@@ -26,13 +26,13 @@ export class FoodstuffsReceiptImporter {
   );
 
   constructor(
-    @inject("ReceiptScanner") private readonly scanner: ReceiptScanner,
+    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider,
+    @inject(AppTokens.receiptScanner) private readonly scanner: ReceiptScanner,
     private readonly itemiser: FoodstuffsReceiptItemiser,
     private readonly foodstuffsListService: FoodstuffsListService,
     private readonly foodstuffsSearchService: FoodstuffsSearchService,
     private readonly listImporter: FoodstuffsListImporter,
-    private readonly grocyProductService: GrocyProductService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    private readonly grocyProductService: GrocyProductService
   ) {}
 
   /**
@@ -47,7 +47,7 @@ export class FoodstuffsReceiptImporter {
     const cacheKey = this.getCacheKey(filepath);
     const cachedResolvedItems = await this.resolvedItemCache.get(cacheKey);
     if (cachedResolvedItems) {
-      console.log("Found cached resolved items");
+      await this.prompt.say("Found cached resolved items");
       const response = await this.promptImportReceiptListRefs(cachedResolvedItems, cacheKey);
       if (response.success) {
         return response;
@@ -77,7 +77,7 @@ export class FoodstuffsReceiptImporter {
     );
     const cachedScannedItems = await this.scanCache.get(cacheKey);
     if (cachedScannedItems !== null) {
-      console.log(prettyPrint(cachedScannedItems));
+      await this.prompt.say(prettyPrint(cachedScannedItems));
       const useCache = await this.prompt.confirm(
         `Use cached scanned items? Amend file as needed before continuing:\n${cacheFilepath}`
       );

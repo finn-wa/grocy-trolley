@@ -40,7 +40,7 @@ export interface SlackActionArgs<
 }
 
 @singleton()
-export class SlackBoltApp implements Disposable {
+export class SlackAppService implements Disposable {
   readonly port = 3000;
   /** Args received from command hooks */
   readonly command$ = new ReplaySubject<SlackCommandMiddlewareArgs>(1);
@@ -84,7 +84,7 @@ export class SlackBoltApp implements Disposable {
 
     // Handle logging
     this.event$.subscribe(({ type, event }) => {
-      this.logger.debug(`${type}: ${prettyPrint(event)}`);
+      this.logger.trace(`${type}: ${prettyPrint(event)}`);
     });
   }
 
