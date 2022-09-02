@@ -1,12 +1,16 @@
 import { readFile } from "fs/promises";
 import path from "path";
-import { basename } from "path/posix";
+import { basename } from "path";
 import { ReceiptScanner } from "@gt/receipt-ocr/receipts.model";
 import { getEnvVar } from "@gt/utils/environment";
 import { headersBuilder } from "@gt/utils/headers";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { paths } from "./api";
+import { CacheService } from "@gt/utils/cache";
+import { inject, Lifecycle, scoped } from "tsyringe";
+import { AppTokens } from "@gt/app/di";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 
 const endpoint = "/api/receipt/v1/verbose/encoded";
 const method = "post";
@@ -22,19 +26,36 @@ type ReceiptResponseError = ReceiptApi["responses"]["400"]["schema"];
  *
  * @see https://www.taggun.io/
  */
+@scoped(Lifecycle.ContainerScoped)
 export class TaggunReceiptScanner extends RestService implements ReceiptScanner {
   protected readonly baseUrl = this.validateBaseUrl("https://api.taggun.io");
   protected readonly logger = new Logger(this.constructor.name);
   private readonly apiKey = getEnvVar("TAGGUN_API_KEY");
+  private readonly cache = new CacheService<Record<string, ReceiptResponseOk>>("taggun");
+
+  constructor(@inject(AppTokens.promptProvider) private readonly prompt: PromptProvider) {
+    super();
+  }
 
   async scan(filePath: string): Promise<string> {
-    const taggunRes = await this.fetchReceiptData(filePath);
+    const cacheKey = basename(filePath.slice(0, filePath.lastIndexOf(".")));
+    const cachedResponse = await this.cache.get(cacheKey);
+    let taggunRes: ReceiptResponseOk | ReceiptResponseError;
+    if (cachedResponse) {
+      const useCachedResponse = await this.prompt.confirm(
+        `Use cached Taggun response for "${cacheKey}?"`
+      );
+      taggunRes = useCachedResponse ? cachedResponse : await this.fetchReceiptData(filePath);
+    } else {
+      taggunRes = await this.fetchReceiptData(filePath);
+    }
     if ("statusCode" in taggunRes) {
       throw new Error(`Taggun returned an error: ${prettyPrint(taggunRes)}`);
     }
     if (!("text" in taggunRes) || !taggunRes.text?.text) {
       throw new Error(`Taggun didn't return text in response: ${prettyPrint(taggunRes)}`);
     }
+    await this.cache.set(cacheKey, taggunRes);
     return taggunRes.text.text;
   }
 
