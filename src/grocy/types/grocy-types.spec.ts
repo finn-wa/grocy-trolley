@@ -1,6 +1,6 @@
 import { withBooleans, withNumbers, withOptionalIds } from "./grocy-types";
 
-describe("GrocyTypes", () => {
+describe("[internal] GrocyTypes", () => {
   test("withBooleans", () => {
     const obj = {
       a: "1",

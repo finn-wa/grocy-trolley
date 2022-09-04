@@ -9,7 +9,7 @@ import { getOrderSchema } from "./types/Order/schema";
 import { getOrderDetailsSchema } from "./types/OrderDetails/schema";
 import { getOrdersSchema } from "./types/Orders/schema";
 
-describe("CountdownOrderService", () => {
+describe("[external] CountdownOrderService", () => {
   let service: CountdownOrderService;
 
   // Use real account because it has orders in it

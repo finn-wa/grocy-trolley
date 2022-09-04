@@ -10,7 +10,7 @@ class TestLookupService<K extends string> extends GrocyIdLookupService<K> {
   }
 }
 
-describe("GrocyIdLookupService", () => {
+describe("[internal] GrocyIdLookupService", () => {
   const mapOfKeysToGrocyIds = { key1: "id1", key2: "id2" };
   let lookupService: TestLookupService<keyof typeof mapOfKeysToGrocyIds>;
 

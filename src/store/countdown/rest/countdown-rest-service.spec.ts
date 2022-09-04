@@ -16,7 +16,7 @@ class TestRestService extends CountdownRestService {
   authHeaders = () => super.authHeaders();
 }
 
-describe("CountdownRestService", () => {
+describe("[external] CountdownRestService", () => {
   let userAgent: CountdownAuthHeaderProvider;
   let service: TestRestService;
 

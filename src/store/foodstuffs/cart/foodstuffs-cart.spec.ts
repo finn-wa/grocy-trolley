@@ -10,7 +10,7 @@ import { CartProductRef } from "./foodstuffs-cart.model";
 import { getCartSchema } from "./types/Cart/schema";
 import { getClearCartResponseSchema } from "./types/ClearCartResponse/schema";
 
-describe("Foodstuffs Cart", () => {
+describe("[external] Foodstuffs Cart", () => {
   let cartController: FoodstuffsCartController;
   let cartService: FoodstuffsCartService;
   const milk: CartProductRef = {

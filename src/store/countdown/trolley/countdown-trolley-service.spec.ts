@@ -6,7 +6,7 @@ import { CountdownAuthHeaderProvider } from "../rest/countdown-auth-header-provi
 import { CountdownTrolleyService } from "./countdown-trolley-service";
 import { getTrolleySchema } from "./types/Trolley/schema";
 
-describe("CountdownTrolleyService", () => {
+describe("[external] CountdownTrolleyService", () => {
   let service: CountdownTrolleyService;
 
   beforeAll(beforeAllCountdownTests);

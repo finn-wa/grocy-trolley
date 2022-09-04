@@ -12,7 +12,7 @@ import { getRawProductSchema, getRawProductsSchema } from "./schema";
 
 const samplez = samples as RawProduct[];
 
-describe("Grocy Product Schema", () => {
+describe("[internal] Grocy Product Schema", () => {
   testSchemaWithSamples(getRawProductSchema(), [samplez[0], samplez[samplez.length - 1]]);
 
   test("RawProducts", () => expectSchemaToValidate(getRawProductsSchema(), samplez));

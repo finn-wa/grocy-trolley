@@ -90,7 +90,7 @@ const generateSchemaSpecFile = (type: string): string => dedent`
   import samples from "./samples.json";
   import { get${type}Schema } from "./schema";
 
-  describe("${type} Schema", () => {
+  describe("[internal] ${type} Schema", () => {
     const validate = get${type}Schema();
     testSchemaWithSamples(validate, samples);
   });
