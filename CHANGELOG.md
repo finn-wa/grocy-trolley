@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/finn-wa/grocy-trolley/compare/v3.0.1...v3.1.0) (2022-09-04)
+
+### Features
+
+- (wip) add basic select support to SlackPromptProvider ([de47997](https://github.com/finn-wa/grocy-trolley/commit/de4799728b4a33583c3decc1c58755b9a7d9e8b0))
+- add adapter for @slack/bolt logger ([b1317bd](https://github.com/finn-wa/grocy-trolley/commit/b1317bd2bef1b703e88e42fbe9be0f097095f283))
+- add basic slack bot ([a77c4ae](https://github.com/finn-wa/grocy-trolley/commit/a77c4ae03904354021be4e6561ce49222e74bec0))
+- cache taggun response even when parsing fails ([1df3507](https://github.com/finn-wa/grocy-trolley/commit/1df3507e35efdbf687cbc0c42fc9a993d461b4f7))
+- select shopping list before import ([812ed56](https://github.com/finn-wa/grocy-trolley/commit/812ed56809e46d865873b7263f93a78d35b762ce))
+
+### Bug Fixes
+
+- foodstuffs receipt itemiser mistakenly reports weird line length ([23552fc](https://github.com/finn-wa/grocy-trolley/commit/23552fc2dec3ad9f8e0e017c7604a192de6808e5))
+
 ### [3.0.1](https://github.com/finn-wa/grocy-trolley/compare/v3.0.0...v3.0.1) (2022-08-07)
 
 ### Bug Fixes
