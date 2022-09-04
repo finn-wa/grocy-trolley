@@ -15,7 +15,7 @@ class TestRestService extends FoodstuffsRestService {
   authHeaders = () => super.authHeaders();
 }
 
-describe("FoodstuffsRestService", () => {
+describe("[external] FoodstuffsRestService", () => {
   let authHeaderProvider: FoodstuffsAuthHeaderProvider;
   let service: TestRestService;
 

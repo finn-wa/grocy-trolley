@@ -1,10 +1,6 @@
-import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
-import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
-import { getBrowser } from "../../shared/rest/browser";
-import { FoodstuffsListService } from "./foodstuffs-list-service";
-import { List, ListProductRef } from "./foodstuffs-list.model";
 import { beforeAllFoodstuffsTests, foodstuffsTestContainer } from "../test/foodstuffs-test-utils";
+import { FoodstuffsListService } from "./foodstuffs-list-service";
+import { ListProductRef } from "./foodstuffs-list.model";
 
 class ProductRefs {
   get milk(): ListProductRef {
@@ -39,7 +35,7 @@ class ProductRefs {
   }
 }
 
-describe("FoodstuffsListService", () => {
+describe("[external] FoodstuffsListService", () => {
   let listService: FoodstuffsListService;
   const refs = new ProductRefs();
 
@@ -55,119 +51,69 @@ describe("FoodstuffsListService", () => {
     await listService.deleteLists(/^(?!My Favourites)/);
   });
 
-  describe("unit tests", () => {
-    test("getLists", async () => {
-      const lists = await listService.getLists();
-      expectArrayOfLength(lists, 1);
-      expect(lists[0]).toMatchObject({ name: "My Favourites", products: [] });
-    });
-
-    test("createList", async () => {
-      const name = "strawberry";
-      const list = await listService.createList(name);
-      expect(list.name).toEqual(name);
-      expect(list.products).toEqual([]);
-      expect(list.listId).toBeTruthy();
-    });
-
-    test("createListWithProducts", async () => {
-      const name = "raspberry";
-      const products = refs.manyItems;
-      const list = await listService.createListWithProducts(name, products);
-      expect(list.listId).toBeTruthy();
-      expect(productIdsOf(list.products)).toEqual(productIdsOf(products));
-    });
-
-    test("updateList", async () => {
-      const name = "lemon";
-      const { listId } = await listService.createList(name);
-      const products = [refs.bread, refs.carrots];
-      const list = await listService.updateList({ listId, products });
-      expect(list.listId).toEqual(listId);
-      expect(productIdsOf(list.products)).toEqual(productIdsOf(products));
-    });
-
-    test("deleteList", async () => {
-      const name = "lime";
-      const { listId } = await listService.createList(name);
-      expect(await listService.getList(listId)).toBeTruthy();
-      const response = await listService.deleteList(listId);
-      expectArrayOfLength(response.lists, 1);
-      expect(() => listService.getList(listId)).rejects.toThrowError(/404/);
-    });
-
-    test("deleteLists", async () => {
-      for (const name of ["temporary list", "important items", "apr 1st (TEMP)"]) {
-        await listService.createList(name);
-      }
-      const listsBefore = await listService.getLists();
-      expectArrayOfLength(listsBefore, 4);
-      const importantList = listsBefore.find((product) => product.name.includes("important"));
-      expect(importantList).toBeTruthy();
-
-      await listService.deleteLists(/temp/gi);
-      const listsAfter = await listService.getLists();
-      expectArrayOfLength(listsAfter, 2);
-      expect(listsAfter).toContainEqual(importantList);
-    });
-
-    test("addProductsToList", async () => {
-      const name = "persimmon";
-      const { listId } = await listService.createList(name);
-      expect(await listService.getList(listId)).toBeTruthy();
-      await listService.updateList({ listId, products: [refs.milk] });
-
-      const itemsToAdd = refs.manyItems;
-      const updated = await listService.addProductsToList(listId, itemsToAdd);
-      expectArrayOfLength(updated.products, itemsToAdd.length + 1);
-    });
+  test("getLists", async () => {
+    const lists = await listService.getLists();
+    expectArrayOfLength(lists, 1);
+    expect(lists[0]).toMatchObject({ name: "My Favourites", products: [] });
   });
-  // TODO: replace with schema
-  /**
- * 
- describe("snapshot tests", () => {
-   function formatListForSnapshot(list: List): Partial<List> {
-      return {
-        ...list,
-        listId: list.listId ? "uuid" : undefined,
-        products: list.products?.map((product) => ({ ...product, price: 0 })),
-      };
+
+  test("createList", async () => {
+    const name = "strawberry";
+    const list = await listService.createList(name);
+    expect(list.name).toEqual(name);
+    expect(list.products).toEqual([]);
+    expect(list.listId).toBeTruthy();
+  });
+
+  test("createListWithProducts", async () => {
+    const name = "raspberry";
+    const products = refs.manyItems;
+    const list = await listService.createListWithProducts(name, products);
+    expect(list.listId).toBeTruthy();
+    expect(productIdsOf(list.products)).toEqual(productIdsOf(products));
+  });
+
+  test("updateList", async () => {
+    const name = "lemon";
+    const { listId } = await listService.createList(name);
+    const products = [refs.bread, refs.carrots];
+    const list = await listService.updateList({ listId, products });
+    expect(list.listId).toEqual(listId);
+    expect(productIdsOf(list.products)).toEqual(productIdsOf(products));
+  });
+
+  test("deleteList", async () => {
+    const name = "lime";
+    const { listId } = await listService.createList(name);
+    expect(await listService.getList(listId)).toBeTruthy();
+    const response = await listService.deleteList(listId);
+    expectArrayOfLength(response.lists, 1);
+    expect(() => listService.getList(listId)).rejects.toThrowError(/404/);
+  });
+
+  test("deleteLists", async () => {
+    for (const name of ["temporary list", "important items", "apr 1st (TEMP)"]) {
+      await listService.createList(name);
     }
+    const listsBefore = await listService.getLists();
+    expectArrayOfLength(listsBefore, 4);
+    const importantList = listsBefore.find((product) => product.name.includes("important"));
+    expect(importantList).toBeTruthy();
 
-    test("createList", async () => {
-      const list = await listService.createList("orange");
-      expect(formatListForSnapshot(list)).toMatchSnapshot();
-    });
-
-    test("getLists", async () => {
-      const lists = await listService.getLists();
-      expect(lists.map(formatListForSnapshot)).toMatchSnapshot();
-    });
-
-    test("getList", async () => {
-      const { listId } = await listService.createListWithProducts("blueberry", [
-        refs.bread,
-        refs.carrots,
-      ]);
-      const list = await listService.getList(listId);
-      expect(formatListForSnapshot(list)).toMatchSnapshot();
-    });
-
-    test("updateList", async () => {
-      const { listId } = await listService.createListWithProducts("breadfruit", [refs.bread]);
-      const list = await listService.updateList({ listId, products: [refs.carrots, refs.milk] });
-      expect(formatListForSnapshot(list as List)).toMatchSnapshot();
-    });
-    
-    test("deleteList", async () => {
-      await listService.createListWithProducts("broccoli", [refs.milk]);
-      const { listId } = await listService.createListWithProducts("tomato", [refs.bread]);
-      const response = await listService.deleteList(listId);
-      expect({
-        ...response,
-        lists: (response.lists as List[])?.map(formatListForSnapshot),
-      }).toMatchSnapshot();
-    });
+    await listService.deleteLists(/temp/gi);
+    const listsAfter = await listService.getLists();
+    expectArrayOfLength(listsAfter, 2);
+    expect(listsAfter).toContainEqual(importantList);
   });
-  */
+
+  test("addProductsToList", async () => {
+    const name = "persimmon";
+    const { listId } = await listService.createList(name);
+    expect(await listService.getList(listId)).toBeTruthy();
+    await listService.updateList({ listId, products: [refs.milk] });
+
+    const itemsToAdd = refs.manyItems;
+    const updated = await listService.addProductsToList(listId, itemsToAdd);
+    expectArrayOfLength(updated.products, itemsToAdd.length + 1);
+  });
 });

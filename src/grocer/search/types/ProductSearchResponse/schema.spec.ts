@@ -3,7 +3,7 @@ import { ProductSearchResponse } from ".";
 import samples from "./samples.json";
 import { getProductSearchResponseSchema } from "./schema";
 
-describe("ProductSearchResponse Schema", () => {
+describe("[internal] ProductSearchResponse Schema", () => {
   const validate = getProductSearchResponseSchema();
   testSchemaWithSamples(validate, samples as ProductSearchResponse[]);
 });

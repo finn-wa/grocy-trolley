@@ -5,17 +5,16 @@ import {
 } from "../../test/foodstuffs-test-utils";
 import { FoodstuffsBarcodeImporter } from "./foodstuffs-barcode-importer";
 import barcodes from "@gt/test/data/barcodes.json";
+import { FoodstuffsReceiptImporter } from "./receipt-importer";
+import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
+import { GrocerApiService } from "@gt/grocer/api/grocer-api-service";
 
-describe("FoodstuffsBarcodeImporter", () => {
-  let service: FoodstuffsBarcodeImporter;
-
-  beforeAll(beforeAllFoodstuffsTests);
-
-  beforeEach(() => {
-    service = foodstuffsTestContainer().resolve(FoodstuffsBarcodeImporter);
-  });
-
-  afterAll(afterAllFoodstuffsTests);
+describe("[internal] FoodstuffsBarcodeImporter", () => {
+  const service = new FoodstuffsBarcodeImporter(
+    null as unknown as FoodstuffsReceiptImporter,
+    null as unknown as GrocerStoreService,
+    null as unknown as GrocerApiService
+  );
 
   describe("readBarcodesFromFile", () => {
     it("should parse a json file", async () => {

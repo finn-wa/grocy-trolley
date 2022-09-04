@@ -3,7 +3,7 @@ import { Browser } from "playwright";
 import { StoreContents } from "./grocer-indexed-db";
 import { GrocerUserAgent } from "./grocer-user-agent";
 
-describe("GrocerUserAgent", () => {
+describe("[external] GrocerUserAgent", () => {
   let browser: Browser;
   let userAgent: GrocerUserAgent;
   const selectedStoreIds = [6340712107624913, 7644797357623558, 4567002660615265];
