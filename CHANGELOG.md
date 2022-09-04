@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [3.1.0](https://github.com/finn-wa/grocy-trolley/compare/v3.0.1...v3.1.0) (2022-09-04)
 
+Pre-release: Run commands via Slack bot (still in testing)
+
 ### Features
 
 - (wip) add basic select support to SlackPromptProvider ([de47997](https://github.com/finn-wa/grocy-trolley/commit/de4799728b4a33583c3decc1c58755b9a7d9e8b0))
