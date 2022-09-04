@@ -13,7 +13,7 @@ import { SlackPromptService } from "./slack-prompt-service";
 
 /**
  * Configures the SlackBoltApp to respond to GrocyTrolleyApp commands. Each command
- * invokation gets its own instance of GrocyTrolleyApp in a tsyringe container.
+ * invocation gets its own instance of GrocyTrolleyApp in a tsyringe container.
  */
 @singleton()
 export class GrocyTrolleySlackBot implements Disposable {
@@ -24,11 +24,6 @@ export class GrocyTrolleySlackBot implements Disposable {
     private readonly slackApp: SlackAppService,
     @inject(AppTokens.childContainer) private readonly botContainer: DependencyContainer
   ) {
-    this.botContainer
-      .register(AppTokens.promptProvider, { useClass: SlackPromptProvider })
-      .register(AppTokens.childContainer, {
-        useFactory: () => this.botContainer.createChildContainer(),
-      });
     // initialise eager singletons
     this.botContainer.resolve(SlackPromptService);
 
@@ -89,9 +84,11 @@ export class GrocyTrolleySlackBot implements Disposable {
   ) {
     const sessionContainer = this.botContainer.createChildContainer();
     sessionContainer
-      .register(AppTokens.childContainer, { useValue: sessionContainer })
       .register(SlackBoltAppTokens.slackUserId, { useValue: userId })
-      .registerSingleton(AppTokens.promptProvider, SlackPromptProvider);
+      .register(AppTokens.promptProvider, { useClass: SlackPromptProvider })
+      .register(AppTokens.childContainer, {
+        useFactory: () => sessionContainer.createChildContainer(),
+      });
     try {
       await fn(sessionContainer);
     } catch (error) {
