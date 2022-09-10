@@ -79,6 +79,10 @@ export function getEnvVar(envVar: EnvVar): string {
   if (_env === null) {
     initEnv();
   }
+  const value = _env![envVar];
+  if (!value) {
+    throw new Error(`Missing environment variable ${envVar}`);
+  }
   return _env![envVar];
 }
 
