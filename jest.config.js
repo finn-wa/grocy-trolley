@@ -26,7 +26,7 @@ module.exports = {
       },
     ],
   ],
-  globals: {
-    "ts-jest": { isolatedModules: true, tsconfig: tsconfig.compilerOptions },
+  transform: {
+    ".*\\.ts": ["ts-jest", { isolatedModules: true, tsconfig: tsconfig.compilerOptions }],
   },
 };
