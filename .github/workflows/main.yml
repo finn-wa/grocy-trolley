@@ -35,7 +35,16 @@ jobs:
         run: yarn run build -t dev
 
       - name: Typecheck
-        run: yarn run tsc
+        run: yarn tsc
 
       - name: Lint
         run: yarn run lint
+
+      - name: Test
+        run: yarn run test:internal
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: build/test-report.html
