@@ -86,11 +86,7 @@ type WithOptionalIds<T, OptionalIdKeys extends keyof T> = {
 };
 
 /* eslint-disable */
-function mapEntries(
-  obj: Record<string, any>,
-  keys: (string | number | symbol)[],
-  valueMapper: (v: any) => any
-) {
+function mapEntries(obj: any, keys: (string | number | symbol)[], valueMapper: (v: any) => any) {
   const mapped: any = { ...obj };
   keys
     .filter((key) => key in obj)
