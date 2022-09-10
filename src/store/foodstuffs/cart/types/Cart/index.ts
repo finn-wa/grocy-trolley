@@ -57,7 +57,7 @@ export interface FoodstuffsCart {
   serviceFee: number;
   store: FoodstuffsCartStore;
   subtotal: number;
-  unavailableProducts: any[];
+  unavailableProducts: FoodstuffsCartProduct[];
   wasRepriced: boolean;
   timeslot?: FoodstuffsCartTimeslot;
 }

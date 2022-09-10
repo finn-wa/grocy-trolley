@@ -11,7 +11,7 @@
     "build:prod": "node scripts/build.js -t prod",
     "build:watch": "node scripts/build.js -t dev --watch",
     "test": "jest",
-    "test:internal": "jest --testNamePattern '\\[internal\\]'",
+    "test:internal": "jest --testNamePattern internal",
     "typecheck": "tsc -w",
     "lint": "eslint src --cache --cache-location=build",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/receipt-ocr/taggun/api.d.ts",
