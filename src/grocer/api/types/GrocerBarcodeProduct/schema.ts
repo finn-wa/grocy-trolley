@@ -1,8 +1,6 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-import { generateTypes } from "@gt/jtd/generate-types";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { GrocerBarcodeProduct } from ".";
-import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the GrocerBarcodeProduct type defined in
@@ -52,18 +50,3 @@ export const getGrocerBarcodeProductSchema = () => getRequiredSchema<GrocerBarco
 
 // Register schema with ajv
 ajv.addSchema(schema, key);
-
-/**
- * Development tool - regenerates this code based on samples.json, replacing the
- * contents of this folder. Use when the schema changes.
- */
-export async function regenerateGrocerBarcodeProductSchema() {
-  return generateTypes(
-    {
-      typeName: "GrocerBarcodeProduct",
-      sourceDir: "src/grocer/api",
-      generateArrayType: false,
-    },
-    ...samples
-  );
-}

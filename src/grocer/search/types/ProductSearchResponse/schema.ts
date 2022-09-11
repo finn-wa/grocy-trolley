@@ -1,8 +1,6 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-import { generateTypes } from "@gt/jtd/generate-types";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { ProductSearchResponse } from ".";
-import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the ProductSearchResponse type defined in
@@ -49,18 +47,3 @@ export const getProductSearchResponseSchema = () => getRequiredSchema<ProductSea
 
 // Register schema with ajv
 ajv.addSchema(schema, key);
-
-/**
- * Development tool - regenerates this code based on samples.json, replacing the
- * contents of this folder. Use when the schema changes.
- */
-export async function regenerateProductSearchResponseSchema() {
-  return generateTypes(
-    {
-      typeName: "ProductSearchResponse",
-      sourceDir: "src/grocer/search",
-      generateArrayType: false,
-    },
-    ...samples
-  );
-}

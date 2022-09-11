@@ -5,18 +5,19 @@ import { jtdInfer } from "./infer";
 import dedent from "dedent";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 
-function generateSchemaFile(
-  type: string,
-  sourceDir: string,
-  jtd: string,
-  arrayType = false
-): string {
+/**
+ * Generates the contents of a TypeScript file defining a JTD schema and associated validation functions.
+ * @param type name for the schema type
+ * @param ajvKey key for AJV schema
+ * @param jtd JSON Type Definition (schema)
+ * @param arrayType true if a schema should also be generated for `type[]`
+ * @returns contents of the schema file as a string
+ */
+function generateSchemaFile(type: string, ajvKey: string, jtd: string, arrayType = false): string {
   let out = dedent`
     import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-    import { generateTypes } from "@gt/jtd/generate-types";
     import { JTDSchemaType } from "ajv/dist/jtd";
     import { ${type} } from ".";
-    import samples from "./samples.json";
 
     /**
      * This will cause a TypeScript compiler error if the ${type} type defined in
@@ -27,7 +28,7 @@ function generateSchemaFile(
     /**
      * The key used to index the ${type} schema with ajv
      */
-    export const key = "${sourceDir}/${type}";
+    export const key = "${ajvKey}/${type}";
   `;
   if (arrayType) {
     out += dedent`\n
@@ -62,27 +63,11 @@ function generateSchemaFile(
     ajv.addSchema(schema, key);
   `;
   if (arrayType) {
-    out += dedent`
+    out += dedent`\n
       ajv.addSchema({ elements: schema }, arrayKey);
     `;
   }
-  out += dedent`\n
-    /**
-     * Development tool - regenerates this code based on samples.json, replacing the
-     * contents of this folder. Use when the schema changes.
-     */
-    export async function regenerate${type}Schema() {
-      return generateTypes(
-        {
-          typeName: "${type}",
-          sourceDir: "${sourceDir}",
-          generateArrayType: ${arrayType},
-        },
-        ...samples
-      );
-    }
-  `;
-  return out;
+  return out + "\n";
 }
 
 const generateSchemaSpecFile = (type: string): string => dedent`
@@ -94,6 +79,37 @@ const generateSchemaSpecFile = (type: string): string => dedent`
     const validate = get${type}Schema();
     testSchemaWithSamples(validate, samples);
   });
+`;
+
+/**
+ * Generates code that can be used to re-run code generation. For use in development when a schema changes.
+ * @param type name of schema type
+ * @param sourceDir target directory for generated files
+ * @param arrayType whether an array type schema (type[]) should also be generated
+ * @returns the contents of a generate-schema.ts file
+ */
+const generateGenerateSchemaFile = (
+  type: string,
+  sourceDir: string,
+  arrayType = false
+): string => dedent`
+  import samples from "./samples.json";
+  import { generateTypes } from "@gt/jtd/generate-types";
+
+  /**
+   * Development tool - regenerates schema code based on samples.json, replacing the
+   * contents of this folder. Use when the schema changes.
+   */
+  export async function regenerate${type}Schema() {
+    return generateTypes(
+      {
+        typeName: "${type}",
+        sourceDir: "${sourceDir}",
+        generateArrayType: ${arrayType},
+      },
+      ...samples
+    );
+  }
 `;
 
 export async function generateTypes(
@@ -119,6 +135,11 @@ export async function generateTypes(
     writeFile(join(typesDir, "samples.json"), prettyPrint(inputs)),
     // Write spec file
     writeFile(join(typesDir, "schema.spec.ts"), generateSchemaSpecFile(typeName)),
+    // Write generate file
+    writeFile(
+      join(typesDir, "generate-schema.ts"),
+      generateGenerateSchemaFile(typeName, sourceDir, generateArrayType)
+    ),
     // Generate code and save as index.ts
     jtdCodegen(typeName, inferredJTD, typesDir),
     // Write typecheck file

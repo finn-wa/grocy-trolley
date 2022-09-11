@@ -1,5 +1,6 @@
 import { container, inject, injectable } from "tsyringe";
 import { AppTokens, registerDefaultDependencies } from "./app/di";
+import { regenerateGrocerProductSchema } from "./grocer/api/types/GrocerProduct/generate-schema";
 import { PromptProvider } from "./prompts/prompt-provider";
 import { registerCountdownDependencies } from "./store/countdown/countdown-di";
 import { registerFoodstuffsDependencies } from "./store/foodstuffs/foodstuffs-di";
@@ -13,6 +14,10 @@ export class Dev {
   constructor(@inject(AppTokens.promptProvider) readonly prompt: PromptProvider) {}
 
   async main() {
+    await regenerateGrocerProductSchema();
+  }
+
+  async testPrompt() {
     const confirm = await this.prompt.confirm("confirm");
     this.logger.info(`confirm: ${confirm}`);
 

@@ -1,5 +1,4 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-import { generateTypes } from "@gt/jtd/generate-types";
 import {
   FoodstuffsCartProduct,
   FOODSTUFFS_CATEGORIES,
@@ -7,7 +6,6 @@ import {
 } from "@gt/store/foodstuffs/models";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { FoodstuffsCart } from "../../foodstuffs-cart.model";
-import samples from "./samples.json";
 
 const saleTypes: SaleTypeString[] = ["UNITS", "WEIGHT", "BOTH"];
 const categories = [...FOODSTUFFS_CATEGORIES];
@@ -105,18 +103,3 @@ export const getCartSchema = () => getRequiredSchema<FoodstuffsCart>(key);
 
 // Register schema with ajv
 ajv.addSchema(schema, key);
-
-/**
- * Development tool - regenerates this code based on samples.json, replacing the
- * contents of this folder. Use when the schema changes.
- */
-export async function regenerateFoodstuffsCartSchema() {
-  return generateTypes(
-    {
-      typeName: "Cart",
-      sourceDir: "src/store/foodstuffs/cart/",
-      generateArrayType: false,
-    },
-    ...samples
-  );
-}

@@ -1,9 +1,7 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-import { generateTypes } from "@gt/jtd/generate-types";
 import { UNKNOWN } from "@gt/jtd/infer";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { Trolley } from ".";
-import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the Trolley type defined in
@@ -202,18 +200,3 @@ export const getTrolleySchema = () => getRequiredSchema<Trolley>(key);
 
 // Register schema with ajv
 ajv.addSchema(schema, key);
-
-/**
- * Development tool - regenerates this code based on samples.json, replacing the
- * contents of this folder. Use when the schema changes.
- */
-export async function regenerateTrolleySchema() {
-  return generateTypes(
-    {
-      typeName: "Trolley",
-      sourceDir: "src/store/countdown/trolley",
-      generateArrayType: false,
-    },
-    ...samples
-  );
-}

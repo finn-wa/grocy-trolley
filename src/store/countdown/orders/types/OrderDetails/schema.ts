@@ -1,9 +1,7 @@
 import { ajv, getRequiredSchema } from "@gt/jtd/ajv";
-import { generateTypes } from "@gt/jtd/generate-types";
 import { UNKNOWN } from "@gt/jtd/infer";
 import { JTDSchemaType } from "ajv/dist/jtd";
 import { OrderDetails } from ".";
-import samples from "./samples.json";
 
 /**
  * This will cause a TypeScript compiler error if the OrderDetails type defined in
@@ -262,18 +260,3 @@ export const getOrderDetailssSchema = () => getRequiredSchema<OrderDetails[]>(ar
 // Register schemas with ajv
 ajv.addSchema(schema, key);
 ajv.addSchema({ elements: schema }, arrayKey);
-
-/**
- * Development tool - regenerates this code based on samples.json, replacing the
- * contents of this folder. Use when the schema changes.
- */
-export async function regenerateOrderDetailsSchema() {
-  return generateTypes(
-    {
-      typeName: "OrderDetails",
-      sourceDir: "src/store/countdown/orders",
-      generateArrayType: true,
-    },
-    ...samples
-  );
-}
