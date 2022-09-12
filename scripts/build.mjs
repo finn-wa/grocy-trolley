@@ -1,8 +1,8 @@
-const { program, Option } = require("commander");
-const esbuild = require("esbuild");
-const fs = require("fs/promises");
-const { esbuildDecorators } = require("@anatine/esbuild-decorators");
-const path = require("path");
+import { program, Option } from "commander";
+import esbuild from "esbuild";
+import { rm, writeFile } from "fs/promises";
+import { esbuildDecorators } from "@anatine/esbuild-decorators";
+import { join } from "path";
 
 /**
  * Produces build options from CLI args.
@@ -36,12 +36,12 @@ function getBuildOptions(args) {
  * @param {esbuild.BuildOptions} options
  * @returns {Promise<esbuild.BuildResult>}
  */
-async function build(options) {
-  await fs.rm(options.outdir, { recursive: true, force: true });
+async function runEsbuild(options) {
+  await rm(options.outdir, { recursive: true, force: true });
   const result = await esbuild.build(options);
   if (options.metafile) {
     console.log(await esbuild.analyzeMetafile(result.metafile));
-    await fs.writeFile(path.join(options.outdir, "metafile.json"), JSON.stringify(result.metafile));
+    await writeFile(join(options.outdir, "metafile.json"), JSON.stringify(result.metafile));
   }
   return result;
 }
@@ -66,7 +66,7 @@ program
   .parse();
 
 const buildOptions = getBuildOptions(program.opts());
-build(buildOptions).then(
+runEsbuild(buildOptions).then(
   () => process.exit(0),
   (err) => {
     console.error(err);
