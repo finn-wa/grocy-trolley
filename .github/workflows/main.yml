@@ -33,7 +33,13 @@ jobs:
         run: yarn install
 
       - name: Build
-        run: yarn run build -t dev
+        run: yarn run build -t prod
+
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build Output
+          path: build/out/main.js
 
       - name: Typecheck
         run: yarn tsc
@@ -47,5 +53,5 @@ jobs:
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage-report
+          name: Test Report
           path: build/test-report.html
