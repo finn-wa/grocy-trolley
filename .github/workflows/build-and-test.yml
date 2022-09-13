@@ -39,7 +39,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Build Output
-          path: build/out/main.js
+          path: build/out
+
 
       - name: Typecheck
         run: yarn tsc
