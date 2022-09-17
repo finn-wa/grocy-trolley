@@ -1,6 +1,6 @@
 # Grocy Trolley
 
-GrocyTrolley links Grocy to online grocery shopping. You can:
+GrocyTrolley links [Grocy](https://github.com/grocy/grocy/) to online grocery shopping. You can:
 
 - [`import`](#import) and stock products from online shops
 - [`export`](#export) shopping lists from Grocy to online shopping orders
