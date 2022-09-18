@@ -15,7 +15,8 @@ It has a prompt-based text interface that can be used via the command line or in
 import/i [source] [options]
 ```
 
-Add products to Grocy from `source` with an optional amount to add to stock. Unknown products will be added to the database.
+Add products to Grocy from `source` with an optional amount to add to stock.
+Unknown products will be added to the database.
 
 #### `[source]`
 
@@ -64,16 +65,22 @@ _Online shopping site to export products to_
 | ------------ | ------------------------ |
 | `-h, --help` | Display help for command |
 
-## CLI
+## CLI Usage
 
-### CLI-Only Commands
+```
+grocy-trolley [command] [options]
+```
+
+### CLI Commands
+
+The [`import`](#import) and [`export`](#export) commands listed above can be used with the command line, as well as the following:
 
 | Command          | Description                 |
 | ---------------- | --------------------------- |
 | `slack`          | Starts the slack bot server |
 | `help [command]` | Display help for command    |
 
-### Options
+### CLI Options
 
 | Option                    | Description               | Choices                                           | Default |
 | ------------------------- | ------------------------- | ------------------------------------------------- | ------- |
@@ -84,8 +91,11 @@ _Online shopping site to export products to_
 
 ## DI Architecture
 
-This diagram shows the hierachy of dependency injection containers that enable `GrocyTrolleyApp` to run in a CLI session or as a Slack bot, and the tokens in each container.
+This diagram shows the hierachy of dependency injection containers that enable `GrocyTrolleyApp` to run in a CLI session or as a Slack bot.
+It also shows the tokens available in each container.
 Each instance of `GrocyTrolleyApp` is scoped to a single user.
 CLI commands simply use a single instance in the root container, whereas the Slack bot spawns a new child container with a `GrocyTrolleyApp` instance for each user command.
 
-![](ARCHITECTURE.png)
+`GrocyTrolleyApp` uses a generic `PromptProvider` which can be provided by the Slack bot or by the prompts CLI library.
+
+![](docs/di-architecture.png)

@@ -10,7 +10,7 @@
       },
       "problemMatcher": [],
       "label": "npm: build:watch",
-      "detail": "node scripts/build.js -t dev --watch"
+      "detail": "node bin/build.js -t dev --watch"
     },
     {
       "type": "typescript",
@@ -30,23 +30,6 @@
       "presentation": {
         "echo": true,
         "reveal": "silent",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": true,
-        "clear": true
-      },
-      "options": {}
-    },
-    {
-      "type": "npm",
-      "script": "lint",
-      "problemMatcher": ["$eslint-stylish"],
-      "label": "npm: lint",
-      "detail": "eslint src",
-      "isBackground": false,
-      "presentation": {
-        "echo": true,
-        "reveal": "never",
         "focus": false,
         "panel": "dedicated",
         "showReuseMessage": true,

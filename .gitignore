@@ -6,7 +6,7 @@ temp
 src/resources/cache/*
 !src/resources/cache/info.txt
 .cache
-bin
+bin/jtd-*
 
 # Yarn
 .pnp.*
