@@ -2,6 +2,7 @@ import { SlackBoltAppTokens } from "@gt/slack/slack-app-tokens";
 import { SlackPromptService } from "@gt/slack/slack-prompt-service";
 import { Logger } from "@gt/utils/logger";
 import { inject, Lifecycle, scoped } from "tsyringe";
+import { SelectOptions } from "./cli-prompt-provider";
 import { PromptProvider, SelectChoice } from "./prompt-provider";
 
 @scoped(Lifecycle.ContainerScoped)
@@ -18,9 +19,13 @@ export class SlackPromptProvider implements PromptProvider {
     return this.slackPromptService.say(this.userId, message);
   }
 
-  async select<T>(message: string, choices: SelectChoice<T>[]): Promise<T | null> {
+  async select<T>(
+    message: string,
+    choices: SelectChoice<T>[],
+    options: SelectOptions = {}
+  ): Promise<T | null> {
     this.logger.trace(`select: ${message}`);
-    const choice = await this.slackPromptService.select(this.userId, message, choices);
+    const choice = await this.slackPromptService.select(this.userId, message, choices, options);
     this.logger.trace(`select choice: ${String(choice)}`);
     return choice;
   }

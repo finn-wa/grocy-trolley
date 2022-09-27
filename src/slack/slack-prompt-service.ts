@@ -33,6 +33,7 @@ import {
   updatedConfirmButtons,
 } from "./slack-blocks";
 import { SlackAppService } from "./slack-app-service";
+import { SelectOptions } from "@gt/prompts/cli-prompt-provider";
 
 type ActionArgs<Payload extends BasicElementAction> = SlackActionMiddlewareArgs & {
   body: BlockAction;
@@ -127,10 +128,18 @@ export class SlackPromptService {
    * @param choices the prompt choices to select from
    * @returns the user's selected choice, or null if they exited the prompt
    */
-  async select<T>(userId: string, text: string, choices: SelectChoice<T>[]): Promise<T | null> {
+  async select<T>(
+    userId: string,
+    text: string,
+    choices: SelectChoice<T>[],
+    selectOptions: SelectOptions
+  ): Promise<T | null> {
     const options = choices.map((choice, index) =>
       this.choiceToSlackOption({ ...choice, value: index.toString() })
     );
+    if (selectOptions.includeExitOption) {
+      options.push({ text: { text: "Exit", type: "plain_text" } });
+    }
     const blockId = `${this.actionIds.select}:block`;
     const actionId = `${this.actionIds.select}:interaction`;
     const blocks: KnownBlock[] = [

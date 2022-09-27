@@ -3,6 +3,10 @@ import prompts from "prompts";
 import { singleton } from "tsyringe";
 import { PromptProvider, SelectChoice } from "./prompt-provider";
 
+export interface SelectOptions {
+  includeExitOption?: boolean;
+}
+
 @singleton()
 export class CLIPromptProvider implements PromptProvider {
   private readonly logger = new Logger(this.constructor.name);
@@ -11,13 +15,16 @@ export class CLIPromptProvider implements PromptProvider {
     console.log(message);
   }
 
-  async select<T>(message: string, choices: SelectChoice<T>[]) {
+  async select<T>(message: string, choices: SelectChoice<T | null>[], options: SelectOptions = {}) {
     this.logger.trace(`select: ${message}`);
+    const amendedChoices = options.includeExitOption
+      ? choices.concat({ title: "Exit", value: null })
+      : choices;
     const response = await prompts({
       message,
       type: "select",
       name: "value",
-      choices,
+      choices: amendedChoices,
     });
     return response.value as T | null;
   }

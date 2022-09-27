@@ -86,12 +86,13 @@ export class GrocyShoppingListService extends GrocyRestService {
     if (lists.length === 0) {
       return null;
     }
-    return this.prompt.select("Select a shopping list", [
-      ...lists.map((list) => ({
+    return this.prompt.select(
+      "Select a shopping list",
+      lists.map((list) => ({
         title: `${chalk.gray(grocyShortDate(list.row_created_timestamp))} - ${list.name}`,
         value: list.id,
       })),
-      { title: "Exit", value: null },
-    ]);
+      { includeExitOption: true }
+    );
   }
 }
