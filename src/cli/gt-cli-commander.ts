@@ -1,5 +1,7 @@
 import { registerDefaultDependencies } from "@gt/app/di";
+import { ExportDestination, EXPORT_DESTINATIONS } from "@gt/app/export/options";
 import { GrocyTrolleyApp } from "@gt/app/gt-app";
+import { ImportOptions, ImportSource, IMPORT_SOURCES } from "@gt/app/import/options";
 import { dev } from "@gt/dev";
 import { GrocyTrolleySlackBot } from "@gt/slack/gt-slack-bot";
 import { initEnv } from "@gt/utils/environment";
@@ -7,21 +9,14 @@ import { LOG_LEVELS } from "@gt/utils/logger";
 import { version } from "@gt/utils/version";
 import { Argument, Command, Option, program } from "commander";
 import { container } from "tsyringe";
-import {
-  CLIOptions,
-  ExportDestination,
-  EXPORT_DESTINATIONS,
-  gtLogo,
-  ImportOptions,
-  ImportSource,
-  IMPORT_SOURCES,
-} from "./gt-cli-model";
+import { CLIOptions, appLogo, appDescription } from "../app";
 
 export async function runGT() {
   registerDefaultDependencies(container);
   return program
     .name("grocy-trolley")
-    .description(gtLogo)
+    .summary(appDescription)
+    .description(appLogo)
     .version(version)
     .addOption(
       new Option("-l, --log-level <level>")
@@ -39,7 +34,7 @@ export async function runGT() {
       new Command("prompt")
         .description("Start an interactive prompt-based version of the CLI")
         .action(async () => {
-          await container.resolve(GrocyTrolleyApp).commandPrompt();
+          await container.resolve(GrocyTrolleyApp).promptRun();
         }),
       { isDefault: true, hidden: true }
     )
@@ -62,8 +57,8 @@ export async function runGT() {
           ])
         )
         .addArgument(new Argument("[source]", "Import source").choices(IMPORT_SOURCES))
-        .action(async (source: ImportSource, options: ImportOptions) => {
-          await container.resolve(GrocyTrolleyApp).importFrom(source, options);
+        .action(async (source: ImportSource, options: Omit<ImportOptions, "source" | "vendor">) => {
+          await container.resolve(GrocyTrolleyApp).importProducts({ ...options, source });
         })
     )
     .addCommand(
@@ -75,7 +70,7 @@ export async function runGT() {
           new Argument("[destination]", "Export destination").choices(EXPORT_DESTINATIONS)
         )
         .action(async (destination: ExportDestination) => {
-          await container.resolve(GrocyTrolleyApp).exportTo(destination);
+          await container.resolve(GrocyTrolleyApp).exportShoppingList({ destination });
         })
     )
     .addCommand(

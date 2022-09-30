@@ -1,6 +1,5 @@
 import { AppTokens } from "@gt/app/di";
 import { GrocyTrolleyApp } from "@gt/app/gt-app";
-import { ImportSource, IMPORT_SOURCES } from "@gt/cli/gt-cli-model";
 import { Dev } from "@gt/dev";
 import { Logger, prettyPrint } from "@gt/utils/logger";
 import { RespondFn } from "@slack/bolt";
@@ -10,6 +9,7 @@ import { SlackPromptProvider } from "../prompts/slack-prompt-provider";
 import { SlackBoltAppTokens } from "./slack-app-tokens";
 import { SlackAppService } from "./slack-app-service";
 import { SlackPromptService } from "./slack-prompt-service";
+import { ImportSource, IMPORT_SOURCES } from "@gt/app/import/options";
 
 /**
  * Configures the SlackBoltApp to respond to GrocyTrolleyApp commands. Each command
@@ -36,7 +36,7 @@ export class GrocyTrolleySlackBot implements Disposable {
             ? (arg as ImportSource)
             : undefined;
           return this.runInSession(body.user_id, respond, (sessionContainer) =>
-            sessionContainer.resolve(GrocyTrolleyApp).importFrom(source)
+            sessionContainer.resolve(GrocyTrolleyApp).importProducts({ source })
           );
         }),
         takeUntil(this.dispose$)
@@ -48,7 +48,7 @@ export class GrocyTrolleySlackBot implements Disposable {
       .pipe(
         mergeMap(({ body, respond }) =>
           this.runInSession(body.user_id, respond, (sessionContainer) =>
-            sessionContainer.resolve(GrocyTrolleyApp).exportTo()
+            sessionContainer.resolve(GrocyTrolleyApp).exportShoppingList()
           )
         ),
         takeUntil(this.dispose$)

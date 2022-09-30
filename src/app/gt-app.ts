@@ -1,11 +1,6 @@
 import { AppTokens } from "@gt/app/di";
-import {
-  ExportDestination,
-  EXPORT_DESTINATIONS,
-  ImportOptions,
-  ImportSource,
-} from "@gt/cli/gt-cli-model";
 import { GrocyToGrocerConversionService } from "@gt/grocer/grocy/grocy-to-grocer-conversion-service";
+import { validationErrorMsg } from "@gt/jtd/ajv";
 import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { TaggunReceiptScanner } from "@gt/receipt-ocr/taggun/taggun-receipt-scanner";
 import { registerCountdownDependencies } from "@gt/store/countdown/countdown-di";
@@ -17,6 +12,8 @@ import { FoodstuffsListImporter } from "@gt/store/foodstuffs/grocy/import/list-i
 import { FoodstuffsOrderImporter } from "@gt/store/foodstuffs/grocy/import/order-importer";
 import { FoodstuffsReceiptImporter } from "@gt/store/foodstuffs/grocy/import/receipt-importer";
 import { DependencyContainer, inject, injectable } from "tsyringe";
+import { ExportDestination, ExportOptions, EXPORT_DESTINATIONS } from "./export/options";
+import { getImportOptionsSchema, ImportOptions, ImportSource } from "./import/options";
 
 @injectable()
 export class GrocyTrolleyApp {
@@ -31,55 +28,60 @@ export class GrocyTrolleyApp {
     });
   }
 
-  async importFrom(source?: ImportSource, options: ImportOptions = {}) {
-    if (!source) {
-      const promptSource = await this.prompt.select("Select import source", [
+  async importProducts(options: Partial<ImportOptions> = {}) {
+    const opts = await this.resolveImportOptions(options);
+    if (opts === null) {
+      return;
+    }
+    if (opts.source === "receipt") {
+      return this.appContainer.resolve(FoodstuffsReceiptImporter).importReceipt(opts.file);
+    }
+    if (opts.source === "barcodes") {
+      return this.appContainer.resolve(FoodstuffsBarcodeImporter).importBarcodesFromFile(opts.file);
+    }
+    if (opts.source === "cart") {
+      return this.appContainer.resolve(FoodstuffsCartImporter).importProductsFromCart();
+    }
+    if (opts.source === "list") {
+      return this.appContainer.resolve(FoodstuffsListImporter).importList(opts.listId);
+    }
+    if (opts.source === "order") {
+      return this.appContainer.resolve(FoodstuffsOrderImporter).importLatestOrders();
+    }
+    throw new Error(
+      `Unexpected options body: ${validationErrorMsg(getImportOptionsSchema(), opts)}`
+    );
+  }
+
+  private async resolveImportOptions(
+    options: Partial<ImportOptions> = {}
+  ): Promise<ImportOptions | null> {
+    return {
+      source: options.source ?? (await this.promptForImportSource()),
+      vendor: "pns",
+    };
+  }
+
+  private async promptForImportSource(): Promise<ImportSource> {
+    const source = await this.prompt.select(
+      "Select import source",
+      [
         { title: "Foodstuffs cart", value: "cart" as const },
         { title: "Foodstuffs orders", value: "order" as const },
         { title: "Foodstuffs list", value: "list" as const },
         { title: "Foodstuffs receipt", value: "receipt" as const },
         { title: "Barcodes", value: "barcodes" as const },
-        { title: "Exit", value: null },
-      ]);
-      if (!promptSource) return;
-      source = promptSource;
+      ],
+      { includeExitOption: true }
+    );
+    if (!source) {
+      throw new Error("No import source provided");
     }
-    if (source === "receipt" || source === "barcodes") {
-      let inputFilePath: string | undefined = options.file;
-      if (!inputFilePath) {
-        const promptFilePath = await this.prompt.text("Enter filepath");
-        if (!promptFilePath) return;
-        inputFilePath = promptFilePath;
-      }
-      if (source === "receipt") {
-        return this.appContainer.resolve(FoodstuffsReceiptImporter).importReceipt(inputFilePath);
-      }
-      if (source === "barcodes") {
-        return this.appContainer
-          .resolve(FoodstuffsBarcodeImporter)
-          .importBarcodesFromFile(inputFilePath);
-      }
-    }
-    if (source === "cart") {
-      return this.appContainer.resolve(FoodstuffsCartImporter).importProductsFromCart();
-    }
-    if (source === "list") {
-      return this.appContainer.resolve(FoodstuffsListImporter).importList(options.listId);
-    }
-    if (source === "order") {
-      return this.appContainer.resolve(FoodstuffsOrderImporter).importLatestOrders();
-    }
+    return source;
   }
 
-  async exportTo(destination?: ExportDestination) {
-    if (!destination) {
-      const response = await this.prompt.select(
-        "Select export destination",
-        EXPORT_DESTINATIONS.map((src) => ({ title: src, value: src }))
-      );
-      if (!response) return;
-      destination = response;
-    }
+  async exportShoppingList(options: Partial<ExportOptions> = {}) {
+    const destination = options.destination ?? (await this.promptForExportDestination());
     if (destination === "pns") {
       return this.appContainer
         .resolve(GrocyToFoodstuffsConversionService)
@@ -90,21 +92,35 @@ export class GrocyTrolleyApp {
     }
   }
 
+  private async promptForExportDestination(): Promise<ExportDestination> {
+    const destination = await this.prompt.select(
+      "Select export destination",
+      EXPORT_DESTINATIONS.map((src) => ({ title: src, value: src })),
+      { includeExitOption: true }
+    );
+    if (!destination) {
+      throw new Error("No export destination specified");
+    }
+    return destination;
+  }
+
   /**
    * Prompts for a command and then runs it.
    */
-  async commandPrompt() {
-    const action = await this.prompt.select("Select command", [
-      { title: "Import products to Grocy", value: "import" },
-      { title: "Export a shopping list from Grocy", value: "export" },
-      { title: "Exit", value: null },
-    ]);
-    if (!action) return;
+  async promptRun() {
+    const action = await this.prompt.select(
+      "Select command",
+      [
+        { title: "Import products to Grocy", value: "import" },
+        { title: "Export a shopping list from Grocy", value: "export" },
+      ],
+      { includeExitOption: true }
+    );
     if (action === "import") {
-      await this.importFrom();
+      await this.importProducts();
     }
     if (action === "export") {
-      await this.exportTo();
+      await this.exportShoppingList();
     }
   }
 }

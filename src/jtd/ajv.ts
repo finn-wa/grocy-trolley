@@ -31,9 +31,8 @@ export function throwIfInvalid<T>(validate: ValidateFunction<T>, data: T): T {
   throw new Error(validationErrorMsg(validate, data));
 }
 
-export function warnIfInvalid<T>(logger: Logger, validate: ValidateFunction<T>, data: T): T {
+export function warnIfInvalid<T>(logger: Logger, validate: ValidateFunction<T>, data: T): void {
   if (!validate(data)) {
     logger.warn(validationErrorMsg(validate, data));
   }
-  return data;
 }

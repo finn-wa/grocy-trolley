@@ -42,7 +42,12 @@ export class FoodstuffsReceiptImporter {
    * @param filepath Path to a receipt image
    * @returns object indicating whether import was successful or not
    */
-  async importReceipt(filepath: string): Promise<{ success: boolean }> {
+  async importReceipt(filepath?: string): Promise<{ success: boolean }> {
+    if (!filepath) {
+      const response = await this.prompt.text("Enter path to receipt file");
+      if (!response) return { success: false };
+      filepath = response;
+    }
     // check for in-progress import in cache
     const cacheKey = this.getCacheKey(filepath);
     const cachedResolvedItems = await this.resolvedItemCache.get(cacheKey);
