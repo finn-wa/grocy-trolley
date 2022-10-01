@@ -1,5 +1,6 @@
 import { GrocerApiService } from "@gt/grocer/api/grocer-api-service";
 import { GrocerStoreService } from "@gt/grocer/stores/grocer-store-service";
+import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { ReceiptItem } from "@gt/receipt-ocr/receipts.model";
 import { shortDate } from "@gt/utils/date";
 import { Logger, prettyPrint } from "@gt/utils/logger";
@@ -14,7 +15,8 @@ export class FoodstuffsBarcodeImporter {
   constructor(
     private readonly receiptImporter: FoodstuffsReceiptImporter,
     private readonly grocerStoreService: GrocerStoreService,
-    private readonly grocerApiService: GrocerApiService
+    private readonly grocerApiService: GrocerApiService,
+    private readonly prompt: PromptProvider
   ) {}
 
   async importBarcodes(barcodes: string[]) {
@@ -44,13 +46,22 @@ export class FoodstuffsBarcodeImporter {
     );
   }
 
-  async importBarcodesFromFile(filePath: string) {
-    const barcodes = await this.readBarcodesFromFile(filePath);
+  async importBarcodesFromFile(filepath?: string) {
+    if (!filepath) {
+      const response = await this.prompt.text(
+        "Enter path to file containing newline-delimited barcodes"
+      );
+      if (!response) {
+        return;
+      }
+      filepath = response;
+    }
+    const barcodes = await this.readBarcodesFromFile(filepath);
     return this.importBarcodes(barcodes);
   }
 
-  async readBarcodesFromFile(filePath: string): Promise<string[]> {
-    const contents = await readFile(filePath, { encoding: "utf8" });
+  async readBarcodesFromFile(filepath: string): Promise<string[]> {
+    const contents = await readFile(filepath, { encoding: "utf8" });
     // A parser so dumb it should work for any format as long each barcode is on a separate line
     return contents
       .split(/\n/)
