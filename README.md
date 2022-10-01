@@ -18,17 +18,19 @@ import/i [source] [options]
 Add products to Grocy from `source` with an optional amount to add to stock.
 Unknown products will be added to the database.
 
+See import [options.ts](src\app\import\options.ts) for up-to-date definitions.
+
 #### `[source]`
 
 _Source of products to import/stock_
 
-| Source     | Description                                   | Options                 |
-| ---------- | --------------------------------------------- | ----------------------- |
-| `cart`     | A Pak'n'Save online shopping cart             |                         |
-| `order`    | A Pak'n'Save online shopping order            |                         |
-| `list`     | A Pak'n'Save online shopping list             | `--list-id <uuid>`      |
-| `receipt`  | An image of a Pak'n'Save or Countdown receipt | `--file <path>`         |
-| `barcodes` | A list of barcodes                            | `--barcodes <barcodes>` |
+| Source     | Description                                   | Options                                |
+| ---------- | --------------------------------------------- | -------------------------------------- |
+| `cart`     | A Pak'n'Save online shopping cart             |                                        |
+| `order`    | A Pak'n'Save online shopping order            |                                        |
+| `list`     | A Pak'n'Save online shopping list             | `--list-id <uuid>`                     |
+| `receipt`  | An image of a Pak'n'Save or Countdown receipt | `--file <path>`                        |
+| `barcodes` | A list of barcodes                            | `--file <path>` or `--barcodes <list>` |
 
 #### `[options]`
 
@@ -47,17 +49,16 @@ export/e [destination] [options]
 
 Export a shopping list from Grocy to `[destination]`.
 
+See export [options.ts](src\app\export\options.ts) for up-to-date definitions.
+
 #### `[destination]`
 
 _Online shopping site to export products to_
 
-| Source     | Description                                   | Options                 |
-| ---------- | --------------------------------------------- | ----------------------- |
-| `cart`     | A Pak'n'Save online shopping cart             |                         |
-| `order`    | A Pak'n'Save online shopping order            |                         |
-| `list`     | A Pak'n'Save online shopping list             | `--list-id <uuid>`      |
-| `receipt`  | An image of a Pak'n'Save or Countdown receipt | `--file <path>`         |
-| `barcodes` | A list of barcodes                            | `--barcodes <barcodes>` |
+| Destination | Description                       |
+| ----------- | --------------------------------- |
+| `pns`       | A Pak'n'Save online shopping cart |
+| `grocer`    | Grocer list for price comparisons |
 
 #### `[options]`
 
