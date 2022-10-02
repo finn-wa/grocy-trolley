@@ -22,7 +22,7 @@
     "@slack/bolt": "3.12.1",
     "ajv": "8.11.0",
     "chalk": "^4.1.2",
-    "commander": "9.4.0",
+    "commander": "9.4.1",
     "dedent": "0.7.0",
     "dotenv": "16.0.3",
     "json-stringify-pretty-compact": "3.0.0",
