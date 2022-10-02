@@ -5340,7 +5340,7 @@ __metadata:
     jest-html-reporter: 3.7.0
     json-stringify-pretty-compact: 3.0.0
     openapi-typescript: 5.4.1
-    playwright: 1.25.2
+    playwright: 1.26.1
     prettier: 2.7.1
     prompts: 2.4.2
     rxjs: 7.5.6
@@ -7883,23 +7883,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.25.2":
-  version: 1.25.2
-  resolution: "playwright-core@npm:1.25.2"
+"playwright-core@npm:1.26.1":
+  version: 1.26.1
+  resolution: "playwright-core@npm:1.26.1"
   bin:
     playwright: cli.js
-  checksum: 24ada61e2132bd7278cf0aa0ef711280e1519c437efa0088a99c47ef994202f4c9880521d8c0c51ab854bef08806f372477d754aac1e790ea64f18cd346b5b2f
+  checksum: 6347224c28c1ec21d49b659ae35452955e2d8a8ff7aa578f0a0dbb1eccfbcea97e7400446335e966c2a1cbb356381d78131ea65e4a2f19a3eccfb58d33aed0ca
   languageName: node
   linkType: hard
 
-"playwright@npm:1.25.2":
-  version: 1.25.2
-  resolution: "playwright@npm:1.25.2"
+"playwright@npm:1.26.1":
+  version: 1.26.1
+  resolution: "playwright@npm:1.26.1"
   dependencies:
-    playwright-core: 1.25.2
+    playwright-core: 1.26.1
   bin:
     playwright: cli.js
-  checksum: e500b45c2961140fdae665331d357ecf1cc308041e0fd8e6765b4da2195600a8a358d3e723bac6215bd9135979f7e7a350cdb1347f6cefa3773e85aa262ce879
+  checksum: 42af6e949af68dec3327d5cce2e7f2f0d6d175528ba983b9b76f8f21995ae223f901d672799e655446b71ec5d19223464f7c587d3f569312a452718cbf8a706a
   languageName: node
   linkType: hard
 
