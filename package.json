@@ -24,7 +24,7 @@
     "chalk": "^4.1.2",
     "commander": "9.4.0",
     "dedent": "0.7.0",
-    "dotenv": "16.0.2",
+    "dotenv": "16.0.3",
     "json-stringify-pretty-compact": "3.0.0",
     "playwright": "1.25.2",
     "prompts": "2.4.2",
