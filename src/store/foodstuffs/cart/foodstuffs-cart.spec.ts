@@ -1,8 +1,5 @@
 import { expectSchemaToValidate } from "@gt/jtd/test-utils";
-import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
-import { getEnvAs, initEnv } from "@gt/utils/environment";
-import { getBrowser } from "../../shared/rest/browser";
-import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
+import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { beforeAllFoodstuffsTests, foodstuffsTestContainer } from "../test/foodstuffs-test-utils";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";

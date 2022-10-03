@@ -1,4 +1,6 @@
+import "@abraham/reflection";
 import { GrocyIdLookupService } from "./grocy-id-lookup-service";
+import { describe, beforeEach, test, expect } from "vitest";
 
 class TestLookupService<K extends string> extends GrocyIdLookupService<K> {
   constructor(readonly mapOfKeysToGrocyIds: Record<K, string>) {

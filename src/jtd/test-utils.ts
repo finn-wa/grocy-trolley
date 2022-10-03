@@ -1,4 +1,5 @@
 import { ValidateFunction } from "ajv";
+import { test } from "vitest";
 import { throwIfInvalid } from "./ajv";
 
 export function expectSchemaToValidate<T>(validator: ValidateFunction<T>, data: T) {
