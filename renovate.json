@@ -1,7 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base"],
-  "ignoreDeps": ["chalk", "json-stringify-pretty-compact"],
   "timezone": "Pacific/Auckland",
   "schedule": ["every weekend"],
   "automergeType": "branch",

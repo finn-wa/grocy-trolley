@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import chalk from "chalk";
+import chalk, { ChalkInstance } from "chalk";
 import stringify from "json-stringify-pretty-compact";
 import { getEnvVar } from "@gt/utils/environment";
 import { Logger as PlaywrightLogger } from "playwright";
 import { Logger as SlackLogger, LogLevel as SlackLogLevel } from "@slack/bolt";
-// Unfortunately ESM Chalk 5 doesn't work with ts-jest
-// If it ever does, change this to an import when upgrading
-type ChalkInstance = chalk.ChalkFunction;
 
 export function prettyPrint(obj: any) {
   return stringify(obj);

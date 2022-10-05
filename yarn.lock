@@ -1259,6 +1259,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:5.0.1":
+  version: 5.0.1
+  resolution: "chalk@npm:5.0.1"
+  checksum: 7b45300372b908f0471fbf7389ce2f5de8d85bb949026fd51a1b95b10d0ed32c7ed5aab36dd5e9d2bf3191867909b4404cef75c5f4d2d1daeeacd301dd280b76
+  languageName: node
+  linkType: hard
+
 "chalk@npm:^2.0.0, chalk@npm:^2.4.1, chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
@@ -1270,7 +1277,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:^4.1.2":
+"chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -3161,7 +3168,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.23.4
     "@vitest/ui": ^0.23.4
     ajv: 8.11.0
-    chalk: ^4.1.2
+    chalk: 5.0.1
     commander: 9.4.1
     commitizen: 4.2.5
     cz-conventional-changelog: 3.3.0
@@ -3171,7 +3178,7 @@ __metadata:
     eslint: 8.24.0
     eslint-config-prettier: 8.5.0
     fast-glob: 3.2.12
-    json-stringify-pretty-compact: 3.0.0
+    json-stringify-pretty-compact: 4.0.0
     openapi-typescript: 5.4.1
     playwright: 1.26.1
     prettier: 2.7.1
@@ -3856,10 +3863,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-stringify-pretty-compact@npm:3.0.0":
-  version: 3.0.0
-  resolution: "json-stringify-pretty-compact@npm:3.0.0"
-  checksum: 01ab5c5c8260299414868d96db97f53aef93c290fe469edd9a1363818e795006e01c952fa2fd7b47cbbab506d5768998eccc25e1da4fa2ccfebd1788c6098791
+"json-stringify-pretty-compact@npm:4.0.0":
+  version: 4.0.0
+  resolution: "json-stringify-pretty-compact@npm:4.0.0"
+  checksum: a10d5c423e467872994a49c5c1b56b073f277ce02d899cf567fc625f3783b89406bee6408bfb3b4bdeeff509b6a562f5259227e26754a6186f721809ca895f0c
   languageName: node
   linkType: hard
 
