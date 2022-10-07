@@ -49,10 +49,13 @@ jobs:
         run: yarn run lint
 
       - name: Test
-        run: yarn run test:internal
+        run: yarn run test:internal:coverage
+
+      - name: Delete enormous test artifact
+        run: rm -r ./build/test-reports/tmp
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: Test Report
-          path: build/test-report.html
+          path: build/test-reports

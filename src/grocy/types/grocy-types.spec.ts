@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest";
 import { withBooleans, withNumbers, withOptionalIds } from "./grocy-types";
 
 describe("[internal] GrocyTypes", () => {

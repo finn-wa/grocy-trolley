@@ -2,13 +2,13 @@ import { getBrowser } from "@gt/store/shared/rest/browser";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
-import { jest } from "@jest/globals";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import * as cacheUtils from "../../../utils/cache";
 import { CountdownRestService } from "./countdown-rest-service";
 import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
 import path from "path";
+import { beforeEach, vi, afterAll, describe, expect, test } from "vitest";
 
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -31,7 +31,10 @@ describe("[external] CountdownRestService", () => {
   });
   // Different cache dir for these tests to avoid clearing cache for other tests
   const cacheEmailOverride = loginDetails.email + "_rest-service-test";
-  (cacheUtils as any).sanitiseEmailForCache = jest.fn((_email: string) => cacheEmailOverride);
+  vi.mock("../../../utils/cache", async () => {
+    const cacheUtils: any = await vi.importActual("../../../utils/cache");
+    return { ...cacheUtils, sanitiseEmailForCache: vi.fn((_email: string) => cacheEmailOverride) };
+  });
   const cacheDir = path.join(cacheUtils.getCacheDir(), "countdown", cacheEmailOverride);
 
   beforeEach(async () => {

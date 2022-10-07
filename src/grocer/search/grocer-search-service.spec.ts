@@ -1,5 +1,6 @@
 import { container } from "tsyringe";
 import { GrocerSearchService } from "./grocer-search-service";
+import { describe, beforeEach, test, expect } from "vitest";
 
 describe("[external] GrocerSearchService", () => {
   let service: GrocerSearchService;

@@ -1,10 +1,10 @@
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
 import { getEnvAs, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
-import { jest } from "@jest/globals";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import path from "path";
+import { afterAll, beforeEach, describe, expect, test, vi } from "vitest";
 import * as cacheUtils from "../../../utils/cache";
 import { getBrowser } from "../../shared/rest/browser";
 import { FoodstuffsAuthHeaderProvider } from "./foodstuffs-auth-header-provider";
@@ -30,7 +30,10 @@ describe("[external] FoodstuffsRestService", () => {
   });
   // Different cache dir for these tests to avoid clearing cache for other tests
   const cacheEmailOverride = loginDetails.email + "_rest-service-test";
-  (cacheUtils as any).sanitiseEmailForCache = jest.fn((_email: string) => cacheEmailOverride);
+  vi.mock("../../../utils/cache", async () => {
+    const cacheUtils: any = await vi.importActual("../../../utils/cache");
+    return { ...cacheUtils, sanitiseEmailForCache: vi.fn((_email: string) => cacheEmailOverride) };
+  });
   const cacheDir = path.join(cacheUtils.getCacheDir(), "foodstuffs", cacheEmailOverride);
 
   beforeEach(async () => {

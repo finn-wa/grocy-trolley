@@ -1,4 +1,5 @@
 import { expectSchemaToValidate, testSchemaWithSamples } from "@gt/jtd/test-utils";
+import { describe, expect, test } from "vitest";
 import {
   parseProduct,
   parseProductUserfields,

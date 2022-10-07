@@ -1,15 +1,16 @@
 import { expectSchemaToValidate } from "@gt/jtd/test-utils";
 import { closeBrowser } from "@gt/store/shared/rest/browser";
 import { container } from "tsyringe";
-import { beforeAllCountdownTests, countdownTestContainer } from "../test/countdown-test-utils";
+import { afterAll, beforeAll, beforeEach, describe, test } from "vitest";
 import { CountdownAuthHeaderProvider } from "../rest/countdown-auth-header-provider";
+import { beforeAllCountdownTests, countdownTestContainer } from "../test/countdown-test-utils";
 import { CountdownTrolleyService } from "./countdown-trolley-service";
 import { getTrolleySchema } from "./types/Trolley/schema";
 
 describe("[external] CountdownTrolleyService", () => {
   let service: CountdownTrolleyService;
 
-  beforeAll(beforeAllCountdownTests);
+  beforeAll(() => beforeAllCountdownTests());
 
   beforeEach(() => {
     service = countdownTestContainer().resolve(CountdownTrolleyService);
