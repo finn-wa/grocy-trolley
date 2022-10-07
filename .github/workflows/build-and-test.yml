@@ -51,6 +51,9 @@ jobs:
       - name: Test
         run: yarn run test:internal:coverage
 
+      - name: Delete enormous test artifact
+        run: rm -r ./build/test-reports/tmp
+
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
