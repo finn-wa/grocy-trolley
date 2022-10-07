@@ -12,7 +12,7 @@ export default defineConfig({
     coverage: {
       provider: "c8",
       reportsDirectory: "build/test-reports",
-      reporter: ["html", "text-summary"],
+      reporter: ["text-summary", "html"],
     },
   },
 });

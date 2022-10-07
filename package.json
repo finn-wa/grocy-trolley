@@ -12,6 +12,7 @@
     "build:watch": "node bin/build.mjs -t dev --watch",
     "test": "vitest",
     "test:internal": "vitest --testNamePattern internal",
+    "test:internal:coverage": "vitest --testNamePattern internal --coverage",
     "typecheck": "tsc -w",
     "lint": "eslint src --cache --cache-location=build",
     "updateTaggunTypes": "openapi-typescript https://api.taggun.io/docs/swagger.json --output ./src/receipt-ocr/taggun/api.d.ts",
