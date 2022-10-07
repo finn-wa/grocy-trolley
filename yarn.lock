@@ -3187,8 +3187,6 @@ __metadata:
     standard-version: 9.5.0
     tsyringe: 4.7.0
     typescript: 4.8.4
-    vite: ^3.1.4
-    vite-node: ^0.23.4
     vite-tsconfig-paths: ^3.5.1
     vitest: ^0.23.4
   languageName: unknown
@@ -3886,13 +3884,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonc-parser@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "jsonc-parser@npm:3.2.0"
-  checksum: 946dd9a5f326b745aa326d48a7257e3f4a4b62c5e98ec8e49fa2bdd8d96cef7e6febf1399f5c7016114fd1f68a1c62c6138826d5d90bc650448e3cf0951c53c7
-  languageName: node
-  linkType: hard
-
 "jsonfile@npm:^6.0.1":
   version: 6.1.0
   resolution: "jsonfile@npm:6.1.0"
@@ -4440,18 +4431,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mlly@npm:^0.5.14":
-  version: 0.5.16
-  resolution: "mlly@npm:0.5.16"
-  dependencies:
-    acorn: ^8.8.0
-    pathe: ^0.3.8
-    pkg-types: ^0.3.5
-    ufo: ^0.8.5
-  checksum: 562cf7696f173b3a7823512fca78389ba2fde112ac351b441b018cc22a0e6848d13427da4bfaa0ed5e76dfc03e5441507e28006ac73130697f70f62867fcc4ef
-  languageName: node
-  linkType: hard
-
 "modify-values@npm:^1.0.0":
   version: 1.0.1
   resolution: "modify-values@npm:1.0.1"
@@ -4937,20 +4916,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pathe@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "pathe@npm:0.2.0"
-  checksum: 9a8149ce152088f30d15b0b03a7c128ba21f16b4dc1f3f90fe38eee9f6d0f1d6da8e4e47bd2a4f9e14aaac7c30ed01cfc86216479011de2bdc598b65e6f19f41
-  languageName: node
-  linkType: hard
-
-"pathe@npm:^0.3.7, pathe@npm:^0.3.8":
-  version: 0.3.8
-  resolution: "pathe@npm:0.3.8"
-  checksum: 1c121a43a880105a095c48822c21bc69d0b6694bea487c36134032ff650c08648a79362ac151f5bb5b3dece81eb4ff93f916abce08594d6b7e778a390c732a50
-  languageName: node
-  linkType: hard
-
 "pathval@npm:^1.1.1":
   version: 1.1.1
   resolution: "pathval@npm:1.1.1"
@@ -4983,17 +4948,6 @@ __metadata:
   version: 3.0.0
   resolution: "pify@npm:3.0.0"
   checksum: 6cdcbc3567d5c412450c53261a3f10991665d660961e06605decf4544a61a97a54fefe70a68d5c37080ff9d6f4cf51444c90198d1ba9f9309a6c0d6e9f5c4fde
-  languageName: node
-  linkType: hard
-
-"pkg-types@npm:^0.3.5":
-  version: 0.3.5
-  resolution: "pkg-types@npm:0.3.5"
-  dependencies:
-    jsonc-parser: ^3.2.0
-    mlly: ^0.5.14
-    pathe: ^0.3.7
-  checksum: a0e7bb732333e138597302ced39b93d3d76147e275774fe0f5aad3db0c8191e03af126850d23af639e62791baba393593d0b22e2621c10b9cf432b604f5c9047
   languageName: node
   linkType: hard
 
@@ -6199,13 +6153,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ufo@npm:^0.8.5":
-  version: 0.8.5
-  resolution: "ufo@npm:0.8.5"
-  checksum: 4dcf657a906550112ab1eb045110ebb768a914fb653373a2c363776a1f6ba25ea9d20bd5ed7f4bb44fb72bd4421b37d62991cd5ce4e3a2aef7e3eae450bb9508
-  languageName: node
-  linkType: hard
-
 "uglify-js@npm:^3.1.4":
   version: 3.17.2
   resolution: "uglify-js@npm:3.17.2"
@@ -6326,20 +6273,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-node@npm:^0.23.4":
-  version: 0.23.4
-  resolution: "vite-node@npm:0.23.4"
-  dependencies:
-    debug: ^4.3.4
-    mlly: ^0.5.14
-    pathe: ^0.2.0
-    vite: ^2.9.12 || ^3.0.0-0
-  bin:
-    vite-node: vite-node.mjs
-  checksum: a837afd44150e40f3b01b03da510366c786a899d70c196e9c9c38e6c36cb37c8d829f67ad6dd6c7dea684d394ee56f7f0b136f45dbcb89dd9f1eff67d680f1d2
-  languageName: node
-  linkType: hard
-
 "vite-tsconfig-paths@npm:^3.5.1":
   version: 3.5.1
   resolution: "vite-tsconfig-paths@npm:3.5.1"
@@ -6354,7 +6287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^2.9.12 || ^3.0.0-0, vite@npm:^3.1.4":
+"vite@npm:^2.9.12 || ^3.0.0-0":
   version: 3.1.4
   resolution: "vite@npm:3.1.4"
   dependencies:
