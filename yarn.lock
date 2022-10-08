@@ -588,12 +588,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prompts@npm:2.0.14":
-  version: 2.0.14
-  resolution: "@types/prompts@npm:2.0.14"
+"@types/prompts@npm:2.4.1":
+  version: 2.4.1
+  resolution: "@types/prompts@npm:2.4.1"
   dependencies:
     "@types/node": "*"
-  checksum: e20a92a3fc38646d850ac3c7c03cab582a3b4f12224605a209ef7025d2fbe574656276ab9e43ea01b504f7e91d21a6da0119d1e1eeacf939895ec2ad8d9c6b5d
+  checksum: 05cc828c35585eabf53b8ed8626b173d46a9f61f07cb4b31ba7705d4982e63bdc3a68fe29e0e0d5c4eddd31c6114b2dcbc4662826be0468e2aa7c0ba0573d797
   languageName: node
   linkType: hard
 
@@ -3162,7 +3162,7 @@ __metadata:
     "@slack/bolt": 3.12.1
     "@types/dedent": 0.7.0
     "@types/node": 18.7.14
-    "@types/prompts": 2.0.14
+    "@types/prompts": 2.4.1
     "@typescript-eslint/eslint-plugin": 5.38.1
     "@typescript-eslint/parser": 5.38.1
     "@vitest/coverage-c8": ^0.23.4
