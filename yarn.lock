@@ -768,7 +768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-c8@npm:^0.23.4":
+"@vitest/coverage-c8@npm:0.23.4":
   version: 0.23.4
   resolution: "@vitest/coverage-c8@npm:0.23.4"
   dependencies:
@@ -778,7 +778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/ui@npm:^0.23.4":
+"@vitest/ui@npm:0.23.4":
   version: 0.23.4
   resolution: "@vitest/ui@npm:0.23.4"
   dependencies:
@@ -3388,8 +3388,8 @@ __metadata:
     "@types/prompts": 2.4.1
     "@typescript-eslint/eslint-plugin": 5.38.1
     "@typescript-eslint/parser": 5.38.1
-    "@vitest/coverage-c8": ^0.23.4
-    "@vitest/ui": ^0.23.4
+    "@vitest/coverage-c8": 0.23.4
+    "@vitest/ui": 0.23.4
     ajv: 8.11.0
     chalk: 5.0.1
     commander: 9.4.1
@@ -3410,8 +3410,8 @@ __metadata:
     standard-version: 9.5.0
     tsyringe: 4.7.0
     typescript: 4.8.4
-    vite-tsconfig-paths: ^3.5.1
-    vitest: ^0.23.4
+    vite-tsconfig-paths: 3.5.1
+    vitest: 0.23.4
   languageName: unknown
   linkType: soft
 
@@ -6496,7 +6496,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-tsconfig-paths@npm:^3.5.1":
+"vite-tsconfig-paths@npm:3.5.1":
   version: 3.5.1
   resolution: "vite-tsconfig-paths@npm:3.5.1"
   dependencies:
@@ -6542,7 +6542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:0.23.4, vitest@npm:^0.23.4":
+"vitest@npm:0.23.4":
   version: 0.23.4
   resolution: "vitest@npm:0.23.4"
   dependencies:
