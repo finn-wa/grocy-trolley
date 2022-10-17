@@ -787,12 +787,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/ui@npm:0.23.4":
-  version: 0.23.4
-  resolution: "@vitest/ui@npm:0.23.4"
+"@vitest/ui@npm:0.24.3":
+  version: 0.24.3
+  resolution: "@vitest/ui@npm:0.24.3"
   dependencies:
     sirv: ^2.0.2
-  checksum: 52ccb6dda1da49d34e4fb18128cb25a7b02f5e39f1d0865a1dd723a386bb615dd7002ecc883a42ea7fbae1999af297f12c1e3de52804989808c332b4fa6e4bbd
+  checksum: b13416f011d590cdb08dc8406f1f3a478c868a5768ed5ac524880cc91750f06eca6ca52d136d9916087aabb58164e9f37da1701b5f934de7d7936b203bab1db3
   languageName: node
   linkType: hard
 
@@ -3398,7 +3398,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.40.1
     "@typescript-eslint/parser": 5.40.1
     "@vitest/coverage-c8": 0.23.4
-    "@vitest/ui": 0.23.4
+    "@vitest/ui": 0.24.3
     ajv: 8.11.0
     chalk: 5.1.2
     commander: 9.4.1
