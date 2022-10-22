@@ -1,5 +1,6 @@
 import { AppTokens } from "@gt/app/di";
 import { uniqueByProperty } from "@gt/utils/arrays";
+import { createCacheService } from "@gt/utils/cache";
 import { Logger } from "@gt/utils/logger";
 import { SearchUtils } from "@gt/utils/search";
 import { Browser } from "playwright";
@@ -28,7 +29,7 @@ export class FoodstuffsSearchService {
     );
     const anonSearchAgent = new FoodstuffsSearchAgent(
       "FoodstuffsAnonSearchAgent",
-      new FoodstuffsAuthHeaderProvider(browserLoader)
+      new FoodstuffsAuthHeaderProvider(createCacheService, browserLoader)
     );
     this.agents = {
       USER: [userSearchAgent],

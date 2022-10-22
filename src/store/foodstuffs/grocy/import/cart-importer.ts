@@ -40,6 +40,9 @@ export class FoodstuffsCartImporter {
     if (!cart) {
       cart = await this.cartService.getCart();
     }
+    if (!cart.store) {
+      throw new Error("Please select a store");
+    }
     const existingProducts = await this.grocyProductService.getAllProducts();
     const existingProductIds = existingProducts
       .filter((p) => p.userfields?.storeMetadata?.PNS)
@@ -77,6 +80,9 @@ export class FoodstuffsCartImporter {
   async stockProductsFromCart(cart?: FoodstuffsCart) {
     if (!cart) {
       cart = await this.cartService.getCart();
+    }
+    if (!cart.store) {
+      throw new Error("Please select a store");
     }
     const productsByPnsId = await this.getProductsByFoodstuffsId();
     // Not including unavailable products for stock

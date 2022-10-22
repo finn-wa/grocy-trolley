@@ -30,7 +30,9 @@ export type CacheServiceFactory<T extends Store = Store> = (dir: string) => Cach
  * @param dir path to use for cache files (relative to $CACHE_DIR)
  * @returns the new CacheService
  */
-export const createCacheService: CacheServiceFactory = (dir) => new CacheService(dir);
+export function createCacheService<T extends Store = Store>(dir: string) {
+  return new CacheService<T>(dir);
+}
 
 /**
  * A cache service that acts like a file-backed record with get and set methods.
