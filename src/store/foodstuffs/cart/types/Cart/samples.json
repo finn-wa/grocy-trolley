@@ -15,9 +15,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "ea",
         "categoryName": "Fruit & Vegetables",
         "promoBadgeImageTitle": "",
@@ -37,9 +35,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "2l",
         "brand": "Value",
         "categoryName": "Dairy & Eggs",
@@ -59,9 +55,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "450g",
         "brand": "Pams Plant Based",
         "categoryName": "Canned & Prepared Foods",
@@ -109,9 +103,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "400g",
         "brand": "Nutella",
         "categoryName": "Jams, Honey & Spreads",
@@ -131,9 +123,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "200g",
         "brand": "Arnott's",
         "categoryName": "Biscuits & Crackers",
@@ -153,9 +143,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "450g",
         "brand": "Pams",
         "categoryName": "Canned & Prepared Foods",
@@ -175,9 +163,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "5pk",
         "brand": "Indomie",
         "categoryName": "Pasta, Rice & Noodles",
@@ -197,9 +183,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "300g",
         "brand": "Bean Supreme",
         "categoryName": "Canned & Prepared Foods",
@@ -219,9 +203,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "90g",
         "brand": "Macleans",
         "categoryName": "Beauty & Grooming",
@@ -241,9 +223,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "750g",
         "brand": "Ploughmans Bakery",
         "categoryName": "Bakery",
@@ -263,9 +243,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "200g",
         "brand": "Avalanche",
         "categoryName": "Hot Drinks",
@@ -285,9 +263,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "500ml",
         "brand": "Palmolive",
         "categoryName": "Beauty & Grooming",
@@ -307,9 +283,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "24pk",
         "brand": "Purex",
         "categoryName": "Household",
@@ -329,9 +303,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "200g",
         "brand": "Griffin's",
         "categoryName": "Biscuits & Crackers",
@@ -352,9 +324,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "ea",
         "categoryName": "Fruit & Vegetables",
         "promoBadgeImageTitle": "Everyday Low",
@@ -375,9 +345,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "ea",
         "categoryName": "Fruit & Vegetables",
         "promoBadgeImageTitle": "Everyday Low",
@@ -397,9 +365,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "400g",
         "brand": "Value",
         "categoryName": "Canned & Prepared Foods",
@@ -419,9 +385,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "2l",
         "brand": "Value",
         "categoryName": "Dairy & Eggs",
@@ -441,9 +405,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "1l",
         "brand": "Fresh Up",
         "categoryName": "Cold Drinks",
@@ -463,9 +425,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "900ml",
         "brand": "Ecostore",
         "categoryName": "Beauty & Grooming",
@@ -485,9 +445,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "1l",
         "brand": "Sanitarium So Good",
         "categoryName": "Dairy & Eggs",
@@ -507,9 +465,7 @@
         "restricted": false,
         "tobacco": false,
         "liquor": false,
-        "saleTypes": [
-          {"minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea"}
-        ],
+        "saleTypes": [{ "minUnit": 1, "type": "UNITS", "stepSize": 1, "unit": "ea" }],
         "weightDisplayName": "180pk",
         "brand": "Pams",
         "categoryName": "Household",
@@ -531,6 +487,17 @@
     },
     "orderNumber": 0,
     "allowSubstitutions": true,
+    "wasRepriced": false
+  },
+  {
+    "bagFee": 0,
+    "orderNumber": 0,
+    "products": [],
+    "promoCodeDiscount": 0,
+    "saving": 0,
+    "serviceFee": 0,
+    "subtotal": 0,
+    "unavailableProducts": [],
     "wasRepriced": false
   }
 ]

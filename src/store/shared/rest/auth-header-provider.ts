@@ -1,10 +1,17 @@
+import { AppTokens } from "@gt/app/di";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
-import { CacheService, getCacheDir, sanitiseEmailForCache } from "@gt/utils/cache";
+import {
+  CacheService,
+  CacheServiceFactory,
+  getCacheDir,
+  sanitiseEmailForCache,
+} from "@gt/utils/cache";
 import { HeadersBuilder, headersFromRaw, headersToRaw } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { existsSync } from "fs";
 import path from "path";
 import { Browser, BrowserContext, Page } from "playwright";
+import { inject } from "tsyringe";
 
 /**
  * Provides authenticated headers for API requests to an online store. Logs in
@@ -31,11 +38,14 @@ export abstract class AuthHeaderProvider {
    *    into this account and sends requests with credentials.
    */
   constructor(
+    @inject(AppTokens.cacheServiceFactory)
+    getCacheService: CacheServiceFactory<{ headers: Record<string, string[]> }>,
     public readonly name: string,
     protected readonly browserLoader: () => Promise<Browser>,
     protected readonly loginDetails?: LoginDetails | null
   ) {
-    this.headersCache = new CacheService(
+    // use provider
+    this.headersCache = getCacheService(
       path.join(name, sanitiseEmailForCache(loginDetails?.email))
     );
   }
@@ -71,6 +81,8 @@ export abstract class AuthHeaderProvider {
 
   private async retrieveAuthHeaders(): Promise<Headers> {
     this.logger.debug("Retrieving auth headers...");
+    console.log(this.headersCache);
+
     const rawCachedHeaders = await this.headersCache.get("headers");
     if (rawCachedHeaders) {
       const cachedHeaders = headersFromRaw(rawCachedHeaders);

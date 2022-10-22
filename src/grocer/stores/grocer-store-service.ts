@@ -16,7 +16,7 @@ export class GrocerStoreService {
 
   constructor(
     private readonly api: GrocerApiService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   getStores = () => this.api.getStores();

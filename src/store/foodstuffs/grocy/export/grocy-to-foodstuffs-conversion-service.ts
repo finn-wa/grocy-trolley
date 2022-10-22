@@ -27,7 +27,7 @@ export class GrocyToFoodstuffsConversionService {
     private readonly foodstuffsListService: FoodstuffsListService,
     private readonly foodstuffsCartService: FoodstuffsCartService,
     private readonly foodstuffsSearchService: FoodstuffsSearchService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   async grocyListToFoodstuffsCart() {

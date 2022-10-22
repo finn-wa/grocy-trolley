@@ -26,7 +26,7 @@ export class GrocyToGrocerConversionService {
     private readonly searchService: GrocerSearchService,
     private readonly storeService: GrocerStoreService,
     private readonly agent: GrocerUserAgent,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   async grocyListToGrocerList(shoppingListId?: string, storeIds?: number[]) {

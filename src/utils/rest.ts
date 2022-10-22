@@ -87,7 +87,11 @@ export abstract class RestService {
   ): Promise<T> {
     const response = await this.fetch(url, init);
     const responseBody = await this.parseJson<T>(response, validate);
-    this.logger.trace(prettyPrint(responseBody));
+    if (response.ok) {
+      this.logger.trace(prettyPrint(responseBody));
+    } else {
+      this.logger.error(prettyPrint(responseBody));
+    }
     return responseBody;
   }
 

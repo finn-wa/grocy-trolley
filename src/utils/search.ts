@@ -26,7 +26,7 @@ type SearchAndSelectAction<T> = SelectHitAction<T> | SearchAgainAction | ExitSea
 
 @singleton()
 export class SearchUtils {
-  constructor(@inject(AppTokens.promptProvider) private readonly prompt: PromptProvider) {}
+  constructor(@inject("PromptProvider") private readonly prompt: PromptProvider) {}
 
   /**
    * Interactive prompt-based search and select. Allows the user to modify the search

@@ -30,7 +30,7 @@ export class GrocyShoppingListService extends GrocyRestService {
   // JTD cannot validate this schema as "amount" and certain other fields are string | number
   private readonly itemService = new GrocySingleEntityService<RawShoppingListItem>("shopping_list");
 
-  constructor(@inject(AppTokens.promptProvider) private readonly prompt: PromptProvider) {
+  constructor(@inject("PromptProvider") private readonly prompt: PromptProvider) {
     super();
   }
 

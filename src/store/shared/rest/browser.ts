@@ -22,11 +22,3 @@ export async function closeBrowser(): Promise<void> {
     browser = null;
   }
 }
-
-/**
- * For use with tsyringe, like getBrowser but you can define whether it'll be
- * headless or not in advance.
- */
-export function browserFactory(config: { headless: boolean }) {
-  return () => getBrowser(config);
-}

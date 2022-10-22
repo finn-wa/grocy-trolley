@@ -22,7 +22,7 @@ export class FoodstuffsCartImporter {
     private readonly grocyProductService: GrocyProductService,
     private readonly grocyParentProductService: GrocyParentProductService,
     private readonly grocyStockService: GrocyStockService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   async importProducts(products: FoodstuffsBaseProduct[]) {

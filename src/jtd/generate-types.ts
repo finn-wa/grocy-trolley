@@ -72,6 +72,7 @@ function generateSchemaFile(type: string, ajvKey: string, jtd: string, arrayType
 
 const generateSchemaSpecFile = (type: string): string => dedent`
   import { testSchemaWithSamples } from "@gt/jtd/test-utils";
+  import { describe } from "vitest";
   import samples from "./samples.json";
   import { get${type}Schema } from "./schema";
 
@@ -93,8 +94,8 @@ const generateGenerateSchemaFile = (
   sourceDir: string,
   arrayType = false
 ): string => dedent`
-  import samples from "./samples.json";
   import { generateTypes } from "@gt/jtd/generate-types";
+  import samples from "./samples.json";
 
   /**
    * Development tool - regenerates schema code based on samples.json, replacing the

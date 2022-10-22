@@ -31,10 +31,12 @@ export const schema: JTDSchemaType<Orders> = {
           status: { type: "string" },
           total: { type: "float64" },
         },
+        additionalProperties: true,
       },
     },
     totalItems: { type: "uint16" },
   },
+  additionalProperties: true,
 };
 
 /**

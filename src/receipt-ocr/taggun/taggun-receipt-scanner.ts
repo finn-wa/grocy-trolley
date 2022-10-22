@@ -33,7 +33,7 @@ export class TaggunReceiptScanner extends RestService implements ReceiptScanner 
   private readonly apiKey = getEnvVar("TAGGUN_API_KEY");
   private readonly cache = new CacheService<Record<string, ReceiptResponseOk>>("taggun");
 
-  constructor(@inject(AppTokens.promptProvider) private readonly prompt: PromptProvider) {
+  constructor(@inject("PromptProvider") private readonly prompt: PromptProvider) {
     super();
   }
 

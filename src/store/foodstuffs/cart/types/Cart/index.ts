@@ -48,7 +48,7 @@ export interface FoodstuffsCartTimeslot {
 }
 
 export interface FoodstuffsCart {
-  allowSubstitutions: boolean;
+  allowSubstitutions?: boolean;
   bagFee: number;
   orderNumber: number;
   products: FoodstuffsCartProduct[];

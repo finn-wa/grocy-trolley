@@ -19,6 +19,7 @@ export const schema: JTDSchemaType<Order> = {
     status: { type: "string" },
     total: { type: "float64" },
   },
+  additionalProperties: true,
 };
 
 /**

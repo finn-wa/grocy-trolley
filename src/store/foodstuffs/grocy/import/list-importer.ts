@@ -22,7 +22,7 @@ export class FoodstuffsListImporter {
     private readonly grocyProductService: GrocyProductService,
     private readonly grocyParentProductService: GrocyParentProductService,
     private readonly grocyStockService: GrocyStockService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   async importList(id?: string): Promise<void> {

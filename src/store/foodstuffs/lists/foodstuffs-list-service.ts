@@ -23,8 +23,8 @@ export class FoodstuffsListService extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    userAgent: FoodstuffsAuthHeaderProvider,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject(FoodstuffsAuthHeaderProvider) userAgent: FoodstuffsAuthHeaderProvider,
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {
     super(userAgent);
   }

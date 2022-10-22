@@ -26,7 +26,7 @@ export class FoodstuffsReceiptImporter {
   );
 
   constructor(
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider,
+    @inject("PromptProvider") private readonly prompt: PromptProvider,
     @inject(AppTokens.receiptScanner) private readonly scanner: ReceiptScanner,
     private readonly itemiser: FoodstuffsReceiptItemiser,
     private readonly foodstuffsListService: FoodstuffsListService,

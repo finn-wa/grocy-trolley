@@ -1,8 +1,8 @@
 import { container, inject, injectable } from "tsyringe";
-import { AppTokens, registerDefaultDependencies } from "./app/di";
-import { regenerateGrocerProductSchema } from "./grocer/api/types/GrocerProduct/generate-schema";
+import { registerDefaultDependencies } from "./app/di";
 import { PromptProvider } from "./prompts/prompt-provider";
 import { registerCountdownDependencies } from "./store/countdown/countdown-di";
+import { regenerateOrderDetailsSchema } from "./store/countdown/orders/types/OrderDetails/generate-schema";
 import { registerFoodstuffsDependencies } from "./store/foodstuffs/foodstuffs-di";
 import { Logger } from "./utils/logger";
 
@@ -11,10 +11,10 @@ import { Logger } from "./utils/logger";
 export class Dev {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(@inject(AppTokens.promptProvider) readonly prompt: PromptProvider) {}
+  constructor(@inject("PromptProvider") readonly prompt: PromptProvider) {}
 
   async main() {
-    await regenerateGrocerProductSchema();
+    await regenerateOrderDetailsSchema();
   }
 
   async testPrompt() {

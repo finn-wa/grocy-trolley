@@ -1,5 +1,5 @@
 import { expectSchemaToValidate } from "@gt/jtd/test-utils";
-import { beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import { beforeAllFoodstuffsTests, foodstuffsTestContainer } from "../test/foodstuffs-test-utils";
 import { FoodstuffsCartController } from "./foodstuffs-cart-controller";
 import { FoodstuffsCartService } from "./foodstuffs-cart-service";
@@ -11,17 +11,17 @@ describe("[external] Foodstuffs Cart", () => {
   let cartController: FoodstuffsCartController;
   let cartService: FoodstuffsCartService;
   const milk: CartProductRef = {
-    productId: "5201479-EA-000",
+    productId: "5201479_EA_000",
     quantity: 1,
     sale_type: "UNITS",
   };
   const carrots: CartProductRef = {
-    productId: "5039965-KGM-000",
+    productId: "5039965_KGM_000",
     quantity: 500,
     sale_type: "WEIGHT",
   };
 
-  beforeAll(() => beforeAllFoodstuffsTests());
+  beforeAllFoodstuffsTests();
 
   beforeEach(async () => {
     const testContainer = foodstuffsTestContainer();
@@ -57,7 +57,8 @@ describe("[external] Foodstuffs Cart", () => {
       const fullCart = await cartService.addProductsToCart(products);
 
       expect(fullCart.products.length).toEqual(2);
-      const productIdsOf = (products: CartProductRef[]) => products.map((p) => p.productId).sort();
+      const productIdsOf = (products: CartProductRef[]) =>
+        products.map((p) => p.productId.replaceAll("-", "_")).sort();
       expect(productIdsOf(fullCart.products)).toEqual(productIdsOf(products));
     });
 
@@ -69,6 +70,6 @@ describe("[external] Foodstuffs Cart", () => {
       expect(response.success).toBe(true);
       const emptyCart = await cartService.getCart();
       expect(emptyCart.products.length).toBe(0);
-    });
+    }, 10_000);
   });
 });

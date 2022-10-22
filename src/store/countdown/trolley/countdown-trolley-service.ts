@@ -1,5 +1,5 @@
 import { Logger } from "@gt/utils/logger";
-import { Lifecycle, scoped } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { COUNTDOWN_URL } from "../models";
 import { CountdownAuthHeaderProvider } from "../rest/countdown-auth-header-provider";
 import { CountdownRestService } from "../rest/countdown-rest-service";
@@ -11,7 +11,9 @@ export class CountdownTrolleyService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
   protected readonly baseUrl = this.validateBaseUrl(`${COUNTDOWN_URL}/api`);
 
-  constructor(authHeaderProvider: CountdownAuthHeaderProvider) {
+  constructor(
+    @inject(CountdownAuthHeaderProvider) authHeaderProvider: CountdownAuthHeaderProvider
+  ) {
     super(authHeaderProvider);
   }
 

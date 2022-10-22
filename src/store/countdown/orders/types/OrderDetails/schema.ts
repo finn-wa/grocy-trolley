@@ -32,7 +32,7 @@ export const schema: JTDSchemaType<OrderDetails> = {
             bagFees: { type: "string" },
             deliveryFees: { type: "string" },
             eligibilityForDeliverySubscriptionDiscount: { type: "string" },
-            savings: { type: "string" },
+            savings: { type: "string", nullable: true },
             subtotal: { type: "string" },
             totalIncludingDeliveryFees: { type: "string" },
             totalItems: { type: "uint8" },
@@ -55,6 +55,7 @@ export const schema: JTDSchemaType<OrderDetails> = {
             isSlotToday: { type: "boolean" },
             method: { type: "string" },
             perishableCode: { type: "string" },
+            pickupAddressId: { type: "uint8" },
             suburbId: { type: "uint8" },
           },
           optionalProperties: {
@@ -98,8 +99,8 @@ export const schema: JTDSchemaType<OrderDetails> = {
     },
     currentPageSize: { type: "uint8" },
     currentSortOption: { type: "string" },
-    dasFacets: { elements: UNKNOWN },
-    facets: { elements: UNKNOWN },
+    // dasFacets: { elements: UNKNOWN },
+    // facets: { elements: UNKNOWN },
     isSuccessful: { type: "boolean" },
     partialFailures: {
       optionalProperties: {
@@ -135,6 +136,7 @@ export const schema: JTDSchemaType<OrderDetails> = {
                   isSpecial: { type: "boolean" },
                   isTargetedOffer: { type: "boolean" },
                   originalPrice: { type: "float64" },
+                  orderedPrice: { type: "float64", nullable: true },
                   salePrice: { type: "float64" },
                   savePrice: { type: "float64" },
                 },
@@ -150,12 +152,14 @@ export const schema: JTDSchemaType<OrderDetails> = {
                   additionalTag: {
                     nullable: true,
                     properties: {
-                      altText: { type: "string" },
                       imagePath: { type: "string" },
                       linkTarget: { type: "string" },
                       name: { type: "string" },
                     },
-                    optionalProperties: { link: { metadata: { typescriptType: "unknown" } } },
+                    optionalProperties: {
+                      altText: { type: "string", nullable: true },
+                      link: { type: "string", nullable: true },
+                    },
                   },
                   multiBuy: {
                     nullable: true,
@@ -177,7 +181,7 @@ export const schema: JTDSchemaType<OrderDetails> = {
                   increment: { type: "float64" },
                   max: { type: "uint8" },
                   min: { type: "float64" },
-                  value: { nullable: true, type: "float64" },
+                  value: { type: "float64", nullable: true },
                 },
                 optionalProperties: {
                   purchasingQuantityString: { metadata: { typescriptType: "unknown" } },
@@ -205,6 +209,8 @@ export const schema: JTDSchemaType<OrderDetails> = {
             optionalProperties: {
               adId: { metadata: { typescriptType: "unknown" } },
               availabilityStatus: { metadata: { typescriptType: "unknown" } },
+              brandSuggestionId: { metadata: { typescriptType: "unknown" } },
+              brandSuggestionName: { metadata: { typescriptType: "unknown" } },
               eachUnitQuantity: { metadata: { typescriptType: "unknown" } },
               priceUnitLabel: { metadata: { typescriptType: "unknown" } },
             },
@@ -226,9 +232,11 @@ export const schema: JTDSchemaType<OrderDetails> = {
   },
   optionalProperties: {
     action: { metadata: { typescriptType: "unknown" } },
+    brandSuggestions: { metadata: { typescriptType: "unknown" } },
     messages: { metadata: { typescriptType: "unknown" } },
     targetedOfferDetails: { metadata: { typescriptType: "unknown" } },
   },
+  additionalProperties: true,
 };
 
 /**
@@ -259,4 +267,5 @@ export const getOrderDetailssSchema = () => getRequiredSchema<OrderDetails[]>(ar
 
 // Register schemas with ajv
 ajv.addSchema(schema, key);
+
 ajv.addSchema({ elements: schema }, arrayKey);

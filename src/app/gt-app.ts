@@ -19,13 +19,10 @@ import { getImportOptionsSchema, ImportOptions, ImportSource } from "./import/op
 export class GrocyTrolleyApp {
   constructor(
     @inject(AppTokens.childContainer) private readonly appContainer: DependencyContainer,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {
     registerFoodstuffsDependencies(this.appContainer);
     registerCountdownDependencies(this.appContainer);
-    this.appContainer.register(AppTokens.receiptScanner, {
-      useClass: TaggunReceiptScanner,
-    });
   }
 
   async importProducts(options: Partial<ImportOptions> = {}) {

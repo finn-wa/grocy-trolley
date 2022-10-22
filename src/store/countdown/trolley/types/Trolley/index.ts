@@ -33,6 +33,7 @@ export interface TrolleyContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
+  pickupAddressId: number;
   cutOffTime?: unknown;
   endTime?: unknown;
   locker?: unknown;
@@ -92,6 +93,7 @@ export interface TrolleyItemProductPrice {
   isSpecial: boolean;
   isTargetedOffer: boolean;
   originalPrice: number;
+  orderedPrice: number | null;
   salePrice: number;
   savePrice: number;
   total: string | null;
@@ -104,10 +106,18 @@ export interface TrolleyItemProductProductTagMultiBuy {
   value: number;
 }
 
+export interface TrolleyItemProductProductTagAdditionalTag {
+  imagePath: string;
+  linkTarget: string;
+  name: string;
+  altText?: unknown;
+  link?: unknown;
+}
+
 export interface TrolleyItemProductProductTag {
   multiBuy: TrolleyItemProductProductTagMultiBuy | null;
   tagType: string;
-  additionalTag?: unknown;
+  additionalTag: TrolleyItemProductProductTagAdditionalTag | null;
   bonusPoints?: unknown;
   targetedOffer?: unknown;
 }
@@ -132,6 +142,7 @@ export interface TrolleyItemProduct {
   averageWeightPerUnit: number | null;
   hasShopperNotes: boolean;
   images: TrolleyItemProductImages;
+  lastAvailableListPrice: number;
   name: string;
   price: TrolleyItemProductPrice;
   priceUnitLabel: string;
@@ -141,16 +152,18 @@ export interface TrolleyItemProduct {
   size: TrolleyItemProductSize;
   sku: string;
   slug: string;
+  stockLevel: number;
   subsAllowed: boolean;
   supportsBothEachAndKgPricing: boolean;
   type: string;
   unit: string;
   adId?: unknown;
+  availabilityStatus?: unknown;
   barcode?: unknown;
   brand?: unknown;
-  dasFacetsUrl?: string;
+  brandSuggestionId?: unknown;
+  brandSuggestionName?: unknown;
   eachUnitQuantity?: unknown;
-  shopperNotes?: string;
   variety?: unknown;
 }
 

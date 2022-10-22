@@ -1,14 +1,17 @@
+import { AppTokens, defaultDependencies, registerDependencies } from "@gt/app/di";
 import { getBrowser } from "@gt/store/shared/rest/browser";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
-import { getEnvAs, initEnv } from "@gt/utils/environment";
+import { getEnvAs, getEnvVar, initEnv } from "@gt/utils/environment";
 import { Logger } from "@gt/utils/logger";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
-import * as cacheUtils from "../../../utils/cache";
-import { CountdownRestService } from "./countdown-rest-service";
-import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
 import path from "path";
-import { beforeEach, vi, afterAll, describe, expect, test } from "vitest";
+import { container } from "tsyringe";
+import { afterAll, beforeEach, describe, expect, test } from "vitest";
+import * as cacheUtils from "../../../utils/cache";
+import { registerCountdownDependencies } from "../countdown-di";
+import { CountdownAuthHeaderProvider } from "./countdown-auth-header-provider";
+import { CountdownRestService } from "./countdown-rest-service";
 
 class TestRestService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
@@ -17,7 +20,7 @@ class TestRestService extends CountdownRestService {
 }
 
 describe("[external] CountdownRestService", () => {
-  let userAgent: CountdownAuthHeaderProvider;
+  let authHeaderProvider: CountdownAuthHeaderProvider;
   let service: TestRestService;
 
   initEnv({
@@ -29,18 +32,26 @@ describe("[external] CountdownRestService", () => {
     COUNTDOWN_EMAIL: "email",
     COUNTDOWN_PASSWORD: "password",
   });
+  const relativeCacheDir =
+    cacheUtils.sanitiseEmailForCache(loginDetails.email) + "_cd-rest-service-test";
+  const cacheDir = path.join(getEnvVar("CACHE_DIR"), relativeCacheDir);
+  const testContainer = container.createChildContainer();
+
   // Different cache dir for these tests to avoid clearing cache for other tests
-  const cacheEmailOverride = loginDetails.email + "_rest-service-test";
-  vi.mock("../../../utils/cache", async () => {
-    const cacheUtils: any = await vi.importActual("../../../utils/cache");
-    return { ...cacheUtils, sanitiseEmailForCache: vi.fn((_email: string) => cacheEmailOverride) };
+  registerDependencies(testContainer, {
+    ...defaultDependencies,
+    [AppTokens.browserLoader]: { useValue: () => getBrowser({ headless: false }) },
+    [AppTokens.childContainer]: { useFactory: () => testContainer.createChildContainer() },
+    [AppTokens.cacheServiceFactory]: {
+      useValue: (_: string) => cacheUtils.createCacheService(relativeCacheDir),
+    },
   });
-  const cacheDir = path.join(cacheUtils.getCacheDir(), "countdown", cacheEmailOverride);
+  registerCountdownDependencies(testContainer);
 
   beforeEach(async () => {
     await rm(cacheDir, { recursive: true, force: true });
-    userAgent = new CountdownAuthHeaderProvider(getBrowser, loginDetails);
-    service = new TestRestService(userAgent);
+    authHeaderProvider = testContainer.resolve(CountdownAuthHeaderProvider);
+    service = new TestRestService(authHeaderProvider);
   });
 
   afterAll(async () => {
@@ -48,16 +59,20 @@ describe("[external] CountdownRestService", () => {
     await browser.close();
   });
 
-  test("authHeaders", async () => {
-    expect(existsSync(cacheDir)).toBeFalsy();
-    const builder = await service.authHeaders();
-    const rawHeaders = builder.raw();
-    const newService = new TestRestService(userAgent);
-    // should load from cache without using browser
-    const cachedHeaders = (await newService.authHeaders()).raw();
-    expect(cachedHeaders).toEqual(rawHeaders);
-    // These assertions are more to test whether the separate cache path is working
-    const cacheFiles = await readdir(cacheDir);
-    expect(cacheFiles).toEqual(["headers.json", "playwright.json"]);
-  });
+  test(
+    "authHeaders",
+    async () => {
+      expect(existsSync(cacheDir)).toBeFalsy();
+      const builder = await service.authHeaders();
+      const rawHeaders = builder.raw();
+      const newService = new TestRestService(authHeaderProvider);
+      // should load from cache without using browser
+      const cachedHeaders = (await newService.authHeaders()).raw();
+      expect(cachedHeaders).toEqual(rawHeaders);
+      // These assertions are more to test whether the separate cache path is working
+      const cacheFiles = await readdir(cacheDir);
+      expect(cacheFiles).toEqual(["headers.json"]);
+    },
+    { timeout: 30_000 }
+  );
 });

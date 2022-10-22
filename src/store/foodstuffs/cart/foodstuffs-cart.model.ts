@@ -22,9 +22,9 @@ export interface FoodstuffsCart {
   saving: number;
   serviceFee: number;
   bagFee: number;
-  store: FoodstuffsStore;
-  orderNumber: number;
-  allowSubstitutions: boolean;
+  store?: FoodstuffsStore;
+  orderNumber?: number;
+  allowSubstitutions?: boolean;
   wasRepriced: boolean;
   timeslot?: Timeslot;
 }

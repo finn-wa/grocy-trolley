@@ -11,8 +11,8 @@ export class FoodstuffsCartService {
   protected readonly logger = new Logger(this.constructor.name);
 
   constructor(
-    private readonly controller: FoodstuffsCartController,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject(FoodstuffsCartController) private readonly controller: FoodstuffsCartController,
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {}
 
   getCart = () => this.controller.getCart();

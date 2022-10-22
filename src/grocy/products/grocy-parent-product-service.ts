@@ -17,7 +17,7 @@ export class GrocyParentProductService extends GrocyRestService {
   constructor(
     private readonly productGroupIdService: GrocyProductGroupIdLookupService,
     private readonly productService: GrocyProductService,
-    @inject(AppTokens.promptProvider) private readonly prompt: PromptProvider
+    @inject("PromptProvider") private readonly prompt: PromptProvider
   ) {
     super();
   }

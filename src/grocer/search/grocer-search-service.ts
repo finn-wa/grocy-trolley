@@ -3,7 +3,7 @@ import { HeadersBuilder } from "@gt/utils/headers";
 import { Logger } from "@gt/utils/logger";
 import { RestService } from "@gt/utils/rest";
 import { SearchUtils } from "@gt/utils/search";
-import { Lifecycle, scoped } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocerStoreService } from "../stores/grocer-store-service";
 import { ProductSearchResponse, ProductSearchResponseHit } from "./types/ProductSearchResponse";
 import { getProductSearchResponseSchema } from "./types/ProductSearchResponse/schema";
@@ -27,8 +27,8 @@ export class GrocerSearchService extends RestService {
   };
 
   constructor(
-    private readonly storeService: GrocerStoreService,
-    private readonly searchUtils: SearchUtils
+    @inject(GrocerStoreService) private readonly storeService: GrocerStoreService,
+    @inject(SearchUtils) private readonly searchUtils: SearchUtils
   ) {
     super();
   }

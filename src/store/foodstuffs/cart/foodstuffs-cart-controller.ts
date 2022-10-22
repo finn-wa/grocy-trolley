@@ -1,5 +1,5 @@
 import { Logger, prettyPrint } from "@gt/utils/logger";
-import { Lifecycle, scoped } from "tsyringe";
+import { inject, Lifecycle, scoped } from "tsyringe";
 import { FoodstuffsAuthHeaderProvider } from "../rest/foodstuffs-auth-header-provider";
 import { FoodstuffsRestService } from "../rest/foodstuffs-rest-service";
 import { CartProductRef, FoodstuffsCart } from "./foodstuffs-cart.model";
@@ -15,7 +15,7 @@ import { getClearCartResponseSchema } from "./types/ClearCartResponse/schema";
 export class FoodstuffsCartController extends FoodstuffsRestService {
   protected readonly logger = new Logger(this.constructor.name);
 
-  constructor(userAgent: FoodstuffsAuthHeaderProvider) {
+  constructor(@inject(FoodstuffsAuthHeaderProvider) userAgent: FoodstuffsAuthHeaderProvider) {
     super(userAgent);
   }
 

@@ -52,28 +52,20 @@ const productSchema: JTDSchemaType<FoodstuffsCartProduct> = {
  */
 export const schema: JTDSchemaType<FoodstuffsCart> = {
   properties: {
-    allowSubstitutions: { type: "boolean" },
     bagFee: { type: "uint16" },
-    orderNumber: { type: "uint16" },
     products: {
       elements: productSchema,
     },
     promoCodeDiscount: { type: "uint16" },
     saving: { type: "uint16" },
     serviceFee: { type: "uint16" },
-    store: {
-      properties: {
-        storeAddress: { type: "string" },
-        storeId: { type: "string" },
-        storeName: { type: "string" },
-        storeRegion: { type: "string" },
-      },
-    },
     subtotal: { type: "uint16" },
     unavailableProducts: { elements: productSchema },
     wasRepriced: { type: "boolean" },
   },
   optionalProperties: {
+    orderNumber: { type: "uint16" },
+    allowSubstitutions: { type: "boolean" },
     timeslot: {
       properties: {
         cutOffDate: { type: "timestamp" },
@@ -83,6 +75,14 @@ export const schema: JTDSchemaType<FoodstuffsCart> = {
         slot: { type: "string" },
         softCutOffDate: { type: "timestamp" },
         type: { enum: ["COLLECT"] },
+      },
+    },
+    store: {
+      properties: {
+        storeAddress: { type: "string" },
+        storeId: { type: "string" },
+        storeName: { type: "string" },
+        storeRegion: { type: "string" },
       },
     },
   },

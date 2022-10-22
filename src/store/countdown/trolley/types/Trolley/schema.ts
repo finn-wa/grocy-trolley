@@ -46,6 +46,7 @@ export const schema: JTDSchemaType<Trolley> = {
             isSlotToday: { type: "boolean" },
             method: { type: "string" },
             perishableCode: { type: "string" },
+            pickupAddressId: { type: "uint8" },
           },
           optionalProperties: {
             suburbId: { type: "uint8" },
@@ -100,6 +101,7 @@ export const schema: JTDSchemaType<Trolley> = {
                 averageWeightPerUnit: { nullable: true, type: "float64" },
                 hasShopperNotes: { type: "boolean" },
                 images: { properties: { big: { type: "string" }, small: { type: "string" } } },
+                lastAvailableListPrice: { type: "uint8" },
                 name: { type: "string" },
                 price: {
                   properties: {
@@ -112,6 +114,7 @@ export const schema: JTDSchemaType<Trolley> = {
                     isSpecial: { type: "boolean" },
                     isTargetedOffer: { type: "boolean" },
                     originalPrice: { type: "float64" },
+                    orderedPrice: { type: "float64", nullable: true },
                     salePrice: { type: "float64" },
                     savePrice: { type: "float64" },
                     total: { nullable: true, type: "string" },
@@ -124,6 +127,10 @@ export const schema: JTDSchemaType<Trolley> = {
                 productTag: {
                   nullable: true,
                   properties: {
+                    tagType: { type: "string" },
+                  },
+                  optionalProperties: {
+                    bonusPoints: { metadata: { typescriptType: "unknown" } },
                     multiBuy: {
                       nullable: true,
                       properties: {
@@ -132,11 +139,18 @@ export const schema: JTDSchemaType<Trolley> = {
                         value: { type: "uint8" },
                       },
                     },
-                    tagType: { type: "string" },
-                  },
-                  optionalProperties: {
-                    additionalTag: { metadata: { typescriptType: "unknown" } },
-                    bonusPoints: { metadata: { typescriptType: "unknown" } },
+                    additionalTag: {
+                      nullable: true,
+                      properties: {
+                        imagePath: { type: "string" },
+                        linkTarget: { type: "string" },
+                        name: { type: "string" },
+                      },
+                      optionalProperties: {
+                        altText: { type: "string", nullable: true },
+                        link: { type: "string", nullable: true },
+                      },
+                    },
                     targetedOffer: { metadata: { typescriptType: "unknown" } },
                   },
                 },
@@ -156,25 +170,28 @@ export const schema: JTDSchemaType<Trolley> = {
                     cupMeasure: { nullable: true, type: "string" },
                     cupPrice: { type: "float64" },
                     packageType: { nullable: true, type: "string" },
-                    volumeSize: { nullable: true, type: "string" },
+                    volumeSize: { type: "string", nullable: true },
                   },
                 },
                 sku: { type: "string" },
                 slug: { type: "string" },
+                stockLevel: { type: "uint8" },
                 subsAllowed: { type: "boolean" },
                 supportsBothEachAndKgPricing: { type: "boolean" },
                 type: { type: "string" },
                 unit: { type: "string" },
               },
               optionalProperties: {
-                dasFacetsUrl: { type: "string" },
-                shopperNotes: { type: "string" },
                 adId: { metadata: { typescriptType: "unknown" } },
+                availabilityStatus: { metadata: { typescriptType: "unknown" } },
                 barcode: { metadata: { typescriptType: "unknown" } },
                 brand: { metadata: { typescriptType: "unknown" } },
+                brandSuggestionId: { metadata: { typescriptType: "unknown" } },
+                brandSuggestionName: { metadata: { typescriptType: "unknown" } },
                 eachUnitQuantity: { metadata: { typescriptType: "unknown" } },
                 variety: { metadata: { typescriptType: "unknown" } },
               },
+              additionalProperties: true,
             },
           },
         },

@@ -1,5 +1,5 @@
 import { Logger } from "@gt/utils/logger";
-import { Lifecycle, scoped } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import { COUNTDOWN_URL } from "../models";
 import { CountdownAuthHeaderProvider } from "../rest/countdown-auth-header-provider";
 import { CountdownRestService } from "../rest/countdown-rest-service";
@@ -10,14 +10,16 @@ import { getOrderDetailsSchema } from "./types/OrderDetails/schema";
 import { Orders } from "./types/Orders";
 import { getOrdersSchema } from "./types/Orders/schema";
 
-@scoped(Lifecycle.ContainerScoped)
+@injectable()
 export class CountdownOrderService extends CountdownRestService {
   protected readonly logger = new Logger(this.constructor.name);
   protected readonly baseUrl = this.validateBaseUrl(
     `${COUNTDOWN_URL}/api/v1/shoppers/my/past-orders`
   );
 
-  constructor(authHeaderProvider: CountdownAuthHeaderProvider) {
+  constructor(
+    @inject(CountdownAuthHeaderProvider) authHeaderProvider: CountdownAuthHeaderProvider
+  ) {
     super(authHeaderProvider);
   }
 

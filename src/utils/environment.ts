@@ -109,7 +109,7 @@ export function getEnvVar(envVar: EnvVar): string {
 export function getEnvAs<EnvKey extends keyof Env, NewKey extends string>(
   mappings: Record<EnvKey, NewKey>
 ): Record<NewKey, Env[EnvKey]> {
-  const env = getEnvKeys(Object.keys(mappings) as EnvKey[]);
+  const env = pickEnv(Object.keys(mappings) as EnvKey[]);
   const entries = Object.entries(mappings) as [EnvKey, NewKey][];
   const mappedEntries = entries.map(([envKey, newKey]) => [newKey, env[envKey]] as const);
   return Object.fromEntries(mappedEntries) as Record<NewKey, Env[EnvKey]>;
@@ -121,10 +121,11 @@ export function getEnvAs<EnvKey extends keyof Env, NewKey extends string>(
  * @param keys Keys to pick from the env object
  * @returns Filtered env
  */
-export function getEnvKeys<K extends EnvVar[]>(keys: K): Pick<Env, K[number]> {
-  const entries = Object.entries(getEnv()).filter(([key]) => keys.includes(key as EnvVar));
-  if (entries.length !== keys.length) {
-    throw new Error("Undefined keys! \n" + prettyPrint(entries));
+export function pickEnv<K extends keyof Env>(keys: K[]): Pick<Env, K> {
+  const env = getEnv();
+  const missingKeys = keys.filter((k) => !(k in env));
+  if (missingKeys.length > 0) {
+    throw new Error(`Undefined keys! \n${missingKeys.join()}`);
   }
-  return Object.fromEntries(entries) as Pick<Env, K[number]>;
+  return Object.fromEntries(keys.map((k) => [k, env[k]])) as Pick<Env, K>;
 }

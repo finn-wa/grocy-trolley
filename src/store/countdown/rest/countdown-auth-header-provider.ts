@@ -1,6 +1,7 @@
 import { AppTokens } from "@gt/app/di";
 import { AuthHeaderProvider } from "@gt/store/shared/rest/auth-header-provider";
 import { LoginDetails } from "@gt/store/shared/rest/login-details.model";
+import { CacheServiceFactory } from "@gt/utils/cache";
 import { Logger } from "@gt/utils/logger";
 import { getHeadersFromRequest } from "@gt/utils/playwright";
 import { Browser, Page, Request as PlaywrightRequest } from "playwright";
@@ -41,10 +42,12 @@ export class CountdownAuthHeaderProvider extends AuthHeaderProvider {
   };
 
   constructor(
+    @inject(AppTokens.cacheServiceFactory)
+    cacheServiceFactory: CacheServiceFactory<{ headers: Record<string, string[]> }>,
     @inject(AppTokens.browserLoader) browserLoader: () => Promise<Browser>,
     @inject(CountdownTokens.loginDetails) loginDetails?: LoginDetails
   ) {
-    super("countdown", browserLoader, loginDetails);
+    super(cacheServiceFactory, "countdown", browserLoader, loginDetails);
   }
 
   async login(page: Page): Promise<Headers> {

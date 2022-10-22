@@ -20,7 +20,7 @@ export interface OrderDetailsContextBasketTotals {
   bagFees: string;
   deliveryFees: string;
   eligibilityForDeliverySubscriptionDiscount: string;
-  savings: string;
+  savings: string | null;
   subtotal: string;
   totalIncludingDeliveryFees: string;
   totalItems: number;
@@ -41,6 +41,7 @@ export interface OrderDetailsContextFulfilment {
   isSlotToday: boolean;
   method: string;
   perishableCode: string;
+  pickupAddressId: number;
   suburbId: number;
   cutOffTime?: unknown;
   endTime?: unknown;
@@ -110,6 +111,7 @@ export interface OrderDetailsProductsItemPrice {
   isSpecial: boolean;
   isTargetedOffer: boolean;
   originalPrice: number;
+  orderedPrice: number | null;
   salePrice: number;
   savePrice: number;
   discount?: unknown;
@@ -118,11 +120,11 @@ export interface OrderDetailsProductsItemPrice {
 }
 
 export interface OrderDetailsProductsItemProductTagAdditionalTag {
-  altText: string;
+  altText: string | null;
   imagePath: string;
   linkTarget: string;
   name: string;
-  link?: unknown;
+  link: string | null;
 }
 
 export interface OrderDetailsProductsItemProductTagMultiBuy {
@@ -143,9 +145,9 @@ export interface OrderDetailsProductsItemQuantity {
   increment: number;
   max: number;
   min: number;
-  value: number | null;
   purchasingQuantityString?: unknown;
   quantityInOrder?: unknown;
+  value: number | null;
 }
 
 export interface OrderDetailsProductsItemSize {
@@ -178,6 +180,8 @@ export interface OrderDetailsProductsItem {
   variety: string | null;
   adId?: unknown;
   availabilityStatus?: unknown;
+  brandSuggestionId?: unknown;
+  brandSuggestionName?: unknown;
   eachUnitQuantity?: unknown;
   priceUnitLabel?: unknown;
 }
@@ -198,14 +202,15 @@ export interface OrderDetails {
   context: OrderDetailsContext;
   currentPageSize: number;
   currentSortOption: string;
-  dasFacets: Unknown[];
-  facets: Unknown[];
+  // dasFacets: Unknown[];
+  // facets: Unknown[];
   isSuccessful: boolean;
   partialFailures: OrderDetailsPartialFailures;
   products: OrderDetailsProducts;
   rootUrl: string;
   sortOptions: OrderDetailsSortOption[];
   action?: unknown;
+  brandSuggestions?: unknown;
   messages?: unknown;
   targetedOfferDetails?: unknown;
 }
