@@ -11,6 +11,11 @@
       "matchUpdateTypes": ["patch", "minor"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^@?vitest"],
+      "groupName": "vitest",
+      "groupSlug": "vitest"
     }
   ]
 }
