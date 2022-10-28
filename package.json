@@ -35,7 +35,7 @@
   "devDependencies": {
     "@anatine/esbuild-decorators": "0.2.19",
     "@types/dedent": "0.7.0",
-    "@types/node": "18.7.14",
+    "@types/node": "18.11.7",
     "@types/prompts": "2.4.1",
     "@typescript-eslint/eslint-plugin": "5.40.1",
     "@typescript-eslint/parser": "5.40.1",
