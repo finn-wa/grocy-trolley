@@ -553,10 +553,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.7.14":
-  version: 18.7.14
-  resolution: "@types/node@npm:18.7.14"
-  checksum: 99cf28ff854100158de875cca23c7acc3cc01dfee526a52b90b7f36767c821bcbaf2be0a98a70f06f3b78f3c60639168ff949d725b61e2e124f9f71f1fb8043d
+"@types/node@npm:18.11.7":
+  version: 18.11.7
+  resolution: "@types/node@npm:18.11.7"
+  checksum: 69d630825cf6fbf580d08d76a4d4836ef8c34ed4fe0842221ade87d275f517099cbfabe8e22397208e564bd24926db97699ab9db5c091383269a432b336665e2
   languageName: node
   linkType: hard
 
@@ -3394,7 +3394,7 @@ __metadata:
     "@anatine/esbuild-decorators": 0.2.19
     "@slack/bolt": 3.12.1
     "@types/dedent": 0.7.0
-    "@types/node": 18.7.14
+    "@types/node": 18.11.7
     "@types/prompts": 2.4.1
     "@typescript-eslint/eslint-plugin": 5.40.1
     "@typescript-eslint/parser": 5.40.1
