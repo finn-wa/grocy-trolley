@@ -3413,7 +3413,7 @@ __metadata:
     fast-glob: 3.2.12
     json-stringify-pretty-compact: 4.0.0
     openapi-typescript: 5.4.1
-    playwright: 1.26.1
+    playwright: 1.27.1
     prettier: 2.7.1
     prompts: 2.4.2
     rxjs: 7.5.6
@@ -5191,23 +5191,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.26.1":
-  version: 1.26.1
-  resolution: "playwright-core@npm:1.26.1"
+"playwright-core@npm:1.27.1":
+  version: 1.27.1
+  resolution: "playwright-core@npm:1.27.1"
   bin:
     playwright: cli.js
-  checksum: 6347224c28c1ec21d49b659ae35452955e2d8a8ff7aa578f0a0dbb1eccfbcea97e7400446335e966c2a1cbb356381d78131ea65e4a2f19a3eccfb58d33aed0ca
+  checksum: fd65d3eb29978e0e7a755158625e8922a66ca9d599b7c24ddf920822b261d81c51a5964ef8e0e5ed9b2b12dc64541c5949b6a898d965e107f43261964e8c29a0
   languageName: node
   linkType: hard
 
-"playwright@npm:1.26.1":
-  version: 1.26.1
-  resolution: "playwright@npm:1.26.1"
+"playwright@npm:1.27.1":
+  version: 1.27.1
+  resolution: "playwright@npm:1.27.1"
   dependencies:
-    playwright-core: 1.26.1
+    playwright-core: 1.27.1
   bin:
     playwright: cli.js
-  checksum: 42af6e949af68dec3327d5cce2e7f2f0d6d175528ba983b9b76f8f21995ae223f901d672799e655446b71ec5d19223464f7c587d3f569312a452718cbf8a706a
+  checksum: 7bb31998e1783f96443bd1a38f0d7838d1b6fd0cf410ac83ef480c0f0e3e930b809b7e42ccda35b9e272c84aaa8f15e0ee8bdddc19a60b224eecc57d285bf92f
   languageName: node
   linkType: hard
 
