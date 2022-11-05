@@ -5,10 +5,10 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@abraham/reflection@npm:0.10.0":
-  version: 0.10.0
-  resolution: "@abraham/reflection@npm:0.10.0"
-  checksum: d50ca13ccc1305f288f39cf155a96483843746283c8233502c4d27ab999e36c16e1c0875095066c77d7436387b1ab561851f255926c55e5239751dd02d274288
+"@abraham/reflection@npm:0.11.0":
+  version: 0.11.0
+  resolution: "@abraham/reflection@npm:0.11.0"
+  checksum: 12b9e0d638ebdb46ca79ed60a1b22abaf81f3c845dbde50e7bbc497ad038e4c3798592776ecf3374bd3971c0e7cea91cf3a6c018578cada772528ecd5f5d665b
   languageName: node
   linkType: hard
 
@@ -3397,7 +3397,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "grocy-trolley@workspace:."
   dependencies:
-    "@abraham/reflection": 0.10.0
+    "@abraham/reflection": 0.11.0
     "@anatine/esbuild-decorators": 0.2.19
     "@slack/bolt": 3.12.2
     "@types/dedent": 0.7.0
