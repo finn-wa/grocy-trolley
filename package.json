@@ -44,7 +44,7 @@
     "commitizen": "4.2.6",
     "cz-conventional-changelog": "3.3.0",
     "esbuild": "0.15.11",
-    "eslint": "8.29.0",
+    "eslint": "8.30.0",
     "eslint-config-prettier": "8.5.0",
     "fast-glob": "3.2.12",
     "openapi-typescript": "5.4.1",
