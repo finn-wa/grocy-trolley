@@ -21,7 +21,7 @@
   "dependencies": {
     "@abraham/reflection": "0.10.0",
     "@slack/bolt": "3.12.2",
-    "ajv": "8.11.2",
+    "ajv": "8.12.0",
     "chalk": "5.2.0",
     "commander": "9.4.1",
     "dedent": "0.7.0",
