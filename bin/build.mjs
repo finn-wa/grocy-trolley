@@ -16,7 +16,7 @@ function getBuildOptions(args) {
     bundle: true,
     format: "cjs",
     logLevel: "info",
-    minify: args.target === "prod",
+    minify: args.minify,
     outdir: "build/out",
     platform: "node",
     plugins: [],
@@ -53,6 +53,7 @@ async function runEsbuild(options) {
  * @property {boolean} watch rebuild on file change
  * @property {boolean} sourcemap produce sourcemaps for debugging
  * @property {boolean} analyse print bundle analysis
+ * @property {boolean} minify minify code
  */
 program
   .addOption(
@@ -63,6 +64,7 @@ program
   .option("-w, --watch", "rebuild on file changes", false)
   .option("-s, --sourcemap", "produce sourcemaps for debugging", false)
   .option("-a, --analyse", "print bundle analysis", false)
+  .option("-m, --minify", "minify code", false)
   .parse();
 
 const buildOptions = getBuildOptions(program.opts());

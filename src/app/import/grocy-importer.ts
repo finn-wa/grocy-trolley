@@ -2,36 +2,50 @@ import {
   CreatedProductResponse,
   GrocyProductService,
 } from "@gt/grocy/products/grocy-product-service";
+import { StockAddRequest } from "@gt/grocy/stock/types";
 import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { NewProductPayloads } from "@gt/store/foodstuffs/grocy/import/product-converter";
-import { prettyPrint } from "@gt/utils/logger";
-import { Logger } from "ajv";
-import { ImportOptions } from "./options";
+import { Logger, prettyPrint } from "@gt/utils/logger";
+import { Store } from "@gt/utils/store";
+import { BehaviorSubject } from "rxjs";
+import { ImportListOptions, ImportOptions } from "./options";
 
 export interface BaseProductImport {
   readonly payloads: NewProductPayloads;
 }
-export interface QueuedProductImport extends BaseProductImport {
-  readonly status: "queued";
-}
-export interface SuccessfulProductImport extends BaseProductImport {
-  readonly status: "success";
+
+export type Status = "queued" | "success" | "error";
+export type WithStatus<T extends Status> = { readonly status: T };
+
+export interface QueuedProductImport extends BaseProductImport, WithStatus<"queued"> {}
+
+export interface SuccessfulProductImport extends BaseProductImport, WithStatus<"success"> {
   readonly response: CreatedProductResponse;
 }
-export interface ErroredProductImport extends BaseProductImport {
-  readonly status: "error";
+export interface ErroredProductImport extends BaseProductImport, WithStatus<"error"> {
   readonly error: unknown;
 }
-export type ProductImport = QueuedProductImport | SuccessfulProductImport | ErroredProductImport;
 
-export class ProductImportHelper {
-  private _state: ProductImport;
+export type ProductImportStatus =
+  | QueuedProductImport
+  | SuccessfulProductImport
+  | ErroredProductImport;
+
+export interface ProductToStock {
+  id: string;
+  request: StockAddRequest;
+}
+
+export type ProductStockStatus<T extends Status = Status> = WithStatus<T> & ProductToStock;
+
+export class ProductImportOperation {
+  private _state: ProductImportStatus;
 
   constructor(payloads: NewProductPayloads) {
     this._state = { status: "queued", payloads };
   }
 
-  get state(): ProductImport {
+  get state(): ProductImportStatus {
     return { ...this.state };
   }
 
@@ -56,47 +70,96 @@ export class ProductImportHelper {
 }
 
 export interface ImportProductsResult {
-  state: ProductImport[];
+  imports: ProductImportStatus[];
+  stock: ProductStockStatus[];
   error?: Error;
 }
 
-export interface GrocyImporter {
+export interface GrocyProductImporter {
   importProducts(options: ImportOptions): Promise<ImportProductsResult>;
+  // stockProducts(products: ImportProductsResult): Promise<ProductStockStatus<Status>[]>;
 }
 
-export abstract class AbstractGrocyImporter implements GrocyImporter {
+type ImporterStore = {
+  imports: ProductImportOperation[];
+  stock: ProductStockStatus[];
+}
+
+export abstract class AbstractGrocyProductImporter implements GrocyProductImporter {
+  readonly store = new Store<ImporterStore>({imports: [], stock: []});
+
   protected abstract readonly logger: Logger;
 
   constructor(
-    private readonly grocyProductService: GrocyProductService,
-    private readonly prompt: PromptProvider
+    protected readonly grocyProductService: GrocyProductService,
+    protected readonly prompt: PromptProvider
   ) {}
 
   protected abstract getProductsToImport(
     options: ImportOptions
-  ): Promise<NewProductPayloads[]> | NewProductPayloads[];
+  ): NewProductPayloads[] | Promise<NewProductPayloads[]>;
+
+  protected abstract convertToStockRequest(
+    importResult: ImportProductsResult
+  ): ProductToStock[] | Promise<ProductToStock[]>;
 
   async importProducts(options: ImportOptions): Promise<ImportProductsResult> {
     const productsToImport = await this.getProductsToImport(options);
-    const importHelpers = productsToImport.map((payloads) => new ProductImportHelper(payloads));
-    for (const productImport of importHelpers) {
+
+    this.store.updateIdState('imports', (imports) => imports.concat(
+        productsToImport.map((payloads) => new ProductImportOperation(payloads))
+      )
+    );
+    let ignoreErrors = false;
+    const importState = await this.store.selectId('imports');
+    for (let i = 0; i < importState.length; i++) {
+      const productImport = importState[i];
       try {
         const createdProduct = await this.grocyProductService.createProduct(
           productImport.payloads.product,
           productImport.payloads.quConversions
         );
         productImport.setSuccessState(createdProduct);
+        this.store.setIdState('imports', importState);
       } catch (error) {
         productImport.setErrorState(error);
+        this.store.setIdState('imports', importState);
         this.logger.error(prettyPrint(error));
-        const continueImport = await this.prompt.confirm(
-          `Error importing product ${productImport.payloads.product.name}! Continue importing remaining products?`
-        );
-        if (!continueImport) break;
+        if (!ignoreErrors) {
+          const continueImport = await this.prompt.select(
+            `Error importing product ${productImport.payloads.product.name}! Select action:`,
+            [
+              { title: "Ignore error", value: "ignore" as const },
+              { title: "Ignore all errors for this import", value: "ignoreAll" as const },
+            ],
+            { includeExitOption: true }
+          );
+          if (!continueImport) {
+            break;
+          }
+          if (continueImport === "ignoreAll") {
+            ignoreErrors = true;
+          }
+        }
       }
     }
-    // TODO: print summary
+    // TODO: print nice summary
+    const state = importOperations.map((helper) => helper.state);
+    this.logger.debug(prettyPrint(state));
     // TODO: support stocking imported products
-    return { state: importHelpers.map((helper) => helper.state) };
+    const stockImportedProducts = await this.prompt.confirm(
+      "Stock successfully imported products?"
+    );
+    if (stockImportedProducts) {
+      products.
+      const productsToStock = await this.convertToStockRequest({ imports: state });
+      const stockState = await this.stockProducts(productsToStock);
+      return { imports: state, stock: stockState };
+    }
+    return { imports: state };
   }
+
+  protected async stockProducts(products: ProductToStock[]): Promise<ProductStockStatus[]> {}
+
+  async importAndStockProducts(options: ImportOptions) {}
 }

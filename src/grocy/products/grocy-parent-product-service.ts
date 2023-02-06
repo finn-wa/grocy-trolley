@@ -1,6 +1,7 @@
 import { AppTokens } from "@gt/app/di";
 import { PromptProvider } from "@gt/prompts/prompt-provider";
 import { Logger } from "@gt/utils/logger";
+import { from, Observable } from "rxjs";
 import { inject, Lifecycle, scoped } from "tsyringe";
 import { GrocyProductGroup } from "../grocy-config";
 import { GrocyProductGroupIdLookupService } from "../id-lookup/grocy-product-group-id-lookup-service";
@@ -70,5 +71,13 @@ export class GrocyParentProductService extends GrocyRestService {
         value: parent,
       })),
     ]);
+  }
+
+  promptForMatchingParent$(
+    name: string,
+    category: GrocyProductGroup,
+    parents: ParentProduct[]
+  ): Observable<ParentProduct | null> {
+    return from(this.promptForMatchingParent(name, category, parents));
   }
 }

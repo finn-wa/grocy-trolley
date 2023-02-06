@@ -195,7 +195,16 @@ export class FoodstuffsReceiptImporter {
    */
   async importReceiptListRefs(listRefs: Record<string, ListProductRef>, listId: string) {
     await this.foodstuffsListService.addProductsToList(listId, Object.values(listRefs));
-    await this.listImporter.importList(listId);
+    await this.listImporter.importProducts({
+      listId,
+      vendor: "pns",
+      source: "list",
+    });
+    // todo - support stocking imported products in superclass
+    // and implement in listImporter
+    if (await this.prompt.confirm("Stock imported products?")) {
+      await this.listImporter.stockProductsFromList(listId);
+    }
     this.logger.info("Adding receipt metadata to imported items...");
     const productsByPnsId = await this.listImporter.getProductsByFoodstuffsId();
     for (const [name, ref] of Object.entries(listRefs)) {
